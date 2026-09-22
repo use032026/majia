@@ -1,0 +1,24 @@
+# ASC metadata patch manifest for RoamSum.
+# Nothing except export compliance is changed until the corresponding workflow
+# switch is enabled. Uncomment only fields and collections that should change.
+uses_non_exempt_encryption: false
+
+# app_info_localizations:
+#   en-US:
+#     name: "RoamSum"
+#     subtitle: "New subtitle"
+#
+# localizations:
+#   en-US:
+#     description: "New description"
+#     whats_new: "Bug fixes and improvements."
+#     keywords: "travel,budget,expenses"
+#
+# media:
+#   en-US:
+#     screenshots:
+#       APP_IPHONE_65:
+#         - apps/tripcost/artifacts/app-store-previews/final/iphone-6.5/01-plan-every-trip.png
+#         - apps/tripcost/artifacts/app-store-previews/final/iphone-6.5/02-scan-and-understand.png
+#       APP_IPAD_PRO_3GEN_129:
+#         - apps/tripcost/artifacts/app-store-previews/final/ipad-13/01-plan-every-trip.png

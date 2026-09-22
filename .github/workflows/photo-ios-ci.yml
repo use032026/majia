@@ -18,12 +18,22 @@ on:
         default: false
         type: boolean
       auto_create_store_version:
-        description: Create/update the store version, complete metadata, and submit it for review
+        description: Create/reuse the store version and submit it for review after processing
+        required: true
+        default: false
+        type: boolean
+      update_asc_text_metadata:
+        description: Update only text fields declared in the app metadata manifest
+        required: true
+        default: false
+        type: boolean
+      replace_asc_media:
+        description: Replace only screenshot/preview collections declared in the app metadata manifest
         required: true
         default: false
         type: boolean
       release_notes_json:
-        description: 'Required when auto-create is true; map every ASC locale, for example {"en-US":"Bug fixes."}'
+        description: 'Optional whats_new override; requires update_asc_text_metadata=true, for example {"en-US":"Bug fixes."}'
         required: false
         default: "{}"
         type: string
@@ -61,6 +71,8 @@ jobs:
           MARKETING_VERSION: ${{ inputs.marketing_version }}
           UPLOAD_TO_ASC: ${{ inputs.upload_to_asc }}
           AUTO_CREATE_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
           RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
         run: |
           ruby .github/scripts/prepare-environment-ios-release.rb \
@@ -72,18 +84,23 @@ jobs:
             --marketing-version "$MARKETING_VERSION" \
             --upload-to-asc "$UPLOAD_TO_ASC" \
             --auto-create-store-version "$AUTO_CREATE_STORE_VERSION" \
+            --update-asc-text-metadata "$UPDATE_ASC_TEXT_METADATA" \
+            --replace-asc-media "$REPLACE_ASC_MEDIA" \
+            --metadata-template apps/photo/app-store/metadata.yml \
             --release-notes-json "$RELEASE_NOTES_JSON" \
             --github-output "$GITHUB_OUTPUT"
 
       - name: Build, retain, and optionally release Photo
         id: release
-        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@319672a3d2151fb3a425d03a40c8f2aee34914e1
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@39a136d4c560879ec35f3fd23c44f0b1eae4bc30
         with:
           config_path: ${{ steps.prepare.outputs.config_path }}
           marketing_version: ${{ inputs.marketing_version }}
           build_number: ${{ inputs.build_number }}
           upload_to_asc: ${{ inputs.upload_to_asc }}
           submit_to_review: ${{ inputs.auto_create_store_version }}
+          update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}
+          replace_asc_media: ${{ inputs.replace_asc_media }}
           ios_distribution_p12_base64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
           ios_distribution_p12_password: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
           ios_profiles_archive_base64: ${{ steps.prepare.outputs.profiles_archive_base64 }}
@@ -98,6 +115,8 @@ jobs:
           REQUESTED_VERSION: ${{ inputs.marketing_version }}
           REQUESTED_UPLOAD: ${{ inputs.upload_to_asc }}
           REQUESTED_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          REQUESTED_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REQUESTED_MEDIA_REPLACEMENT: ${{ inputs.replace_asc_media }}
           RESOLVED_BUILD_NUMBER: ${{ steps.release.outputs.build_number }}
           ASC_PROCESSING_STATE: ${{ steps.release.outputs.asc_processing_state }}
           APP_STORE_VERSION_STATE: ${{ steps.release.outputs.app_store_version_state }}
@@ -105,6 +124,8 @@ jobs:
           REVIEW_SUBMITTED: ${{ steps.release.outputs.review_submitted }}
           APP_STORE_NO_OP: ${{ steps.release.outputs.app_store_no_op }}
           APP_STORE_NO_OP_REASON: ${{ steps.release.outputs.app_store_no_op_reason }}
+          ASC_TEXT_METADATA_UPDATED: ${{ steps.release.outputs.asc_text_metadata_updated }}
+          ASC_MEDIA_REPLACED: ${{ steps.release.outputs.asc_media_replaced }}
         run: |
           {
             echo "## Photo iOS release"
@@ -112,11 +133,15 @@ jobs:
             echo "- Build number: ${RESOLVED_BUILD_NUMBER:-not-built}"
             echo "- Upload requested: ${REQUESTED_UPLOAD}"
             echo "- Auto-create and submit requested: ${REQUESTED_STORE_VERSION}"
+            echo "- Text metadata update requested: ${REQUESTED_TEXT_METADATA}"
+            echo "- Media replacement requested: ${REQUESTED_MEDIA_REPLACEMENT}"
             echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-uploaded}"
             echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
             echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
             echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
             echo "- App Store no-op: ${APP_STORE_NO_OP:-false}"
             echo "- App Store no-op reason: ${APP_STORE_NO_OP_REASON:-none}"
+            echo "- Text metadata updated and verified: ${ASC_TEXT_METADATA_UPDATED:-false}"
+            echo "- Media replaced and verified: ${ASC_MEDIA_REPLACED:-false}"
             echo "- Release policy: automatic after Apple approval"
           } >> "$GITHUB_STEP_SUMMARY"

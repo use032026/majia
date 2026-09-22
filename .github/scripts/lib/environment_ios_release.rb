@@ -23,9 +23,18 @@ module MajiaCI
       raise ReleaseInputError, "#{name} must be true or false"
     end
 
-    def validate_release_switches!(upload_to_asc:, auto_create_store_version:)
+    def validate_release_switches!(
+      upload_to_asc:, auto_create_store_version:, update_asc_text_metadata:, replace_asc_media:
+    )
       if auto_create_store_version && !upload_to_asc
         raise ReleaseInputError, "auto_create_store_version=true requires upload_to_asc=true"
+      end
+      if update_asc_text_metadata && !auto_create_store_version
+        raise ReleaseInputError,
+              "update_asc_text_metadata=true requires auto_create_store_version=true"
+      end
+      if replace_asc_media && !auto_create_store_version
+        raise ReleaseInputError, "replace_asc_media=true requires auto_create_store_version=true"
       end
     end
 
@@ -58,13 +67,18 @@ module MajiaCI
       raise ReleaseInputError, "targets JSON is invalid: #{e.message}"
     end
 
-    def build_metadata(release_notes_json:, enabled:)
-      return {} unless enabled
-
+    def build_metadata(template_path:, release_notes_json:, update_text_metadata:)
+      template = YAML.safe_load(File.read(template_path, encoding: "UTF-8"), permitted_classes: [], aliases: false)
+      unless template.is_a?(Hash)
+        raise ReleaseInputError, "App Store metadata template root must be a mapping"
+      end
       release_notes = JSON.parse(release_notes_json)
-      unless release_notes.is_a?(Hash) && !release_notes.empty?
+      unless release_notes.is_a?(Hash)
+        raise ReleaseInputError, "release_notes_json must be a locale-to-text mapping"
+      end
+      if !release_notes.empty? && !update_text_metadata
         raise ReleaseInputError,
-              "release_notes_json must map every ASC locale to non-empty release notes"
+              "non-empty release_notes_json requires update_asc_text_metadata=true"
       end
 
       localizations = release_notes.each_with_object({}) do |(locale, notes), result|
@@ -77,12 +91,41 @@ module MajiaCI
         result[locale] = { "whats_new" => notes }
       end
 
-      {
-        "uses_non_exempt_encryption" => false,
-        "localizations" => localizations
-      }
+      metadata = deep_stringify_keys(template)
+      metadata["uses_non_exempt_encryption"] = false unless metadata.key?("uses_non_exempt_encryption")
+      unless localizations.empty?
+        existing_localizations = metadata["localizations"]
+        unless existing_localizations.nil? || existing_localizations.is_a?(Hash)
+          raise ReleaseInputError, "metadata template localizations must be a mapping"
+        end
+        metadata["localizations"] ||= {}
+        localizations.each do |locale, attributes|
+          existing_locale = metadata["localizations"][locale]
+          unless existing_locale.nil? || existing_locale.is_a?(Hash)
+            raise ReleaseInputError, "metadata template localizations.#{locale} must be a mapping"
+          end
+          metadata["localizations"][locale] ||= {}
+          metadata["localizations"][locale].merge!(attributes)
+        end
+      end
+      metadata
     rescue JSON::ParserError => e
       raise ReleaseInputError, "release_notes_json is invalid JSON: #{e.message}"
+    rescue Psych::Exception => e
+      raise ReleaseInputError, "App Store metadata template is invalid YAML: #{e.message}"
+    end
+
+    def deep_stringify_keys(value)
+      case value
+      when Hash
+        value.each_with_object({}) do |(key, child), result|
+          result[key.to_s] = deep_stringify_keys(child)
+        end
+      when Array
+        value.map { |child| deep_stringify_keys(child) }
+      else
+        value
+      end
     end
 
     def normalize_p8(secret)

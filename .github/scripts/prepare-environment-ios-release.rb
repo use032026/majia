@@ -19,6 +19,9 @@ OptionParser.new do |parser|
   parser.on("--marketing-version VERSION") { |value| options[:marketing_version] = value }
   parser.on("--upload-to-asc BOOLEAN") { |value| options[:upload_to_asc] = value }
   parser.on("--auto-create-store-version BOOLEAN") { |value| options[:auto_create_store_version] = value }
+  parser.on("--update-asc-text-metadata BOOLEAN") { |value| options[:update_asc_text_metadata] = value }
+  parser.on("--replace-asc-media BOOLEAN") { |value| options[:replace_asc_media] = value }
+  parser.on("--metadata-template PATH") { |value| options[:metadata_template] = value }
   parser.on("--release-notes-json JSON") { |value| options[:release_notes_json] = value }
   parser.on("--github-output PATH") { |value| options[:github_output] = value }
 end.parse!
@@ -32,7 +35,7 @@ end
 
 def normalized_relative_path(value, name)
   path = Pathname.new(value)
-  invalid = path.absolute? || value.start_with?("~") || value.include?("\0") ||
+  invalid = path.absolute? || value.start_with?("~") || ["\0", "\n", "\r"].any? { |char| value.include?(char) } ||
             path.each_filename.any? { |part| part == ".." } || path.cleanpath.to_s != value
   raise MajiaCI::ReleaseInputError, "#{name} must be a normalized repository-relative path" if invalid
 
@@ -83,7 +86,8 @@ end
 begin
   required = %i[
     app_key app_name project_directory container_path targets_json marketing_version
-    upload_to_asc auto_create_store_version release_notes_json github_output
+    upload_to_asc auto_create_store_version update_asc_text_metadata replace_asc_media
+    metadata_template release_notes_json github_output
   ]
   missing = required.reject { |key| options[key] && !options[key].empty? }
   raise MajiaCI::ReleaseInputError, "missing options: #{missing.join(', ')}" unless missing.empty?
@@ -103,9 +107,19 @@ begin
     options.fetch(:auto_create_store_version),
     "auto_create_store_version"
   )
+  update_text_metadata = MajiaCI::EnvironmentIOSRelease.boolean(
+    options.fetch(:update_asc_text_metadata),
+    "update_asc_text_metadata"
+  )
+  replace_media = MajiaCI::EnvironmentIOSRelease.boolean(
+    options.fetch(:replace_asc_media),
+    "replace_asc_media"
+  )
   MajiaCI::EnvironmentIOSRelease.validate_release_switches!(
     upload_to_asc: upload_to_asc,
-    auto_create_store_version: auto_create
+    auto_create_store_version: auto_create,
+    update_asc_text_metadata: update_text_metadata,
+    replace_asc_media: replace_media
   )
 
   team_id = required_environment("APPLE_TEAM_ID")
@@ -128,9 +142,16 @@ begin
   end
 
   targets = MajiaCI::EnvironmentIOSRelease.parse_targets(options.fetch(:targets_json))
+  workspace = File.realpath(ENV.fetch("GITHUB_WORKSPACE", Dir.pwd))
+  metadata_template = normalized_relative_path(options.fetch(:metadata_template), "metadata-template")
+  metadata_template_real = File.realpath(File.expand_path(metadata_template, workspace))
+  unless metadata_template_real.start_with?(workspace + File::SEPARATOR) && File.file?(metadata_template_real)
+    raise MajiaCI::ReleaseInputError, "metadata-template must resolve to a file inside GITHUB_WORKSPACE"
+  end
   metadata = MajiaCI::EnvironmentIOSRelease.build_metadata(
+    template_path: metadata_template_real,
     release_notes_json: options.fetch(:release_notes_json),
-    enabled: auto_create
+    update_text_metadata: update_text_metadata
   )
 
   app_key = options.fetch(:app_key)
@@ -181,6 +202,8 @@ begin
     "Prepared #{app_key}",
     "upload_to_asc=#{upload_to_asc}",
     "auto_create_store_version=#{auto_create}",
+    "update_asc_text_metadata=#{update_text_metadata}",
+    "replace_asc_media=#{replace_media}",
     "automatic_release=true"
   ].join(" ")
 rescue MajiaCI::ReleaseInputError, Errno::ENOENT, Errno::EACCES => e
