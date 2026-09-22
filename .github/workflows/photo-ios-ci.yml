@@ -1,68 +1,155 @@
-name: Photo iOS CI
+name: Photo iOS Package
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'apps/photo/**'
-      - '.github/workflows/photo-ios-ci.yml'
-  pull_request:
-    paths:
-      - 'apps/photo/**'
-      - '.github/workflows/photo-ios-ci.yml'
+    inputs:
+      marketing_version:
+        description: Three-component CFBundleShortVersionString
+        required: true
+        default: 1.0.0
+        type: string
+      build_number:
+        description: Optional positive integer CFBundleVersion override
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: photo-ios-${{ github.ref }}
-  cancel-in-progress: true
+  group: photo-ios-package-${{ github.repository }}
+  cancel-in-progress: false
 
 jobs:
-  build:
+  package:
+    environment: photo-production
     runs-on: macos-26
-    timeout-minutes: 60
-    defaults:
-      run:
-        working-directory: apps/photo
+    timeout-minutes: 120
     steps:
-      - name: Check out source
+      - name: Checkout exact source
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          fetch-depth: 0
           persist-credentials: false
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
-        with:
-          flutter-version: '3.35.7'
-          channel: stable
-          cache: true
-
-      - name: Record toolchain versions
+      - name: Prepare Environment-backed build inputs
+        id: prepare
+        shell: bash
+        env:
+          APP_NAME: Lunelle
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          IOS_SCHEME: ${{ vars.IOS_SCHEME }}
+          IOS_APPSTORE_PROFILE_BASE64: ${{ secrets.IOS_APPSTORE_PROFILE_BASE64 }}
         run: |
-          flutter --version
-          xcodebuild -version
+          set -euo pipefail
 
-      - name: Install dependencies
-        run: flutter pub get
+          [[ "$APPLE_TEAM_ID" =~ ^[A-Z0-9]{10}$ ]] || {
+            echo "APPLE_TEAM_ID must be a 10-character Apple Team ID" >&2
+            exit 1
+          }
+          [[ "$IOS_BUNDLE_ID" =~ ^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$ ]] || {
+            echo "IOS_BUNDLE_ID is invalid" >&2
+            exit 1
+          }
+          [[ "$IOS_SCHEME" =~ ^[A-Za-z0-9_.+-]+([[:space:]][A-Za-z0-9_.+-]+)*$ ]] || {
+            echo "IOS_SCHEME is invalid" >&2
+            exit 1
+          }
+          [[ -n "$IOS_APPSTORE_PROFILE_BASE64" ]] || {
+            echo "IOS_APPSTORE_PROFILE_BASE64 is required" >&2
+            exit 1
+          }
 
-      - name: Analyze Dart code
-        run: flutter analyze
+          config_path=".github/runtime-photo-ios-build.yml"
+          cat > "$config_path" <<EOF
+          schema_version: 2
+          release:
+            allowed_events:
+              - workflow_dispatch
+            allowed_ref_patterns:
+              - refs/heads/main
+          app:
+            name: ${APP_NAME}
+            team_id: ${APPLE_TEAM_ID}
+            asc_app_id: "0"
+            primary_bundle_id: ${IOS_BUNDLE_ID}
+            bundle_ids:
+              - bundle_id: ${IOS_BUNDLE_ID}
+                target: Runner
+                profile_alias: app
+          flutter:
+            project_directory: apps/photo
+            version: 3.35.7
+            channel: stable
+            architecture: arm64
+            sdk_sha256: 4d7aaadc4893f9216d4e2ecbe0e8fb4213e9bd49d29fd5f441f34fcc05758e2b
+          build:
+            container_type: workspace
+            container_path: apps/photo/ios/Runner.xcworkspace
+            scheme: ${IOS_SCHEME}
+            configuration: Release
+            runner: macos-26
+            xcode_path: /Applications/Xcode_26.4.app
+            dependency_mode: flutter
+            dependency_command: ""
+          versioning:
+            marketing_version_source: input
+            build_number_strategy: github_run_number
+            build_number_override_allowed: true
+          export:
+            method: app-store-connect
+            upload_symbols: true
+            strip_swift_symbols: true
+          upload:
+            enabled_by_default: false
+            asc_key_type: team
+            wait_level: upload_accepted
+            timeout_minutes: 45
+            poll_interval_seconds: 30
+            internal_beta_group_ids: []
+          artifacts:
+            retention_days: 30
+            keep_xcarchive: false
+          EOF
 
-      - name: Run Flutter tests
-        run: flutter test
+          payload="$RUNNER_TEMP/photo-profile-payload"
+          profiles_dir="$RUNNER_TEMP/photo-profiles"
+          profiles_archive="$RUNNER_TEMP/photo-profiles.tar.gz"
+          mkdir -p "$profiles_dir"
+          printf '%s' "$IOS_APPSTORE_PROFILE_BASE64" | base64 -D > "$payload"
 
-      - name: Build unsigned iOS app
-        run: flutter build ios --release --no-codesign --no-pub
+          if security cms -D -i "$payload" >/dev/null 2>&1; then
+            cp "$payload" "$profiles_dir/app.mobileprovision"
+          elif tar -tzf "$payload" >/dev/null 2>&1; then
+            tar -xzf "$payload" -C "$profiles_dir"
+          elif unzip -t "$payload" >/dev/null 2>&1; then
+            unzip -q "$payload" -d "$profiles_dir"
+          else
+            echo "IOS_APPSTORE_PROFILE_BASE64 must decode to a mobileprovision, tar.gz, or zip" >&2
+            exit 1
+          fi
 
-      - name: Package unsigned app
-        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app "$RUNNER_TEMP/photo-ios-unsigned.app.zip"
+          profile_count="$(find "$profiles_dir" -type f -name '*.mobileprovision' | wc -l | tr -d '[:space:]')"
+          [[ "$profile_count" -ge 1 ]] || {
+            echo "No .mobileprovision files found in IOS_APPSTORE_PROFILE_BASE64" >&2
+            exit 1
+          }
+          echo "Prepared ${profile_count} provisioning profile(s)"
 
-      - name: Upload unsigned app
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+          COPYFILE_DISABLE=1 tar -czf "$profiles_archive" -C "$profiles_dir" .
+          profiles_archive_base64="$(base64 < "$profiles_archive" | tr -d '\r\n')"
+          echo "::add-mask::$profiles_archive_base64"
+          printf 'config_path=%s\n' "$config_path" >> "$GITHUB_OUTPUT"
+          printf 'profiles_archive_base64=%s\n' "$profiles_archive_base64" >> "$GITHUB_OUTPUT"
+
+      - name: Build and retain signed Photo IPA without ASC upload
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@92be072bbded79b3fd8feca41cb3b9a79f8a461c
         with:
-          name: photo-ios-unsigned-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/photo-ios-unsigned.app.zip
-          if-no-files-found: error
-          retention-days: 14
+          config_path: ${{ steps.prepare.outputs.config_path }}
+          marketing_version: ${{ inputs.marketing_version }}
+          build_number: ${{ inputs.build_number }}
+          upload_to_asc: false
+          ios_distribution_p12_base64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          ios_distribution_p12_password: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          ios_profiles_archive_base64: ${{ steps.prepare.outputs.profiles_archive_base64 }}
