@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-22T13:05:57+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/steady21",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": false
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/steady21/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.steady21",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "path_provider_foundation.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": false
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.steady21",
+          "com.example.steady21.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.steady21"
+        ],
+        "expected_bundle_id": "com.example.steady21"
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "warning",
+      "summary": "Potential prototype/demo wording remains in app-facing source.",
+      "evidence": {
+        "hits": [
+          "lib/copy.dart:148",
+          "lib/copy.dart:149"
+        ],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.steady21",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/steady21/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/steady21/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "path_provider_foundation.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.steady21",
+        "archive": "com.example.steady21"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "warning",
+      "summary": "Screenshots exist but at least one has alpha or is unreadable.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/iphone-16e-ios18_3-today-en-light.png",
+          "width": 1170,
+          "height": 2532,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/ipad-pro-11-ios18_3-journey-top.png",
+          "width": 1668,
+          "height": 2420,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/ipad-pro-11-ios18_3-journey-tail.png",
+          "width": 1668,
+          "height": 2420,
+          "has_alpha": true
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/steady21/build/app/outputs/flutter-apk/app-debug.apk",
+          "/Users/starburst/Downloads/app-ui-atlas/steady21/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+          "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/automation/20260922T130357+0800/quality-gate.json",
+          "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/seed-ipad.json"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 144487426,
+      "modified_at": "2026-09-22T13:04:37.313288+08:00",
+      "sha256": "2fb25ea53174e5d3e1c83687e860673c9f36049b883e87d04c8b25c14bb606ea"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 73808,
+      "modified_at": "2026-09-22T13:05:11.753983+08:00",
+      "sha256": "2aa50e0a9932a2de305a5f32378059cd0c099706085989df1562ac9af078c863"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/automation/20260922T130357+0800/quality-gate.json",
+      "size_bytes": 3189,
+      "modified_at": "2026-09-22T13:05:12.294605+08:00",
+      "sha256": "d855ba8547c126af3852f1a54bb7df79c1524ea51f45580a42238ce55dbd42c3"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/seed-ipad.json",
+      "size_bytes": 5006,
+      "modified_at": "2026-09-22T12:47:56.508356+08:00",
+      "sha256": "7bb6f71ec7a22e420d39c734a7ff116cb86b6f4b5625ee1858ede489c8256776"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/iphone-16e-ios18_3-today-en-light.png",
+      "size_bytes": 284897,
+      "modified_at": "2026-09-22T12:56:21.321713+08:00",
+      "sha256": "c1da78e8d59a8d051dac93ec79d9e969a7b3b080216f06b50fb500fc74d0de12"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/ipad-pro-11-ios18_3-journey-top.png",
+      "size_bytes": 318926,
+      "modified_at": "2026-09-22T12:52:41.638623+08:00",
+      "sha256": "d5a6a2acf0c4a53334147d88f9f8375f87637f9c7d91ae7a417849fc00f9a093"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/steady21/docs/release/evidence/runtime/ipad-pro-11-ios18_3-journey-tail.png",
+      "size_bytes": 459341,
+      "modified_at": "2026-09-22T12:52:20.880275+08:00",
+      "sha256": "c078fb16a57557048259ccd4773a9d0e11d4590d7eba09c015924c205326a014"
+    }
+  ]
+}

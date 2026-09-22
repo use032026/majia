@@ -1,0 +1,39 @@
+{
+  "app_name": "微成 · Steady21（工作名，未做商标/名称清查）",
+  "working_name": "steady21",
+  "target_user": "想建立一个具体日常行动、但常因中断而放弃的中文或英文个人用户",
+  "problem": "普通连续打卡把一次中断等同失败，用户难以在低精力日维持最小行动，也缺少可回看的恢复记录",
+  "product_promise": "把一个愿望变成带触发线索的标准行动与最低行动，记录每日结果和阻碍，在中断后选择恢复策略，并于阶段节点留下个人实验结论；21 天只是里程碑，不承诺固定天数必然形成习惯",
+  "core_loop": "定义触发线索和标准/最低行动 -> 当天记录完整完成、最低完成或跳过及阻碍 -> 中断后选择缩小行动、换时间、换线索或保持的恢复策略 -> 在 7/14/21 天复盘并决定继续、调整或结束 -> 保留可回顾的本地实验报告",
+  "durable_output": "每个挑战的离线实验报告，包含逐日记录、累计练习、恢复次数、常见阻碍、阶段称号、阶段决定与下一周期计划",
+  "scope": "release_candidate",
+  "platform": "Flutter，iOS 与 Android；App Store 单独评估 iOS",
+  "launch_regions": [
+    "中国大陆",
+    "英语地区（具体国家待 App Store Connect 配置确认）"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "离线优先，无应用自有后台",
+  "data_handling": "用户输入仅保存在应用沙盒的本地 JSON 文件；应用不上传数据、不使用账号或分析 SDK；可在应用内删除挑战或全部数据。系统备份是否包含应用数据取决于用户设备与平台设置，MVP 不提供跨设备同步或独立备份恢复",
+  "sensitive_data": "不设计处理健康、医疗、金融、精确位置、儿童定向或政府身份数据；自由文本仍可能被用户自行写入个人内容",
+  "permissions": [
+    "无系统敏感权限"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS 15.0；最终以真实设备、当前 Flutter/Xcode 工具链和提交要求为准",
+  "visual_direction": "原创的纸张式成长日志：暖米白底、深墨绿主色、陶土色强调；信息层级以今日行动、可恢复状态和阶段路径为核心，不复刻参考产品的截图、品牌、文案或布局",
+  "reference_products": [
+    "https://apps.apple.com/cn/app/the-50-day-project-50-%E6%8C%91%E6%88%98%E6%89%93%E5%8D%A1/id6741898821"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核"
+  ]
+}

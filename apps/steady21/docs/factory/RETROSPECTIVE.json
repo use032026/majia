@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "20260922-steady21-rc1",
+    "project_ref": "steady21",
+    "scope": "Flutter MVP, functional review, and local App Store preflight without upload",
+    "skill_revision": "local app-product-factory skill; revision marker unavailable",
+    "project_revision": "non-git source/config digest 5b1f04faa4bd7019bb75dd83e7970f18f8c009fddab324dc81e554106311617f",
+    "finished_at": "2026-09-22T13:26:59+08:00",
+    "product_verdict": "passed"
+  },
+  "summary": {
+    "worked": [
+      "Market gate rejected the generic 21-day check-in concept and produced a distinct behavior-experiment loop before implementation.",
+      "Save-before-commit local persistence, pure derived statistics, bilingual copy, and explicit science/privacy boundaries kept the core small and testable.",
+      "Three independent functional review passes found and closed archived-report, milestone, recovery, civil-date, locale, and long-content defects.",
+      "The final quality gate passed formatting, analysis, 24 tests, Android Debug build, and unsigned iOS Release archive."
+    ],
+    "failed": [
+      "The first implementation hid most archived report data and allowed invalid milestone review state after progress correction.",
+      "The second review found archived time statistics were not frozen and long archived titles were not fully readable.",
+      "Mechanical App Store preflight remains blocked by intentionally unresolved production identity, signing, URLs, assets, screenshots, and ASC state."
+    ],
+    "untested": [
+      "Physical devices, iOS 15 runtime, Android runtime, VoiceOver/TalkBack, full Dynamic Type, landscape, background/low-storage behavior, true airplane mode, and time-zone movement.",
+      "Signed distribution archive, Xcode Privacy Report, public URL content, App Store Connect metadata, upload, TestFlight, and App Review."
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "flutter.archived-output-freeze",
+      "severity": "P1",
+      "symptom": "An archived durable report initially hid detail, then allowed time-based statistics to decay and long titles to remain truncated.",
+      "phase": "Independent functional review rounds 1 and 2",
+      "cause_confidence": "confirmed",
+      "cause": "The initial acceptance path focused on the active report; archived rendering used a summary-only widget and later anchored statistics to the live controller clock.",
+      "evidence": [
+        "docs/release/FUNCTIONAL_REVIEW.md",
+        "lib/screens.dart",
+        "test/widget_test.dart"
+      ],
+      "proposed_change": "Add an archived-output checklist and a fixture where archivedAt is earlier than the review clock, with full-title and report-tail assertions.",
+      "regression_check": "Archive a long-title experiment, advance the review clock, keep another experiment active, then assert the archived report remains readable and its rate stays frozen."
+    }
+  ]
+}

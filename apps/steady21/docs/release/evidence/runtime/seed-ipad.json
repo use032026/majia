@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "localeCode": "en",
+  "experiments": [
+    {
+      "id": "runtime-ipad-stress",
+      "title": "Build a calm evening reading ritual without punishing missed days",
+      "cue": "After the kitchen is reset and tomorrow's bag is by the door",
+      "fullAction": "Read and annotate ten pages of a demanding nonfiction book",
+      "minimumAction": "Open the book and read one meaningful paragraph",
+      "targetDays": 21,
+      "startedAt": "2026-08-23T20:00:00.000",
+      "archivedAt": null,
+      "entries": [
+        {"date":"2026-08-23","kind":"full","obstacle":"none","recoveryPlan":"none","note":"The cue was easy to notice."},
+        {"date":"2026-08-24","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"Low energy, but one paragraph was enough."},
+        {"date":"2026-08-25","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Phone stayed in another room."},
+        {"date":"2026-08-26","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Started immediately after the cue."},
+        {"date":"2026-08-27","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"A late evening needed the smaller action."},
+        {"date":"2026-08-28","kind":"skipped","obstacle":"time","recoveryPlan":"changeTime","note":"Dinner ended too late."},
+        {"date":"2026-08-29","kind":"full","obstacle":"none","recoveryPlan":"changeTime","note":"Moved reading before cleanup and restarted."},
+        {"date":"2026-08-30","kind":"full","obstacle":"none","recoveryPlan":"none","note":"The earlier time worked."},
+        {"date":"2026-08-31","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"Kept the chain gentle."},
+        {"date":"2026-09-01","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Finished a chapter."},
+        {"date":"2026-09-02","kind":"full","obstacle":"none","recoveryPlan":"none","note":"The book was already visible."},
+        {"date":"2026-09-03","kind":"skipped","obstacle":"energy","recoveryPlan":"makeSmaller","note":"Travel left no attention."},
+        {"date":"2026-09-04","kind":"minimum","obstacle":"none","recoveryPlan":"makeSmaller","note":"One paragraph made restarting possible."},
+        {"date":"2026-09-05","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Returned to the standard action."},
+        {"date":"2026-09-06","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Quiet weekend evening."},
+        {"date":"2026-09-07","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"Short session before sleep."},
+        {"date":"2026-09-08","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Added notes in the margin."},
+        {"date":"2026-09-09","kind":"skipped","obstacle":"forgot","recoveryPlan":"changeCue","note":"The book was out of sight."},
+        {"date":"2026-09-10","kind":"full","obstacle":"none","recoveryPlan":"changeCue","note":"Placed the book on the table and restarted."},
+        {"date":"2026-09-11","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Visible cue worked again."},
+        {"date":"2026-09-12","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"Protected the minimum on a busy day."},
+        {"date":"2026-09-13","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Read longer than planned."},
+        {"date":"2026-09-14","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Standard action felt natural today."},
+        {"date":"2026-09-15","kind":"skipped","obstacle":"environment","recoveryPlan":"keepPlan","note":"Unexpected guests changed the evening."},
+        {"date":"2026-09-16","kind":"minimum","obstacle":"none","recoveryPlan":"keepPlan","note":"Restarted with the smallest action."},
+        {"date":"2026-09-17","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Back to ten pages."},
+        {"date":"2026-09-18","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Cue and time both worked."},
+        {"date":"2026-09-19","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"Read one page after a long day."},
+        {"date":"2026-09-20","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Finished another chapter."},
+        {"date":"2026-09-21","kind":"full","obstacle":"none","recoveryPlan":"none","note":"Prepared tomorrow's page marker."},
+        {"date":"2026-09-22","kind":"minimum","obstacle":"none","recoveryPlan":"none","note":"Kept the action deliberately small today."}
+      ],
+      "reviews": [
+        {"milestone":7,"decision":"changeTime","recordedAt":"2026-08-30T21:00:00.000","note":"Move reading earlier when dinner runs late."},
+        {"milestone":14,"decision":"changeCue","recordedAt":"2026-09-08T21:00:00.000","note":"Keep the book visible beside the cleaned table."},
+        {"milestone":21,"decision":"keep","recordedAt":"2026-09-17T21:00:00.000","note":"Continue for another month without treating missed days as failure."}
+      ]
+    }
+  ]
+}
