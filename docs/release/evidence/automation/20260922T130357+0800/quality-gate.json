@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-22T13:03:57+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/steady21",
+  "verdict": "passed",
+  "git": {
+    "is_repository": false
+  },
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "flutter_command": [
+      "/opt/homebrew/bin/flutter"
+    ],
+    "flutter_version": "Flutter 3.35.7 • channel [user-branch] • unknown source\nFramework • revision adc9010625 (11 months ago) • 2025-10-21 14:16:03 -0400\nEngine • hash 6b24e1b529bc46df7ff397667502719a2a8b6b72 (revision 035316565a) (10 months ago) • 2025-10-21 14:28:01.000Z\nTools • Dart 3.9.2 • DevTools 2.48.0",
+    "dart_version": "Dart SDK version: 3.9.2 (stable) (Wed Aug 27 03:49:40 2025 -0700) on \"macos_arm64\"",
+    "xcode_version": "Xcode 26.5\nBuild version 17F42"
+  },
+  "build_configuration": {
+    "flavor": null,
+    "target": null,
+    "android_debug_signing_note": "An explicitly requested Android debug build may create or use a local debug keystore."
+  },
+  "steps": [
+    {
+      "name": "format-check",
+      "command": [
+        "/opt/homebrew/share/flutter/bin/dart",
+        "format",
+        "--output=none",
+        "--set-exit-if-changed",
+        "lib",
+        "test"
+      ],
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 1.833,
+      "summary": "Formatted 11 files (0 changed) in 0.33 seconds.",
+      "log": "docs/release/evidence/automation/20260922T130357+0800/format-check.log"
+    },
+    {
+      "name": "flutter-analyze",
+      "command": [
+        "/opt/homebrew/bin/flutter",
+        "analyze",
+        "--no-pub"
+      ],
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 1.522,
+      "summary": "No issues found! (ran in 1.2s)",
+      "log": "docs/release/evidence/automation/20260922T130357+0800/flutter-analyze.log"
+    },
+    {
+      "name": "flutter-test",
+      "command": [
+        "/opt/homebrew/bin/flutter",
+        "test",
+        "--no-pub",
+        "--reporter",
+        "expanded"
+      ],
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 3.699,
+      "summary": "00:02 +24: All tests passed!",
+      "log": "docs/release/evidence/automation/20260922T130357+0800/flutter-test.log"
+    },
+    {
+      "name": "android-debug-build",
+      "command": [
+        "/opt/homebrew/bin/flutter",
+        "build",
+        "apk",
+        "--debug",
+        "--no-pub"
+      ],
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 33.962,
+      "summary": "✓ Built build/app/outputs/flutter-apk/app-debug.apk",
+      "log": "docs/release/evidence/automation/20260922T130357+0800/android-debug-build.log"
+    },
+    {
+      "name": "ios-unsigned-archive",
+      "command": [
+        "/opt/homebrew/bin/flutter",
+        "build",
+        "ipa",
+        "--release",
+        "--no-codesign",
+        "--no-pub"
+      ],
+      "status": "passed",
+      "return_code": 0,
+      "duration_seconds": 33.022,
+      "summary": "Codesigning disabled with --no-codesign, skipping IPA.",
+      "log": "docs/release/evidence/automation/20260922T130357+0800/ios-unsigned-archive.log"
+    }
+  ]
+}
