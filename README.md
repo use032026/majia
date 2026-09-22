@@ -12,6 +12,7 @@
 | plotproof_lab | [`apps/plotproof_lab/`](apps/plotproof_lab/) | [`CherryIce/plotproof_lab`](https://github.com/CherryIce/plotproof_lab)，迁移基点 `7abd805f1ca6448e09dafbef6db3a153f20c6b0c` |
 | SDPacket（搬家箱） | [`apps/sdpacket/`](apps/sdpacket/) | [`CherryIce/SDPacket`](https://github.com/CherryIce/SDPacket)，迁移基点 `f5c16af424977b76da8a5b205f05c4b96768d52c` |
 | PhotoReport（现场照片记录） | [`apps/photoreport/`](apps/photoreport/) | [`CherryIce/PhotoReport`](https://github.com/CherryIce/PhotoReport)，迁移基点 `ad5cf6b8006ae4a569ea2bae1445dae3fa28c95f` |
+| Steady21（微成） | [`apps/steady21/`](apps/steady21/) | [`CherryIce/steady21`](https://github.com/CherryIce/steady21)，迁移基点 `0e273393c3cea00440c30d2b108beb813be7dcf5` |
 
 `photo` 的 [iOS CI](.github/workflows/photo-ios-ci.yml) 进行无签名构建，并保留不可直接安装到设备的 `Runner.app` 压缩产物；它不生成已签名 IPA。正式 Release Bundle ID 为 `com.lunelle.lite`；签名发布还需要单独配置证书、描述文件和受保护的 GitHub Environment。
 
