@@ -84,7 +84,7 @@ jobs:
 
       - name: Build, retain, and optionally release TripCost
         id: release
-        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@030baae9417df003ba0326e5c90ed9d3dc91cf77
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@319672a3d2151fb3a425d03a40c8f2aee34914e1
         with:
           config_path: ${{ steps.prepare.outputs.config_path }}
           marketing_version: ${{ inputs.marketing_version }}
@@ -110,6 +110,8 @@ jobs:
           APP_STORE_VERSION_STATE: ${{ steps.release.outputs.app_store_version_state }}
           REVIEW_SUBMISSION_STATE: ${{ steps.release.outputs.review_submission_state }}
           REVIEW_SUBMITTED: ${{ steps.release.outputs.review_submitted }}
+          APP_STORE_NO_OP: ${{ steps.release.outputs.app_store_no_op }}
+          APP_STORE_NO_OP_REASON: ${{ steps.release.outputs.app_store_no_op_reason }}
         run: |
           {
             echo "## TripCost iOS release"
@@ -121,5 +123,7 @@ jobs:
             echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
             echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
             echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
+            echo "- App Store no-op: ${APP_STORE_NO_OP:-false}"
+            echo "- App Store no-op reason: ${APP_STORE_NO_OP_REASON:-none}"
             echo "- Release policy: automatic after Apple approval"
           } >> "$GITHUB_STEP_SUMMARY"
