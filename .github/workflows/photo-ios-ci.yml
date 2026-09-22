@@ -1,30 +1,45 @@
-name: Photo iOS Package
+name: Photo iOS Release
 
 on:
   workflow_dispatch:
     inputs:
       marketing_version:
-        description: Three-component CFBundleShortVersionString
+        description: Three-component version to build, for example 1.0.2
         required: true
         default: 1.0.0
         type: string
       build_number:
-        description: Optional positive integer CFBundleVersion override
+        description: Optional positive integer; ASC increments it when left empty during upload
         required: false
+        type: string
+      upload_to_asc:
+        description: Upload the validated IPA and wait for ASC processing
+        required: true
+        default: false
+        type: boolean
+      auto_create_store_version:
+        description: Create/update the store version, complete metadata, and submit it for review
+        required: true
+        default: false
+        type: boolean
+      release_notes_json:
+        description: 'Required when auto-create is true; map every ASC locale, for example {"en-US":"Bug fixes."}'
+        required: false
+        default: "{}"
         type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: photo-ios-package-${{ github.repository }}
+  group: photo-ios-release-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
-  package:
+  release:
     environment: photo-production
     runs-on: macos-26
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout exact source
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -32,124 +47,72 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Prepare Environment-backed build inputs
+      - name: Prepare Environment-backed release inputs
         id: prepare
         shell: bash
         env:
-          APP_NAME: Lunelle
           APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
           IOS_SCHEME: ${{ vars.IOS_SCHEME }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
           IOS_APPSTORE_PROFILE_BASE64: ${{ secrets.IOS_APPSTORE_PROFILE_BASE64 }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          UPLOAD_TO_ASC: ${{ inputs.upload_to_asc }}
+          AUTO_CREATE_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
         run: |
-          set -euo pipefail
+          ruby .github/scripts/prepare-environment-ios-release.rb \
+            --app-key photo \
+            --app-name Lunelle \
+            --project-directory apps/photo \
+            --container-path apps/photo/ios/Runner.xcworkspace \
+            --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"}]' \
+            --marketing-version "$MARKETING_VERSION" \
+            --upload-to-asc "$UPLOAD_TO_ASC" \
+            --auto-create-store-version "$AUTO_CREATE_STORE_VERSION" \
+            --release-notes-json "$RELEASE_NOTES_JSON" \
+            --github-output "$GITHUB_OUTPUT"
 
-          [[ "$APPLE_TEAM_ID" =~ ^[A-Z0-9]{10}$ ]] || {
-            echo "APPLE_TEAM_ID must be a 10-character Apple Team ID" >&2
-            exit 1
-          }
-          [[ "$IOS_BUNDLE_ID" =~ ^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$ ]] || {
-            echo "IOS_BUNDLE_ID is invalid" >&2
-            exit 1
-          }
-          [[ "$IOS_SCHEME" =~ ^[A-Za-z0-9_.+-]+([[:space:]][A-Za-z0-9_.+-]+)*$ ]] || {
-            echo "IOS_SCHEME is invalid" >&2
-            exit 1
-          }
-          [[ -n "$IOS_APPSTORE_PROFILE_BASE64" ]] || {
-            echo "IOS_APPSTORE_PROFILE_BASE64 is required" >&2
-            exit 1
-          }
-
-          config_path=".github/runtime-photo-ios-build.yml"
-          cat > "$config_path" <<EOF
-          schema_version: 2
-          release:
-            allowed_events:
-              - workflow_dispatch
-            allowed_ref_patterns:
-              - refs/heads/main
-          app:
-            name: ${APP_NAME}
-            team_id: ${APPLE_TEAM_ID}
-            asc_app_id: "0"
-            primary_bundle_id: ${IOS_BUNDLE_ID}
-            bundle_ids:
-              - bundle_id: ${IOS_BUNDLE_ID}
-                target: Runner
-                profile_alias: app
-          flutter:
-            project_directory: apps/photo
-            version: 3.35.7
-            channel: stable
-            architecture: arm64
-            sdk_sha256: 4d7aaadc4893f9216d4e2ecbe0e8fb4213e9bd49d29fd5f441f34fcc05758e2b
-          build:
-            container_type: workspace
-            container_path: apps/photo/ios/Runner.xcworkspace
-            scheme: ${IOS_SCHEME}
-            configuration: Release
-            runner: macos-26
-            xcode_path: /Applications/Xcode_26.4.app
-            dependency_mode: flutter
-            dependency_command: ""
-          versioning:
-            marketing_version_source: input
-            build_number_strategy: github_run_number
-            build_number_override_allowed: true
-          export:
-            method: app-store-connect
-            upload_symbols: true
-            strip_swift_symbols: true
-          upload:
-            enabled_by_default: false
-            asc_key_type: team
-            wait_level: upload_accepted
-            timeout_minutes: 45
-            poll_interval_seconds: 30
-            internal_beta_group_ids: []
-          artifacts:
-            retention_days: 30
-            keep_xcarchive: false
-          EOF
-
-          payload="$RUNNER_TEMP/photo-profile-payload"
-          profiles_dir="$RUNNER_TEMP/photo-profiles"
-          profiles_archive="$RUNNER_TEMP/photo-profiles.tar.gz"
-          mkdir -p "$profiles_dir"
-          printf '%s' "$IOS_APPSTORE_PROFILE_BASE64" | base64 -D > "$payload"
-
-          if security cms -D -i "$payload" >/dev/null 2>&1; then
-            cp "$payload" "$profiles_dir/app.mobileprovision"
-          elif tar -tzf "$payload" >/dev/null 2>&1; then
-            tar -xzf "$payload" -C "$profiles_dir"
-          elif unzip -t "$payload" >/dev/null 2>&1; then
-            unzip -q "$payload" -d "$profiles_dir"
-          else
-            echo "IOS_APPSTORE_PROFILE_BASE64 must decode to a mobileprovision, tar.gz, or zip" >&2
-            exit 1
-          fi
-
-          profile_count="$(find "$profiles_dir" -type f -name '*.mobileprovision' | wc -l | tr -d '[:space:]')"
-          [[ "$profile_count" -ge 1 ]] || {
-            echo "No .mobileprovision files found in IOS_APPSTORE_PROFILE_BASE64" >&2
-            exit 1
-          }
-          echo "Prepared ${profile_count} provisioning profile(s)"
-
-          COPYFILE_DISABLE=1 tar -czf "$profiles_archive" -C "$profiles_dir" .
-          profiles_archive_base64="$(base64 < "$profiles_archive" | tr -d '\r\n')"
-          echo "::add-mask::$profiles_archive_base64"
-          printf 'config_path=%s\n' "$config_path" >> "$GITHUB_OUTPUT"
-          printf 'profiles_archive_base64=%s\n' "$profiles_archive_base64" >> "$GITHUB_OUTPUT"
-
-      - name: Build and retain signed Photo IPA without ASC upload
-        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@92be072bbded79b3fd8feca41cb3b9a79f8a461c
+      - name: Build, retain, and optionally release Photo
+        id: release
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@030baae9417df003ba0326e5c90ed9d3dc91cf77
         with:
           config_path: ${{ steps.prepare.outputs.config_path }}
           marketing_version: ${{ inputs.marketing_version }}
           build_number: ${{ inputs.build_number }}
-          upload_to_asc: false
+          upload_to_asc: ${{ inputs.upload_to_asc }}
+          submit_to_review: ${{ inputs.auto_create_store_version }}
           ios_distribution_p12_base64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
           ios_distribution_p12_password: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
           ios_profiles_archive_base64: ${{ steps.prepare.outputs.profiles_archive_base64 }}
+          asc_api_key_p8_base64: ${{ steps.prepare.outputs.asc_api_key_p8_base64 }}
+          asc_key_id: ${{ vars.ASC_KEY_ID }}
+          asc_issuer_id: ${{ vars.ASC_ISSUER_ID }}
+
+      - name: Write release evidence summary
+        if: ${{ always() }}
+        shell: bash
+        env:
+          REQUESTED_VERSION: ${{ inputs.marketing_version }}
+          REQUESTED_UPLOAD: ${{ inputs.upload_to_asc }}
+          REQUESTED_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          RESOLVED_BUILD_NUMBER: ${{ steps.release.outputs.build_number }}
+          ASC_PROCESSING_STATE: ${{ steps.release.outputs.asc_processing_state }}
+          APP_STORE_VERSION_STATE: ${{ steps.release.outputs.app_store_version_state }}
+          REVIEW_SUBMISSION_STATE: ${{ steps.release.outputs.review_submission_state }}
+          REVIEW_SUBMITTED: ${{ steps.release.outputs.review_submitted }}
+        run: |
+          {
+            echo "## Photo iOS release"
+            echo "- Marketing version: ${REQUESTED_VERSION}"
+            echo "- Build number: ${RESOLVED_BUILD_NUMBER:-not-built}"
+            echo "- Upload requested: ${REQUESTED_UPLOAD}"
+            echo "- Auto-create and submit requested: ${REQUESTED_STORE_VERSION}"
+            echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-uploaded}"
+            echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
+            echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
+            echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
+            echo "- Release policy: automatic after Apple approval"
+          } >> "$GITHUB_STEP_SUMMARY"
