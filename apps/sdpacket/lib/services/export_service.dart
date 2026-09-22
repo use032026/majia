@@ -193,7 +193,7 @@ class ExportService {
     final data = ProjectReportData.fromBoxes(boxes);
     final fontData = await rootBundle.load('assets/fonts/NotoSansSC-VF.ttf');
     final font = pw.Font.ttf(fontData);
-    final document = pw.Document(title: labels.title, author: 'Moving Box');
+    final document = pw.Document(title: labels.title, author: 'KIFXPRO');
     document.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,

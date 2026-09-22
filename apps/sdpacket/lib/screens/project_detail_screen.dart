@@ -204,7 +204,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       );
       final shared = await Printing.sharePdf(
         bytes: bytes,
-        filename: 'moving-box-labels.pdf',
+        filename: 'KIFXPRO-labels.pdf',
       );
       if (shared) {
         await store.markLabelExported(boxes.map((box) => box.id));

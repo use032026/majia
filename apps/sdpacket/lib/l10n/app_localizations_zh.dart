@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '搬家箱';
+  String get appTitle => 'KIFXPRO';
 
   @override
   String get loading => '正在读取本地数据…';
@@ -404,10 +404,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get qrAndPrint => '二维码与打印';
 
   @override
-  String get labelDocumentTitle => '搬家箱标签';
+  String get labelDocumentTitle => 'KIFXPRO 标签';
 
   @override
-  String get labelBrand => '搬家箱';
+  String get labelBrand => 'KIFXPRO';
 
   @override
   String get scanOrSearchCode => '扫码或搜索箱号';
@@ -557,13 +557,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '项目、箱子、备注和照片默认只保存在本机。核心功能不依赖账号、广告 SDK 或第三方 AI。二维码仅包含格式版本、项目 ID、箱子 ID 和可读箱号，不包含地址、照片或物品清单。照片、相机、麦克风和语音识别权限仅在您主动使用对应功能时请求。';
 
   @override
-  String get about => '关于搬家箱';
+  String get about => '关于 KIFXPRO';
 
   @override
   String get contactSupport => '联系支持';
 
   @override
-  String get supportEmailSubject => '搬家箱 App 用户支持';
+  String get supportEmailSubject => 'KIFXPRO App 用户支持';
 
   @override
   String get supportNotConfigured => '支持邮箱尚未配置。发布构建需通过 SUPPORT_EMAIL 注入公开联系邮箱。';

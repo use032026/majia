@@ -29,8 +29,8 @@ void main() {
         project,
         [box],
         const BoxLabelPdfLabels(
-          documentTitle: '搬家箱标签',
-          brand: '搬家箱',
+          documentTitle: 'KIFXPRO 标签',
+          brand: 'KIFXPRO',
           scanOrSearchCode: '扫码或搜索箱号',
         ),
       ),

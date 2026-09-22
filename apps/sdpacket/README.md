@@ -1,7 +1,7 @@
-# 搬家箱 / Moving Box
+# KIFXPRO
 
-Flutter 实现的本地优先搬家箱登记与定位应用。产品规格见
-[`Docs/搬家箱快速登记与定位App_设计开发文档.md`](Docs/搬家箱快速登记与定位App_设计开发文档.md)，当前实现状态见
+Flutter 实现的本地优先装箱登记与定位应用。产品规格见
+[`Docs/KIFXPRO_设计开发文档.md`](Docs/KIFXPRO_设计开发文档.md)，当前实现状态见
 [`Docs/Flutter_MVP_开发进度.md`](Docs/Flutter_MVP_开发进度.md)。
 
 ## 当前能力

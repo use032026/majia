@@ -1,4 +1,4 @@
-"CFBundleDisplayName" = "搬家箱";
+"CFBundleDisplayName" = "KIFXPRO";
 "NSCameraUsageDescription" = "用于拍摄箱体照片和扫描本应用生成的二维码标签。";
 "NSMicrophoneUsageDescription" = "仅在您主动使用语音登记时录入箱内物品备注。";
 "NSPhotoLibraryUsageDescription" = "仅在您主动选择照片时，用于为箱子建立本地记录。";

@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In zh, this message translates to:
-  /// **'搬家箱'**
+  /// **'KIFXPRO'**
   String get appTitle;
 
   /// No description provided for @loading.
@@ -857,13 +857,13 @@ abstract class AppLocalizations {
   /// No description provided for @labelDocumentTitle.
   ///
   /// In zh, this message translates to:
-  /// **'搬家箱标签'**
+  /// **'KIFXPRO 标签'**
   String get labelDocumentTitle;
 
   /// No description provided for @labelBrand.
   ///
   /// In zh, this message translates to:
-  /// **'搬家箱'**
+  /// **'KIFXPRO'**
   String get labelBrand;
 
   /// No description provided for @scanOrSearchCode.
@@ -1133,7 +1133,7 @@ abstract class AppLocalizations {
   /// No description provided for @about.
   ///
   /// In zh, this message translates to:
-  /// **'关于搬家箱'**
+  /// **'关于 KIFXPRO'**
   String get about;
 
   /// No description provided for @contactSupport.
@@ -1145,7 +1145,7 @@ abstract class AppLocalizations {
   /// No description provided for @supportEmailSubject.
   ///
   /// In zh, this message translates to:
-  /// **'搬家箱 App 用户支持'**
+  /// **'KIFXPRO App 用户支持'**
   String get supportEmailSubject;
 
   /// No description provided for @supportNotConfigured.

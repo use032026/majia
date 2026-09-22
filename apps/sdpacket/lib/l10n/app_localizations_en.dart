@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Moving Box';
+  String get appTitle => 'KIFXPRO';
 
   @override
   String get loading => 'Loading local data…';
@@ -413,10 +413,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qrAndPrint => 'QR and printing';
 
   @override
-  String get labelDocumentTitle => 'Moving Box Labels';
+  String get labelDocumentTitle => 'KIFXPRO Labels';
 
   @override
-  String get labelBrand => 'MOVE BOX';
+  String get labelBrand => 'KIFXPRO';
 
   @override
   String get scanOrSearchCode => 'SCAN OR SEARCH CODE';
@@ -572,13 +572,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Projects, boxes, notes and photos stay on this device by default. Core features do not require accounts, ad SDKs or third-party AI. QR codes contain only a format version, project ID, box ID and readable code—not addresses, photos or item lists. Camera, photos, microphone and speech permissions are requested only when you use those features.';
 
   @override
-  String get about => 'About Moving Box';
+  String get about => 'About KIFXPRO';
 
   @override
   String get contactSupport => 'Contact support';
 
   @override
-  String get supportEmailSubject => 'Moving Box app support';
+  String get supportEmailSubject => 'KIFXPRO app support';
 
   @override
   String get supportNotConfigured =>

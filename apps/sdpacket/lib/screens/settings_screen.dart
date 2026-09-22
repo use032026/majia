@@ -63,7 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await SharePlus.instance.share(
         ShareParams(
           files: [XFile.fromData(bytes, mimeType: 'application/zip')],
-          fileNameOverrides: ['moving-box-backup.movingbox.zip'],
+          fileNameOverrides: ['KIFXPRO-backup.movingbox.zip'],
           sharePositionOrigin: renderBox == null
               ? null
               : renderBox.localToGlobal(Offset.zero) & renderBox.size,
