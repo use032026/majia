@@ -27,12 +27,12 @@ Flutter 实现的本地优先装箱登记与定位应用。产品规格见
 - iOS 15+
 - Android 14+（`minSdk = 34`）
 
-当前 Bundle ID / Application ID 为开发期占位值：
+当前平台标识：
 
-- iOS：`com.starburst.movingBox`
-- Android：`com.starburst.moving_box`
+- iOS 生产 Bundle ID：`com.kifxpro.lite`
+- Android 开发期 Application ID：`com.starburst.moving_box`
 
-正式上架前必须替换为已确认的生产标识，并配置独立的 Release 签名；当前 Android Release 配置仍沿用 Flutter 模板的 Debug 签名，不可用于发布。
+iOS 已使用生产标识并通过云构建环境配置独立的 Release 签名；当前 Android Release 配置仍沿用 Flutter 模板的 Debug 签名，不可用于发布。
 
 设置页会根据当前应用语言在外部浏览器打开公开页面：
 
