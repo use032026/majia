@@ -234,6 +234,8 @@ void main() {
 
     expect(find.text('https://kifxpro.com/index.html?lang=en'), findsOneWidget);
     expect(find.text('15211857631@163.com'), findsOneWidget);
+    expect(find.text('System requirements'), findsNothing);
+    expect(find.text('About KIFXPRO'), findsNothing);
 
     await tester.tap(find.byKey(const Key('settings-language')));
     await tester.pumpAndSettle();
@@ -247,6 +249,8 @@ void main() {
       find.text('https://kifxpro.com/privacy.html?lang=zh'),
       findsOneWidget,
     );
+    expect(find.text('系统要求'), findsNothing);
+    expect(find.text('关于 KIFXPRO'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 

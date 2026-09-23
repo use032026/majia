@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,7 +18,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _busy = false;
-  late final Future<PackageInfo> _packageInfo = PackageInfo.fromPlatform();
 
   String _languageLabel(BuildContext context, String languageCode) =>
       languageCode == 'zh'
@@ -232,34 +230,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: const Text(AppLinks.supportEmail),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _contactSupport,
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.phone_iphone_outlined),
-                  title: Text(context.l10n.platformSupport),
-                  subtitle: Text(context.l10n.platformSupportBody),
-                ),
-                const Divider(height: 1),
-                ListTile(
-                  leading: const Icon(Icons.info_outline),
-                  title: Text(context.l10n.about),
-                  subtitle: FutureBuilder<PackageInfo>(
-                    future: _packageInfo,
-                    builder: (context, snapshot) {
-                      final info = snapshot.data;
-                      return Text(
-                        info == null
-                            ? context.l10n.loading
-                            : context.l10n.versionBuild(
-                                info.version,
-                                info.buildNumber,
-                              ),
-                      );
-                    },
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () =>
-                      _showInfo(context.l10n.about, context.l10n.aboutBody),
                 ),
               ],
             ),

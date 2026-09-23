@@ -1,0 +1,41 @@
+KIFXPRO is a local-first box organization tool that helps you register what you pack, find it later, and track each box from the old place to the new one. Turn a pile of similar boxes into a clear, searchable system.
+
+REGISTER BOXES WITHOUT SLOWING DOWN
+
+Start with the method that fits the moment. Create a box manually, take photos in a continuous capture session, choose multiple images from your photo library, or use voice entry when it is available on your device. Each new record receives a unique code within its project. You can save a quick draft immediately, then add details later when you have more time.
+
+FIND WHAT YOU PACKED, EVEN OFFLINE
+
+Search box codes, titles, notes, item names, destination rooms, current locations, and tags. Search works across one project or across all projects, and core records remain available without a network connection. You can remember the item instead of memorizing which box holds it.
+
+ADD THE DETAILS THAT MATTER
+
+Keep a simple note or build a structured item list. Each item can have a name, quantity, note, and unpacked state. Add a destination room, current location, tags, priority, photos, handling notes, and damage or missing-item flags. Reuse recent rooms, locations, and tags to reduce repetitive typing during large moves.
+
+TRACK EVERY STAGE OF THE MOVE
+
+Move boxes through clear stages: packed, loaded, arrived, and unpacked. Project dashboards show totals and help you focus on boxes that are waiting to be loaded, have not arrived, remain unpacked, or may be missing. Filters can be combined when you need a focused working list.
+
+MATCH DIGITAL RECORDS TO REAL BOXES
+
+KIFXPRO does not require a printer. Write the box code by hand, attach a sticky note, use another physical mark, or create a QR label. The app keeps the digital record and the real box connected while separately tracking whether a label was exported and whether the physical box was actually marked.
+
+When you do want printed labels, create a high-resolution PNG, a single-label PDF, or an A4 PDF containing multiple labels. Share through the system share sheet or send labels to a system printer. QR labels use stable record identifiers and a readable box code, without putting addresses, photos, notes, or item lists into the code.
+
+SCAN THROUGH MOVING DAY
+
+Use continuous scanning at the moving site to advance boxes in batches. Choose the target stage, scan labels, receive duplicate-scan feedback, and review how many boxes were scanned or still remain. Vibration feedback can help you keep working without repeatedly looking away from the boxes in front of you.
+
+EXPORT, REPORT, BACK UP, AND RESTORE
+
+Export project data as CSV when you need a portable list. Generate a project closeout PDF that summarizes the total number of boxes, possible missing boxes, damaged boxes, boxes that remain unpacked, and room distribution. Reports and labels can be shared using the tools already available on your device.
+
+Create a versioned local backup package containing structured data, photos, a manifest, and SHA-256 checksums. Before a restore replaces current local records, KIFXPRO validates the selected backup. It can also read compatible older JSON backups, while newer packages can report missing photos instead of silently ignoring them.
+
+LOCAL-FIRST BY DESIGN
+
+Projects, box records, notes, item lists, and managed photos stay on your device by default. Core features do not require an account, a developer-operated cloud service, an advertising SDK, behavioral analytics, or third-party AI. Camera, photo, microphone, speech recognition, and scanning permissions are requested only when you choose features that need them. If a permission or capability is unavailable, you can return to text-based entry without blocking the rest of your move.
+
+LANGUAGE AND FOCUSED WORKFLOW
+
+KIFXPRO supports Simplified Chinese and English. Its focused workflow helps you capture quickly, label clearly, search confidently, and finish the move knowing where every box belongs.
