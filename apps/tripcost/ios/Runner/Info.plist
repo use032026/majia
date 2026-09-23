@@ -35,7 +35,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Take a photo to recognize prices on this device.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save images you choose from a Mini Program to your photo library.</string>
+	<string>Save trip summary images you create in RoamSum to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Choose an image to recognize prices on this device.</string>
 	<key>UIApplicationSceneManifest</key>

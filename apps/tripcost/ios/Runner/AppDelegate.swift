@@ -8,6 +8,7 @@ import UIKit
   private let platformApis = PlatformApiStubs()
   private let visionOcrApi = VisionOcrService()
   private var documentExportService: DocumentExportService?
+  private var photoLibrarySaveService: PhotoLibrarySaveService?
   private var systemPermissionService: SystemPermissionService?
 
   override func application(
@@ -32,6 +33,9 @@ import UIKit
     documentExportService = DocumentExportService.register(
       binaryMessenger: messenger,
       presentingViewController: { [weak self] in self?.activeViewController() }
+    )
+    photoLibrarySaveService = PhotoLibrarySaveService.register(
+      binaryMessenger: messenger
     )
   }
 

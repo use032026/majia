@@ -1415,6 +1415,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get exportPdf => '将消费导出为 PDF';
 
   @override
+  String get tripSummaryImageExport => '保存行程摘要图片';
+
+  @override
+  String get tripSummaryImageTitle => '行程摘要';
+
+  @override
+  String get tripSummaryImageSaveToPhotos => '保存到相册';
+
+  @override
+  String get tripSummaryImageSaved => '行程摘要已保存到相册。';
+
+  @override
+  String get tripSummaryImagePermissionDenied =>
+      '相册权限未开启。请在系统设置中允许 RoamSum 添加照片后重试。';
+
+  @override
+  String get tripSummaryImageSaveFailed => '无法将行程摘要保存到相册。';
+
+  @override
+  String tripSummaryImageGeneratedAt(String date) {
+    return '生成于 $date';
+  }
+
+  @override
+  String get tripSummaryImageDisclaimer => '仅供个人参考，不包含票据图片和消费明细。';
+
+  @override
   String get exportEmpty => '暂无可导出的消费记录。';
 
   @override
@@ -1486,7 +1513,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get privacyPolicyBody =>
-      'RoamSum 无需注册账户，也不保存完整卡号、CVV、身份证件或银行登录信息。行程、消费、设置和票据图片保存在本机；OCR 在本机执行，票据原图不会上传。启用 iCloud 同步后，结构化应用数据会发送到你的 CloudKit 私有数据库，票据原图不在同步范围内。市场参考汇率请求会发送到 Frankfurter。Frankfurter 声明其 API 本身不收集个人数据，但公共服务使用 Cloudflare，可能收集基础分析信息。导出和备份均在本机生成，只有你在系统分享面板中选择目标后才会离开应用。';
+      'RoamSum 无需注册账户，也不保存完整卡号、CVV、身份证件或银行登录信息。行程、消费、设置和票据图片保存在本机；OCR 在本机执行，票据原图不会上传。启用 iCloud 同步后，结构化应用数据会发送到你的 CloudKit 私有数据库，票据原图不在同步范围内。市场参考汇率请求会发送到 Frankfurter。Frankfurter 声明其 API 本身不收集个人数据，但公共服务使用 Cloudflare，可能收集基础分析信息。导出和备份均在本机生成，只有你在系统分享面板中选择目标后才会离开应用。行程摘要图片只会在你点击“保存到相册”后添加到系统照片图库；是否通过 iCloud 照片同步取决于你的系统设置。';
 
   @override
   String get disclaimerTitle => '汇率与成本免责声明';
@@ -1500,5 +1527,5 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get permissionsBody =>
-      '只有你点击对应扫描操作后，应用才会请求相机或相册权限。拍摄和选择的图片使用 Apple Vision 在本机处理。通知和定位不是必要权限。只有开启结构化数据同步后才会访问 iCloud。票据原图保留在本机且不进入 CloudKit。CSV、PDF 和备份均在本机生成。';
+      '只有你点击对应扫描操作后，应用才会请求相机或相册读取权限；只有你在行程摘要预览页点击“保存到相册”后，才会请求相册仅添加权限。拍摄和选择的图片使用 Apple Vision 在本机处理。通知和定位不是必要权限。只有开启结构化数据同步后才会访问 iCloud。票据原图保留在本机且不进入 CloudKit。CSV、PDF、备份和行程摘要图片均在本机生成。';
 }

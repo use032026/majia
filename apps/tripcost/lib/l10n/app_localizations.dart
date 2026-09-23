@@ -2744,6 +2744,54 @@ abstract class AppLocalizations {
   /// **'Export expenses as PDF'**
   String get exportPdf;
 
+  /// No description provided for @tripSummaryImageExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Save trip summary image'**
+  String get tripSummaryImageExport;
+
+  /// No description provided for @tripSummaryImageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip summary'**
+  String get tripSummaryImageTitle;
+
+  /// No description provided for @tripSummaryImageSaveToPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Photos'**
+  String get tripSummaryImageSaveToPhotos;
+
+  /// No description provided for @tripSummaryImageSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip summary saved to Photos.'**
+  String get tripSummaryImageSaved;
+
+  /// No description provided for @tripSummaryImagePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos access is off. Allow RoamSum to add photos in Settings, then try again.'**
+  String get tripSummaryImagePermissionDenied;
+
+  /// No description provided for @tripSummaryImageSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The trip summary could not be saved to Photos.'**
+  String get tripSummaryImageSaveFailed;
+
+  /// No description provided for @tripSummaryImageGeneratedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated {date}'**
+  String tripSummaryImageGeneratedAt(String date);
+
+  /// No description provided for @tripSummaryImageDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'For personal reference. Receipt images and expense details are not included.'**
+  String get tripSummaryImageDisclaimer;
+
   /// No description provided for @exportEmpty.
   ///
   /// In en, this message translates to:
@@ -2885,7 +2933,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyBody.
   ///
   /// In en, this message translates to:
-  /// **'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device. Receipt originals are not uploaded. If you enable iCloud sync, structured app data is sent to your private CloudKit database; receipt originals are excluded. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet.'**
+  /// **'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device. Receipt originals are not uploaded. If you enable iCloud sync, structured app data is sent to your private CloudKit database; receipt originals are excluded. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet. Trip summary images are added to Photos only after you tap Save to Photos; any iCloud Photos sync follows your system settings.'**
   String get privacyPolicyBody;
 
   /// No description provided for @disclaimerTitle.
@@ -2909,7 +2957,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionsBody.
   ///
   /// In en, this message translates to:
-  /// **'Camera and photo-library access are requested only after you choose the matching scan action. Camera photos and selected images are processed locally with Apple Vision. Notifications and location are not required. iCloud is contacted only when structured-data sync is enabled. Receipt originals stay on this device and are not included in CloudKit sync. CSV, PDF, and backups are generated on this device.'**
+  /// **'Camera and photo-library read access are requested only after you choose the matching scan action. Add-only photo access is requested only after you tap Save to Photos on a trip-summary preview. Camera photos and selected images are processed locally with Apple Vision. Notifications and location are not required. iCloud is contacted only when structured-data sync is enabled. Receipt originals stay on this device and are not included in CloudKit sync. CSV, PDF, backups, and trip summary images are generated on this device.'**
   String get permissionsBody;
 }
 

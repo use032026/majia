@@ -1482,6 +1482,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportPdf => 'Export expenses as PDF';
 
   @override
+  String get tripSummaryImageExport => 'Save trip summary image';
+
+  @override
+  String get tripSummaryImageTitle => 'Trip summary';
+
+  @override
+  String get tripSummaryImageSaveToPhotos => 'Save to Photos';
+
+  @override
+  String get tripSummaryImageSaved => 'Trip summary saved to Photos.';
+
+  @override
+  String get tripSummaryImagePermissionDenied =>
+      'Photos access is off. Allow RoamSum to add photos in Settings, then try again.';
+
+  @override
+  String get tripSummaryImageSaveFailed =>
+      'The trip summary could not be saved to Photos.';
+
+  @override
+  String tripSummaryImageGeneratedAt(String date) {
+    return 'Generated $date';
+  }
+
+  @override
+  String get tripSummaryImageDisclaimer =>
+      'For personal reference. Receipt images and expense details are not included.';
+
+  @override
   String get exportEmpty => 'There are no expenses to export.';
 
   @override
@@ -1561,7 +1590,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicyBody =>
-      'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device. Receipt originals are not uploaded. If you enable iCloud sync, structured app data is sent to your private CloudKit database; receipt originals are excluded. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet.';
+      'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device. Receipt originals are not uploaded. If you enable iCloud sync, structured app data is sent to your private CloudKit database; receipt originals are excluded. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet. Trip summary images are added to Photos only after you tap Save to Photos; any iCloud Photos sync follows your system settings.';
 
   @override
   String get disclaimerTitle => 'Rates and cost disclaimer';
@@ -1575,5 +1604,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionsBody =>
-      'Camera and photo-library access are requested only after you choose the matching scan action. Camera photos and selected images are processed locally with Apple Vision. Notifications and location are not required. iCloud is contacted only when structured-data sync is enabled. Receipt originals stay on this device and are not included in CloudKit sync. CSV, PDF, and backups are generated on this device.';
+      'Camera and photo-library read access are requested only after you choose the matching scan action. Add-only photo access is requested only after you tap Save to Photos on a trip-summary preview. Camera photos and selected images are processed locally with Apple Vision. Notifications and location are not required. iCloud is contacted only when structured-data sync is enabled. Receipt originals stay on this device and are not included in CloudKit sync. CSV, PDF, backups, and trip summary images are generated on this device.';
 }

@@ -67,7 +67,7 @@
           </div>
           <div class="legal-meta">
             <span data-zh="生效日期" data-en="Effective date">生效日期</span>
-            <strong data-zh="2026 年 8 月 20 日" data-en="August 20, 2026">2026 年 8 月 20 日</strong>
+            <strong data-zh="2026 年 9 月 23 日" data-en="September 23, 2026">2026 年 9 月 23 日</strong>
             <span data-zh="政策版本" data-en="Policy version">政策版本</span>
             <strong>1.0</strong>
           </div>
@@ -135,6 +135,7 @@
                       <tr><td>设置与同步元数据</td><td>默认币种、语言、刷新频率、收藏币种、同步开关、记录版本、冲突和删除标记</td><td>本机数据库</td><td>开启 iCloud 同步后，必要的结构化设置和同步元数据会进入 CloudKit；设备本地偏好可能不参与同步</td></tr>
                       <tr><td>小组件摘要</td><td>选定币种对、参考汇率、预算与近期消费的最小摘要</td><td>本机 App Group 共享文件</td><td>仅由本机 RoamSum 小组件读取，不发送到第三方</td></tr>
                       <tr><td>导出与备份</td><td>你生成的 CSV、PDF 和 JSON 备份</td><td>本机临时目录</td><td>只有你在 iOS 系统分享面板选择目标后才离开 App</td></tr>
+                      <tr><td>行程摘要图片</td><td>行程名称、目的地、日期和聚合预算数据；不包含票据或消费明细</td><td>生成时位于本机内存</td><td>仅在你点击“保存到相册”后添加到系统照片图库；iCloud 照片同步取决于你的系统设置</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -173,7 +174,8 @@
                 <h2>5. 系统权限</h2>
                 <ul>
                   <li><strong>相机：</strong>仅在你选择拍照扫描时请求，用于拍摄价签、菜单、小票或账单并在设备上识别。</li>
-                  <li><strong>照片：</strong>仅在你选择从相册导入时请求，用于读取你明确选择的图片并在设备上识别。</li>
+                  <li><strong>照片读取：</strong>仅在你选择从相册导入时请求，用于读取你明确选择的图片并在设备上识别。</li>
+                  <li><strong>照片添加：</strong>仅在你从行程摘要预览页点击“保存到相册”时请求，用于把该摘要 PNG 添加到系统照片图库。</li>
                   <li><strong>iCloud：</strong>只有你开启结构化数据同步时才访问 CloudKit。iCloud 不可用不会阻止本地记账与查看。</li>
                 </ul>
                 <p>V1.0 不需要定位、通讯录、麦克风、通知或 App Tracking Transparency 权限。拒绝相机或照片权限后，你仍可以手动输入金额和记账。你可随时在 iOS“设置”中修改权限。</p>
@@ -186,6 +188,7 @@
                   <li><strong>小组件摘要：</strong>随主 App 更新；使用“清除全部数据”时会先删除共享摘要，避免继续显示旧账本信息。</li>
                   <li><strong>CloudKit 数据：</strong>保留在你的 Apple 账户私有数据库中，直到你通过 iCloud 存储管理删除第三方 App 数据或 Apple 依据其规则删除。关闭 RoamSum 内的同步会停止后续同步，但不会自动删除此前存入 iCloud 的数据。</li>
                   <li><strong>导出与备份：</strong>由你选择的保存位置和接收方决定保留时间；RoamSum 不控制已分享出去的副本。</li>
+                  <li><strong>行程摘要图片：</strong>保留到你在系统“照片”中删除；如果启用了 iCloud 照片，其同步与保留由你的 Apple 账户设置和 Apple 规则决定。</li>
                   <li><strong>汇率服务日志：</strong>可能由 Frankfurter 或 Cloudflare 按其安全和运营政策保留，RoamSum 无法控制其具体期限。</li>
                 </ul>
                 <div class="policy-callout">“清除全部数据”会删除本机数据库、票据文件、同步状态和小组件摘要。若你曾开启 iCloud 同步，请同时前往“设置 &gt; [你的名字] &gt; iCloud &gt; 存储空间/管理账户存储空间”查看并删除 RoamSum 的云端数据。系统路径名称可能随 iOS 版本而变化。</div>
@@ -279,6 +282,7 @@
                       <tr><td>Settings and sync metadata</td><td>Default currency, language, refresh interval, favorites, sync setting, record versions, conflicts, and deletion markers</td><td>On-device database</td><td>Necessary structured settings and sync metadata enter CloudKit after sync is enabled; some device-local preferences are excluded</td></tr>
                       <tr><td>Widget summary</td><td>A minimal summary of the selected currency pair, reference rate, budget, and recent expenses</td><td>On-device App Group file</td><td>Read only by the RoamSum widget on your device; not sent to third parties</td></tr>
                       <tr><td>Exports and backups</td><td>CSV, PDF, and JSON backup files you create</td><td>On-device temporary directory</td><td>Only after you choose a destination in the iOS share sheet</td></tr>
+                      <tr><td>Trip summary images</td><td>Trip name, destination, dates, and aggregate budget data; no receipts or expense details</td><td>Device memory while generated</td><td>Added to the system photo library only after you tap Save to Photos; iCloud Photos sync follows your system settings</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -317,7 +321,8 @@
                 <h2>5. System permissions</h2>
                 <ul>
                   <li><strong>Camera:</strong> requested only when you choose to scan with the camera, to capture and recognize a price tag, menu, receipt, or bill on device.</li>
-                  <li><strong>Photos:</strong> requested only when you choose to import from your photo library, to read the image you explicitly select and recognize it on device.</li>
+                  <li><strong>Photos read access:</strong> requested only when you choose to import from your photo library, to read the image you explicitly select and recognize it on device.</li>
+                  <li><strong>Photos add access:</strong> requested only when you tap Save to Photos on the trip-summary preview, to add that summary PNG to the system photo library.</li>
                   <li><strong>iCloud:</strong> CloudKit is accessed only after you enable structured-data sync. Local entry and viewing continue to work when iCloud is unavailable.</li>
                 </ul>
                 <p>V1.0 does not require location, contacts, microphone, notifications, or App Tracking Transparency permission. If you decline camera or photo access, you can still enter amounts and expenses manually. You can change permissions at any time in iOS Settings.</p>
@@ -330,6 +335,7 @@
                   <li><strong>Widget summary:</strong> updated with the main app and removed before the local database when you use “Clear all data,” so stale accounting information is not left on the widget.</li>
                   <li><strong>CloudKit data:</strong> retained in your Apple Account's private database until you delete third-party app data through iCloud storage management or Apple deletes it under its rules. Turning off sync in RoamSum stops future sync but does not automatically erase information previously stored in iCloud.</li>
                   <li><strong>Exports and backups:</strong> retained according to the location and recipient you choose. RoamSum cannot control copies you have already shared.</li>
+                  <li><strong>Trip summary images:</strong> retained until you delete them in Photos. If iCloud Photos is enabled, synchronization and retention follow your Apple Account settings and Apple's rules.</li>
                   <li><strong>Rate-service logs:</strong> may be retained by Frankfurter or Cloudflare under their security and operations policies. RoamSum does not control their exact retention periods.</li>
                 </ul>
                 <div class="policy-callout">“Clear all data” removes the local database, receipt files, sync state, and widget summary. If you previously enabled iCloud sync, also review and delete RoamSum cloud data in Settings &gt; [your name] &gt; iCloud &gt; Storage / Manage Account Storage. Labels may vary by iOS version.</div>
@@ -434,7 +440,7 @@
         </div>
         <div class="footer-meta">
           <p>© <span data-current-year>2026</span> RoamSum</p>
-          <p data-zh="本政策最后更新于 2026 年 8 月 20 日。" data-en="This policy was last updated on August 20, 2026.">本政策最后更新于 2026 年 8 月 20 日。</p>
+          <p data-zh="本政策最后更新于 2026 年 9 月 23 日。" data-en="This policy was last updated on September 23, 2026.">本政策最后更新于 2026 年 9 月 23 日。</p>
         </div>
       </div>
     </footer>

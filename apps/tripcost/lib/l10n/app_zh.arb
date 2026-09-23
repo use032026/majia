@@ -481,6 +481,15 @@
   "dataTitle": "数据、备份与导出",
   "exportCsv": "将消费导出为 CSV",
   "exportPdf": "将消费导出为 PDF",
+  "tripSummaryImageExport": "保存行程摘要图片",
+  "tripSummaryImageTitle": "行程摘要",
+  "tripSummaryImageSaveToPhotos": "保存到相册",
+  "tripSummaryImageSaved": "行程摘要已保存到相册。",
+  "tripSummaryImagePermissionDenied": "相册权限未开启。请在系统设置中允许 RoamSum 添加照片后重试。",
+  "tripSummaryImageSaveFailed": "无法将行程摘要保存到相册。",
+  "tripSummaryImageGeneratedAt": "生成于 {date}",
+  "@tripSummaryImageGeneratedAt": {"placeholders": {"date": {"type": "String"}}},
+  "tripSummaryImageDisclaimer": "仅供个人参考，不包含票据图片和消费明细。",
   "exportEmpty": "暂无可导出的消费记录。",
   "exportTooLarge": "导出记录超过 20,000 条，请缩小数据范围后重试。",
   "exportFailed": "无法生成或分享导出文件。",
@@ -504,9 +513,9 @@
   "privacyTitle": "隐私与关于",
   "privacyPolicyTitle": "隐私政策",
   "privacyPolicyLoadFailed": "无法加载隐私政策，请检查网络后重试。",
-  "privacyPolicyBody": "RoamSum 无需注册账户，也不保存完整卡号、CVV、身份证件或银行登录信息。行程、消费、设置和票据图片保存在本机；OCR 在本机执行，票据原图不会上传。启用 iCloud 同步后，结构化应用数据会发送到你的 CloudKit 私有数据库，票据原图不在同步范围内。市场参考汇率请求会发送到 Frankfurter。Frankfurter 声明其 API 本身不收集个人数据，但公共服务使用 Cloudflare，可能收集基础分析信息。导出和备份均在本机生成，只有你在系统分享面板中选择目标后才会离开应用。",
+  "privacyPolicyBody": "RoamSum 无需注册账户，也不保存完整卡号、CVV、身份证件或银行登录信息。行程、消费、设置和票据图片保存在本机；OCR 在本机执行，票据原图不会上传。启用 iCloud 同步后，结构化应用数据会发送到你的 CloudKit 私有数据库，票据原图不在同步范围内。市场参考汇率请求会发送到 Frankfurter。Frankfurter 声明其 API 本身不收集个人数据，但公共服务使用 Cloudflare，可能收集基础分析信息。导出和备份均在本机生成，只有你在系统分享面板中选择目标后才会离开应用。行程摘要图片只会在你点击“保存到相册”后添加到系统照片图库；是否通过 iCloud 照片同步取决于你的系统设置。",
   "disclaimerTitle": "汇率与成本免责声明",
   "disclaimerBody": "汇率和费用估算仅供参考，不构成金融或投资建议。汇率为每日参考数据，可能来自缓存或存在延迟。银行、卡组织、支付机构和商户政策可能变化，授权日与清算日也可能不同。实际入账以发卡行、卡组织、支付机构和商户最终处理结果为准。DCC 比较不保证具体交易结果，也不保证绝对最低成本。",
   "permissionsTitle": "权限与数据流",
-  "permissionsBody": "只有你点击对应扫描操作后，应用才会请求相机或相册权限。拍摄和选择的图片使用 Apple Vision 在本机处理。通知和定位不是必要权限。只有开启结构化数据同步后才会访问 iCloud。票据原图保留在本机且不进入 CloudKit。CSV、PDF 和备份均在本机生成。"
+  "permissionsBody": "只有你点击对应扫描操作后，应用才会请求相机或相册读取权限；只有你在行程摘要预览页点击“保存到相册”后，才会请求相册仅添加权限。拍摄和选择的图片使用 Apple Vision 在本机处理。通知和定位不是必要权限。只有开启结构化数据同步后才会访问 iCloud。票据原图保留在本机且不进入 CloudKit。CSV、PDF、备份和行程摘要图片均在本机生成。"
 }

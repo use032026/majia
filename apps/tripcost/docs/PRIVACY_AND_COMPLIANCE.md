@@ -1,6 +1,6 @@
 # TripCost 隐私、数据流与发布合规清单
 
-> 适用版本：V1.0；复核日期：2026-08-17
+> 适用版本：V1.0；复核日期：2026-09-23
 
 ## 1. 用户可见隐私政策（简体中文）
 
@@ -8,9 +8,9 @@ TripCost 无需注册账户，也不保存完整卡号、CVV、身份证件或�
 
 启用 iCloud 同步后，行程、消费、支付方式、汇率快照引用和用户设置等结构化数据会发送到用户自己的 CloudKit 私有数据库。票据原图不进入 CloudKit。关闭同步不会删除本地数据。
 
-市场参考汇率请求会发送到 Frankfurter 公共 API。Frankfurter 当前声明 API 本身不收集个人数据；其公共服务使用 Cloudflare，可能收集基础分析信息。CSV、PDF 和备份均在本机生成，只有用户在 iOS 系统分享面板中选择目标后才会离开应用。
+市场参考汇率请求会发送到 Frankfurter 公共 API。Frankfurter 当前声明 API 本身不收集个人数据；其公共服务使用 Cloudflare，可能收集基础分析信息。CSV、PDF 和备份均在本机生成，只有用户在 iOS 系统分享面板中选择目标后才会离开应用。行程摘要 PNG 仅在用户点击“保存到相册”后添加到系统照片图库；是否通过 iCloud 照片同步由用户的系统设置决定。
 
-相机和相册权限仅在用户点击相应扫描入口后请求。定位和通知不是 V1.0 的必要权限。
+相机与相册读取权限仅在用户点击相应扫描入口后请求；相册仅添加权限仅在用户点击“保存到相册”后请求。定位和通知不是 V1.0 的必要权限。
 
 ## 2. User-facing privacy policy (English)
 
@@ -18,9 +18,9 @@ TripCost does not require an account and does not store full card numbers, CVV, 
 
 When iCloud sync is enabled, structured data such as trips, expenses, payment methods, rate-snapshot references, and user settings is sent to the user’s private CloudKit database. Original receipt images are excluded. Turning sync off does not delete local data.
 
-Market reference-rate requests are sent to the Frankfurter public API. Frankfurter currently states that its API does not collect personal data; its public service uses Cloudflare and may collect basic analytics information. CSV, PDF, and backups are generated locally and leave the app only after the user chooses a destination in the iOS share sheet.
+Market reference-rate requests are sent to the Frankfurter public API. Frankfurter currently states that its API does not collect personal data; its public service uses Cloudflare and may collect basic analytics information. CSV, PDF, and backups are generated locally and leave the app only after the user chooses a destination in the iOS share sheet. A trip-summary PNG is added to the system photo library only after the user taps Save to Photos; iCloud Photos synchronization follows the user's system settings.
 
-Camera and photo-library access are requested only after the user chooses the matching scan action. Location and notifications are not required in V1.0.
+Camera and photo-library read access are requested only after the user chooses the matching scan action. Add-only photo-library access is requested only after the user taps Save to Photos. Location and notifications are not required in V1.0.
 
 ## 3. 免责声明 / Disclaimer
 
@@ -44,12 +44,14 @@ Camera and photo-library access are requested only after the user chooses the ma
 | 汇率请求 | 不包含账户或票据 | 在线刷新汇率 | Frankfurter 公共 API，经 Cloudflare | 汇率缓存可随全量清除删除 |
 | Widget 摘要 | App Group 最小只读 JSON | 主 App 更新摘要 | 本机 Widget Extension | 全量清除先删除共享快照 |
 | CSV/PDF/备份 | App 临时目录 | 用户主动使用 Share Sheet | 用户选择的系统目标 | 系统/临时目录生命周期管理 |
+| 行程摘要 PNG | 生成时位于本机内存 | 用户主动点击“保存到相册” | 系统照片图库 | 由用户在“照片”中管理；iCloud 照片同步遵循系统设置 |
 
 ## 5. 权限与配置复核
 
 - `NSCameraUsageDescription`：英文基线与 `en`/`zh-Hans` 本地化用途字符串已配置，说明本机识别且不上传。
 - `NSPhotoLibraryUsageDescription`：英文基线与 `en`/`zh-Hans` 本地化用途字符串已配置，说明本机识别且不上传。
-- 相机/相册权限由扫描页的用户操作触发；启动、首页、设置页不预先请求。
+- `NSPhotoLibraryAddUsageDescription`：英文基线与 `en`/`zh-Hans` 本地化用途字符串已配置，说明保存用户生成的行程摘要。
+- 相机/相册读取权限由扫描页的用户操作触发，相册仅添加权限由摘要预览页的保存按钮触发；启动、首页、设置页不预先请求。
 - 未声明定位、通讯录、麦克风、跟踪等非必要权限。
 - V1.0 支付方式模型仅保存费用规则、名称、卡组织和账单币种，不包含卡号、有效期、CVV 或银行凭据字段。
 

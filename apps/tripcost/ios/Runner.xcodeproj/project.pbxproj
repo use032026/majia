@@ -22,6 +22,7 @@
 		D0C8A1000000000000000001 /* DocumentExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C8A1000000000000000002 /* DocumentExportService.swift */; };
 		D0C8A1000000000000000003 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D0C8A1000000000000000006 /* InfoPlist.strings */; };
 		D0C8A1000000000000000007 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C8A1000000000000000008 /* SceneDelegate.swift */; };
+		D0C8A1000000000000000009 /* PhotoLibrarySaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0C8A100000000000000000A /* PhotoLibrarySaveService.swift */; };
 		DE475124B8C84D29418036D1 /* VisionOcrService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0437E3E59BE71D971DB32B /* VisionOcrService.swift */; };
 		E35977A06D0BA1AB4BA46A1F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9CE330C819CE480CEBC190B6 /* Localizable.strings */; };
 		EB9AED98007474A22E7EC3A0 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47360EF1D369CB41020AF734 /* Pods_RunnerTests.framework */; };
@@ -105,6 +106,7 @@
 		D0C8A1000000000000000004 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D0C8A1000000000000000005 /* InfoPlist.strings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = InfoPlist.strings; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		D0C8A1000000000000000008 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		D0C8A100000000000000000A /* PhotoLibrarySaveService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoLibrarySaveService.swift; sourceTree = "<group>"; };
 		DAB2E7C91625C343427F07C5 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E842710CCDCDF7B3DCB46E7B /* AppWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC312F1E25CE9107CB33B452 /* PlatformApis.g.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PlatformApis.g.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				C6C6C51F5367CA011F14964F /* PlatformApiStubs.swift */,
 				8F0437E3E59BE71D971DB32B /* VisionOcrService.swift */,
 				D0C8A1000000000000000002 /* DocumentExportService.swift */,
+				D0C8A100000000000000000A /* PhotoLibrarySaveService.swift */,
 				D0C8A1000000000000000006 /* InfoPlist.strings */,
 			);
 			path = Runner;
@@ -519,6 +522,7 @@
 				FCF78C2CA0CFDD70342CF256 /* PlatformApiStubs.swift in Sources */,
 				DE475124B8C84D29418036D1 /* VisionOcrService.swift in Sources */,
 				D0C8A1000000000000000001 /* DocumentExportService.swift in Sources */,
+				D0C8A1000000000000000009 /* PhotoLibrarySaveService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

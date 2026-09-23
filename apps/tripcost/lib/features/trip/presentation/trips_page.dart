@@ -19,6 +19,7 @@ import 'package:trip_cost/features/scanner/application/scan_flow.dart';
 import 'package:trip_cost/features/settings/application/settings_data_service.dart';
 import 'package:trip_cost/features/trip/application/trips_controller.dart';
 import 'package:trip_cost/features/trip/presentation/trip_date_range_picker_page.dart';
+import 'package:trip_cost/features/trip/presentation/trip_summary_image_page.dart';
 import 'package:trip_cost/l10n/app_localizations.dart';
 import 'package:trip_cost/shared/widgets/country_picker_page.dart';
 import 'package:trip_cost/shared/widgets/currency_picker_page.dart';
@@ -273,17 +274,22 @@ class _TripsPageState extends ConsumerState<TripsPage> {
     TripModel trip,
   ) async {
     final l10n = AppLocalizations.of(context);
-    final format = await showCupertinoModalPopup<ExpenseExportFormat>(
+    final choice = await showCupertinoModalPopup<_TripExportChoice>(
       context: context,
       builder: (context) => CupertinoActionSheet(
         actions: <Widget>[
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pop(ExpenseExportFormat.csv),
+            onPressed: () => Navigator.of(context).pop(_TripExportChoice.csv),
             child: Text(l10n.exportCsv),
           ),
           CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pop(ExpenseExportFormat.pdf),
+            onPressed: () => Navigator.of(context).pop(_TripExportChoice.pdf),
             child: Text(l10n.exportPdf),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () =>
+                Navigator.of(context).pop(_TripExportChoice.summaryImage),
+            child: Text(l10n.tripSummaryImageExport),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
@@ -292,11 +298,30 @@ class _TripsPageState extends ConsumerState<TripsPage> {
         ),
       ),
     );
-    if (format == null || !context.mounted) return;
+    if (choice == null || !context.mounted) return;
+    if (choice == _TripExportChoice.summaryImage) {
+      final now = DateTime.now().toUtc();
+      final expenses =
+          ref.read(expensesControllerProvider).value ?? const <ExpenseModel>[];
+      await Navigator.of(context).push<void>(
+        CupertinoPageRoute<void>(
+          builder: (context) => TripSummaryImagePage(
+            trip: trip,
+            summary: const TripBudgetCalculator().calculate(
+              trip: trip,
+              expenses: expenses,
+              now: now,
+            ),
+            generatedAt: now,
+          ),
+        ),
+      );
+      return;
+    }
     try {
       final service = ref.read(expenseExportServiceProvider);
       final locale = Localizations.localeOf(context).toLanguageTag();
-      final file = format == ExpenseExportFormat.csv
+      final file = choice == _TripExportChoice.csv
           ? await service.createCsv(
               locale: locale,
               tripId: trip.metadata.recordId,
@@ -334,6 +359,8 @@ class _TripsPageState extends ConsumerState<TripsPage> {
     );
   }
 }
+
+enum _TripExportChoice { csv, pdf, summaryImage }
 
 class TripEditorPage extends ConsumerStatefulWidget {
   const TripEditorPage({this.initial, this.defaultHomeCurrency, super.key});
