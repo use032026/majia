@@ -185,7 +185,7 @@
   "about": "About KIFXPRO",
   "contactSupport": "Contact support",
   "supportEmailSubject": "KIFXPRO app support",
-  "supportNotConfigured": "A support email has not been configured. Provide SUPPORT_EMAIL for release builds.",
+  "supportNotConfigured": "A mail app could not be opened. Email us at 15211857631@163.com.",
   "versionBuild": "Version {version} ({build})",
   "@versionBuild": {"placeholders": {"version": {}, "build": {}}},
   "aboutBody": "Quickly register boxes, find items offline and track moving status. Every feature is free, with no subscription, trial countdown or paywall.",

@@ -582,7 +582,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supportNotConfigured =>
-      'A support email has not been configured. Provide SUPPORT_EMAIL for release builds.';
+      'A mail app could not be opened. Email us at 15211857631@163.com.';
 
   @override
   String versionBuild(Object version, Object build) {

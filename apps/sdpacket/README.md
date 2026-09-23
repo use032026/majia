@@ -34,15 +34,13 @@ Flutter 实现的本地优先装箱登记与定位应用。产品规格见
 
 正式上架前必须替换为已确认的生产标识，并配置独立的 Release 签名；当前 Android Release 配置仍沿用 Flutter 模板的 Debug 签名，不可用于发布。
 
-公开隐私政策和支持邮箱不写死在源码中。发布构建必须注入已确认的真实值：
+设置页会根据当前应用语言在外部浏览器打开公开页面：
 
-```bash
-flutter build ios \
-  --dart-define=PRIVACY_POLICY_URL=https://example.com/privacy \
-  --dart-define=SUPPORT_EMAIL=support@example.com
-```
+- 简体中文：`https://kifxpro.com/privacy.html?lang=zh`
+- English：`https://kifxpro.com/index.html?lang=en`
+- 支持邮箱：`15211857631@163.com`
 
-未注入时，设置页仍会显示完整的内置隐私说明，并明确提示支持邮箱尚未配置；这只适合开发验证，不满足正式上架元数据要求。
+远程隐私页面无法打开时，应用会显示内置隐私说明作为兜底；无法打开邮件应用时，会显示可手动发送的支持邮箱。
 
 ## 本地运行
 

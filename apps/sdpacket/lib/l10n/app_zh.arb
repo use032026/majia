@@ -190,7 +190,7 @@
   "about": "关于 KIFXPRO",
   "contactSupport": "联系支持",
   "supportEmailSubject": "KIFXPRO App 用户支持",
-  "supportNotConfigured": "支持邮箱尚未配置。发布构建需通过 SUPPORT_EMAIL 注入公开联系邮箱。",
+  "supportNotConfigured": "无法打开邮件应用。请发送邮件至 15211857631@163.com。",
   "versionBuild": "版本 {version}（{build}）",
   "@versionBuild": {"placeholders": {"version": {}, "build": {}}},
   "aboutBody": "用于快速登记纸箱、离线搜索物品并追踪搬运状态。全部功能免费，无订阅、试用倒计时或付费墙。",

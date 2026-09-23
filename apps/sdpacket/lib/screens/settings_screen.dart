@@ -134,17 +134,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _openPrivacy() async {
-    final rawUrl = AppLinks.privacyPolicyUrl.trim();
-    if (rawUrl.isNotEmpty) {
-      final uri = Uri.tryParse(rawUrl);
-      try {
-        if (uri != null &&
-            await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-          return;
-        }
-      } on Exception {
-        // Fall back to the complete built-in privacy notice below.
+    final rawUrl = AppLinks.privacyPolicyUrlFor(
+      StoreScope.of(context).languageCode,
+    );
+    final uri = Uri.tryParse(rawUrl);
+    try {
+      if (uri != null &&
+          await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        return;
       }
+    } on Exception {
+      // Fall back to the complete built-in privacy notice below.
     }
     if (mounted) {
       await _showInfo(context.l10n.privacy, context.l10n.privacyBody);
@@ -152,18 +152,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _contactSupport() async {
-    final email = AppLinks.supportEmail.trim();
-    if (email.isNotEmpty) {
-      final uri = Uri(
-        scheme: 'mailto',
-        path: email,
-        queryParameters: {'subject': context.l10n.supportEmailSubject},
-      );
-      try {
-        if (await launchUrl(uri)) return;
-      } on Exception {
-        // Show the support fallback below when no mail client is available.
-      }
+    final uri = Uri(
+      scheme: 'mailto',
+      path: AppLinks.supportEmail,
+      queryParameters: {'subject': context.l10n.supportEmailSubject},
+    );
+    try {
+      if (await launchUrl(uri)) return;
+    } on Exception {
+      // Show the support fallback below when no mail client is available.
     }
     if (mounted) {
       await _showInfo(
@@ -175,6 +172,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final privacyPolicyUrl = AppLinks.privacyPolicyUrlFor(
+      StoreScope.of(context).languageCode,
+    );
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.settings)),
       body: ListView(
@@ -221,9 +221,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ListTile(
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: Text(context.l10n.privacy),
-                  subtitle: AppLinks.privacyPolicyUrl.trim().isEmpty
-                      ? Text(context.l10n.localPrivacyFallback)
-                      : Text(AppLinks.privacyPolicyUrl),
+                  subtitle: Text(privacyPolicyUrl),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _openPrivacy,
                 ),
@@ -231,9 +229,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ListTile(
                   leading: const Icon(Icons.support_agent_outlined),
                   title: Text(context.l10n.contactSupport),
-                  subtitle: AppLinks.supportEmail.trim().isEmpty
-                      ? null
-                      : Text(AppLinks.supportEmail),
+                  subtitle: const Text(AppLinks.supportEmail),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _contactSupport,
                 ),

@@ -566,7 +566,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get supportEmailSubject => 'KIFXPRO App 用户支持';
 
   @override
-  String get supportNotConfigured => '支持邮箱尚未配置。发布构建需通过 SUPPORT_EMAIL 注入公开联系邮箱。';
+  String get supportNotConfigured => '无法打开邮件应用。请发送邮件至 15211857631@163.com。';
 
   @override
   String versionBuild(Object version, Object build) {

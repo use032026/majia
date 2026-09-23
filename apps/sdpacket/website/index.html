@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#173f35">
+    <meta name="color-scheme" content="light">
+    <meta
+      name="description"
+      content="KIFXPRO 帮你快速登记纸箱、离线查找物品、生成标签并追踪搬运状态。无需账号，核心数据默认保存在设备本地。"
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="KIFXPRO — 让每只箱子都找得到">
+    <meta
+      property="og:description"
+      content="拍照或说一句话即可登记纸箱，离线搜索、状态追踪、二维码标签与本地备份一应俱全。"
+    >
+    <meta name="twitter:card" content="summary">
+    <title>KIFXPRO — 搬家纸箱登记与定位</title>
+    <link rel="icon" href="assets/app-icon.png">
+    <link rel="apple-touch-icon" href="assets/app-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="site.js" defer></script>
+  </head>
+  <body data-page="home">
+    <a class="skip-link" href="#main" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
+
+    <header class="site-header" data-header>
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="KIFXPRO 首页">
+          <img src="assets/app-icon.png" alt="" width="44" height="44">
+          <span>KIFXPRO</span>
+        </a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-button>
+          <span class="sr-only" data-zh="打开导航" data-en="Open navigation">打开导航</span>
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="主要导航" data-nav>
+          <a href="#workflow" data-zh="使用方式" data-en="How it works">使用方式</a>
+          <a href="#features" data-zh="功能" data-en="Features">功能</a>
+          <a href="#privacy" data-zh="隐私优先" data-en="Privacy">隐私优先</a>
+          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
+          <div class="language-switch" role="group" aria-label="语言 / Language">
+            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <span aria-hidden="true"></span>
+            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-grid-lines" aria-hidden="true"></div>
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">
+              <span class="eyebrow-dot" aria-hidden="true"></span>
+              <span data-zh="本地优先 · 离线可用" data-en="Local-first · Works offline">本地优先 · 离线可用</span>
+            </div>
+            <h1>
+              <span data-zh="搬家再忙，" data-en="Every box,">搬家再忙，</span>
+              <span class="accent-text" data-zh="每只箱子都找得到。" data-en="right where you expect it.">每只箱子都找得到。</span>
+            </h1>
+            <p
+              class="hero-lede"
+              data-zh="拍一张照片，或说一句备注，十几秒登记一只纸箱。KIFXPRO 帮你离线查找物品、对应实体标签，并从打包一路追踪到拆箱。"
+              data-en="Take a photo or speak a quick note to register a box in seconds. KIFXPRO keeps items searchable offline, links records to physical labels, and tracks every stage from packed to unpacked."
+            >拍一张照片，或说一句备注，十几秒登记一只纸箱。KIFXPRO 帮你离线查找物品、对应实体标签，并从打包一路追踪到拆箱。</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#workflow">
+                <span data-zh="看看如何使用" data-en="See how it works">看看如何使用</span>
+                <span aria-hidden="true">↘</span>
+              </a>
+              <a class="text-link" href="privacy.html" data-language-link>
+                <span data-zh="了解数据如何处理" data-en="See how data is handled">了解数据如何处理</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+            <ul class="trust-list" aria-label="产品特点">
+              <li><span aria-hidden="true">✓</span><span data-zh="无需账号" data-en="No account">无需账号</span></li>
+              <li><span aria-hidden="true">✓</span><span data-zh="核心记录保存在本机" data-en="Core records stay local">核心记录保存在本机</span></li>
+              <li><span aria-hidden="true">✓</span><span data-zh="全功能免费" data-en="All features are free">全功能免费</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-visual" aria-label="KIFXPRO 应用界面示意">
+            <div class="visual-orbit orbit-a" aria-hidden="true"></div>
+            <div class="visual-orbit orbit-b" aria-hidden="true"></div>
+            <div class="floating-card float-search" aria-hidden="true">
+              <span>⌕</span>
+              <div><b data-zh="离线搜索" data-en="Offline search">离线搜索</b><small>C-018 · Coffee maker</small></div>
+            </div>
+            <div class="floating-card float-status" aria-hidden="true">
+              <span>✓</span>
+              <div><b data-zh="已到达" data-en="Arrived">已到达</b><small data-zh="状态已更新" data-en="Status updated">状态已更新</small></div>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-sensor" aria-hidden="true"></div>
+              <div class="phone-screen">
+                <div class="app-topbar">
+                  <div>
+                    <small data-zh="早上好" data-en="Good morning">早上好</small>
+                    <strong data-zh="搬家项目" data-en="Moving projects">搬家项目</strong>
+                  </div>
+                  <span class="avatar-mark">K</span>
+                </div>
+                <div class="project-card">
+                  <div class="project-card-head">
+                    <div><small data-zh="进行中" data-en="IN PROGRESS">进行中</small><strong data-zh="新家搬迁" data-en="New home move">新家搬迁</strong></div>
+                    <span>•••</span>
+                  </div>
+                  <div class="progress-track"><span></span></div>
+                  <div class="project-stats">
+                    <span><b>28</b><small data-zh="总箱数" data-en="Boxes">总箱数</small></span>
+                    <span><b>21</b><small data-zh="已到达" data-en="Arrived">已到达</small></span>
+                    <span><b>12</b><small data-zh="已拆箱" data-en="Unpacked">已拆箱</small></span>
+                  </div>
+                </div>
+                <div class="quick-title"><strong data-zh="快速登记" data-en="Quick entry">快速登记</strong><small data-zh="选一种最顺手的方式" data-en="Use what feels fastest">选一种最顺手的方式</small></div>
+                <div class="quick-grid">
+                  <span><i>▣</i><b data-zh="拍照" data-en="Photo">拍照</b></span>
+                  <span><i>◉</i><b data-zh="语音" data-en="Voice">语音</b></span>
+                  <span><i>＋</i><b data-zh="手动" data-en="Manual">手动</b></span>
+                </div>
+                <div class="recent-box">
+                  <div class="box-cube" aria-hidden="true">⌂</div>
+                  <div><small data-zh="最近登记" data-en="Recently added">最近登记</small><strong>C-018 · <span data-zh="咖啡用品" data-en="Coffee supplies">咖啡用品</span></strong><em data-zh="厨房 · 易碎" data-en="Kitchen · Fragile">厨房 · 易碎</em></div>
+                  <span>›</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof-strip" aria-label="产品摘要">
+        <div class="shell proof-grid">
+          <div><strong data-zh="十几秒" data-en="Seconds">十几秒</strong><span data-zh="即可登记一只箱子" data-en="to register a box">即可登记一只箱子</span></div>
+          <div><strong data-zh="离线" data-en="Offline">离线</strong><span data-zh="搜索与状态追踪" data-en="search and tracking">搜索与状态追踪</span></div>
+          <div><strong>4</strong><span data-zh="个核心搬运阶段" data-en="core moving stages">个核心搬运阶段</span></div>
+          <div><strong>0</strong><span data-zh="账号、订阅或广告" data-en="accounts, subscriptions, or ads">账号、订阅或广告</span></div>
+        </div>
+      </section>
+
+      <section class="section workflow-section" id="workflow">
+        <div class="shell">
+          <div class="section-heading centered">
+            <span class="section-kicker" data-zh="从纸箱到新家" data-en="From box to new home">从纸箱到新家</span>
+            <h2 data-zh="三步，把搬家变得清清楚楚。" data-en="Three steps to make moving feel manageable.">三步，把搬家变得清清楚楚。</h2>
+            <p data-zh="不要求先填满表单，也不强迫打印二维码。从最快的登记方式开始，稍后再补充信息。" data-en="No long form up front and no printer required. Start with the fastest entry method, then add details when you have time.">不要求先填满表单，也不强迫打印二维码。从最快的登记方式开始，稍后再补充信息。</p>
+          </div>
+          <div class="workflow-grid">
+            <article class="workflow-card">
+              <div class="step-number">01</div>
+              <div class="step-icon camera-icon" aria-hidden="true">▣</div>
+              <h3 data-zh="快速登记" data-en="Capture quickly">快速登记</h3>
+              <p data-zh="拍照、语音或手动输入，自动生成项目内唯一箱号；批量拍照可一次建立多只箱子草稿。" data-en="Use a photo, voice, or manual entry. KIFXPRO assigns a unique box code, and batch capture creates several drafts at once.">拍照、语音或手动输入，自动生成项目内唯一箱号；批量拍照可一次建立多只箱子草稿。</p>
+            </article>
+            <article class="workflow-card featured">
+              <div class="step-number">02</div>
+              <div class="step-icon label-icon" aria-hidden="true">⌑</div>
+              <h3 data-zh="对应现实纸箱" data-en="Match the physical box">对应现实纸箱</h3>
+              <p data-zh="打印二维码、写下箱号或贴一张便利贴。数字记录与现实箱体一一对应，没打印机也能继续。" data-en="Print a QR label, write the code, or attach a sticky note. Keep each digital record tied to the real box, even without a printer.">打印二维码、写下箱号或贴一张便利贴。数字记录与现实箱体一一对应，没打印机也能继续。</p>
+            </article>
+            <article class="workflow-card">
+              <div class="step-number">03</div>
+              <div class="step-icon route-icon" aria-hidden="true">⌁</div>
+              <h3 data-zh="搜索与追踪" data-en="Find and track">搜索与追踪</h3>
+              <p data-zh="按箱号、房间、备注、物品或标签离线搜索，并追踪已打包、已装车、已到达和已拆箱。" data-en="Search codes, rooms, notes, items, and tags offline, then track packed, loaded, arrived, and unpacked stages.">按箱号、房间、备注、物品或标签离线搜索，并追踪已打包、已装车、已到达和已拆箱。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section features-section" id="features">
+        <div class="shell">
+          <div class="section-heading split-heading">
+            <div>
+              <span class="section-kicker" data-zh="少一点忙乱" data-en="Less moving-day chaos">少一点忙乱</span>
+              <h2 data-zh="从装箱到收尾，都有据可查。" data-en="A clear record from packing to wrap-up.">从装箱到收尾，都有据可查。</h2>
+            </div>
+            <p data-zh="KIFXPRO 围绕现实搬家流程设计：快速留下线索，需要时准确找回。" data-en="KIFXPRO follows the real moving workflow: capture a useful clue quickly, then retrieve it exactly when needed.">KIFXPRO 围绕现实搬家流程设计：快速留下线索，需要时准确找回。</p>
+          </div>
+          <div class="feature-bento">
+            <article class="feature-card feature-wide search-feature">
+              <div class="feature-copy">
+                <span class="mini-kicker" data-zh="全局离线搜索" data-en="Global offline search">全局离线搜索</span>
+                <h3 data-zh="记得物品，不必记得箱号。" data-en="Remember the item, not the box number.">记得物品，不必记得箱号。</h3>
+                <p data-zh="搜索箱号、标题、备注、物品、房间、当前位置与标签。没有信号，也能马上找到答案。" data-en="Search box codes, titles, notes, items, rooms, current locations, and tags—even when there is no signal.">搜索箱号、标题、备注、物品、房间、当前位置与标签。没有信号，也能马上找到答案。</p>
+              </div>
+              <div class="search-demo" aria-hidden="true">
+                <div>⌕ <span data-zh="咖啡机" data-en="coffee maker">咖啡机</span><i>×</i></div>
+                <ul>
+                  <li><b>C-018</b><span><strong data-zh="咖啡用品" data-en="Coffee supplies">咖啡用品</strong><small data-zh="厨房 · 新家" data-en="Kitchen · New home">厨房 · 新家</small></span><em data-zh="已到达" data-en="Arrived">已到达</em></li>
+                  <li><b>C-023</b><span><strong data-zh="早餐电器" data-en="Breakfast appliances">早餐电器</strong><small data-zh="储物间 · 易碎" data-en="Storage · Fragile">储物间 · 易碎</small></span><em data-zh="已装车" data-en="Loaded">已装车</em></li>
+                </ul>
+              </div>
+            </article>
+            <article class="feature-card status-feature">
+              <span class="mini-kicker" data-zh="搬运状态" data-en="Moving stages">搬运状态</span>
+              <h3 data-zh="每个阶段，一眼确认。" data-en="See every stage at a glance.">每个阶段，一眼确认。</h3>
+              <div class="status-line" aria-hidden="true"><span class="done">✓</span><i></i><span class="done">✓</span><i></i><span class="active">3</span><i></i><span>4</span></div>
+              <div class="status-labels" aria-hidden="true"><small data-zh="打包" data-en="Packed">打包</small><small data-zh="装车" data-en="Loaded">装车</small><small data-zh="到达" data-en="Arrived">到达</small><small data-zh="拆箱" data-en="Unpacked">拆箱</small></div>
+            </article>
+            <article class="feature-card qr-feature">
+              <span class="mini-kicker" data-zh="标签与扫码" data-en="Labels and scanning">标签与扫码</span>
+              <h3 data-zh="二维码可选，清晰对应才是重点。" data-en="QR is optional. A clear match is what matters.">二维码可选，清晰对应才是重点。</h3>
+              <div class="qr-demo" aria-hidden="true"><span class="qr-pattern"></span><div><b>C-018</b><small>KIFXPRO BOX LABEL</small></div></div>
+            </article>
+            <article class="feature-card export-feature">
+              <span class="mini-kicker" data-zh="导出与备份" data-en="Export and backup">导出与备份</span>
+              <h3 data-zh="带走自己的记录。" data-en="Take your records with you.">带走自己的记录。</h3>
+              <p data-zh="生成 CSV、PDF 收尾报告、高清标签和含照片的校验备份包，并通过系统分享或打印。" data-en="Create CSV files, PDF wrap-up reports, high-resolution labels, and verified backups with photos, then share or print through the system.">生成 CSV、PDF 收尾报告、高清标签和含照片的校验备份包，并通过系统分享或打印。</p>
+              <div class="file-row" aria-hidden="true"><span>CSV</span><span>PDF</span><span>ZIP</span></div>
+            </article>
+            <article class="feature-card free-feature">
+              <span class="mini-kicker" data-zh="免费且克制" data-en="Free and focused">免费且克制</span>
+              <h3 data-zh="没有订阅，没有付费墙。" data-en="No subscription. No paywall.">没有订阅，没有付费墙。</h3>
+              <p data-zh="全部功能免费；当前版本不接入广告，也不要求注册。" data-en="Every feature is free. The current version has no ads and requires no registration.">全部功能免费；当前版本不接入广告，也不要求注册。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section privacy-section" id="privacy">
+        <div class="shell privacy-card">
+          <div class="privacy-copy">
+            <span class="section-kicker light" data-zh="你的搬家清单，不必搬上云端" data-en="Your moving list does not need to move to the cloud">你的搬家清单，不必搬上云端</span>
+            <h2 data-zh="本地优先，从产品设计开始。" data-en="Local-first, by design.">本地优先，从产品设计开始。</h2>
+            <p data-zh="项目、纸箱、备注、物品清单与照片默认保存在设备本地。当前版本没有账号、开发者云端、广告 SDK、行为分析 SDK 或第三方 AI。" data-en="Projects, boxes, notes, item lists, and photos stay on your device by default. The current version has no account, developer cloud, ad SDK, behavior analytics SDK, or third-party AI.">项目、纸箱、备注、物品清单与照片默认保存在设备本地。当前版本没有账号、开发者云端、广告 SDK、行为分析 SDK 或第三方 AI。</p>
+            <a class="button button-light" href="privacy.html" data-language-link>
+              <span data-zh="阅读完整隐私政策" data-en="Read the full privacy policy">阅读完整隐私政策</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <ul class="privacy-list">
+            <li><span>01</span><div><strong data-zh="按需请求权限" data-en="Permissions on demand">按需请求权限</strong><small data-zh="只在你主动拍照、选照片、扫码或语音登记时请求相应权限" data-en="Requested only when you take a photo, choose images, scan, or use voice entry">只在你主动拍照、选照片、扫码或语音登记时请求相应权限</small></div></li>
+            <li><span>02</span><div><strong data-zh="二维码只放必要标识" data-en="Minimal QR payload">二维码只放必要标识</strong><small data-zh="不包含地址、照片、备注或物品清单" data-en="No addresses, photos, notes, or item lists">不包含地址、照片、备注或物品清单</small></div></li>
+            <li><span>03</span><div><strong data-zh="分享由你触发" data-en="Sharing is your choice">分享由你触发</strong><small data-zh="导出、备份、打印或分享前，由你选择内容和目标" data-en="You choose the content and destination before exporting, backing up, printing, or sharing">导出、备份、打印或分享前，由你选择内容和目标</small></div></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section support-section" id="support">
+        <div class="shell support-card">
+          <div>
+            <span class="section-kicker" data-zh="支持与联系" data-en="Support &amp; contact">支持与联系</span>
+            <h2 data-zh="有问题，欢迎告诉我们。" data-en="Questions? Let us know.">有问题，欢迎告诉我们。</h2>
+            <p data-zh="如有产品使用或隐私方面的问题，请通过下方邮箱联系。" data-en="For product support or privacy questions, contact us at the email below.">如有产品使用或隐私方面的问题，请通过下方邮箱联系。</p>
+          </div>
+          <a class="support-email" href="mailto:15211857631@163.com">
+            <span data-zh="支持邮箱" data-en="Support email">支持邮箱</span>
+            <strong>15211857631@163.com</strong>
+            <i aria-hidden="true">↗</i>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-main">
+        <a class="footer-brand" href="#top">
+          <img src="assets/app-icon.png" alt="" width="48" height="48">
+          <span><strong>KIFXPRO</strong><small data-zh="让每只箱子都找得到" data-en="Every box, easy to find">让每只箱子都找得到</small></span>
+        </a>
+        <nav aria-label="页脚导航">
+          <a href="#features" data-zh="功能" data-en="Features">功能</a>
+          <a href="#support" data-zh="支持" data-en="Support">支持</a>
+          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy Policy">隐私政策</a>
+        </nav>
+      </div>
+      <div class="shell footer-bottom">
+        <span>© <span data-current-year>2026</span> KIFXPRO.</span>
+        <span data-zh="静态页面 · 不设置追踪 Cookie" data-en="Static pages · No tracking cookies">静态页面 · 不设置追踪 Cookie</span>
+      </div>
+    </footer>
+  </body>
+</html>

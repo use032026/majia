@@ -1151,7 +1151,7 @@ abstract class AppLocalizations {
   /// No description provided for @supportNotConfigured.
   ///
   /// In zh, this message translates to:
-  /// **'支持邮箱尚未配置。发布构建需通过 SUPPORT_EMAIL 注入公开联系邮箱。'**
+  /// **'无法打开邮件应用。请发送邮件至 15211857631@163.com。'**
   String get supportNotConfigured;
 
   /// No description provided for @versionBuild.
