@@ -1,10 +1,12 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trip_cost/core/domain/core_models.dart';
 import 'package:trip_cost/features/settings/presentation/privacy_policy_launcher.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('privacyPolicyUriFor', () {
     test('uses an explicitly selected app language', () {
       expect(
@@ -41,22 +43,28 @@ void main() {
     });
   });
 
-  test('opens the policy in the system in-app browser', () async {
-    Uri? launchedUri;
-    LaunchMode? launchedMode;
+  test('opens the policy in the native STMini web container', () async {
+    const channel = MethodChannel('stmini_flutter/methods');
+    final calls = <MethodCall>[];
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+          calls.add(call);
+          return null;
+        });
+    addTearDown(
+      () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, null),
+    );
     final uri = Uri.parse('https://tripcost.fit/privacy.html?lang=en');
 
-    final opened = await openPrivacyPolicy(
-      uri,
-      launcher: (uri, mode) async {
-        launchedUri = uri;
-        launchedMode = mode;
-        return true;
-      },
-    );
+    await openPrivacyPolicy(uri, title: 'Privacy policy');
 
-    expect(opened, isTrue);
-    expect(launchedUri, uri);
-    expect(launchedMode, LaunchMode.inAppBrowserView);
+    expect(calls, hasLength(1));
+    expect(calls.single.method, 'openWeb');
+    expect(calls.single.arguments, <String, Object>{
+      'url': 'https://tripcost.fit/privacy.html?lang=en',
+      'title': 'Privacy policy',
+      'showNavigationBar': true,
+    });
   });
 }

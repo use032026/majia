@@ -48,8 +48,6 @@ PODS:
     - Toast-Swift
     - ZIPFoundation (~> 0.9)
   - Toast-Swift (5.1.1)
-  - url_launcher_ios (0.0.1):
-    - Flutter
   - ZIPFoundation (0.9.20)
 
 DEPENDENCIES:
@@ -60,7 +58,6 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - stmini_flutter (from `.symlinks/plugins/stmini_flutter/ios`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -86,8 +83,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/darwin"
   stmini_flutter:
     :path: ".symlinks/plugins/stmini_flutter/ios"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
@@ -102,7 +97,6 @@ SPEC CHECKSUMS:
   sqlite3_flutter_libs: b3e120efe9a82017e5552a620f696589ed4f62ab
   stmini_flutter: 165cc93b01477ce0c7043a05af74cd5f09520774
   Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
-  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
 PODFILE CHECKSUM: 92accab0dd503fefe942e03fd19a8eed01412fae

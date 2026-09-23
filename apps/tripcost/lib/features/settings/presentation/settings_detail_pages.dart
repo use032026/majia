@@ -516,8 +516,11 @@ class PrivacySettingsPage extends ConsumerWidget {
                 _DetailNavigationRow(
                   icon: CupertinoIcons.hand_raised,
                   title: localizations.privacyPolicyTitle,
-                  onPressed: () =>
-                      _openPrivacyPolicy(context, privacyPolicyUri),
+                  onPressed: () => _openPrivacyPolicy(
+                    context,
+                    privacyPolicyUri,
+                    localizations.privacyPolicyTitle,
+                  ),
                 ),
                 _DetailNavigationRow(
                   icon: CupertinoIcons.info_circle,
@@ -545,9 +548,14 @@ class PrivacySettingsPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _openPrivacyPolicy(BuildContext context, Uri uri) async {
+  Future<void> _openPrivacyPolicy(
+    BuildContext context,
+    Uri uri,
+    String title,
+  ) async {
     try {
-      if (await openPrivacyPolicy(uri)) return;
+      await openPrivacyPolicy(uri, title: title);
+      return;
     } on Object {
       // The user receives the same localized failure message for launch errors.
     }
