@@ -96,24 +96,35 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal "com.example.roamsum.widget", config.dig("app", "bundle_ids", 1, "bundle_id")
   end
 
-  def test_all_three_workflows_expose_independent_metadata_switches_and_pin_one_action_commit
-    workflows = %w[
-      .github/workflows/photo-ios-ci.yml
-      .github/workflows/tripcost-ios-release.yml
-      .github/workflows/donesome-ios-release.yml
-    ]
-    pins = workflows.map do |path|
+  def test_all_release_workflows_expose_independent_metadata_switches_and_pin_expected_action_commits
+    workflows = {
+      ".github/workflows/photo-ios-ci.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
+      ".github/workflows/tripcost-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254",
+      ".github/workflows/donesome-ios-release.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
+      ".github/workflows/sdpacket-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254"
+    }
+    workflows.each do |path, expected_pin|
       text = File.read(path, encoding: "UTF-8")
       assert_includes text, "update_asc_text_metadata:"
       assert_includes text, "replace_asc_media:"
       assert_includes text, "submit_to_review: ${{ inputs.auto_create_store_version }}"
       assert_includes text, "update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}"
       assert_includes text, "replace_asc_media: ${{ inputs.replace_asc_media }}"
-      text[/CherryIce\/ios-multi-app-cloud-build-system\/.github\/actions\/build-upload@([0-9a-f]{40})/, 1]
+      pin = text[/CherryIce\/ios-multi-app-cloud-build-system\/.github\/actions\/build-upload@([0-9a-f]{40})/, 1]
+      assert_equal expected_pin, pin
     end
+  end
 
-    refute_includes pins, nil
-    assert_equal 1, pins.uniq.length
+  def test_sdpacket_workflow_uses_its_environment_and_monorepo_paths
+    text = File.read(".github/workflows/sdpacket-ios-release.yml", encoding: "UTF-8")
+
+    assert_includes text, "environment: sdpacket-production"
+    assert_includes text, "--app-key sdpacket"
+    assert_includes text, "--app-name KIFXPRO"
+    assert_includes text, "--project-directory apps/sdpacket"
+    assert_includes text, "--container-path apps/sdpacket/ios/Runner.xcworkspace"
+    assert_includes text, "--targets-json '[{\"suffix\":\"\",\"target\":\"Runner\",\"profile_alias\":\"app\"}]'"
+    assert_includes text, "--metadata-template apps/sdpacket/app-store/metadata.yml"
   end
 
   def test_p8_normalization_accepts_raw_or_base64_key

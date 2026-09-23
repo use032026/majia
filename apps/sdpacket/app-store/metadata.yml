@@ -1,0 +1,27 @@
+# ASC metadata patch manifest for KIFXPRO.
+# Nothing except export compliance is changed until the corresponding workflow
+# switch is enabled. Uncomment only fields and collections that should change.
+uses_non_exempt_encryption: false
+
+# app_info_localizations:
+#   en-US:
+#     name: "KIFXPRO"
+#     subtitle: "New subtitle"
+#
+# localizations:
+#   en-US:
+#     description: "New description"
+#     whats_new: "Bug fixes and improvements."
+#     keywords: "moving,boxes,inventory"
+#
+# media:
+#   en-US:
+#     screenshots:
+#       APP_IPHONE_65:
+#         - apps/sdpacket/artifacts/app-store-previews/final/iphone-6.5-01.png
+#         - apps/sdpacket/artifacts/app-store-previews/final/iphone-6.5-02.png
+#         - apps/sdpacket/artifacts/app-store-previews/final/iphone-6.5-03.png
+#       APP_IPAD_PRO_3GEN_129:
+#         - apps/sdpacket/artifacts/app-store-previews/final/ipad-12.9-01.png
+#         - apps/sdpacket/artifacts/app-store-previews/final/ipad-12.9-02.png
+#         - apps/sdpacket/artifacts/app-store-previews/final/ipad-12.9-03.png
