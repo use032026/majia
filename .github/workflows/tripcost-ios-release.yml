@@ -99,7 +99,7 @@ jobs:
 
       - name: Build, retain, and optionally release TripCost
         id: release
-        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@39a136d4c560879ec35f3fd23c44f0b1eae4bc30
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@6160d17ca99597c95b665823e5222de785348254
         with:
           config_path: ${{ steps.prepare.outputs.config_path }}
           marketing_version: ${{ inputs.marketing_version }}
