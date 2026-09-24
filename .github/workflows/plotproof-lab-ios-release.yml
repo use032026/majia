@@ -1,0 +1,156 @@
+name: PlotProof Lab iOS Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      marketing_version:
+        description: Three-component version to build, for example 1.0.0
+        required: true
+        default: 1.0.0
+        type: string
+      build_number:
+        description: Optional positive integer; ASC increments it when left empty during upload
+        required: false
+        type: string
+      upload_to_asc:
+        description: Upload the validated IPA and wait for ASC processing
+        required: true
+        default: false
+        type: boolean
+      auto_create_store_version:
+        description: Create/reuse the store version and submit it for review after processing
+        required: true
+        default: false
+        type: boolean
+      update_asc_text_metadata:
+        description: Update only text fields declared in the app metadata manifest
+        required: true
+        default: false
+        type: boolean
+      replace_asc_media:
+        description: Replace only screenshot/preview collections declared in the app metadata manifest
+        required: true
+        default: false
+        type: boolean
+      release_notes_json:
+        description: 'Optional whats_new override; requires update_asc_text_metadata=true, for example {"en-US":"Bug fixes."}'
+        required: false
+        default: "{}"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plotproof-lab-ios-release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    environment: plotproof_lab-production
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Prepare Environment-backed release inputs
+        id: prepare
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          IOS_SCHEME: ${{ vars.IOS_SCHEME }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          IOS_APPSTORE_PROFILE_BASE64: ${{ secrets.IOS_APPSTORE_PROFILE_BASE64 }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          UPLOAD_TO_ASC: ${{ inputs.upload_to_asc }}
+          AUTO_CREATE_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
+          RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
+        run: |
+          ruby .github/scripts/prepare-environment-ios-release.rb \
+            --app-key plotproof-lab \
+            --app-name "PlotProof Lab" \
+            --project-directory apps/plotproof_lab/plotproof_lab \
+            --container-path apps/plotproof_lab/plotproof_lab/ios/Runner.xcworkspace \
+            --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"}]' \
+            --marketing-version "$MARKETING_VERSION" \
+            --upload-to-asc "$UPLOAD_TO_ASC" \
+            --auto-create-store-version "$AUTO_CREATE_STORE_VERSION" \
+            --update-asc-text-metadata "$UPDATE_ASC_TEXT_METADATA" \
+            --replace-asc-media "$REPLACE_ASC_MEDIA" \
+            --metadata-template apps/plotproof_lab/plotproof_lab/app-store/metadata.yml \
+            --release-notes-json "$RELEASE_NOTES_JSON" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Apply Environment bundle identity
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+        run: |
+          identity_config="${RUNNER_TEMP}/plotproof-lab-release.xcconfig"
+          printf 'PLOTPROOF_BUNDLE_ID = %s\n' "$IOS_BUNDLE_ID" > "$identity_config"
+          echo "XCODE_XCCONFIG_FILE=${identity_config}" >> "$GITHUB_ENV"
+
+      - name: Build, retain, and optionally release PlotProof Lab
+        id: release
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@6160d17ca99597c95b665823e5222de785348254
+        with:
+          config_path: ${{ steps.prepare.outputs.config_path }}
+          marketing_version: ${{ inputs.marketing_version }}
+          build_number: ${{ inputs.build_number }}
+          upload_to_asc: ${{ inputs.upload_to_asc }}
+          submit_to_review: ${{ inputs.auto_create_store_version }}
+          update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}
+          replace_asc_media: ${{ inputs.replace_asc_media }}
+          ios_distribution_p12_base64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          ios_distribution_p12_password: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          ios_profiles_archive_base64: ${{ steps.prepare.outputs.profiles_archive_base64 }}
+          asc_api_key_p8_base64: ${{ steps.prepare.outputs.asc_api_key_p8_base64 }}
+          asc_key_id: ${{ vars.ASC_KEY_ID }}
+          asc_issuer_id: ${{ vars.ASC_ISSUER_ID }}
+
+      - name: Write release evidence summary
+        if: ${{ always() }}
+        shell: bash
+        env:
+          REQUESTED_VERSION: ${{ inputs.marketing_version }}
+          REQUESTED_UPLOAD: ${{ inputs.upload_to_asc }}
+          REQUESTED_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          REQUESTED_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REQUESTED_MEDIA_REPLACEMENT: ${{ inputs.replace_asc_media }}
+          RESOLVED_BUILD_NUMBER: ${{ steps.release.outputs.build_number }}
+          ASC_PROCESSING_STATE: ${{ steps.release.outputs.asc_processing_state }}
+          APP_STORE_VERSION_STATE: ${{ steps.release.outputs.app_store_version_state }}
+          REVIEW_SUBMISSION_STATE: ${{ steps.release.outputs.review_submission_state }}
+          REVIEW_SUBMITTED: ${{ steps.release.outputs.review_submitted }}
+          APP_STORE_NO_OP: ${{ steps.release.outputs.app_store_no_op }}
+          APP_STORE_NO_OP_REASON: ${{ steps.release.outputs.app_store_no_op_reason }}
+          ASC_TEXT_METADATA_UPDATED: ${{ steps.release.outputs.asc_text_metadata_updated }}
+          ASC_MEDIA_REPLACED: ${{ steps.release.outputs.asc_media_replaced }}
+        run: |
+          {
+            echo "## PlotProof Lab iOS release"
+            echo "- Marketing version: ${REQUESTED_VERSION}"
+            echo "- Build number: ${RESOLVED_BUILD_NUMBER:-not-built}"
+            echo "- Upload requested: ${REQUESTED_UPLOAD}"
+            echo "- Auto-create and submit requested: ${REQUESTED_STORE_VERSION}"
+            echo "- Text metadata update requested: ${REQUESTED_TEXT_METADATA}"
+            echo "- Media replacement requested: ${REQUESTED_MEDIA_REPLACEMENT}"
+            echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-uploaded}"
+            echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
+            echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
+            echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
+            echo "- App Store no-op: ${APP_STORE_NO_OP:-false}"
+            echo "- App Store no-op reason: ${APP_STORE_NO_OP_REASON:-none}"
+            echo "- Text metadata updated and verified: ${ASC_TEXT_METADATA_UPDATED:-false}"
+            echo "- Media replaced and verified: ${ASC_MEDIA_REPLACED:-false}"
+            echo "- Release policy: automatic after Apple approval"
+          } >> "$GITHUB_STEP_SUMMARY"

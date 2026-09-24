@@ -33,6 +33,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# The cloud release action requires a committed CocoaPods lockfile.
+!ios/Podfile.lock
+
 # Symbolication related
 app.*.symbols
 

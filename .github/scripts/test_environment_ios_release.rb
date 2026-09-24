@@ -101,7 +101,8 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       ".github/workflows/photo-ios-ci.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
       ".github/workflows/tripcost-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254",
       ".github/workflows/donesome-ios-release.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
-      ".github/workflows/sdpacket-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254"
+      ".github/workflows/sdpacket-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254",
+      ".github/workflows/plotproof-lab-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254"
     }
     workflows.each do |path, expected_pin|
       text = File.read(path, encoding: "UTF-8")
@@ -113,6 +114,27 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       pin = text[/CherryIce\/ios-multi-app-cloud-build-system\/.github\/actions\/build-upload@([0-9a-f]{40})/, 1]
       assert_equal expected_pin, pin
     end
+  end
+
+  def test_plotproof_lab_workflow_uses_its_environment_and_nested_monorepo_paths
+    text = File.read(".github/workflows/plotproof-lab-ios-release.yml", encoding: "UTF-8")
+
+    assert_includes text, "environment: plotproof_lab-production"
+    assert_includes text, "--app-key plotproof-lab"
+    assert_includes text, '--app-name "PlotProof Lab"'
+    assert_includes text, "--project-directory apps/plotproof_lab/plotproof_lab"
+    assert_includes text, "--container-path apps/plotproof_lab/plotproof_lab/ios/Runner.xcworkspace"
+    assert_includes text, "--targets-json '[{\"suffix\":\"\",\"target\":\"Runner\",\"profile_alias\":\"app\"}]'"
+    assert_includes text, "--metadata-template apps/plotproof_lab/plotproof_lab/app-store/metadata.yml"
+    assert_includes text, "PLOTPROOF_BUNDLE_ID = %s"
+    assert_includes text, 'XCODE_XCCONFIG_FILE=${identity_config}'
+
+    project = File.read(
+      "apps/plotproof_lab/plotproof_lab/ios/Runner.xcodeproj/project.pbxproj",
+      encoding: "UTF-8"
+    )
+    assert_equal 3, project.scan("PLOTPROOF_BUNDLE_ID = com.example.plotproofLab;").length
+    assert_equal 3, project.scan('PRODUCT_BUNDLE_IDENTIFIER = "$(PLOTPROOF_BUNDLE_ID)";').length
   end
 
   def test_sdpacket_workflow_uses_its_environment_and_monorepo_paths

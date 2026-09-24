@@ -1,0 +1,23 @@
+# ASC metadata patch manifest for PlotProof Lab.
+# Nothing except export compliance is changed until the corresponding workflow
+# switch is enabled. Uncomment only fields and collections that should change.
+uses_non_exempt_encryption: false
+
+# app_info_localizations:
+#   en-US:
+#     name: "PlotProof Lab"
+#     subtitle: "New subtitle"
+#
+# localizations:
+#   en-US:
+#     description: "New description"
+#     whats_new: "Bug fixes and improvements."
+#     keywords: "data literacy,charts,critical thinking"
+#
+# media:
+#   en-US:
+#     screenshots:
+#       APP_IPHONE_65:
+#         - apps/plotproof_lab/plotproof_lab/docs/release/app_store_previews/iphone_1242x2688/plotproof-iphone-01-home.png
+#       APP_IPAD_PRO_3GEN_129:
+#         - apps/plotproof_lab/plotproof_lab/docs/release/app_store_previews/ipad_2732x2048/plotproof-ipad-01-home.png
