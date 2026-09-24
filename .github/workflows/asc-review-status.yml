@@ -1,0 +1,59 @@
+name: ASC Review Status
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_environment:
+        description: App whose protected ASC credentials and bundle ID should be used
+        required: true
+        type: choice
+        options:
+          - tripcost-production
+          - hearthio-production
+          - sdpacket-production
+          - photo-production
+      marketing_version:
+        description: Optional App Store version, for example 1.0.0; leave empty for the latest iOS version
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: asc-review-status-${{ inputs.app_environment }}
+  cancel-in-progress: false
+
+jobs:
+  query:
+    environment: ${{ inputs.app_environment }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Query read-only ASC review status
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/scripts/query-asc-review-status.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-review-status.json \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain ASC status snapshot
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-review-status-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-review-status.json
+          if-no-files-found: error
+          retention-days: 30
