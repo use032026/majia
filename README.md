@@ -58,6 +58,15 @@
 - Variables：`ASC_KEY_ID`、`ASC_ISSUER_ID`
 - Secret：`ASC_API_KEY_P8`
 
+### 新应用接入 ASC 审核工具
+
+- Ruby 处理脚本本身不需要针对新应用修改。[`query-asc-review-status.rb`](.github/scripts/query-asc-review-status.rb) 和 [`submit-asc-review.rb`](.github/scripts/submit-asc-review.rb) 都通过 Bundle ID、版本号和 ASC 凭据运行，可供不同应用共用。
+- 当前 [`ASC Review Status`](.github/workflows/asc-review-status.yml) 和 [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 的 `app_environment` 下拉选项是静态白名单。新增应用时，需要把新的 Environment 名称分别加入两个工作流的 `workflow_dispatch.inputs.app_environment.options`。
+- 同时需要在仓库中创建对应的受保护 GitHub Environment，并配置 Variable `IOS_BUNDLE_ID`、`ASC_KEY_ID`、`ASC_ISSUER_ID` 和 Secret `ASC_API_KEY_P8`。
+- 当前 `plotproof_lab-production` 已加入 `ASC Submit Review`，但尚未加入 `ASC Review Status`，因此 PlotProof Lab 暂时不能从状态查询工作流的下拉列表中选择。
+
+因此，新增应用不需要改动 ASC 查询或提交逻辑，但需要维护两个 workflow 的项目白名单。后续也可以把 `app_environment` 改为手动填写 Environment 名称；采用该方式后，新增应用只需配置 GitHub Environment，不再需要修改工作流，但也会失去当前下拉白名单提供的选择约束。
+
 `TripCost` 的描述文件归档需同时覆盖主应用和 `<IOS_BUNDLE_ID>.widget`。所有发布工作流固定使用 Flutter `3.35.7`，构建号在仅打包时来自 GitHub run number，上传时按 ASC 中现有构建号递增。
 
 ## 其他自动化
