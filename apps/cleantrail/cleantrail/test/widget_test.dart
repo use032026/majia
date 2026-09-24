@@ -1,4 +1,5 @@
 import 'package:cleantrail/data/csv_gateway.dart';
+import 'package:cleantrail/data/language_store.dart';
 import 'package:cleantrail/data/project_store.dart';
 import 'package:cleantrail/domain/quality_engine.dart';
 import 'package:cleantrail/main.dart';
@@ -94,8 +95,11 @@ void main() {
       store: MemoryProjectStore(),
       gateway: FakeCsvGateway(),
     );
+    final languageStore = MemoryLanguageStore();
 
-    await tester.pumpWidget(CleanTrailApp(controller: controller));
+    await tester.pumpWidget(
+      CleanTrailApp(controller: controller, languageStore: languageStore),
+    );
     await tester.pumpAndSettle();
 
     final brandMark = tester.widget<Image>(
@@ -123,6 +127,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('修复队列'), findsOneWidget);
+    expect(languageStore.value, 'zh');
     await tester.tap(find.byIcon(Icons.table_chart_outlined));
     await tester.pumpAndSettle();
     expect(find.text('数据预览'), findsOneWidget);
