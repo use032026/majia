@@ -50,7 +50,9 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    final controller = AppController(MemoryProgressRepository());
+    final controller = AppController(
+      MemoryProgressRepository(onboardingCompleted: true),
+    );
     await controller.initialize(systemLocale: const Locale('zh'));
 
     await tester.pumpWidget(PlotProofApp(controller: controller));
@@ -124,10 +126,16 @@ class _FailOnceRecoveryRepository implements ProgressRepository {
   Future<String?> loadLanguageCode() async => 'zh';
 
   @override
+  Future<bool> loadOnboardingCompleted() async => false;
+
+  @override
   Future<void> saveAttempts(List<Attempt> attempts) async {}
 
   @override
   Future<void> saveLanguageCode(String languageCode) async {}
+
+  @override
+  Future<void> saveOnboardingCompleted(bool completed) async {}
 }
 
 double _contrast(Color first, Color second) {

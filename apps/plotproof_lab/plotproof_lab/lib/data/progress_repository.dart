@@ -9,6 +9,8 @@ abstract interface class ProgressRepository {
   Future<void> saveAttempts(List<Attempt> attempts);
   Future<String?> loadLanguageCode();
   Future<void> saveLanguageCode(String languageCode);
+  Future<bool> loadOnboardingCompleted();
+  Future<void> saveOnboardingCompleted(bool completed);
   Future<void> clearAttempts();
 }
 
@@ -17,6 +19,7 @@ class SharedPreferencesProgressRepository implements ProgressRepository {
 
   static const _attemptsKey = 'learning_attempts_v1';
   static const _languageKey = 'language_code_v1';
+  static const _onboardingCompletedKey = 'onboarding_completed_v1';
 
   final SharedPreferences _preferences;
 
@@ -56,10 +59,25 @@ class SharedPreferencesProgressRepository implements ProgressRepository {
       _preferences.getString(_languageKey);
 
   @override
+  Future<bool> loadOnboardingCompleted() async =>
+      _preferences.getBool(_onboardingCompletedKey) ?? false;
+
+  @override
   Future<void> saveLanguageCode(String languageCode) async {
     final didSave = await _preferences.setString(_languageKey, languageCode);
     if (!didSave) {
       throw StateError('Could not save language preference.');
+    }
+  }
+
+  @override
+  Future<void> saveOnboardingCompleted(bool completed) async {
+    final didSave = await _preferences.setBool(
+      _onboardingCompletedKey,
+      completed,
+    );
+    if (!didSave) {
+      throw StateError('Could not save onboarding status.');
     }
   }
 
@@ -73,12 +91,17 @@ class SharedPreferencesProgressRepository implements ProgressRepository {
 }
 
 class MemoryProgressRepository implements ProgressRepository {
-  MemoryProgressRepository({List<Attempt>? attempts, String? languageCode})
-    : _attempts = List<Attempt>.of(attempts ?? const <Attempt>[]),
-      _languageCode = languageCode;
+  MemoryProgressRepository({
+    List<Attempt>? attempts,
+    String? languageCode,
+    bool onboardingCompleted = false,
+  }) : _attempts = List<Attempt>.of(attempts ?? const <Attempt>[]),
+       _languageCode = languageCode,
+       _onboardingCompleted = onboardingCompleted;
 
   List<Attempt> _attempts;
   String? _languageCode;
+  bool _onboardingCompleted;
   bool failWrites = false;
 
   @override
@@ -94,6 +117,9 @@ class MemoryProgressRepository implements ProgressRepository {
   Future<String?> loadLanguageCode() async => _languageCode;
 
   @override
+  Future<bool> loadOnboardingCompleted() async => _onboardingCompleted;
+
+  @override
   Future<void> saveAttempts(List<Attempt> attempts) async {
     if (failWrites) throw StateError('Test write failure');
     _attempts = List<Attempt>.of(attempts);
@@ -103,5 +129,11 @@ class MemoryProgressRepository implements ProgressRepository {
   Future<void> saveLanguageCode(String languageCode) async {
     if (failWrites) throw StateError('Test write failure');
     _languageCode = languageCode;
+  }
+
+  @override
+  Future<void> saveOnboardingCompleted(bool completed) async {
+    if (failWrites) throw StateError('Test write failure');
+    _onboardingCompleted = completed;
   }
 }

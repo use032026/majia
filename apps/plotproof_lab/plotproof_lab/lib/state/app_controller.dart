@@ -26,6 +26,7 @@ class AppController extends ChangeNotifier {
   String? _catalogRevision;
   DateTime? _catalogGeneratedAt;
   bool _isRefreshingCatalog = false;
+  bool _hasCompletedOnboarding = false;
 
   List<Attempt> get attempts => List<Attempt>.unmodifiable(_attempts);
   List<Lesson> get activeLessons => _lessons;
@@ -36,6 +37,7 @@ class AppController extends ChangeNotifier {
   String? get catalogRevision => _catalogRevision;
   DateTime? get catalogGeneratedAt => _catalogGeneratedAt;
   bool get isRefreshingCatalog => _isRefreshingCatalog;
+  bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   int get remoteLessonCount =>
       _lessons.where((lesson) => lesson.isRemote).length;
   bool get hasRecoverableLoadError =>
@@ -46,14 +48,15 @@ class AppController extends ChangeNotifier {
     try {
       final storedLanguage = await _repository.loadLanguageCode();
       _locale = Locale(
-        storedLanguage == 'en'
-            ? 'en'
-            : storedLanguage == 'zh'
+        storedLanguage == 'zh'
             ? 'zh'
-            : systemLocale?.languageCode == 'en'
+            : storedLanguage == 'en'
             ? 'en'
-            : 'zh',
+            : systemLocale?.languageCode == 'zh'
+            ? 'zh'
+            : 'en',
       );
+      _hasCompletedOnboarding = await _repository.loadOnboardingCompleted();
       _attempts = await _repository.loadAttempts();
       _errorMessage = null;
       _errorKind = null;
@@ -115,6 +118,22 @@ class AppController extends ChangeNotifier {
     try {
       await _repository.saveLanguageCode(locale.languageCode);
       _locale = Locale(locale.languageCode == 'en' ? 'en' : 'zh');
+      _errorMessage = null;
+      _errorKind = null;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      _errorMessage = error.toString();
+      _errorKind = AppErrorKind.save;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> completeOnboarding() async {
+    try {
+      await _repository.saveOnboardingCompleted(true);
+      _hasCompletedOnboarding = true;
       _errorMessage = null;
       _errorKind = null;
       notifyListeners();

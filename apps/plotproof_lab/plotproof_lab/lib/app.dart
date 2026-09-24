@@ -5,6 +5,7 @@ import 'l10n/app_strings.dart';
 import 'state/app_controller.dart';
 import 'ui/app_theme.dart';
 import 'ui/home_shell.dart';
+import 'ui/onboarding_screen.dart';
 
 class PlotProofApp extends StatelessWidget {
   const PlotProofApp({required this.controller, super.key});
@@ -28,7 +29,11 @@ class PlotProofApp extends StatelessWidget {
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
         themeMode: ThemeMode.system,
-        home: HomeShell(controller: controller),
+        home:
+            controller.hasCompletedOnboarding ||
+                controller.hasRecoverableLoadError
+            ? HomeShell(controller: controller)
+            : OnboardingScreen(controller: controller),
       ),
     );
   }

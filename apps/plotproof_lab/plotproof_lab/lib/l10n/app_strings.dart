@@ -14,6 +14,29 @@ class AppStrings {
   String get review => text('复练', 'Review');
   String get progress => text('进度', 'Progress');
   String get settings => text('设置', 'Settings');
+  String get skip => text('跳过', 'Skip');
+  String get next => text('下一步', 'Next');
+  String get startLearning => text('开始实验', 'Start exploring');
+  String get onboardingFirstTitle =>
+      text('别让图表替结论说话', 'Look beyond the first impression');
+  String get onboardingFirstBody => text(
+    '先做判断，再查看数据如何被坐标、样本和语境改变。',
+    'Make a judgment, then see how axes, samples, and context reshape the same data.',
+  );
+  String get onboardingSecondTitle =>
+      text('亲手改变一个变量', 'Change one variable yourself');
+  String get onboardingSecondBody => text(
+    '拖动参数、对比前后表达，找到视觉效果与真实证据的边界。',
+    'Adjust a parameter and compare both views to find the boundary between visual impact and evidence.',
+  );
+  String get onboardingThirdTitle =>
+      text('离线学习，记录只属于你', 'Learn offline. Keep progress private.');
+  String get onboardingThirdBody => text(
+    '核心实验无需账号，学习进度只保存在当前设备。',
+    'Core labs need no account, and learning progress stays only on this device.',
+  );
+  String onboardingPage(int current, int total) =>
+      text('引导第 $current 页，共 $total 页', 'Onboarding page $current of $total');
   String get offlineBadge => text(
     '核心实验离线可用 · 无账号 · 无追踪',
     'Core labs work offline · No account · No tracking',

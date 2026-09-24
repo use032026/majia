@@ -9,7 +9,9 @@ void main() {
   testWidgets(
     'judgment, experiment, explanation, and review queue form a loop',
     (tester) async {
-      final controller = AppController(MemoryProgressRepository());
+      final controller = AppController(
+        MemoryProgressRepository(onboardingCompleted: true),
+      );
       await controller.initialize(systemLocale: const Locale('zh'));
       await tester.pumpWidget(PlotProofApp(controller: controller));
       await tester.pumpAndSettle();
@@ -50,7 +52,9 @@ void main() {
   testWidgets('language selection updates all core navigation labels', (
     tester,
   ) async {
-    final controller = AppController(MemoryProgressRepository());
+    final controller = AppController(
+      MemoryProgressRepository(onboardingCompleted: true),
+    );
     await controller.initialize(systemLocale: const Locale('zh'));
     await tester.pumpWidget(PlotProofApp(controller: controller));
     await tester.pumpAndSettle();
@@ -68,7 +72,9 @@ void main() {
   testWidgets('completed catalog has no continue or start action', (
     tester,
   ) async {
-    final controller = AppController(MemoryProgressRepository());
+    final controller = AppController(
+      MemoryProgressRepository(onboardingCompleted: true),
+    );
     await controller.initialize(systemLocale: const Locale('zh'));
     for (final lesson in lessons) {
       await controller.completeLesson(lesson, lesson.correctVerdict);

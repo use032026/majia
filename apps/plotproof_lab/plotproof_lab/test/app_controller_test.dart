@@ -8,6 +8,42 @@ import 'package:plotproof_lab/domain/models.dart';
 import 'package:plotproof_lab/state/app_controller.dart';
 
 void main() {
+  test('first launch uses Chinese only for a Chinese system locale', () async {
+    final chineseController = AppController(MemoryProgressRepository());
+    await chineseController.initialize(
+      systemLocale: const Locale.fromSubtags(
+        languageCode: 'zh',
+        scriptCode: 'Hant',
+        countryCode: 'TW',
+      ),
+    );
+
+    final japaneseController = AppController(MemoryProgressRepository());
+    await japaneseController.initialize(systemLocale: const Locale('ja', 'JP'));
+
+    expect(chineseController.locale.languageCode, 'zh');
+    expect(japaneseController.locale.languageCode, 'en');
+  });
+
+  test('stored language preference overrides the system locale', () async {
+    final chinesePreferenceController = AppController(
+      MemoryProgressRepository(languageCode: 'zh'),
+    );
+    await chinesePreferenceController.initialize(
+      systemLocale: const Locale('ja', 'JP'),
+    );
+
+    final englishPreferenceController = AppController(
+      MemoryProgressRepository(languageCode: 'en'),
+    );
+    await englishPreferenceController.initialize(
+      systemLocale: const Locale('zh', 'CN'),
+    );
+
+    expect(chinesePreferenceController.locale.languageCode, 'zh');
+    expect(englishPreferenceController.locale.languageCode, 'en');
+  });
+
   test('failed save does not commit a completed attempt in memory', () async {
     final repository = MemoryProgressRepository()..failWrites = true;
     final controller = AppController(repository);

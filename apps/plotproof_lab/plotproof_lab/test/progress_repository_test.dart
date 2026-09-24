@@ -7,7 +7,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test(
-    'shared preferences repository round-trips attempts and language',
+    'shared preferences repository round-trips attempts, language, and onboarding',
     () async {
       SharedPreferences.setMockInitialValues({});
       final preferences = await SharedPreferences.getInstance();
@@ -22,6 +22,8 @@ void main() {
 
       await repository.saveAttempts([attempt]);
       await repository.saveLanguageCode('en');
+      expect(await repository.loadOnboardingCompleted(), isFalse);
+      await repository.saveOnboardingCompleted(true);
 
       final restored = await repository.loadAttempts();
       expect(restored, hasLength(1));
@@ -29,6 +31,7 @@ void main() {
       expect(restored.single.verdict, Verdict.misleading);
       expect(restored.single.completedAt, attempt.completedAt);
       expect(await repository.loadLanguageCode(), 'en');
+      expect(await repository.loadOnboardingCompleted(), isTrue);
 
       await repository.clearAttempts();
       expect(await repository.loadAttempts(), isEmpty);
