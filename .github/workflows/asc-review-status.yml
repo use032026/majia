@@ -12,6 +12,7 @@ on:
           - hearthio-production
           - sdpacket-production
           - photo-production
+          - plotproof_lab-production
       marketing_version:
         description: Optional App Store version, for example 1.0.0; leave empty for the latest iOS version
         required: false
