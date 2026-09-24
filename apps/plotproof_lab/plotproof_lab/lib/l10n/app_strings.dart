@@ -25,6 +25,11 @@ class AppStrings {
     'Commit first, then change one variable. Compare two views of the same data and find where the claim goes too far.',
   );
   String get continueLearning => text('继续实验', 'Continue lab');
+  String get allLessonsCompleted => text('全部实验已完成', 'All labs completed');
+  String get allLessonsCompletedBody => text(
+    '你已完成当前题库，可从下方选择任一实验再次练习。',
+    'You have completed the current catalog. Choose any lab below to practice again.',
+  );
   String get start => text('开始', 'Start');
   String get retry => text('再练一次', 'Try again');
   String get done => text('已完成', 'Completed');

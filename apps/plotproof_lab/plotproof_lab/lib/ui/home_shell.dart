@@ -172,8 +172,8 @@ class _LearnScreen extends StatelessWidget {
         .length;
     final nextLesson = catalog.cast<Lesson?>().firstWhere(
       (lesson) => !controller.completedLessonIds.contains(lesson!.id),
-      orElse: () => catalog.first,
-    )!;
+      orElse: () => null,
+    );
     return _ScreenFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -255,6 +255,11 @@ class _LearnScreen extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Card(
+            key: Key(
+              nextLesson == null
+                  ? 'all-lessons-complete-card'
+                  : 'continue-learning-card',
+            ),
             color: Theme.of(context).colorScheme.primaryContainer,
             child: Padding(
               padding: const EdgeInsets.all(18),
@@ -262,25 +267,38 @@ class _LearnScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    strings.continueLearning,
+                    nextLesson == null
+                        ? strings.allLessonsCompleted
+                        : strings.continueLearning,
                     style: Theme.of(
                       context,
                     ).textTheme.labelLarge?.copyWith(color: onPrimaryContainer),
                   ),
-                  const SizedBox(height: 5),
-                  Text(
-                    nextLesson.title.of(context),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                      color: onPrimaryContainer,
+                  if (nextLesson == null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      strings.allLessonsCompletedBody,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: onPrimaryContainer,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 14),
-                  FilledButton.icon(
-                    onPressed: () => _openLesson(context, nextLesson),
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: Text(strings.start),
-                  ),
+                  ] else ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      nextLesson.title.of(context),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        color: onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    FilledButton.icon(
+                      key: const Key('start-next-lesson'),
+                      onPressed: () => _openLesson(context, nextLesson),
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: Text(strings.start),
+                    ),
+                  ],
                 ],
               ),
             ),
