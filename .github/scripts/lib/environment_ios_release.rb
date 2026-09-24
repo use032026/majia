@@ -24,10 +24,13 @@ module MajiaCI
     end
 
     def validate_release_switches!(
-      upload_to_asc:, auto_create_store_version:, update_asc_text_metadata:, replace_asc_media:
+      upload_to_asc:, auto_create_store_version:, submit:, update_asc_text_metadata:, replace_asc_media:
     )
       if auto_create_store_version && !upload_to_asc
         raise ReleaseInputError, "auto_create_store_version=true requires upload_to_asc=true"
+      end
+      if submit && !auto_create_store_version
+        raise ReleaseInputError, "submit=true requires auto_create_store_version=true"
       end
       if update_asc_text_metadata && !auto_create_store_version
         raise ReleaseInputError,

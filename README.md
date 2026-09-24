@@ -35,7 +35,9 @@
 ### 发布开关
 
 - `upload_to_asc=false` 是默认值：执行签名构建并保留产物，但不上传 App Store Connect。
-- `auto_create_store_version=true` 要求同时设置 `upload_to_asc=true`；处理完成后会创建或复用商店版本并提交审核。
+- `auto_create_store_version=true` 要求同时设置 `upload_to_asc=true`；它只创建或复用商店版本，不会提交审核。
+- 在上述构建发布工作流中，`submit=true` 要求同时设置 `auto_create_store_version=true`；只有该开关为 `true` 时才会在版本和构建准备完成后提交审核。`submit=false` 不会提交。
+- [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 可从 `main` 独立提交已经存在且已关联有效构建的商店版本；手动运行时只需选择应用 Environment 和版本号，不会重新构建、上传 IPA、创建商店版本或修改元数据。
 - `update_asc_text_metadata` 和 `replace_asc_media` 只有在自动创建商店版本时才能启用，并且只处理应用 `app-store/metadata.yml` 中明确声明的字段或媒体集合。
 - 非空 `release_notes_json` 要求 `update_asc_text_metadata=true`。
 - 当前元数据模板默认只声明出口合规字段；名称、描述、更新说明和媒体示例仍为注释，启用开关不会修改未声明的内容。
@@ -60,6 +62,7 @@
 
 ## 其他自动化
 
+- [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 使用与构建发布流程相同的仓库内提交脚本，可独立提交现有版本；结果会写入 Job Summary 并保留 30 天 JSON 证据。已提交版本会作为幂等 no-op 返回。
 - [`ASC Review Status`](.github/workflows/asc-review-status.yml) 是只读查询，可按版本获取 `photo-production`、`tripcost-production`、`hearthio-production` 或 `sdpacket-production` 对应应用的 ASC 处理、TestFlight 与审核状态，并保留 30 天 JSON 快照。
 - [`PlotProof lesson content refresh`](.github/workflows/plotproof-content-refresh.yml) 每周一 `03:17 UTC` 自动运行，也可手动触发；它生成并校验公开数据课程包，只在内容变化时提交 `lesson_pack.json`。
 - 发布输入与 ASC 状态解析的 Ruby 测试位于 [`.github/scripts/`](.github/scripts/)，修改工作流或共用脚本时应一并运行。

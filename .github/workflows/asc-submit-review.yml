@@ -1,0 +1,64 @@
+name: ASC Submit Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_environment:
+        description: App whose existing App Store version should be submitted
+        required: true
+        type: choice
+        options:
+          - tripcost-production
+          - hearthio-production
+          - sdpacket-production
+          - photo-production
+          - plotproof_lab-production
+      marketing_version:
+        description: Existing App Store version to submit, for example 1.0.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-${{ inputs.app_environment }}-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment: ${{ inputs.app_environment }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Submit existing App Store version for review
+        id: submit_review
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/scripts/submit-asc-review.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-review-submission.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain review submission evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-review-submission-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-review-submission.json
+          if-no-files-found: warn
+          retention-days: 30

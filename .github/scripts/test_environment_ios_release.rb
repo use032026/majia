@@ -12,11 +12,37 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       Release.validate_release_switches!(
         upload_to_asc: false,
         auto_create_store_version: true,
+        submit: false,
         update_asc_text_metadata: false,
         replace_asc_media: false
       )
     end
     assert_includes error.message, "requires upload_to_asc=true"
+  end
+
+  def test_submit_switch_requires_store_version_automation
+    error = assert_raises(MajiaCI::ReleaseInputError) do
+      Release.validate_release_switches!(
+        upload_to_asc: true,
+        auto_create_store_version: false,
+        submit: true,
+        update_asc_text_metadata: false,
+        replace_asc_media: false
+      )
+    end
+    assert_includes error.message, "submit=true requires auto_create_store_version=true"
+  end
+
+  def test_store_version_creation_can_run_with_or_without_submission
+    [false, true].each do |submit|
+      assert_nil Release.validate_release_switches!(
+        upload_to_asc: true,
+        auto_create_store_version: true,
+        submit: submit,
+        update_asc_text_metadata: false,
+        replace_asc_media: false
+      )
+    end
   end
 
   def test_metadata_merges_only_explicit_release_notes_into_the_template
@@ -43,6 +69,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       Release.validate_release_switches!(
         upload_to_asc: true,
         auto_create_store_version: false,
+        submit: false,
         update_asc_text_metadata: true,
         replace_asc_media: false
       )
@@ -53,6 +80,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       Release.validate_release_switches!(
         upload_to_asc: true,
         auto_create_store_version: false,
+        submit: false,
         update_asc_text_metadata: false,
         replace_asc_media: true
       )
@@ -72,7 +100,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_includes error.message, "requires update_asc_text_metadata=true"
   end
 
-  def test_config_ties_store_preparation_to_automatic_release
+  def test_config_enables_store_version_preparation
     config = Release.build_config(
       app_name: "RoamSum",
       team_id: "ABCDE12345",
@@ -96,7 +124,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal "com.example.roamsum.widget", config.dig("app", "bundle_ids", 1, "bundle_id")
   end
 
-  def test_all_release_workflows_expose_independent_metadata_switches_and_pin_expected_action_commits
+  def test_all_release_workflows_expose_independent_release_switches_and_pin_expected_action_commits
     workflows = {
       ".github/workflows/photo-ios-ci.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
       ".github/workflows/tripcost-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254",
@@ -106,11 +134,21 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     }
     workflows.each do |path, expected_pin|
       text = File.read(path, encoding: "UTF-8")
+      assert_includes text, "submit:"
+      assert_includes text, "description: Submit the created or reused store version to App Review after processing"
+      assert_includes text, "--submit \"$SUBMIT\""
       assert_includes text, "update_asc_text_metadata:"
       assert_includes text, "replace_asc_media:"
-      assert_includes text, "submit_to_review: ${{ inputs.auto_create_store_version }}"
+      assert_includes text, 'submit_to_review: "false"'
+      refute_includes text, "submit_to_review: ${{ inputs.auto_create_store_version }}"
+      refute_includes text, "submit_to_review: ${{ inputs.submit }}"
+      assert_includes text, "if: ${{ inputs.submit }}"
+      assert_includes text, "ruby .github/scripts/submit-asc-review.rb"
       assert_includes text, "update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}"
       assert_includes text, "replace_asc_media: ${{ inputs.replace_asc_media }}"
+      assert_includes text, "REQUESTED_SUBMIT: ${{ inputs.submit }}"
+      assert_includes text, 'echo "- Store version create/reuse requested: ${REQUESTED_STORE_VERSION}"'
+      assert_includes text, 'echo "- Review submission requested: ${REQUESTED_SUBMIT}"'
       pin = text[/CherryIce\/ios-multi-app-cloud-build-system\/.github\/actions\/build-upload@([0-9a-f]{40})/, 1]
       assert_equal expected_pin, pin
     end

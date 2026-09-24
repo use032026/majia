@@ -18,7 +18,12 @@ on:
         default: false
         type: boolean
       auto_create_store_version:
-        description: Create/reuse the store version and submit it for review after processing
+        description: Create or reuse the App Store version after upload without submitting it
+        required: true
+        default: false
+        type: boolean
+      submit:
+        description: Submit the created or reused store version to App Review after processing
         required: true
         default: false
         type: boolean
@@ -42,7 +47,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: plotproof-lab-ios-release-${{ github.repository }}
+  group: majia-asc-plotproof_lab-production-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
@@ -71,6 +76,7 @@ jobs:
           MARKETING_VERSION: ${{ inputs.marketing_version }}
           UPLOAD_TO_ASC: ${{ inputs.upload_to_asc }}
           AUTO_CREATE_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          SUBMIT: ${{ inputs.submit }}
           UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
           REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
           RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
@@ -84,6 +90,7 @@ jobs:
             --marketing-version "$MARKETING_VERSION" \
             --upload-to-asc "$UPLOAD_TO_ASC" \
             --auto-create-store-version "$AUTO_CREATE_STORE_VERSION" \
+            --submit "$SUBMIT" \
             --update-asc-text-metadata "$UPDATE_ASC_TEXT_METADATA" \
             --replace-asc-media "$REPLACE_ASC_MEDIA" \
             --metadata-template apps/plotproof_lab/plotproof_lab/app-store/metadata.yml \
@@ -107,7 +114,7 @@ jobs:
           marketing_version: ${{ inputs.marketing_version }}
           build_number: ${{ inputs.build_number }}
           upload_to_asc: ${{ inputs.upload_to_asc }}
-          submit_to_review: ${{ inputs.auto_create_store_version }}
+          submit_to_review: "false"
           update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}
           replace_asc_media: ${{ inputs.replace_asc_media }}
           ios_distribution_p12_base64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
@@ -117,6 +124,33 @@ jobs:
           asc_key_id: ${{ vars.ASC_KEY_ID }}
           asc_issuer_id: ${{ vars.ASC_ISSUER_ID }}
 
+      - name: Submit prepared App Store version for review
+        id: submit_review
+        if: ${{ inputs.submit }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/scripts/submit-asc-review.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-review-submission.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain review submission evidence
+        if: ${{ always() && inputs.submit }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-review-submission-plotproof-lab-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-review-submission.json
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Write release evidence summary
         if: ${{ always() }}
         shell: bash
@@ -124,13 +158,16 @@ jobs:
           REQUESTED_VERSION: ${{ inputs.marketing_version }}
           REQUESTED_UPLOAD: ${{ inputs.upload_to_asc }}
           REQUESTED_STORE_VERSION: ${{ inputs.auto_create_store_version }}
+          REQUESTED_SUBMIT: ${{ inputs.submit }}
           REQUESTED_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
           REQUESTED_MEDIA_REPLACEMENT: ${{ inputs.replace_asc_media }}
           RESOLVED_BUILD_NUMBER: ${{ steps.release.outputs.build_number }}
           ASC_PROCESSING_STATE: ${{ steps.release.outputs.asc_processing_state }}
           APP_STORE_VERSION_STATE: ${{ steps.release.outputs.app_store_version_state }}
-          REVIEW_SUBMISSION_STATE: ${{ steps.release.outputs.review_submission_state }}
-          REVIEW_SUBMITTED: ${{ steps.release.outputs.review_submitted }}
+          REVIEW_SUBMISSION_STATE: ${{ steps.submit_review.outputs.review_submission_state }}
+          REVIEW_SUBMITTED: ${{ steps.submit_review.outputs.review_submitted }}
+          SUBMISSION_NO_OP: ${{ steps.submit_review.outputs.submission_no_op }}
+          SUBMISSION_NO_OP_REASON: ${{ steps.submit_review.outputs.submission_no_op_reason }}
           APP_STORE_NO_OP: ${{ steps.release.outputs.app_store_no_op }}
           APP_STORE_NO_OP_REASON: ${{ steps.release.outputs.app_store_no_op_reason }}
           ASC_TEXT_METADATA_UPDATED: ${{ steps.release.outputs.asc_text_metadata_updated }}
@@ -141,13 +178,16 @@ jobs:
             echo "- Marketing version: ${REQUESTED_VERSION}"
             echo "- Build number: ${RESOLVED_BUILD_NUMBER:-not-built}"
             echo "- Upload requested: ${REQUESTED_UPLOAD}"
-            echo "- Auto-create and submit requested: ${REQUESTED_STORE_VERSION}"
+            echo "- Store version create/reuse requested: ${REQUESTED_STORE_VERSION}"
+            echo "- Review submission requested: ${REQUESTED_SUBMIT}"
             echo "- Text metadata update requested: ${REQUESTED_TEXT_METADATA}"
             echo "- Media replacement requested: ${REQUESTED_MEDIA_REPLACEMENT}"
             echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-uploaded}"
             echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
             echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
             echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
+            echo "- Review submission no-op: ${SUBMISSION_NO_OP:-false}"
+            echo "- Review submission no-op reason: ${SUBMISSION_NO_OP_REASON:-none}"
             echo "- App Store no-op: ${APP_STORE_NO_OP:-false}"
             echo "- App Store no-op reason: ${APP_STORE_NO_OP_REASON:-none}"
             echo "- Text metadata updated and verified: ${ASC_TEXT_METADATA_UPDATED:-false}"

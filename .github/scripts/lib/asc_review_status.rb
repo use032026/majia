@@ -272,7 +272,7 @@ module MajiaCI
     private_class_method :display
   end
 
-  class ASCReadClient
+  class ASCClient
     def initialize(key:, key_id:, issuer_id:)
       @key = key
       @key_id = key_id
@@ -280,7 +280,15 @@ module MajiaCI
     end
 
     def get(path, query = nil)
-      request_document(path, query)
+      request_document(:get, path, query: query)
+    end
+
+    def post(path, payload)
+      request_document(:post, path, payload: payload)
+    end
+
+    def patch(path, payload)
+      request_document(:patch, path, payload: payload)
     end
 
     def paginate(path, query = nil, max_pages: 20)
@@ -292,7 +300,7 @@ module MajiaCI
         pages += 1
         raise ASCStatusError, "ASC pagination exceeded #{max_pages} pages" if pages > max_pages
 
-        document = request_document(target, params)
+        document = get(target, params)
         data = document.fetch("data")
         raise ASCStatusError, "ASC list response data must be an array" unless data.is_a?(Array)
 
@@ -307,20 +315,29 @@ module MajiaCI
 
     private
 
-    def request_document(target, query)
+    def request_document(method, target, query: nil, payload: nil)
       uri = target.start_with?("https://") ? URI(target) : URI("#{ASCReviewStatus::API_ORIGIN}#{target}")
       unless uri.scheme == "https" && uri.host == "api.appstoreconnect.apple.com"
         raise ASCStatusError, "ASC returned an unsafe pagination URL"
       end
       uri.query = URI.encode_www_form(query) if query && !query.empty?
 
-      request = Net::HTTP::Get.new(uri)
+      request = case method
+                when :get then Net::HTTP::Get.new(uri)
+                when :post then Net::HTTP::Post.new(uri)
+                when :patch then Net::HTTP::Patch.new(uri)
+                else raise ArgumentError, "unsupported HTTP method: #{method}"
+                end
       request["Authorization"] = "Bearer #{ASCReviewStatus.jwt(key: @key, key_id: @key_id, issuer_id: @issuer_id)}"
       request["Accept"] = "application/json"
+      if payload
+        request["Content-Type"] = "application/json"
+        request.body = JSON.generate(payload)
+      end
       response = Net::HTTP.start(
         uri.host, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30
       ) { |http| http.request(request) }
-      document = JSON.parse(response.body)
+      document = response.body.to_s.empty? ? {} : JSON.parse(response.body)
       return document if response.is_a?(Net::HTTPSuccess)
 
       details = Array(document["errors"]).map do |error|
@@ -334,4 +351,6 @@ module MajiaCI
       raise ASCStatusError, "ASC request failed: #{e.class}: #{e.message}"
     end
   end
+
+  ASCReadClient = ASCClient
 end

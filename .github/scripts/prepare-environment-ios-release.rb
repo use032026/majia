@@ -19,6 +19,7 @@ OptionParser.new do |parser|
   parser.on("--marketing-version VERSION") { |value| options[:marketing_version] = value }
   parser.on("--upload-to-asc BOOLEAN") { |value| options[:upload_to_asc] = value }
   parser.on("--auto-create-store-version BOOLEAN") { |value| options[:auto_create_store_version] = value }
+  parser.on("--submit BOOLEAN") { |value| options[:submit] = value }
   parser.on("--update-asc-text-metadata BOOLEAN") { |value| options[:update_asc_text_metadata] = value }
   parser.on("--replace-asc-media BOOLEAN") { |value| options[:replace_asc_media] = value }
   parser.on("--metadata-template PATH") { |value| options[:metadata_template] = value }
@@ -86,7 +87,7 @@ end
 begin
   required = %i[
     app_key app_name project_directory container_path targets_json marketing_version
-    upload_to_asc auto_create_store_version update_asc_text_metadata replace_asc_media
+    upload_to_asc auto_create_store_version submit update_asc_text_metadata replace_asc_media
     metadata_template release_notes_json github_output
   ]
   missing = required.reject { |key| options[key] && !options[key].empty? }
@@ -107,6 +108,7 @@ begin
     options.fetch(:auto_create_store_version),
     "auto_create_store_version"
   )
+  submit = MajiaCI::EnvironmentIOSRelease.boolean(options.fetch(:submit), "submit")
   update_text_metadata = MajiaCI::EnvironmentIOSRelease.boolean(
     options.fetch(:update_asc_text_metadata),
     "update_asc_text_metadata"
@@ -118,6 +120,7 @@ begin
   MajiaCI::EnvironmentIOSRelease.validate_release_switches!(
     upload_to_asc: upload_to_asc,
     auto_create_store_version: auto_create,
+    submit: submit,
     update_asc_text_metadata: update_text_metadata,
     replace_asc_media: replace_media
   )
@@ -202,6 +205,7 @@ begin
     "Prepared #{app_key}",
     "upload_to_asc=#{upload_to_asc}",
     "auto_create_store_version=#{auto_create}",
+    "submit=#{submit}",
     "update_asc_text_metadata=#{update_text_metadata}",
     "replace_asc_media=#{replace_media}",
     "automatic_release=true"
