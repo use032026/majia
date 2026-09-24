@@ -1,0 +1,32 @@
+Charts can look convincing even when the conclusion goes too far. PlotProof Lab helps you slow down, test the evidence, and understand how a visual choice can change the story a chart seems to tell.
+
+Each hands-on lab follows a simple learning loop:
+
+• Commit to a judgment before seeing the explanation
+• Change one key variable in the experiment
+• Compare two presentations of the same data
+• Review the reasoning and a practical checklist
+• Revisit mistakes from your personal review queue
+
+Explore four essential data-literacy themes:
+
+• Axes & Scale — See how truncated baselines and narrow ranges can amplify differences, and learn when a focused scale is appropriate.
+• Correlation & Cause — Move outliers, inspect possible confounders, and discover why one coefficient cannot prove a causal claim.
+• Samples & Representation — Change the sample mix and observe how an estimate can shift when the sample does not represent the population.
+• Risk & Probability — Compare relative risk, absolute risk, and natural frequencies without losing the context behind the numbers.
+
+Eight bilingual labs are built into the app and remain available offline. When connected, PlotProof Lab can periodically check for validated, versioned practice lessons based on public datasets. If an update is unavailable or fails validation, your bundled lessons and last valid content remain ready to use.
+
+Your learning evidence stays useful and understandable. View completed lessons, accuracy, recent attempts, and recurring misconception patterns. Incorrect answers enter a local review queue, so you can practice the concepts that need more attention. You can clear your learning history at any time from Settings.
+
+Designed for focused, private learning:
+
+• No account or sign-in
+• No ads or in-app purchases
+• No behavior analytics or cross-app tracking
+• No camera, photo, microphone, location, or contact permission
+• Learning attempts and language preferences stay on your device
+• Simplified Chinese and English interface
+• Responsive layouts for iPhone and iPad
+
+PlotProof Lab does not label real-world news as true or false. It teaches a repeatable way to inspect quantitative claims, compare representations, and recognize when the evidence supports less than the headline suggests.
