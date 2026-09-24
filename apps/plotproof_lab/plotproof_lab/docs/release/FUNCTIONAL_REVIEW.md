@@ -27,7 +27,7 @@
 | 持久化与复练 | passed | SharedPreferences 保存尝试与语言；最近错误进入队列，正确重试移除 |
 | 删除 | passed | 设置页二次确认后删除本地作答；无账号或云端删除语义 |
 | 中英文/主题/响应式 | passed within tested matrix | 中英文切换、浅/深色、手机/平板首页、2.5× 大字均有自动化或模拟器证据 |
-| 离线/隐私边界 | passed at source/archive layer | 无业务网络、账号、广告、分析或系统权限；仅本地偏好插件 |
+| 离线/隐私边界 | superseded; current HEAD requires revalidation | 原证据证明当时构建无业务网络；当前源码已增加匿名 HTTPS 题目包读取，但仍无账号、广告、分析或学习记录上传。最终 Archive 与网络行为尚未重验。 |
 
 ## 独立复审
 

@@ -72,7 +72,7 @@ class _AxisExperiment extends StatelessWidget {
     final strings = AppStrings(Localizations.localeOf(context));
     final low = lesson.values[0];
     final high = lesson.values[1];
-    final maximum = lesson.id == 'axis-context' ? 82.0 : 100.0;
+    final maximum = lesson.axisMaximum ?? 100.0;
     final amplification = ExperimentMath.visibleDifferenceRatio(
       lowValue: low,
       highValue: high,
@@ -149,7 +149,8 @@ class _CorrelationExperiment extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = AppStrings(Localizations.localeOf(context));
     final includeLast = value >= 0.5;
-    final isCausationLesson = lesson.id == 'correlation-cause';
+    final isCausationLesson =
+        lesson.mode == ExperimentMode.correlationCausation;
     final all = _allPoints;
     final points = isCausationLesson
         ? all
@@ -328,7 +329,7 @@ class _RiskExperiment extends StatelessWidget {
     final mode = value.round().clamp(0, 2);
     final baseline = lesson.values[0];
     final observed = lesson.values[1];
-    final isFrequencyLesson = lesson.id == 'risk-frequency';
+    final isFrequencyLesson = lesson.mode == ExperimentMode.riskFrequency;
     final reduction = ExperimentMath.relativeRiskReduction(
       baseline: baseline,
       observed: observed,
@@ -581,7 +582,7 @@ class _EvidenceSnapshot extends StatelessWidget {
 
   Widget _axisSnapshot(BuildContext context, Color foreground) {
     final strings = AppStrings(Localizations.localeOf(context));
-    final maximum = lesson.id == 'axis-context' ? 82.0 : 100.0;
+    final maximum = lesson.axisMaximum ?? 100.0;
     final amplification = ExperimentMath.visibleDifferenceRatio(
       lowValue: lesson.values[0],
       highValue: lesson.values[1],
@@ -623,7 +624,7 @@ class _EvidenceSnapshot extends StatelessWidget {
     for (var index = 0; index < lesson.values.length; index += 2) {
       all.add(math.Point(lesson.values[index], lesson.values[index + 1]));
     }
-    final isCausation = lesson.id == 'correlation-cause';
+    final isCausation = lesson.mode == ExperimentMode.correlationCausation;
     final showContext = parameter >= 0.5;
     final points = isCausation || showContext
         ? all
@@ -691,7 +692,7 @@ class _EvidenceSnapshot extends StatelessWidget {
 
   Widget _riskSnapshot(BuildContext context, Color foreground) {
     final strings = AppStrings(Localizations.localeOf(context));
-    final isFrequency = lesson.id == 'risk-frequency';
+    final isFrequency = lesson.mode == ExperimentMode.riskFrequency;
     final mode = parameter.round();
     final display = isFrequency
         ? switch (mode) {

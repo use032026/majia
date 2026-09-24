@@ -1,9 +1,14 @@
 import '../domain/models.dart';
 
+const bundledLessonCount = 8;
+const maximumLessonCount = 56;
+const maximumRemoteLessonCount = maximumLessonCount - bundledLessonCount;
+
 const lessons = <Lesson>[
   Lesson(
     id: 'axis-baseline',
     kind: LessonKind.axis,
+    mode: ExperimentMode.axisBaseline,
     title: LocalizedText(zh: '被截断的起点', en: 'The cropped baseline'),
     subtitle: LocalizedText(zh: '坐标轴 · 1', en: 'Axes · 1'),
     claim: LocalizedText(
@@ -38,10 +43,12 @@ const lessons = <Lesson>[
     fairParameter: 0,
     minParameter: 0,
     maxParameter: 95,
+    axisMaximum: 100,
   ),
   Lesson(
     id: 'axis-context',
     kind: LessonKind.axis,
+    mode: ExperimentMode.axisPrecision,
     title: LocalizedText(zh: '需要细看，不等于欺骗', en: 'Zoomed does not mean false'),
     subtitle: LocalizedText(zh: '坐标轴 · 2', en: 'Axes · 2'),
     claim: LocalizedText(
@@ -76,10 +83,12 @@ const lessons = <Lesson>[
     fairParameter: 0,
     minParameter: 0,
     maxParameter: 72,
+    axisMaximum: 82,
   ),
   Lesson(
     id: 'correlation-outlier',
     kind: LessonKind.correlation,
+    mode: ExperimentMode.correlationOutlier,
     title: LocalizedText(zh: '一个点改变故事', en: 'One point changes the story'),
     subtitle: LocalizedText(zh: '相关性 · 1', en: 'Correlation · 1'),
     claim: LocalizedText(
@@ -118,6 +127,7 @@ const lessons = <Lesson>[
   Lesson(
     id: 'correlation-cause',
     kind: LessonKind.correlation,
+    mode: ExperimentMode.correlationCausation,
     title: LocalizedText(zh: '一起变化，不等于因果', en: 'Together is not causal'),
     subtitle: LocalizedText(zh: '相关性 · 2', en: 'Correlation · 2'),
     claim: LocalizedText(
@@ -156,6 +166,7 @@ const lessons = <Lesson>[
   Lesson(
     id: 'sample-fans',
     kind: LessonKind.sample,
+    mode: ExperimentMode.sampleComposition,
     title: LocalizedText(zh: '只问最活跃的人', en: 'Only ask the fans'),
     subtitle: LocalizedText(zh: '样本 · 1', en: 'Sampling · 1'),
     claim: LocalizedText(
@@ -194,6 +205,7 @@ const lessons = <Lesson>[
   Lesson(
     id: 'sample-strata',
     kind: LessonKind.sample,
+    mode: ExperimentMode.sampleStrata,
     title: LocalizedText(zh: '样本小，也可以有结构', en: 'Small can still be structured'),
     subtitle: LocalizedText(zh: '样本 · 2', en: 'Sampling · 2'),
     claim: LocalizedText(
@@ -232,6 +244,7 @@ const lessons = <Lesson>[
   Lesson(
     id: 'risk-relative',
     kind: LessonKind.risk,
+    mode: ExperimentMode.riskRelative,
     title: LocalizedText(zh: '“降低一半”的另一面', en: 'The other half of “50% less”'),
     subtitle: LocalizedText(zh: '风险表达 · 1', en: 'Risk framing · 1'),
     claim: LocalizedText(
@@ -270,6 +283,7 @@ const lessons = <Lesson>[
   Lesson(
     id: 'risk-frequency',
     kind: LessonKind.risk,
+    mode: ExperimentMode.riskFrequency,
     title: LocalizedText(zh: '三种写法，同一个概率', en: 'Three forms, one probability'),
     subtitle: LocalizedText(zh: '风险表达 · 2', en: 'Risk framing · 2'),
     claim: LocalizedText(
@@ -307,8 +321,8 @@ const lessons = <Lesson>[
   ),
 ];
 
-Lesson? lessonById(String id) {
-  for (final lesson in lessons) {
+Lesson? lessonById(String id, [Iterable<Lesson> catalog = lessons]) {
+  for (final lesson in catalog) {
     if (lesson.id == id) return lesson;
   }
   return null;

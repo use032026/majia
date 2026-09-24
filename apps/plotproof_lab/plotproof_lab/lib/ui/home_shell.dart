@@ -166,10 +166,13 @@ class _LearnScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = AppStrings(Localizations.localeOf(context));
     final onPrimaryContainer = Theme.of(context).colorScheme.onPrimaryContainer;
-    final completeCount = controller.completedLessonIds.length;
-    final nextLesson = lessons.cast<Lesson?>().firstWhere(
+    final catalog = controller.activeLessons;
+    final completeCount = catalog
+        .where((lesson) => controller.completedLessonIds.contains(lesson.id))
+        .length;
+    final nextLesson = catalog.cast<Lesson?>().firstWhere(
       (lesson) => !controller.completedLessonIds.contains(lesson!.id),
-      orElse: () => lessons.first,
+      orElse: () => catalog.first,
     )!;
     return _ScreenFrame(
       child: Column(
@@ -201,7 +204,7 @@ class _LearnScreen extends StatelessWidget {
               ),
               Semantics(
                 label:
-                    '$completeCount / ${lessons.length} ${strings.completed}',
+                    '$completeCount / ${catalog.length} ${strings.completed}',
                 child: SizedBox(
                   width: 58,
                   height: 58,
@@ -209,13 +212,13 @@ class _LearnScreen extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       CircularProgressIndicator(
-                        value: completeCount / lessons.length,
+                        value: completeCount / catalog.length,
                         strokeWidth: 7,
                         backgroundColor: Theme.of(
                           context,
                         ).colorScheme.surfaceContainerHighest,
                       ),
-                      Text('$completeCount/${lessons.length}'),
+                      Text('$completeCount/${catalog.length}'),
                     ],
                   ),
                 ),
@@ -286,7 +289,7 @@ class _LearnScreen extends StatelessWidget {
           for (final kind in LessonKind.values) ...[
             _ModuleHeader(kind: kind),
             const SizedBox(height: 10),
-            for (final lesson in lessons.where((item) => item.kind == kind))
+            for (final lesson in catalog.where((item) => item.kind == kind))
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: _LessonTile(
@@ -437,7 +440,7 @@ class _ReviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings(Localizations.localeOf(context));
-    final reviewLessons = lessons
+    final reviewLessons = controller.activeLessons
         .where((lesson) => controller.reviewLessonIds.contains(lesson.id))
         .toList(growable: false);
     return _ScreenFrame(
@@ -487,14 +490,23 @@ class _ProgressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings(Localizations.localeOf(context));
-    final latest = controller.latestAttemptByLesson.values;
+    final activeIds = controller.activeLessons
+        .map((lesson) => lesson.id)
+        .toSet();
+    final latest = controller.latestAttemptByLesson.entries
+        .where((entry) => activeIds.contains(entry.key))
+        .map((entry) => entry.value);
     final mastered = latest.where((attempt) => attempt.isCorrect).length;
     final misconceptionCounts = <String, int>{};
     for (final attempt in controller.attempts.where(
       (item) => !item.isCorrect,
     )) {
       final label =
-          lessonById(attempt.misconception)?.misconception.of(context) ??
+          attempt.misconceptionText?.of(context) ??
+          lessonById(
+            attempt.misconception,
+            controller.activeLessons,
+          )?.misconception.of(context) ??
           attempt.misconception;
       misconceptionCounts.update(
         label,
@@ -531,7 +543,7 @@ class _ProgressScreen extends StatelessWidget {
               ),
               _MetricCard(
                 label: strings.mastered,
-                value: '$mastered/${lessons.length}',
+                value: '$mastered/${controller.activeLessons.length}',
               ),
             ],
           ),
@@ -603,6 +615,7 @@ class _SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings(Localizations.localeOf(context));
+    final catalogRevision = controller.catalogRevision;
     return _ScreenFrame(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -640,6 +653,71 @@ class _SettingsScreen extends StatelessWidget {
                     onSelectionChanged: (selection) {
                       controller.setLocale(Locale(selection.single));
                     },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.sync_rounded),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          strings.contentUpdates,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(strings.contentUpdateBody),
+                  const SizedBox(height: 8),
+                  Text(
+                    catalogRevision != null
+                        ? strings.contentVersion(
+                            catalogRevision,
+                            controller.remoteLessonCount,
+                          )
+                        : strings.bundledContentOnly,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  if (controller.catalogErrorMessage != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      strings.contentUpdateFailed,
+                      key: const Key('content-update-error'),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    key: const Key('refresh-content'),
+                    onPressed: controller.isRefreshingCatalog
+                        ? null
+                        : () => controller.refreshLessons(force: true),
+                    icon: controller.isRefreshingCatalog
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.refresh_rounded),
+                    label: Text(
+                      controller.isRefreshingCatalog
+                          ? strings.refreshingContent
+                          : strings.refreshContent,
+                    ),
                   ),
                 ],
               ),

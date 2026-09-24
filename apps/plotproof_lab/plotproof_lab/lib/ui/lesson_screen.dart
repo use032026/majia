@@ -38,11 +38,14 @@ class _LessonScreenState extends State<LessonScreen> {
     final strings = AppStrings(Localizations.localeOf(context));
     final lesson = widget.lesson;
     final isCorrect = _verdict == lesson.correctVerdict;
+    final bottomSafeInset = MediaQuery.viewPaddingOf(context).bottom;
     return Scaffold(
       appBar: AppBar(title: Text(lesson.subtitle.of(context))),
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 6, 20, 36),
+          key: const Key('secondary-page-scroll-view'),
+          padding: EdgeInsets.fromLTRB(20, 6, 20, 36 + bottomSafeInset),
           child: Align(
             alignment: Alignment.topCenter,
             child: ConstrainedBox(
@@ -379,12 +382,27 @@ class _ExplanationCard extends StatelessWidget {
                   ),
                 ),
               const Divider(height: 24),
-              Text(
-                strings.syntheticData,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: foreground),
-              ),
+              if (lesson.source case final source?) ...[
+                Text(
+                  strings.sourceData(source.attribution, source.license),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: foreground),
+                ),
+                const SizedBox(height: 4),
+                SelectableText(
+                  source.url,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: foreground),
+                ),
+              ] else
+                Text(
+                  strings.syntheticData,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: foreground),
+                ),
             ],
           ),
         ),

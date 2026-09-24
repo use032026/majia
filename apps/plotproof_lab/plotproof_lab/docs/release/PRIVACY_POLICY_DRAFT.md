@@ -8,23 +8,24 @@ Effective date: 2026-09-09
 
 - 产品：PlotProof Lab（图证实验室）
 - 账号：不创建或使用账号
-- 服务：离线优先，无应用自有后台
+- 服务：离线优先，无应用自有后台；可定期读取版本化公开数据题目包
 - 变现：免费，无广告、订阅或应用内购买
 
 ## 设备上处理的数据
 
-应用随包提供原创合成教学案例，不导入真实新闻或用户文件。以下信息仅保存在当前设备：
+应用随包提供原创合成教学案例，不导入真实新闻或用户文件。应用还可以从公开 HTTPS 地址下载由 Our World in Data 与 World Bank 公开统计数据生成的题目包。下载请求不包含作答、语言偏好、账号标识或用户输入。以下信息仅保存在当前设备：
 
 - 关卡作答、正确性、完成时间和误区标签；
 - 应用语言偏好。
+- 最后一个通过 schema、来源、参数与 SHA-256 校验的题目包。
 
-这些本地记录用于显示学习进度、错题复练和语言设置。应用源码没有把它们发送给开发者或第三方的业务逻辑；当前依赖清单也不包含广告或分析 SDK。
+这些本地记录用于显示学习进度、错题复练、语言设置和离线题库。应用源码没有把它们发送给开发者或第三方的业务逻辑；当前依赖清单也不包含广告或分析 SDK。题目包请求会按互联网协议向托管服务暴露通常必需的网络信息（例如 IP 地址和请求时间），其处理受托管服务适用条款约束。
 
 ## 收集、追踪与共享
 
 按 Apple 对“收集”（数据离开设备并可在实时请求所需时间之外访问）的定义，当前 MVP 设计为不收集数据、不进行跨 App/网站追踪、不出售或共享个人数据。此陈述只对 2026-09-09 检查的本地源码和无签名归档成立；发布前必须用最终签名 Archive、Xcode Privacy Report、网络行为检查和 App Store Connect 隐私回答再次核对。
 
-归档中嵌入 Flutter 和 shared_preferences_foundation。Flutter 与插件自带隐私清单；shared_preferences_foundation 的清单声明了 UserDefaults 所需理由。应用级 PrivacyInfo.xcprivacy 声明不追踪、不收集。任何依赖、功能或远程服务变更都需要重新评估。
+归档中嵌入 Flutter、shared_preferences_foundation、http 和 crypto 相关依赖。Flutter 与插件自带隐私清单；shared_preferences_foundation 的清单声明了 UserDefaults 所需理由。应用级 PrivacyInfo.xcprivacy 声明不追踪、不收集。发布前仍需通过最终 Archive、网络抓包与第三方托管条款重新判断 App Store Connect 隐私回答。
 
 ## 权限
 

@@ -86,9 +86,38 @@ void main() {
     expect(find.byKey(const Key('unsaved-result')), findsNothing);
     expect(controller.attempts, hasLength(1));
   });
+
+  testWidgets('secondary pages add the current bottom safe-area inset', (
+    tester,
+  ) async {
+    final controller = AppController(MemoryProgressRepository());
+    await controller.initialize(systemLocale: const Locale('zh'));
+
+    await tester.pumpWidget(_lessonApp(controller, lessons.first));
+    await tester.pumpAndSettle();
+
+    var scrollView = tester.widget<SingleChildScrollView>(
+      find.byKey(const Key('secondary-page-scroll-view')),
+    );
+    expect(scrollView.padding, const EdgeInsets.fromLTRB(20, 6, 20, 36));
+
+    await tester.pumpWidget(
+      _lessonApp(controller, lessons.first, bottomViewPadding: 34),
+    );
+    await tester.pumpAndSettle();
+
+    scrollView = tester.widget<SingleChildScrollView>(
+      find.byKey(const Key('secondary-page-scroll-view')),
+    );
+    expect(scrollView.padding, const EdgeInsets.fromLTRB(20, 6, 20, 70));
+  });
 }
 
-Widget _lessonApp(AppController controller, Lesson lesson) {
+Widget _lessonApp(
+  AppController controller,
+  Lesson lesson, {
+  double bottomViewPadding = 0,
+}) {
   return MaterialApp(
     locale: const Locale('zh'),
     supportedLocales: const [Locale('zh'), Locale('en')],
@@ -98,6 +127,12 @@ Widget _lessonApp(AppController controller, Lesson lesson) {
       GlobalCupertinoLocalizations.delegate,
     ],
     theme: AppTheme.light(),
+    builder: (context, child) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(viewPadding: EdgeInsets.only(bottom: bottomViewPadding)),
+      child: child!,
+    ),
     home: LessonScreen(controller: controller, lesson: lesson),
   );
 }

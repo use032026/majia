@@ -1,0 +1,42 @@
+name: PlotProof lesson content refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plotproof-content-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate and validate lesson pack
+        working-directory: apps/plotproof_lab/plotproof_lab
+        run: |
+          python tool/generate_lesson_pack.py
+          python -m json.tool content/lesson_pack.json >/dev/null
+
+      - name: Commit refreshed content
+        run: |
+          if git diff --quiet -- apps/plotproof_lab/plotproof_lab/content/lesson_pack.json; then
+            echo "Lesson pack is unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- apps/plotproof_lab/plotproof_lab/content/lesson_pack.json
+          git commit -m "content(plotproof_lab): refresh public-data lessons"
+          git push

@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-W39",
+  "generatedAt": "2026-09-24T02:31:56.610515Z",
+  "contentSha256": "ebc5551e48d4e5dbad779dc02126e40bd362748b1f03f21cabf4a870f22c7892",
+  "lessons": [
+    {
+      "id": "remote-owid-axis-2026-w39",
+      "revision": "2026-W39",
+      "kind": "axis",
+      "mode": "axisBaseline",
+      "title": {
+        "zh": "真实数据，也会被尺度放大",
+        "en": "Real data, amplified scale"
+      },
+      "subtitle": {
+        "zh": "坐标轴 · 本周公开数据",
+        "en": "Axes · public data this week"
+      },
+      "claim": {
+        "zh": "2023 年，韩国的预期寿命远高于澳大利亚",
+        "en": "In 2023, life expectancy in South Korea is far higher than in Australia"
+      },
+      "prompt": {
+        "zh": "截断纵轴后的柱高公平支持“远高于”吗？",
+        "en": "Does the cropped bar height fairly support \"far higher\"?"
+      },
+      "correctVerdict": "misleading",
+      "explanation": {
+        "zh": "公开数据分别约为 83.9 与 84.3 年，相差 0.4 年。当前截断范围把视觉差异放大约 5.0 倍；数据真实不等于呈现方式自动公平。",
+        "en": "The public values are about 83.9 and 84.3 years, a gap of 0.4 years. The cropped range amplifies the visual difference about 5.0 times; real data does not automatically make a presentation fair."
+      },
+      "checklist": [
+        {
+          "zh": "核对纵轴起点和完整量程",
+          "en": "Check the baseline and full scale"
+        },
+        {
+          "zh": "把形容词与实际差值对照",
+          "en": "Compare the wording with the numeric gap"
+        }
+      ],
+      "misconception": {
+        "zh": "因为数据真实就忽略了呈现尺度",
+        "en": "Assume real data guarantees a fair scale"
+      },
+      "values": [
+        83.9,
+        84.3
+      ],
+      "parameters": {
+        "initial": 80.0,
+        "fair": 0.0,
+        "min": 0.0,
+        "max": 83.0,
+        "axisMaximum": 100.0
+      },
+      "source": {
+        "name": "Our World in Data",
+        "url": "https://ourworldindata.org/grapher/life-expectancy",
+        "license": "CC BY 4.0; underlying provider terms apply",
+        "attribution": "Our World in Data; Riley (2005); Zijdeman et al. (2015); HMD (2025); UN WPP (2024)"
+      }
+    },
+    {
+      "id": "remote-world-bank-axis-2026-w39",
+      "revision": "2026-W39",
+      "kind": "axis",
+      "mode": "axisBaseline",
+      "title": {
+        "zh": "小差值，大柱高",
+        "en": "Small gap, tall bars"
+      },
+      "subtitle": {
+        "zh": "坐标轴 · 世界银行数据",
+        "en": "Axes · World Bank data"
+      },
+      "claim": {
+        "zh": "2024 年，美国的出生时预期寿命显著高于中国",
+        "en": "In 2024, life expectancy at birth in United States is dramatically higher than in China"
+      },
+      "prompt": {
+        "zh": "当前纵轴是否把差值讲得过头？",
+        "en": "Does the current axis overstate the difference?"
+      },
+      "correctVerdict": "misleading",
+      "explanation": {
+        "zh": "两项公开数据约为 78.0 和 78.9，实际差值 0.9。截断范围使视觉差异约放大 4.0 倍，因此“显著高于”超过了图中数值能支持的程度。",
+        "en": "The public values are about 78.0 and 78.9, a gap of 0.9. The cropped range amplifies the visual difference about 4.0 times, so “dramatically higher” goes beyond what the values support."
+      },
+      "checklist": [
+        {
+          "zh": "先读数值，再比较柱高",
+          "en": "Read the values before comparing bar height"
+        },
+        {
+          "zh": "检查来源年份和指标单位",
+          "en": "Check the source year and indicator unit"
+        }
+      ],
+      "misconception": {
+        "zh": "把截断后的柱高当成实际比例",
+        "en": "Treat cropped bar height as the real proportion"
+      },
+      "values": [
+        78.0,
+        78.9
+      ],
+      "parameters": {
+        "initial": 75.0,
+        "fair": 0.0,
+        "min": 0.0,
+        "max": 77.0,
+        "axisMaximum": 100.0
+      },
+      "source": {
+        "name": "World Bank",
+        "url": "https://api.worldbank.org/v2/country/AUS;BRA;CHN;DEU;FRA;GBR;IND;JPN;KOR;MEX;USA;ZAF/indicator/SP.DYN.LE00.IN?date=2019:2026&format=json&per_page=1000",
+        "license": "CC BY 4.0",
+        "attribution": "World Bank, World Development Indicators: Life expectancy at birth, total (years)"
+      }
+    },
+    {
+      "id": "remote-owid-correlation-2026-w39",
+      "revision": "2026-W39",
+      "kind": "correlation",
+      "mode": "correlationOutlier",
+      "title": {
+        "zh": "收入与寿命的散点",
+        "en": "Income and longevity scatter"
+      },
+      "subtitle": {
+        "zh": "相关性 · 本周公开数据",
+        "en": "Correlation · public data this week"
+      },
+      "claim": {
+        "zh": "2023 年这些国家中，收入越高，寿命就越稳定地增长",
+        "en": "Across these countries in 2023, higher income consistently means longer life"
+      },
+      "prompt": {
+        "zh": "一个相关系数足以支持“稳定”吗？",
+        "en": "Is one correlation coefficient enough to claim consistency?"
+      },
+      "correctVerdict": "needsContext",
+      "explanation": {
+        "zh": "当前样本的相关系数约为 0.79；移除最敏感的数据点后约为 0.90。相关性还受国家选择、年份、遗漏变量和指标定义影响，不能只用一个系数概括。",
+        "en": "The correlation is about 0.79; without the most influential point it is about 0.90. Country selection, year, omitted variables, and indicator definitions still matter, so one coefficient is not enough."
+      },
+      "checklist": [
+        {
+          "zh": "比较包含与排除敏感点的结果",
+          "en": "Compare results with and without the influential point"
+        },
+        {
+          "zh": "核对样本选择与遗漏变量",
+          "en": "Check sample selection and omitted variables"
+        }
+      ],
+      "misconception": {
+        "zh": "把一个相关系数当成稳定规律",
+        "en": "Treat one correlation coefficient as a stable rule"
+      },
+      "values": [
+        53.423,
+        81.302,
+        8.871,
+        72.003,
+        47.387,
+        84.712,
+        54.029,
+        84.329,
+        21.865,
+        75.069,
+        13.695,
+        66.139,
+        60.685,
+        83.923,
+        19.08,
+        75.848,
+        74.352,
+        79.304
+      ],
+      "parameters": {
+        "initial": 1.0,
+        "fair": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "source": {
+        "name": "Our World in Data",
+        "url": "https://ourworldindata.org/grapher/life-expectancy",
+        "license": "CC BY 4.0; underlying provider terms apply",
+        "attribution": "Our World in Data; life expectancy: Riley (2005); Zijdeman et al. (2015); HMD (2025); UN WPP (2024); GDP per capita: World Bank via OWID"
+      }
+    },
+    {
+      "id": "remote-world-bank-correlation-2026-w39",
+      "revision": "2026-W39",
+      "kind": "correlation",
+      "mode": "correlationOutlier",
+      "title": {
+        "zh": "同向变化不是完整解释",
+        "en": "Moving together is not the full story"
+      },
+      "subtitle": {
+        "zh": "相关性 · 世界银行数据",
+        "en": "Correlation · World Bank data"
+      },
+      "claim": {
+        "zh": "2024 年样本证明了城镇人口占比与互联网使用率存在稳定关系",
+        "en": "The 2024 sample proves a stable relationship between urban population share and internet use"
+      },
+      "prompt": {
+        "zh": "当前散点和相关系数足以称为“证明”吗？",
+        "en": "Are this scatter and coefficient enough to call it \"proof\"?"
+      },
+      "correctVerdict": "needsContext",
+      "explanation": {
+        "zh": "当前相关系数约为 0.80，移除最敏感点后约为 0.40。即使方向没有改变，横截面相关仍不能说明机制、时间顺序或因果。",
+        "en": "The correlation is about 0.80, and about 0.40 without the most influential point. Even if the direction remains, cross-sectional correlation does not establish mechanism, timing, or causation."
+      },
+      "checklist": [
+        {
+          "zh": "查看散点而不是只读 r",
+          "en": "Inspect the points instead of reading r alone"
+        },
+        {
+          "zh": "区分相关、预测与因果",
+          "en": "Separate association, prediction, and causation"
+        }
+      ],
+      "misconception": {
+        "zh": "把横截面相关称为因果证明",
+        "en": "Call cross-sectional correlation causal proof"
+      },
+      "values": [
+        83.243,
+        95.472,
+        92.19,
+        85.542,
+        81.168,
+        97.896,
+        79.754,
+        83.122,
+        80.125,
+        94.694,
+        63.692,
+        78.358,
+        87.602,
+        96.131,
+        87.896,
+        84.463,
+        35.379,
+        64.943
+      ],
+      "parameters": {
+        "initial": 1.0,
+        "fair": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "source": {
+        "name": "World Bank",
+        "url": "https://api.worldbank.org/v2/country/AUS;BRA;CHN;DEU;FRA;GBR;IND;JPN;KOR;MEX;USA;ZAF/indicator/SP.URB.TOTL.IN.ZS?date=2019:2026&format=json&per_page=1000",
+        "license": "CC BY 4.0",
+        "attribution": "World Bank, World Development Indicators: Urban population (% of total population); Individuals using the Internet (% of population)"
+      }
+    }
+  ]
+}
