@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 import '../data/csv_gateway.dart';
+import '../data/import_decoder.dart';
 import '../data/project_store.dart';
 import '../domain/data_project.dart';
 import '../domain/export_builder.dart';
@@ -14,12 +15,14 @@ class WorkbenchController extends ChangeNotifier {
     required this.store,
     required this.gateway,
     this.exportBuilder = const ExportBuilder(),
+    this.importDecoder = const TabularImportDecoder(),
   });
 
   final QualityEngine engine;
   final ProjectStore store;
   final CsvGateway gateway;
   final ExportBuilder exportBuilder;
+  final TabularImportDecoder importDecoder;
 
   DataProject? project;
   bool busy = false;
@@ -56,16 +59,38 @@ class WorkbenchController extends ChangeNotifier {
     }
   }
 
-  Future<void> importCsv() async {
+  Future<ImportDraft?> prepareImport() async {
     errorCode = null;
     busy = true;
     notifyListeners();
     try {
-      final imported = await gateway.pickCsv();
-      if (imported == null) return;
+      final file = await gateway.pickDataFile();
+      if (file == null) return null;
+      return importDecoder.inspect(file);
+    } on FormatException catch (error) {
+      errorCode = error.message;
+      return null;
+    } on Object {
+      errorCode = 'importFailed';
+      return null;
+    } finally {
+      busy = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> importSelected(
+    ImportDraft draft,
+    ImportSelection selection,
+  ) async {
+    errorCode = null;
+    busy = true;
+    notifyListeners();
+    try {
+      final imported = importDecoder.decode(draft, selection);
       final next = engine.importCsv(
         fileName: imported.fileName,
-        source: imported.content,
+        source: imported.csv,
       );
       try {
         await store.save(next);
@@ -185,7 +210,7 @@ class WorkbenchController extends ChangeNotifier {
     try {
       final bundle = exportBuilder.build(current, chinese: chinese);
       final baseName = current.fileName.replaceFirst(
-        RegExp(r'\.csv$', caseSensitive: false),
+        RegExp(r'\.(csv|tsv|txt|xlsx)$', caseSensitive: false),
         '',
       );
       await gateway.export(

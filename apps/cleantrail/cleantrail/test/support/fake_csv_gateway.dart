@@ -3,9 +3,10 @@ import 'dart:ui';
 import 'package:cleantrail/data/csv_gateway.dart';
 
 class FakeCsvGateway implements CsvGateway {
-  FakeCsvGateway({this.nextImport});
+  FakeCsvGateway({this.nextFile});
 
-  ImportedCsv? nextImport;
+  PickedDataFile? nextFile;
+  String? exportedBaseName;
   String? exportedCsv;
   String? exportedReport;
   bool? exportedComplete;
@@ -14,7 +15,7 @@ class FakeCsvGateway implements CsvGateway {
   Future<void> cleanupTemporaryFiles() async {}
 
   @override
-  Future<ImportedCsv?> pickCsv() async => nextImport;
+  Future<PickedDataFile?> pickDataFile() async => nextFile;
 
   @override
   Future<void> export({
@@ -25,6 +26,7 @@ class FakeCsvGateway implements CsvGateway {
     required bool complete,
     Rect? shareOrigin,
   }) async {
+    exportedBaseName = baseName;
     exportedCsv = csv;
     exportedReport = report;
     exportedComplete = complete;

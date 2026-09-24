@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -8,19 +7,31 @@ import 'package:share_plus/share_plus.dart';
 
 import 'csv_gateway.dart';
 
+typedef OpenFile =
+    Future<selector.XFile?> Function({
+      required List<selector.XTypeGroup> acceptedTypeGroups,
+    });
+
 class NativeCsvGateway implements CsvGateway {
   NativeCsvGateway({
     Future<Directory> Function()? temporaryDirectoryProvider,
     Future<void> Function(ShareParams)? share,
+    OpenFile? openFile,
   }) : _temporaryDirectoryProvider =
            temporaryDirectoryProvider ?? getTemporaryDirectory,
-       _share = share ?? ((params) async => SharePlus.instance.share(params));
+       _share = share ?? ((params) async => SharePlus.instance.share(params)),
+       _openFile = openFile ?? _openSystemFile;
 
   static const maxFileBytes = 5 * 1024 * 1024;
   static const _exportDirectoryName = 'cleantrail-exports';
 
   final Future<Directory> Function() _temporaryDirectoryProvider;
   final Future<void> Function(ShareParams) _share;
+  final OpenFile _openFile;
+
+  static Future<selector.XFile?> _openSystemFile({
+    required List<selector.XTypeGroup> acceptedTypeGroups,
+  }) => selector.openFile(acceptedTypeGroups: acceptedTypeGroups);
 
   Future<Directory> _exportDirectory() async {
     final temporary = await _temporaryDirectoryProvider();
@@ -34,25 +45,35 @@ class NativeCsvGateway implements CsvGateway {
   }
 
   @override
-  Future<ImportedCsv?> pickCsv() async {
-    const csvType = selector.XTypeGroup(
-      label: 'CSV',
-      extensions: ['csv'],
-      mimeTypes: ['text/csv', 'text/plain'],
+  Future<PickedDataFile?> pickDataFile() async {
+    const dataType = selector.XTypeGroup(
+      label: 'Tabular data',
+      extensions: ['csv', 'tsv', 'txt', 'xlsx'],
+      mimeTypes: [
+        'text/csv',
+        'text/tab-separated-values',
+        'text/plain',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ],
+      uniformTypeIdentifiers: [
+        'public.comma-separated-values-text',
+        'public.tab-separated-values-text',
+        'public.plain-text',
+        'org.openxmlformats.spreadsheetml.sheet',
+      ],
     );
-    final file = await selector.openFile(acceptedTypeGroups: [csvType]);
+    final file = await _openFile(acceptedTypeGroups: [dataType]);
     if (file == null) return null;
     if (await file.length() > maxFileBytes) {
       throw const FormatException('fileTooLarge');
     }
-    final bytes = await file.readAsBytes();
     try {
-      return ImportedCsv(
+      return PickedDataFile(
         fileName: file.name,
-        content: const Utf8Decoder(allowMalformed: false).convert(bytes),
+        bytes: await file.readAsBytes(),
       );
-    } on FormatException {
-      throw const FormatException('invalidEncoding');
+    } on FileSystemException {
+      throw const FormatException('unreadableFile');
     }
   }
 

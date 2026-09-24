@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cleantrail/data/native_csv_gateway.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -13,6 +14,35 @@ void main() {
   tearDown(() async {
     if (await temporary.exists()) await temporary.delete(recursive: true);
   });
+
+  test(
+    'import supplies every supported tabular type required by iOS',
+    () async {
+      List<XTypeGroup>? requestedTypes;
+      final gateway = NativeCsvGateway(
+        openFile: ({required acceptedTypeGroups}) async {
+          requestedTypes = acceptedTypeGroups;
+          return null;
+        },
+      );
+
+      expect(await gateway.pickDataFile(), isNull);
+      expect(requestedTypes, hasLength(1));
+      expect(requestedTypes!.single.extensions, ['csv', 'tsv', 'txt', 'xlsx']);
+      expect(requestedTypes!.single.mimeTypes, [
+        'text/csv',
+        'text/tab-separated-values',
+        'text/plain',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ]);
+      expect(requestedTypes!.single.uniformTypeIdentifiers, [
+        'public.comma-separated-values-text',
+        'public.tab-separated-values-text',
+        'public.plain-text',
+        'org.openxmlformats.spreadsheetml.sheet',
+      ]);
+    },
+  );
 
   test('export shares draft names and removes both staged files', () async {
     final gateway = NativeCsvGateway(

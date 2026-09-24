@@ -42,9 +42,29 @@ void main() {
 
     await controller.export(chinese: true);
 
+    expect(gateway.exportedBaseName, 'quality_sample');
     expect(gateway.exportedCsv, contains('date,value,region'));
     expect(gateway.exportedReport, contains('数据质量报告'));
     expect(gateway.exportedComplete, isFalse);
+  });
+
+  test('Excel source names export as clean CSV base names', () async {
+    final gateway = FakeCsvGateway();
+    final store = MemoryProjectStore()
+      ..value = const QualityEngine().importCsv(
+        fileName: 'quarterly.xlsx',
+        source: 'region,amount\nNorth,12\nSouth,14\n',
+      );
+    final controller = WorkbenchController(
+      engine: const QualityEngine(),
+      store: store,
+      gateway: gateway,
+    );
+    await controller.load();
+
+    await controller.export(chinese: false);
+
+    expect(gateway.exportedBaseName, 'quarterly');
   });
 
   test('failed save keeps the current project and undo state', () async {

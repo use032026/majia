@@ -1,13 +1,91 @@
+import 'package:cleantrail/data/csv_gateway.dart';
 import 'package:cleantrail/data/project_store.dart';
 import 'package:cleantrail/domain/quality_engine.dart';
 import 'package:cleantrail/main.dart';
 import 'package:cleantrail/state/workbench_controller.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'support/fake_csv_gateway.dart';
 
 void main() {
+  testWidgets('text import confirms detected format before inspection', (
+    tester,
+  ) async {
+    final gateway = FakeCsvGateway(
+      nextFile: PickedDataFile(
+        fileName: 'regional.tsv',
+        bytes: 'region\tamount\nNorth\t12\nSouth\t14\n'.codeUnits,
+      ),
+    );
+    final controller = WorkbenchController(
+      engine: const QualityEngine(),
+      store: MemoryProjectStore(),
+      gateway: gateway,
+    );
+
+    await tester.pumpWidget(CleanTrailApp(controller: controller));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Import data'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Confirm import'), findsOneWidget);
+    expect(find.byKey(const Key('import-format-choice')), findsOneWidget);
+    expect(find.byKey(const Key('import-encoding-choice')), findsOneWidget);
+    expect(find.text('TSV · tab separated'), findsOneWidget);
+    expect(find.text('UTF-8'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('confirm-import')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('project-dashboard')), findsOneWidget);
+    expect(find.text('regional.tsv'), findsOneWidget);
+    expect(controller.project!.headers, ['region', 'amount']);
+  });
+
+  testWidgets('Excel import offers worksheet selection', (tester) async {
+    final workbook = Excel.createExcel();
+    workbook.rename('Sheet1', 'North');
+    workbook['North'].appendRow([
+      TextCellValue('region'),
+      TextCellValue('amount'),
+    ]);
+    workbook['North'].appendRow([TextCellValue('North'), IntCellValue(12)]);
+    workbook['South'].appendRow([
+      TextCellValue('region'),
+      TextCellValue('amount'),
+    ]);
+    workbook['South'].appendRow([TextCellValue('South'), IntCellValue(14)]);
+    final gateway = FakeCsvGateway(
+      nextFile: PickedDataFile(
+        fileName: 'regional.xlsx',
+        bytes: workbook.encode()!,
+      ),
+    );
+    final controller = WorkbenchController(
+      engine: const QualityEngine(),
+      store: MemoryProjectStore(),
+      gateway: gateway,
+    );
+
+    await tester.pumpWidget(CleanTrailApp(controller: controller));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Import data'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('import-sheet-choice')), findsOneWidget);
+    expect(find.text('Excel · XLSX'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('import-sheet-choice')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('South').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('confirm-import')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('project-dashboard')), findsOneWidget);
+    expect(controller.project!.records.single.values, ['South', '14']);
+  });
+
   testWidgets('sample opens the complete repair workspace in both languages', (
     tester,
   ) async {
@@ -20,6 +98,14 @@ void main() {
     await tester.pumpWidget(CleanTrailApp(controller: controller));
     await tester.pumpAndSettle();
 
+    final brandMark = tester.widget<Image>(
+      find.byKey(const Key('cleantrail-brand-mark')),
+    );
+    expect(
+      (brandMark.image as AssetImage).assetName,
+      'ios/Runner/Assets.xcassets/AppIcon.appiconset/'
+      'Icon-App-1024x1024@1x.png',
+    );
     expect(find.text('A calm checkpoint before analysis'), findsOneWidget);
     expect(find.text('Try built-in sample'), findsOneWidget);
 

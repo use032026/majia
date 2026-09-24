@@ -1,14 +1,17 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
-class ImportedCsv {
-  const ImportedCsv({required this.fileName, required this.content});
+class PickedDataFile {
+  PickedDataFile({required this.fileName, required List<int> bytes})
+    : bytes = Uint8List.fromList(bytes);
+
   final String fileName;
-  final String content;
+  final Uint8List bytes;
 }
 
 abstract interface class CsvGateway {
   Future<void> cleanupTemporaryFiles();
-  Future<ImportedCsv?> pickCsv();
+  Future<PickedDataFile?> pickDataFile();
   Future<void> export({
     required String baseName,
     required String csv,

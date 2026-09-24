@@ -7,7 +7,7 @@
 
 | 环节 | 结论 | 证据与边界 |
 | --- | --- | --- |
-| CSV 导入/取消/失败 | 通过（代码/自动化） | UTF-8、5 MB、10,000 行、100 列、100,000 cells、500 issues；取消不替换项目，保存成功后才提交新项目；真实 Files providers 待真机 |
+| 表格导入/识别/取消/失败 | 通过（代码/自动化） | CSV/TSV/TXT 支持 UTF-8/GBK 识别与手动选择；XLSX 支持工作表选择；5 MB、10,000 行、100 列、100,000 cells、500 issues；取消不替换项目，保存成功后才提交新项目；真实 Files providers 待真机 |
 | 五类检测 | 通过 | missing、duplicate、whitespace、mixed numeric type、mixed/invalid date 均有规则测试 |
 | 确认修复与保留 | 通过 | 建议、手输、删除重复、keep-as-is；表头原样保留，不做隐式修改 |
 | 自动复检 | 通过 | fixed 缺陷重现会重新 open；ignored 只在相同 ID 与原值仍存在时保持，消失时退役、值变化时重开 |

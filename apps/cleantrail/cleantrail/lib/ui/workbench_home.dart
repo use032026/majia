@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../app/app_localizations.dart';
+import '../data/import_decoder.dart';
 import '../domain/data_project.dart';
 import '../state/workbench_controller.dart';
 
@@ -141,7 +142,7 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
                   child: project == null
                       ? _EmptyWorkspace(
                           busy: controller.busy,
-                          onImport: controller.importCsv,
+                          onImport: _startImport,
                           onSample: controller.loadSample,
                         )
                       : _ProjectDashboard(
@@ -156,6 +157,19 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
         );
       },
     );
+  }
+
+  Future<void> _startImport() async {
+    final draft = await widget.controller.prepareImport();
+    if (!mounted || draft == null) return;
+    final selection = await showModalBottomSheet<ImportSelection>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => _ImportOptionsSheet(draft: draft),
+    );
+    if (selection == null || !mounted) return;
+    await widget.controller.importSelected(draft, selection);
   }
 
   Future<void> _confirmClear(BuildContext context) async {
@@ -197,7 +211,7 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
         ],
       ),
     );
-    if (confirmed == true) await widget.controller.importCsv();
+    if (confirmed == true) await _startImport();
   }
 
   Future<void> _showPrivacy(BuildContext context) async {
@@ -247,29 +261,195 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
 class _AppMark extends StatelessWidget {
   const _AppMark();
 
+  static const _assetName =
+      'ios/Runner/Assets.xcassets/AppIcon.appiconset/'
+      'Icon-App-1024x1024@1x.png';
+
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     return Semantics(
       label: 'CleanTrail',
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: colors.primary,
-          borderRadius: BorderRadius.circular(11),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(width: 3, height: 22, color: colors.onPrimary),
-            Container(width: 22, height: 3, color: colors.onPrimary),
-            Icon(Icons.check, size: 18, color: colors.secondaryContainer),
-          ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(11),
+        child: Image.asset(
+          _assetName,
+          key: const Key('cleantrail-brand-mark'),
+          excludeFromSemantics: true,
+          width: 36,
+          height: 36,
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.high,
         ),
       ),
     );
   }
+}
+
+class _ImportOptionsSheet extends StatefulWidget {
+  const _ImportOptionsSheet({required this.draft});
+
+  final ImportDraft draft;
+
+  @override
+  State<_ImportOptionsSheet> createState() => _ImportOptionsSheetState();
+}
+
+class _ImportOptionsSheetState extends State<_ImportOptionsSheet> {
+  late ImportFormat format;
+  ImportEncoding? encoding;
+  String? sheetName;
+
+  @override
+  void initState() {
+    super.initState();
+    format = widget.draft.detectedFormat;
+    encoding = widget.draft.detectedEncoding;
+    sheetName = widget.draft.sheetNames.firstOrNull;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final draft = widget.draft;
+    final formatOptions = draft.isSpreadsheet
+        ? const [ImportFormat.xlsx]
+        : const [ImportFormat.csv, ImportFormat.tsv];
+    final detected = [
+      _formatLabel(context, draft.detectedFormat),
+      if (draft.detectedEncoding != null)
+        _encodingLabel(context, draft.detectedEncoding!),
+    ].join(' · ');
+    return SafeArea(
+      child: Padding(
+        key: const Key('import-options-insets'),
+        padding: EdgeInsets.fromLTRB(
+          24,
+          4,
+          24,
+          20 + MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                context.s.get('confirmImport'),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                draft.file.fileName,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                context.s.get('detectedAs').replaceAll('{value}', detected),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<ImportFormat>(
+                key: const Key('import-format-choice'),
+                initialValue: format,
+                decoration: InputDecoration(
+                  labelText: context.s.get('dataFormat'),
+                  border: const OutlineInputBorder(),
+                ),
+                items: formatOptions
+                    .map(
+                      (option) => DropdownMenuItem(
+                        value: option,
+                        child: Text(_formatLabel(context, option)),
+                      ),
+                    )
+                    .toList(),
+                onChanged: formatOptions.length == 1
+                    ? null
+                    : (value) {
+                        if (value != null) setState(() => format = value);
+                      },
+              ),
+              if (!draft.isSpreadsheet) ...[
+                const SizedBox(height: 14),
+                DropdownButtonFormField<ImportEncoding>(
+                  key: const Key('import-encoding-choice'),
+                  initialValue: encoding,
+                  decoration: InputDecoration(
+                    labelText: context.s.get('textEncoding'),
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: ImportEncoding.values
+                      .map(
+                        (option) => DropdownMenuItem(
+                          value: option,
+                          child: Text(_encodingLabel(context, option)),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) => setState(() => encoding = value),
+                ),
+              ],
+              if (draft.isSpreadsheet) ...[
+                const SizedBox(height: 14),
+                DropdownButtonFormField<String>(
+                  key: const Key('import-sheet-choice'),
+                  initialValue: sheetName,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: context.s.get('worksheet'),
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: draft.sheetNames
+                      .map(
+                        (name) => DropdownMenuItem(
+                          value: name,
+                          child: Text(name, overflow: TextOverflow.ellipsis),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) => setState(() => sheetName = value),
+                ),
+              ],
+              const SizedBox(height: 12),
+              Text(
+                context.s.get('importOptionsHelp'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 20),
+              FilledButton.icon(
+                key: const Key('confirm-import'),
+                onPressed: () => Navigator.pop(
+                  context,
+                  ImportSelection(
+                    format: format,
+                    encoding: draft.isSpreadsheet ? null : encoding,
+                    sheetName: draft.isSpreadsheet ? sheetName : null,
+                  ),
+                ),
+                icon: const Icon(Icons.fact_check_outlined),
+                label: Text(context.s.get('startInspection')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatLabel(BuildContext context, ImportFormat option) =>
+      switch (option) {
+        ImportFormat.csv => context.s.get('csvFormat'),
+        ImportFormat.tsv => context.s.get('tsvFormat'),
+        ImportFormat.xlsx => context.s.get('excelFormat'),
+      };
+
+  String _encodingLabel(BuildContext context, ImportEncoding option) =>
+      switch (option) {
+        ImportEncoding.utf8 => context.s.get('utf8Encoding'),
+        ImportEncoding.gbk => context.s.get('gbkEncoding'),
+      };
 }
 
 class _EmptyWorkspace extends StatelessWidget {
