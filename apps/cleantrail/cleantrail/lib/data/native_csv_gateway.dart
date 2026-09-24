@@ -15,7 +15,7 @@ typedef OpenFile =
 class NativeCsvGateway implements CsvGateway {
   NativeCsvGateway({
     Future<Directory> Function()? temporaryDirectoryProvider,
-    Future<void> Function(ShareParams)? share,
+    Future<ShareResult> Function(ShareParams)? share,
     OpenFile? openFile,
   }) : _temporaryDirectoryProvider =
            temporaryDirectoryProvider ?? getTemporaryDirectory,
@@ -26,7 +26,7 @@ class NativeCsvGateway implements CsvGateway {
   static const _exportDirectoryName = 'cleantrail-exports';
 
   final Future<Directory> Function() _temporaryDirectoryProvider;
-  final Future<void> Function(ShareParams) _share;
+  final Future<ShareResult> Function(ShareParams) _share;
   final OpenFile _openFile;
 
   static Future<selector.XFile?> _openSystemFile({
@@ -78,7 +78,7 @@ class NativeCsvGateway implements CsvGateway {
   }
 
   @override
-  Future<void> export({
+  Future<ExportOutcome> export({
     required String baseName,
     required String csv,
     required String report,
@@ -96,7 +96,7 @@ class NativeCsvGateway implements CsvGateway {
     try {
       await csvFile.writeAsString(csv, flush: true);
       await reportFile.writeAsString(report, flush: true);
-      await _share(
+      final result = await _share(
         ShareParams(
           title: 'CleanTrail export',
           text: shareText,
@@ -108,6 +108,11 @@ class NativeCsvGateway implements CsvGateway {
           ],
         ),
       );
+      return switch (result.status) {
+        ShareResultStatus.success => ExportOutcome.completed,
+        ShareResultStatus.dismissed => ExportOutcome.incomplete,
+        ShareResultStatus.unavailable => ExportOutcome.unconfirmed,
+      };
     } finally {
       try {
         if (await csvFile.exists()) await csvFile.delete();

@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 
 import '../app/app_localizations.dart';
+import '../data/csv_gateway.dart';
 import '../data/import_decoder.dart';
 import '../domain/data_project.dart';
 import '../state/workbench_controller.dart';
@@ -173,19 +175,21 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
   }
 
   Future<void> _confirmClear(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await cupertino.showCupertinoDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.s.get('deleteConfirmTitle')),
-        content: Text(context.s.get('deleteConfirmBody')),
+      barrierDismissible: true,
+      builder: (dialogContext) => cupertino.CupertinoAlertDialog(
+        title: Text(dialogContext.s.get('deleteConfirmTitle')),
+        content: Text(dialogContext.s.get('deleteConfirmBody')),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(context.s.get('cancel')),
+          cupertino.CupertinoDialogAction(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.s.get('cancel')),
           ),
-          FilledButton.tonal(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.s.get('remove')),
+          cupertino.CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(dialogContext.s.get('remove')),
           ),
         ],
       ),
@@ -194,19 +198,21 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
   }
 
   Future<void> _confirmNewFile(BuildContext context) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await cupertino.showCupertinoDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.s.get('newFileConfirmTitle')),
-        content: Text(context.s.get('newFileConfirmBody')),
+      barrierDismissible: true,
+      builder: (dialogContext) => cupertino.CupertinoAlertDialog(
+        title: Text(dialogContext.s.get('newFileConfirmTitle')),
+        content: Text(dialogContext.s.get('newFileConfirmBody')),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(context.s.get('cancel')),
+          cupertino.CupertinoDialogAction(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(dialogContext.s.get('cancel')),
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.s.get('continueImport')),
+          cupertino.CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(dialogContext.s.get('continueImport')),
           ),
         ],
       ),
@@ -245,8 +251,9 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                FilledButton.tonal(
+                cupertino.CupertinoButton.filled(
                   onPressed: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(14),
                   child: Text(context.s.get('close')),
                 ),
               ],
@@ -418,7 +425,7 @@ class _ImportOptionsSheetState extends State<_ImportOptionsSheet> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 20),
-              FilledButton.icon(
+              cupertino.CupertinoButton.filled(
                 key: const Key('confirm-import'),
                 onPressed: () => Navigator.pop(
                   context,
@@ -428,8 +435,15 @@ class _ImportOptionsSheetState extends State<_ImportOptionsSheet> {
                     sheetName: draft.isSpreadsheet ? sheetName : null,
                   ),
                 ),
-                icon: const Icon(Icons.fact_check_outlined),
-                label: Text(context.s.get('startInspection')),
+                borderRadius: BorderRadius.circular(14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(cupertino.CupertinoIcons.check_mark_circled),
+                    const SizedBox(width: 8),
+                    Text(context.s.get('startInspection')),
+                  ],
+                ),
               ),
             ],
           ),
@@ -825,7 +839,7 @@ class _IssueSheetState extends State<_IssueSheet> {
               ),
             ],
             const SizedBox(height: 20),
-            FilledButton(
+            cupertino.CupertinoButton.filled(
               onPressed: () async {
                 final navigator = Navigator.of(sheetContext);
                 await controller.resolveIssue(
@@ -838,6 +852,7 @@ class _IssueSheetState extends State<_IssueSheet> {
                   navigator.pop();
                 }
               },
+              borderRadius: BorderRadius.circular(14),
               child: Text(
                 issue.kind == IssueKind.duplicateRow
                     ? sheetContext.s.get('removeDuplicate')
@@ -847,7 +862,7 @@ class _IssueSheetState extends State<_IssueSheet> {
               ),
             ),
             const SizedBox(height: 8),
-            TextButton(
+            cupertino.CupertinoButton(
               onPressed: () async {
                 final navigator = Navigator.of(sheetContext);
                 await controller.resolveIssue(issue.id, ignore: true);
@@ -1148,6 +1163,59 @@ class _TablePreview extends StatelessWidget {
   const _TablePreview({required this.project});
   final DataProject project;
 
+  Future<void> _showCellDetails(
+    BuildContext context, {
+    required int row,
+    required int column,
+  }) async {
+    final value = project.records[row].values[column];
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          key: const Key('preview-cell-sheet'),
+          padding: const EdgeInsets.fromLTRB(22, 4, 22, 22),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  sheetContext.s.get('cellDetails'),
+                  style: Theme.of(sheetContext).textTheme.headlineSmall
+                      ?.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  '${sheetContext.s.get('row')} ${row + 1}',
+                  style: Theme.of(sheetContext).textTheme.labelLarge,
+                ),
+                const SizedBox(height: 4),
+                SelectableText(_displayHeader(sheetContext, project, column)),
+                const SizedBox(height: 12),
+                Container(
+                  key: const Key('preview-cell-full-value'),
+                  child: _ValueBlock(
+                    label: sheetContext.s.get('fullValue'),
+                    value: value.isEmpty ? '—' : value,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                cupertino.CupertinoButton.filled(
+                  onPressed: () => Navigator.pop(sheetContext),
+                  borderRadius: BorderRadius.circular(14),
+                  child: Text(sheetContext.s.get('close')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final shown = math.min(5, project.records.length);
@@ -1156,97 +1224,111 @@ class _TablePreview extends StatelessWidget {
         .replaceAll('{shown}', '$shown')
         .replaceAll('{total}', '${project.records.length}');
     return Card(
+      clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.only(top: 14),
-        child: LayoutBuilder(
-          builder: (context, constraints) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  rangeLabel,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (constraints.maxWidth < 600)
-                ...List.generate(
-                  shown,
-                  (index) => _RecordPreviewRow(project: project, index: index),
-                )
-              else
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.all(8),
-                    child: DataTable(
-                      columns: List.generate(
-                        project.headers.length,
-                        (index) => DataColumn(
-                          label: Text(_displayHeader(context, project, index)),
-                        ),
-                      ),
-                      rows: project.records.take(5).map((row) {
-                        return DataRow(
-                          cells: row.values
-                              .map(
-                                (value) =>
-                                    DataCell(Text(value.isEmpty ? '—' : value)),
-                              )
-                              .toList(),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RecordPreviewRow extends StatelessWidget {
-  const _RecordPreviewRow({required this.project, required this.index});
-  final DataProject project;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) => ExpansionTile(
-    key: ValueKey('preview-row-$index'),
-    initiallyExpanded: index == 0,
-    title: Text('${context.s.get('row')} ${index + 1}'),
-    children: [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.only(top: 14, bottom: 4),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: List.generate(project.headers.length, (column) {
-            final value = project.records[index].values[column];
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _displayHeader(context, project, column),
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    rangeLabel,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 3),
-                  SelectableText(value.isEmpty ? '—' : value),
+                  Text(
+                    context.s.get('previewCellHint'),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
-            );
-          }),
+            ),
+            const SizedBox(height: 8),
+            LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                key: const Key('preview-horizontal-scroll'),
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: DataTable(
+                    key: const Key('preview-table'),
+                    horizontalMargin: 12,
+                    columnSpacing: 18,
+                    headingRowHeight: 44,
+                    dataRowMinHeight: 44,
+                    dataRowMaxHeight: 56,
+                    columns: [
+                      const DataColumn(label: Text('#')),
+                      ...List.generate(project.headers.length, (column) {
+                        final header = _displayHeader(context, project, column);
+                        return DataColumn(
+                          label: Tooltip(
+                            message: header,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 160),
+                              child: Text(
+                                header,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                    rows: List.generate(shown, (row) {
+                      return DataRow(
+                        key: ValueKey('preview-data-row-$row'),
+                        cells: [
+                          DataCell(Text('${row + 1}')),
+                          ...List.generate(project.headers.length, (column) {
+                            final value = project.records[row].values[column];
+                            final displayValue = value.isEmpty ? '—' : value;
+                            return DataCell(
+                              Semantics(
+                                label:
+                                    '${context.s.get('row')} ${row + 1}, '
+                                    '${_displayHeader(context, project, column)}, '
+                                    '$displayValue',
+                                excludeSemantics: true,
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 160,
+                                  ),
+                                  child: Text(
+                                    displayValue,
+                                    key: ValueKey('preview-cell-$row-$column'),
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              onTap: () => _showCellDetails(
+                                context,
+                                row: row,
+                                column: column,
+                              ),
+                            );
+                          }),
+                        ],
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-    ],
-  );
+    );
+  }
 }
 
 class _NumericPreview extends StatelessWidget {
@@ -1372,7 +1454,7 @@ class _ExportCard extends StatelessWidget {
   });
   final DataProject project;
   final bool busy;
-  final ValueChanged<Rect> onExport;
+  final Future<ExportOutcome?> Function(Rect) onExport;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -1396,13 +1478,62 @@ class _ExportCard extends StatelessWidget {
           FilledButton.icon(
             onPressed: busy
                 ? null
-                : () {
+                : () async {
                     final box = context.findRenderObject() as RenderBox;
                     final origin = box.localToGlobal(Offset.zero) & box.size;
-                    onExport(origin);
+                    final outcome = await onExport(origin);
+                    if (!context.mounted || outcome == null) return;
+                    _showExportFeedback(context, outcome);
                   },
             icon: const Icon(Icons.ios_share_outlined),
             label: Text(context.s.get('export')),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+void _showExportFeedback(BuildContext context, ExportOutcome outcome) {
+  final colors = Theme.of(context).colorScheme;
+  final (messageKey, icon, iconColor) = switch (outcome) {
+    ExportOutcome.completed => (
+      'exportCompleted',
+      cupertino.CupertinoIcons.check_mark_circled,
+      colors.primary,
+    ),
+    ExportOutcome.incomplete => (
+      'exportIncomplete',
+      cupertino.CupertinoIcons.xmark_circle,
+      colors.onSurfaceVariant,
+    ),
+    ExportOutcome.unconfirmed => (
+      'exportUnconfirmed',
+      cupertino.CupertinoIcons.question_circle,
+      colors.secondary,
+    ),
+    ExportOutcome.failed => (
+      'exportFailed',
+      cupertino.CupertinoIcons.exclamationmark_triangle,
+      colors.error,
+    ),
+  };
+  final messenger = ScaffoldMessenger.of(context);
+  messenger.clearSnackBars();
+  messenger.showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: colors.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      content: Row(
+        children: [
+          Icon(icon, color: iconColor),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              context.s.get(messageKey),
+              style: TextStyle(color: colors.onSurface),
+            ),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
@@ -35,6 +36,14 @@ abstract final class AppTheme {
       useMaterial3: true,
       brightness: brightness,
       colorScheme: scheme,
+      cupertinoOverrideTheme: cupertino.NoDefaultCupertinoThemeData(
+        brightness: brightness,
+        primaryColor: scheme.primary,
+        primaryContrastingColor: scheme.onPrimary,
+        barBackgroundColor: surface,
+        scaffoldBackgroundColor: background,
+        applyThemeToAll: true,
+      ),
       scaffoldBackgroundColor: background,
       textTheme: Typography.material2021(platform: TargetPlatform.iOS).black
           .apply(bodyColor: ink, displayColor: ink, fontFamily: '.SF Pro Text'),
@@ -54,6 +63,23 @@ abstract final class AppTheme {
             borderRadius: BorderRadius.circular(14),
           ),
         ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: surface,
+        surfaceTintColor: Colors.transparent,
+        modalBackgroundColor: surface,
+        modalBarrierColor: Colors.black.withValues(
+          alpha: brightness == Brightness.light ? 0.32 : 0.58,
+        ),
+        elevation: 0,
+        modalElevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        showDragHandle: true,
+        dragHandleColor: scheme.onSurfaceVariant.withValues(alpha: 0.45),
+        dragHandleSize: const Size(36, 5),
+        clipBehavior: Clip.antiAlias,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

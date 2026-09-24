@@ -201,9 +201,12 @@ class WorkbenchController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> export({required bool chinese, Rect? shareOrigin}) async {
+  Future<ExportOutcome?> export({
+    required bool chinese,
+    Rect? shareOrigin,
+  }) async {
     final current = project;
-    if (current == null) return;
+    if (current == null) return null;
     busy = true;
     errorCode = null;
     notifyListeners();
@@ -213,7 +216,7 @@ class WorkbenchController extends ChangeNotifier {
         RegExp(r'\.(csv|tsv|txt|xlsx)$', caseSensitive: false),
         '',
       );
-      await gateway.export(
+      return await gateway.export(
         baseName: baseName,
         csv: bundle.csv,
         report: bundle.report,
@@ -224,7 +227,7 @@ class WorkbenchController extends ChangeNotifier {
             : 'CleanTrail cleaned data and quality report',
       );
     } on Object {
-      errorCode = 'exportFailed';
+      return ExportOutcome.failed;
     } finally {
       busy = false;
       notifyListeners();

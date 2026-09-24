@@ -9,10 +9,12 @@ class PickedDataFile {
   final Uint8List bytes;
 }
 
+enum ExportOutcome { completed, incomplete, unconfirmed, failed }
+
 abstract interface class CsvGateway {
   Future<void> cleanupTemporaryFiles();
   Future<PickedDataFile?> pickDataFile();
-  Future<void> export({
+  Future<ExportOutcome> export({
     required String baseName,
     required String csv,
     required String report,

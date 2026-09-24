@@ -115,6 +115,12 @@ class AppLocalizations {
     'chartEmpty': 'No numeric series with at least two values was found.',
     'beforeAfter': 'First numeric column · validation preview only',
     'previewRows': 'Showing the first {shown} of {total} rows',
+    'previewCellHint': 'Tap a cell to view its full value.',
+    'cellDetails': 'Cell details',
+    'fullValue': 'Full value',
+    'exportCompleted': 'The selected export action was completed.',
+    'exportIncomplete': 'The export was not completed.',
+    'exportUnconfirmed': 'The system could not confirm the export result.',
     'fileTooLarge': 'Choose a data file smaller than 5 MB.',
     'invalidEncoding': 'Choose UTF-8 or GBK for this text file.',
     'unreadableFile': 'The selected file could not be read.',
@@ -136,7 +142,7 @@ class AppLocalizations {
     'saveFailed': 'The change could not be saved. Your prior project was kept.',
     'clearFailed':
         'The local project could not be removed. Nothing was hidden or reported as deleted.',
-    'exportFailed': 'Export could not be opened. Try again.',
+    'exportFailed': 'Export failed. Try again.',
     'offlineFooter': 'No analytics, cloud sync, login, or network upload.',
   };
 
@@ -230,6 +236,12 @@ class AppLocalizations {
     'chartEmpty': '没有找到至少包含两个数值的序列。',
     'beforeAfter': '首个数值列 · 仅用于修复验证',
     'previewRows': '正在预览前 {shown} / {total} 行',
+    'previewCellHint': '点击单元格查看完整值。',
+    'cellDetails': '单元格详情',
+    'fullValue': '完整值',
+    'exportCompleted': '所选导出操作已完成。',
+    'exportIncomplete': '导出未完成。',
+    'exportUnconfirmed': '系统无法确认导出是否完成。',
     'fileTooLarge': '请选择小于 5 MB 的数据文件。',
     'invalidEncoding': '请为文本文件选择 UTF-8 或 GBK 编码。',
     'unreadableFile': '无法读取所选文件。',
@@ -248,7 +260,7 @@ class AppLocalizations {
     'restoreFailed': '无法恢复已保存项目；现有文件保持原样。',
     'saveFailed': '无法保存本次操作，先前的项目状态保持不变。',
     'clearFailed': '无法移除本地项目；App 不会隐藏失败，也不会误报已删除。',
-    'exportFailed': '无法打开导出面板，请重试。',
+    'exportFailed': '导出失败，请重试。',
     'offlineFooter': '不含分析、云同步、登录或网络上传。',
   };
 

@@ -5,6 +5,7 @@ import 'package:cleantrail/domain/quality_engine.dart';
 import 'package:cleantrail/main.dart';
 import 'package:cleantrail/state/workbench_controller.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -34,6 +35,7 @@ void main() {
     expect(find.text('Confirm import'), findsOneWidget);
     expect(find.byKey(const Key('import-format-choice')), findsOneWidget);
     expect(find.byKey(const Key('import-encoding-choice')), findsOneWidget);
+    expect(find.byType(cupertino.CupertinoButton), findsWidgets);
     expect(find.text('TSV · tab separated'), findsOneWidget);
     expect(find.text('UTF-8'), findsOneWidget);
 
@@ -136,6 +138,95 @@ void main() {
     expect(find.text('导出文件包'), findsWidgets);
   });
 
+  testWidgets('project confirmations use iOS-style alerts', (tester) async {
+    final controller = WorkbenchController(
+      engine: const QualityEngine(),
+      store: MemoryProjectStore(),
+      gateway: FakeCsvGateway(),
+    );
+    await tester.pumpWidget(CleanTrailApp(controller: controller));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Try built-in sample'));
+    await tester.tap(find.text('Try built-in sample'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('New file'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(cupertino.CupertinoAlertDialog), findsOneWidget);
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.byType(cupertino.CupertinoDialogAction), findsNWidgets(2));
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Remove'));
+    await tester.pumpAndSettle();
+
+    final actions = tester
+        .widgetList<cupertino.CupertinoDialogAction>(
+          find.byType(cupertino.CupertinoDialogAction),
+        )
+        .toList();
+    expect(actions.any((action) => action.isDestructiveAction), isTrue);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(controller.project, isNotNull);
+  });
+
+  testWidgets('export reports completed, incomplete, unknown, and failed', (
+    tester,
+  ) async {
+    final gateway = FakeCsvGateway();
+    final store = MemoryProjectStore()
+      ..value = const QualityEngine().importCsv(
+        fileName: 'ready.csv',
+        source: 'region,amount\nNorth,12\nSouth,14\n',
+      );
+    final controller = WorkbenchController(
+      engine: const QualityEngine(),
+      store: store,
+      gateway: gateway,
+    );
+    await tester.pumpWidget(CleanTrailApp(controller: controller));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.ios_share_outlined));
+    await tester.pumpAndSettle();
+
+    Future<void> expectFeedback(ExportOutcome outcome, String message) async {
+      gateway.exportOutcome = outcome;
+      await tester.tap(find.byIcon(Icons.ios_share_outlined));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text(message), findsOneWidget);
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpAndSettle();
+    }
+
+    await expectFeedback(
+      ExportOutcome.completed,
+      'The selected export action was completed.',
+    );
+    await expectFeedback(
+      ExportOutcome.incomplete,
+      'The export was not completed.',
+    );
+    await expectFeedback(
+      ExportOutcome.unconfirmed,
+      'The system could not confirm the export result.',
+    );
+
+    gateway.exportError = StateError('share failed');
+    await tester.tap(find.byIcon(Icons.ios_share_outlined));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Export failed. Try again.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('privacy is reachable and scrollable in the empty workspace', (
     tester,
   ) async {
@@ -162,6 +253,12 @@ void main() {
 
     expect(find.text('Privacy & data'), findsOneWidget);
     expect(find.byType(SingleChildScrollView), findsWidgets);
+    final sheetTheme = Theme.of(
+      tester.element(find.byType(BottomSheet)),
+    ).bottomSheetTheme;
+    expect(sheetTheme.showDragHandle, isTrue);
+    expect(sheetTheme.shape, isA<RoundedRectangleBorder>());
+    expect(find.byType(cupertino.CupertinoButton), findsWidgets);
     expect(find.text('Close'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -305,13 +402,100 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.table_chart_outlined));
       await tester.pumpAndSettle();
-      expect(find.byType(ExpansionTile), findsNWidgets(2));
+      expect(find.byType(ExpansionTile), findsNothing);
+      expect(find.byKey(const Key('preview-table')), findsOneWidget);
       expect(find.text(header), findsWidgets);
       expect(tester.takeException(), isNull);
 
       await tester.tap(find.byIcon(Icons.ios_share_outlined));
       await tester.pumpAndSettle();
       expect(find.text('Export bundle'), findsWidgets);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'preview uses a compact horizontal table and opens full cell values',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 700);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      const fullValue =
+          'A complete value that is intentionally longer than the preview cell';
+      final store = MemoryProjectStore()
+        ..value = const QualityEngine().importCsv(
+          fileName: 'wide.csv',
+          source:
+              'description,amount,region,owner,status\n'
+              '$fullValue,12,North,Ada,Ready\n'
+              'Second,14,South,Lin,Ready\n'
+              'Third,16,East,Sam,Ready\n'
+              'Fourth,18,West,Jo,Ready\n'
+              'Fifth,20,North,Lee,Ready\n'
+              'Sixth,22,South,Bo,Ready\n',
+        );
+      final controller = WorkbenchController(
+        engine: const QualityEngine(),
+        store: store,
+        gateway: FakeCsvGateway(),
+      );
+
+      await tester.pumpWidget(CleanTrailApp(controller: controller));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.table_chart_outlined));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ExpansionTile), findsNothing);
+      expect(find.byKey(const Key('preview-table')), findsOneWidget);
+      final table = tester.widget<DataTable>(
+        find.byKey(const Key('preview-table')),
+      );
+      expect(table.rows, hasLength(5));
+      expect(
+        table.rows.map((row) => row.key),
+        contains(const ValueKey('preview-data-row-4')),
+      );
+      final horizontalScroll = tester.widget<SingleChildScrollView>(
+        find.byKey(const Key('preview-horizontal-scroll')),
+      );
+      expect(horizontalScroll.scrollDirection, Axis.horizontal);
+
+      final previewValue = tester.widget<Text>(
+        find.byKey(const ValueKey('preview-cell-0-0')),
+      );
+      expect(previewValue.maxLines, 1);
+      expect(previewValue.overflow, TextOverflow.ellipsis);
+      await tester.tap(find.byKey(const ValueKey('preview-cell-0-0')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('preview-cell-sheet')), findsOneWidget);
+      expect(find.text('Cell details'), findsOneWidget);
+      expect(find.text('Row 1'), findsOneWidget);
+      expect(find.text('description'), findsWidgets);
+      final valueBlock = find.byKey(const Key('preview-cell-full-value'));
+      expect(
+        find.descendant(of: valueBlock, matching: find.text(fullValue)),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Close'));
+      await tester.pumpAndSettle();
+
+      final scrollable = find.descendant(
+        of: find.byKey(const Key('preview-horizontal-scroll')),
+        matching: find.byType(Scrollable),
+      );
+      final scrollableState = tester.state<ScrollableState>(scrollable);
+      expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+      await tester.drag(
+        find.byKey(const Key('preview-horizontal-scroll')),
+        const Offset(-200, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(scrollableState.position.pixels, greaterThan(0));
       expect(tester.takeException(), isNull);
     },
   );

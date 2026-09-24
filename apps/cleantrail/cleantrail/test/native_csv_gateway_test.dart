@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cleantrail/data/csv_gateway.dart';
 import 'package:cleantrail/data/native_csv_gateway.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:share_plus/share_plus.dart';
 
 void main() {
   late Directory temporary;
@@ -53,10 +55,14 @@ void main() {
         for (final file in params.files!) {
           expect(await File(file.path).exists(), isTrue);
         }
+        return const ShareResult(
+          'com.apple.UIKit.activity.CopyToPasteboard',
+          ShareResultStatus.success,
+        );
       },
     );
 
-    await gateway.export(
+    final outcome = await gateway.export(
       baseName: 'private',
       csv: 'name\nsecret',
       report: '# report',
@@ -64,6 +70,7 @@ void main() {
       complete: false,
     );
 
+    expect(outcome, ExportOutcome.completed);
     final exportDirectory = Directory('${temporary.path}/cleantrail-exports');
     expect(await exportDirectory.list().toList(), isEmpty);
   });
@@ -88,13 +95,45 @@ void main() {
     expect(await exportDirectory.list().toList(), isEmpty);
   });
 
+  test('export maps incomplete and unavailable share results', () async {
+    final results = [
+      const ShareResult('', ShareResultStatus.dismissed),
+      ShareResult.unavailable,
+    ];
+    final gateway = NativeCsvGateway(
+      temporaryDirectoryProvider: () async => temporary,
+      share: (_) async => results.removeAt(0),
+    );
+
+    expect(
+      await gateway.export(
+        baseName: 'private',
+        csv: 'name\nsecret',
+        report: '# report',
+        shareText: 'share',
+        complete: true,
+      ),
+      ExportOutcome.incomplete,
+    );
+    expect(
+      await gateway.export(
+        baseName: 'private',
+        csv: 'name\nsecret',
+        report: '# report',
+        shareText: 'share',
+        complete: true,
+      ),
+      ExportOutcome.unconfirmed,
+    );
+  });
+
   test('startup cleanup removes stale dedicated export directory', () async {
     final directory = Directory('${temporary.path}/cleantrail-exports');
     await directory.create();
     await File('${directory.path}/stale.csv').writeAsString('private');
     final gateway = NativeCsvGateway(
       temporaryDirectoryProvider: () async => temporary,
-      share: (_) async {},
+      share: (_) async => ShareResult.unavailable,
     );
 
     await gateway.cleanupTemporaryFiles();

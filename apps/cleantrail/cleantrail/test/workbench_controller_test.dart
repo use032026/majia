@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cleantrail/data/csv_gateway.dart';
 import 'package:cleantrail/data/project_store.dart';
 import 'package:cleantrail/domain/data_project.dart';
 import 'package:cleantrail/domain/quality_engine.dart';
@@ -40,13 +41,34 @@ void main() {
     );
     await controller.loadSample();
 
-    await controller.export(chinese: true);
+    final outcome = await controller.export(chinese: true);
 
+    expect(outcome, ExportOutcome.completed);
     expect(gateway.exportedBaseName, 'quality_sample');
     expect(gateway.exportedCsv, contains('date,value,region'));
     expect(gateway.exportedReport, contains('数据质量报告'));
     expect(gateway.exportedComplete, isFalse);
   });
+
+  test(
+    'export reports gateway failures without changing the project',
+    () async {
+      final gateway = FakeCsvGateway(exportError: StateError('share failed'));
+      final controller = WorkbenchController(
+        engine: const QualityEngine(),
+        store: MemoryProjectStore(),
+        gateway: gateway,
+      );
+      await controller.loadSample();
+      final before = controller.project;
+
+      final outcome = await controller.export(chinese: false);
+
+      expect(outcome, ExportOutcome.failed);
+      expect(controller.project, same(before));
+      expect(controller.busy, isFalse);
+    },
+  );
 
   test('Excel source names export as clean CSV base names', () async {
     final gateway = FakeCsvGateway();
