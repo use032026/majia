@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "pacejar-20260929-01",
+    "project_ref": "pacejar",
+    "scope": "release_candidate",
+    "skill_revision": "local app-product-factory skill, revision unknown",
+    "project_revision": "non-git source aggregate 2aaebdb956bd2ea8e8c69183fb6716ff6c0d5db93c028247a783f36ec60d8165",
+    "finished_at": "2026-09-29T18:02:40+08:00",
+    "product_verdict": "functional_passed_store_blocked"
+  },
+  "summary": {
+    "worked": [
+      "Original one-goal pace recovery workflow passed differentiation review at 4.0/5; see docs/product/DIFFERENTIATION.md.",
+      "Independent functional review closed the P0 load-overwrite and P1 expired-plan findings; 29 tests and both local builds passed in docs/release/evidence/automation/20260929T175103+0800/.",
+      "iPhone and iPad simulator review covered create, record, recovery, timeline, language, dark mode, and responsive layout; store screenshot dimensions and alpha passed mechanical preflight.",
+      "The iOS deployment target was later aligned to 15.0 across Runner, Flutter AppFrameworkInfo, Podfile, and Pods; focused Release build and the regenerated unsigned archive report minos 15.0 and encryption flag false."
+    ],
+    "failed": [
+      "The first Android build exposed incorrectly generated launcher filenames; the failed run remains in docs/release/evidence/automation/20260929T172209+0800/.",
+      "The first store review exposed SVG path loss in rasterized icons and the default launch image; both were corrected and the full quality gate was rerun.",
+      "The release preflight remains blocked by placeholder Bundle ID, missing public privacy/support URLs, and unsigned archive."
+    ],
+    "untested": [
+      "Physical iPhone, iPad, and Android devices; iOS 15; VoiceOver and TalkBack; low storage; background interruption; and 1000-event runtime performance.",
+      "Final distribution signing, Xcode Privacy Report, App Store Connect metadata/privacy answers, upload processing, TestFlight, and App Review."
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "flutter.local-load-failure-write-lock",
+      "severity": "P0",
+      "symptom": "A non-format local read failure was presented as an empty state that could accept a new goal.",
+      "phase": "independent functional review",
+      "cause_confidence": "confirmed",
+      "cause": "The controller distinguished corrupt data but collapsed ordinary storage exceptions into the no-data state.",
+      "evidence": [
+        "docs/release/FUNCTIONAL_REVIEW.md",
+        "test/app_controller_test.dart",
+        "test/core_flow_widget_test.dart"
+      ],
+      "proposed_change": "Add a factory checklist item that transient local-load failures must remain write-locked until retry or explicit recovery.",
+      "regression_check": "A repository load exception renders Retry, creates no goal, and records zero save calls before a successful reload."
+    },
+    {
+      "pattern_key": "assets.verify-raster-output",
+      "severity": "P1",
+      "symptom": "The initial icon rasterizer produced valid-size PNG files while silently omitting SVG curve paths; an earlier generation also produced invalid Android filenames.",
+      "phase": "store review and build gate",
+      "cause_confidence": "confirmed",
+      "cause": "Asset generation validated file existence and dimensions but not exact output names or rendered visual content.",
+      "evidence": [
+        "docs/release/evidence/automation/20260929T172209+0800/QUALITY_GATE.md",
+        "docs/release/evidence/automation/20260929T175103+0800/QUALITY_GATE.md",
+        "docs/product/assets/pacejar-icon.svg"
+      ],
+      "proposed_change": "Require exact asset-catalog filenames, alpha inspection, and human viewing of both the 1024 icon and one small raster before release preflight.",
+      "regression_check": "Android resource merge passes, the 1024 PNG has no alpha, and both large and 180px renders visibly contain every intended segment."
+    }
+  ]
+}
