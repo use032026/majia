@@ -187,14 +187,16 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_includes text, "--metadata-template apps/sdpacket/app-store/metadata.yml"
   end
 
-  def test_p8_normalization_accepts_raw_or_base64_key
+  def test_p8_normalization_accepts_raw_base64_or_escaped_newline_key
     key = OpenSSL::PKey::EC.generate("prime256v1")
     pem = key.to_pem
 
     raw = Release.normalize_p8(pem)
     encoded = Release.normalize_p8([pem].pack("m0"))
+    escaped = Release.normalize_p8(pem.gsub("\n", "\\n"))
 
     assert_equal raw, encoded
+    assert_equal raw, escaped
     assert_equal pem, raw.unpack1("m0")
   end
 

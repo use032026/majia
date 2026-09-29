@@ -135,6 +135,10 @@ module MajiaCI
       compact = secret.to_s.strip
       raise ReleaseInputError, "ASC_API_KEY_P8 is required when upload_to_asc=true" if compact.empty?
 
+      if compact.match?(/\A-----BEGIN (?:EC )?PRIVATE KEY-----\\n/) && compact.include?("\\n")
+        compact = compact.gsub("\\r\\n", "\n").gsub("\\n", "\n")
+      end
+
       key_bytes = if compact.match?(/-----BEGIN (?:EC )?PRIVATE KEY-----/)
                     compact.end_with?("\n") ? compact : "#{compact}\n"
                   else
