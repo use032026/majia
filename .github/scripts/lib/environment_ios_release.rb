@@ -135,22 +135,45 @@ module MajiaCI
       compact = secret.to_s.strip
       raise ReleaseInputError, "ASC_API_KEY_P8 is required when upload_to_asc=true" if compact.empty?
 
-      if compact.match?(/\A-----BEGIN (?:EC )?PRIVATE KEY-----\\n/) && compact.include?("\\n")
+      if compact.start_with?("\"") && compact.end_with?("\"")
+        decoded_json = JSON.parse(compact)
+        compact = decoded_json.strip if decoded_json.is_a?(String)
+      end
+      compact = compact.sub(/\AASC_API_KEY_P8\s*=\s*/, "").strip
+      if compact.match?(/\A-----BEGIN (?:EC )?PRIVATE KEY-----/) && compact.include?("\\n")
         compact = compact.gsub("\\r\\n", "\n").gsub("\\n", "\n")
       end
 
-      key_bytes = if compact.match?(/-----BEGIN (?:EC )?PRIVATE KEY-----/)
-                    compact.end_with?("\n") ? compact : "#{compact}\n"
-                  else
-                    Base64.strict_decode64(compact.gsub(/\s+/, ""))
-                  end
-      key = OpenSSL::PKey.read(key_bytes)
-      unless key.is_a?(OpenSSL::PKey::EC) && key.private? && key.group.curve_name == "prime256v1"
-        raise ReleaseInputError, "ASC_API_KEY_P8 must contain a P-256 EC private key"
+      candidates = if compact.match?(/-----BEGIN (?:EC )?PRIVATE KEY-----/)
+                     [["PEM", compact.end_with?("\n") ? compact : "#{compact}\n"]]
+                   else
+                     decoded = Base64.strict_decode64(compact.gsub(/\s+/, ""))
+                     values = [["Base64", decoded]]
+                     decoded_compact = decoded.to_s.gsub(/\s+/, "")
+                     if decoded.ascii_only? && decoded_compact.match?(/\A[A-Za-z0-9+\/_-]+={0,2}\z/)
+                       begin
+                         values << ["double Base64", Base64.strict_decode64(decoded_compact.tr("-_", "+/"))]
+                       rescue ArgumentError
+                         # The first decoded value remains the only candidate.
+                       end
+                     end
+                     values
+                   end
+
+      candidates.each do |_format, key_bytes|
+        begin
+          key = OpenSSL::PKey.read(key_bytes)
+          next unless key.is_a?(OpenSSL::PKey::EC) && key.private? && key.group.curve_name == "prime256v1"
+
+          return Base64.strict_encode64(key_bytes)
+        rescue OpenSSL::PKey::PKeyError
+          next
+        end
       end
 
-      Base64.strict_encode64(key_bytes)
-    rescue ArgumentError, OpenSSL::PKey::PKeyError => e
+      formats = candidates.map(&:first).join(" or ")
+      raise ReleaseInputError, "ASC_API_KEY_P8 must contain a P-256 EC private key in #{formats} form"
+    rescue ArgumentError, JSON::ParserError => e
       raise ReleaseInputError, "ASC_API_KEY_P8 is invalid: #{e.message}"
     end
 
