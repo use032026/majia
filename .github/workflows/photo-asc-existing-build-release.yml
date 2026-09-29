@@ -109,7 +109,7 @@ jobs:
             --key-id "$ASC_KEY_ID" \
             --issuer-id "$ASC_ISSUER_ID" \
             --key-path "${{ steps.prepare.outputs.key_path }}" \
-            --wait-level processing_complete \
+            --wait-level testflight_internal_ready \
             --timeout-minutes 5 \
             --poll-seconds 15 \
             --output asc-existing-build-status.json \

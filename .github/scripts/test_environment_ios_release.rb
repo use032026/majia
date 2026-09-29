@@ -219,7 +219,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_includes text, "release_notes_json:"
     assert_includes text, "39a136d4c560879ec35f3fd23c44f0b1eae4bc30"
     assert_includes text, "scripts/wait-asc.rb"
-    assert_includes text, "--wait-level processing_complete"
+    assert_includes text, "--wait-level testflight_internal_ready"
     assert_includes text, "scripts/release-app-store.rb"
     assert_includes text, "--phase finalize"
     assert_includes text, "--submit-to-review false"
