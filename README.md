@@ -24,11 +24,11 @@
 
 | 应用 | 工作流 | GitHub Environment | 签名 Targets | ASC 状态查询 |
 | --- | --- | --- | --- | --- |
-| Jufu（工作流配置名为 Lunelle） | [`Photo iOS Release`](.github/workflows/photo-ios-ci.yml) | `photo-production` | `Runner` | 支持 |
+| Jufu | [`Photo iOS Release`](.github/workflows/photo-ios-ci.yml) | `photo-production` | `Runner` | 支持 |
 | RoamSum | [`TripCost iOS Release`](.github/workflows/tripcost-ios-release.yml) | `tripcost-production` | `Runner`、`AppWidget` | 支持 |
 | LAURUS | [`Hearthio iOS Release`](.github/workflows/donesome-ios-release.yml) | `hearthio-production` | `Runner` | 支持 |
 | KIFXPRO | [`KIFXPRO iOS Release`](.github/workflows/sdpacket-ios-release.yml) | `sdpacket-production` | `Runner` | 支持 |
-| PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 暂未加入查询选项 |
+| PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
 
 `CleanTrail`、`PhotoReport`、`Steady21` 和 `Trip Delta` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
 
@@ -39,40 +39,57 @@
 - 在上述构建发布工作流中，`submit=true` 要求同时设置 `auto_create_store_version=true`；只有该开关为 `true` 时才会在版本和构建准备完成后提交审核。`submit=false` 不会提交。
 - [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 可从 `main` 独立提交已经存在且已关联有效构建的商店版本；手动运行时只需选择应用 Environment 和版本号，不会重新构建、上传 IPA、创建商店版本或修改元数据。
 - `update_asc_text_metadata` 和 `replace_asc_media` 只有在自动创建商店版本时才能启用，并且只处理应用 `app-store/metadata.yml` 中明确声明的字段或媒体集合。
-- 非空 `release_notes_json` 要求 `update_asc_text_metadata=true`。
+- 非空 `release_notes_json` 要求 `update_asc_text_metadata=true`。`whats_new` 不再交给外部构建 action 直接创建 locale：仓库脚本会优先使用已有版本 locale；仅有一个请求 locale 时，才允许安全映射到应用主 locale 或唯一现有 locale。脚本只 PATCH `whatsNew`，不会创建 App Info locale，并会读取 ASC 结果进行逐项校验。
+- 模板中的其他文本字段，例如名称、描述、关键词、版权、IDFA 和审核信息，仍由构建 action 处理；`whats_new` 会从交给 action 的临时 manifest 中移除，避免两条写入路径冲突。
 - 当前元数据模板默认只声明出口合规字段；名称、描述、更新说明和媒体示例仍为注释，启用开关不会修改未声明的内容。
 
 工作流存在不代表某次运行已经成功。签名构建、IPA 产物、ASC 接收、处理完成、TestFlight 可用和 App Review 状态是不同的证据层级，应以对应运行的 Job Summary、Artifacts 和 App Store Connect 状态为准。
+
+### 使用已上传的 ASC 构建
+
+[`ASC Existing Build Release`](.github/workflows/asc-existing-build-release.yml) 用于 IPA 已上传且不需要重新打包的情况。它支持 `photo-production`、`hearthio-production`、`tripcost-production`、`sdpacket-production` 和 `plotproof_lab-production`，手动运行时需要提供：
+
+- `app_environment`：目标应用的受保护 Environment。
+- `marketing_version`、`build_number`：ASC 中已经存在的准确版本号和构建号。
+- `release_notes_json`：可选的 locale-to-`whats_new` JSON；默认 `{}`，不会修改更新说明。
+- `submit`：是否在版本和构建关联完成后提交审核，默认 `false`。
+
+该工作流只验证指定构建已经达到 `processing_complete`，然后创建或复用 App Store 版本、关联现有构建、可选同步并回读验证 `whats_new`、可选提交审核。它不执行 Flutter/Xcode 构建，不上传新 IPA，也不读取分发证书或描述文件。状态、商店版本、更新说明和审核提交结果会作为 JSON Artifact 保留 30 天。
 
 ### Environment 配置名
 
 每个发布工作流只读取自己的受保护 Environment。请配置名称，不要把真实签名材料提交到仓库。
 
-始终需要：
+完整签名构建工作流需要：
 
 - Variables：`APPLE_TEAM_ID`、`IOS_BUNDLE_ID`、`IOS_SCHEME`
 - Secrets：`IOS_DISTRIBUTION_P12_BASE64`、`IOS_DISTRIBUTION_P12_PASSWORD`、`IOS_APPSTORE_PROFILE_BASE64`
 
-上传 ASC 或查询审核状态时还需要：
+上传 ASC、操作商店版本、查询或提交审核时还需要：
 
 - Variables：`ASC_KEY_ID`、`ASC_ISSUER_ID`
 - Secret：`ASC_API_KEY_P8`
 
+`ASC_API_KEY_P8` 可保存为原始 PEM、Base64、转义换行的 PEM、JSON 字符串、`ASC_API_KEY_P8=...` 赋值形式或双层 Base64；构建、查询、更新说明和提交审核共用同一套 P-256 私钥规范化逻辑。不要在日志、README 或仓库文件中保存真实密钥。
+
+只读状态查询只需要相应资源的读取权限；根据 [Apple 官方提交权限说明](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-an-app)，提交审核需要 Account Holder、Admin 或 App Manager 角色，因此用于创建版本、关联构建、更新元数据和提交审核的 API Key 建议至少赋予 App Manager 权限。若只读查询成功但写操作返回 `FORBIDDEN`，应先检查 ASC API Key 角色和应用访问范围。`ASC Existing Build Release` 还会读取 `APPLE_TEAM_ID`、`IOS_BUNDLE_ID` 和 `IOS_SCHEME` 以生成受校验的应用配置，但不需要 P12 或描述文件 Secrets。
+
 ### 新应用接入 ASC 审核工具
 
-- Ruby 处理脚本本身不需要针对新应用修改。[`query-asc-review-status.rb`](.github/scripts/query-asc-review-status.rb) 和 [`submit-asc-review.rb`](.github/scripts/submit-asc-review.rb) 都通过 Bundle ID、版本号和 ASC 凭据运行，可供不同应用共用。
-- 当前 [`ASC Review Status`](.github/workflows/asc-review-status.yml) 和 [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 的 `app_environment` 下拉选项是静态白名单。新增应用时，需要把新的 Environment 名称分别加入两个工作流的 `workflow_dispatch.inputs.app_environment.options`。
+- Ruby 查询和提交脚本本身不需要针对新应用修改。[`query-asc-review-status.rb`](.github/scripts/query-asc-review-status.rb) 和 [`submit-asc-review.rb`](.github/scripts/submit-asc-review.rb) 都通过 Bundle ID、版本号和 ASC 凭据运行，可供不同应用共用。
+- [`ASC Review Status`](.github/workflows/asc-review-status.yml)、[`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 和 [`ASC Existing Build Release`](.github/workflows/asc-existing-build-release.yml) 的 `app_environment` 下拉选项是静态白名单。新增应用时，需要把 Environment 名称加入三个工作流的 `workflow_dispatch.inputs.app_environment.options`。
+- 现有构建发布还需要在 [`ios_release_apps.rb`](.github/scripts/lib/ios_release_apps.rb) 中登记应用名、工程目录、workspace、签名 targets 和元数据模板路径；TripCost 的 Widget target 也在这里维护。
 - 同时需要在仓库中创建对应的受保护 GitHub Environment，并配置 Variable `IOS_BUNDLE_ID`、`ASC_KEY_ID`、`ASC_ISSUER_ID` 和 Secret `ASC_API_KEY_P8`。
-- 当前 `plotproof_lab-production` 已加入 `ASC Submit Review`，但尚未加入 `ASC Review Status`，因此 PlotProof Lab 暂时不能从状态查询工作流的下拉列表中选择。
 
-因此，新增应用不需要改动 ASC 查询或提交逻辑，但需要维护两个 workflow 的项目白名单。后续也可以把 `app_environment` 改为手动填写 Environment 名称；采用该方式后，新增应用只需配置 GitHub Environment，不再需要修改工作流，但也会失去当前下拉白名单提供的选择约束。
+因此，新增应用不需要改动 ASC 查询或提交逻辑，但需要维护三个 workflow 的项目白名单；若要支持现有构建发布，还需要登记应用配置。
 
 `TripCost` 的描述文件归档需同时覆盖主应用和 `<IOS_BUNDLE_ID>.widget`。所有发布工作流固定使用 Flutter `3.35.7`，构建号在仅打包时来自 GitHub run number，上传时按 ASC 中现有构建号递增。
 
 ## 其他自动化
 
 - [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 使用与构建发布流程相同的仓库内提交脚本，可独立提交现有版本；结果会写入 Job Summary 并保留 30 天 JSON 证据。已提交版本会作为幂等 no-op 返回。
-- [`ASC Review Status`](.github/workflows/asc-review-status.yml) 是只读查询，可按版本获取 `photo-production`、`tripcost-production`、`hearthio-production` 或 `sdpacket-production` 对应应用的 ASC 处理、TestFlight 与审核状态，并保留 30 天 JSON 快照。
+- [`ASC Existing Build Release`](.github/workflows/asc-existing-build-release.yml) 为五个生产 Environment 创建或复用商店版本并关联已处理构建，可选更新说明和提交审核，不重新打包或上传 IPA。
+- [`ASC Review Status`](.github/workflows/asc-review-status.yml) 是只读查询，可按版本获取五个生产 Environment 对应应用的 ASC 处理、TestFlight 与审核状态，并保留 30 天 JSON 快照。
 - [`PlotProof lesson content refresh`](.github/workflows/plotproof-content-refresh.yml) 每周一 `03:17 UTC` 自动运行，也可手动触发；它生成并校验公开数据课程包，只在内容变化时提交 `lesson_pack.json`。
 - 发布输入与 ASC 状态解析的 Ruby 测试位于 [`.github/scripts/`](.github/scripts/)，修改工作流或共用脚本时应一并运行。
 
