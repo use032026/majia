@@ -1,0 +1,196 @@
+name: Photo ASC Existing Build Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      marketing_version:
+        description: Existing processed ASC marketing version
+        required: true
+        default: 1.0.1
+        type: string
+      build_number:
+        description: Existing processed ASC build number
+        required: true
+        default: "1"
+        type: string
+      release_notes_json:
+        description: Locale-to-whats_new mapping
+        required: true
+        default: '{"en-US":"fix some bugs。"}'
+        type: string
+      submit:
+        description: Submit the prepared version to App Review
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-photo-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  store_release:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment: photo-production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Checkout pinned ASC release system
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: CherryIce/ios-multi-app-cloud-build-system
+          ref: 39a136d4c560879ec35f3fd23c44f0b1eae4bc30
+          path: .github/runtime-ios-release-system
+          persist-credentials: false
+
+      - name: Prepare store-only release inputs
+        id: prepare
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          IOS_SCHEME: ${{ vars.IOS_SCHEME }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
+        run: |
+          ruby .github/scripts/prepare-existing-asc-release.rb \
+            --app-name Lunelle \
+            --project-directory apps/photo \
+            --container-path apps/photo/ios/Runner.xcworkspace \
+            --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"}]' \
+            --marketing-version "$MARKETING_VERSION" \
+            --metadata-template apps/photo/app-store/metadata.yml \
+            --release-notes-json "$RELEASE_NOTES_JSON" \
+            --config-output photo-existing-build-config.yml \
+            --metadata-output .github/runtime-photo-existing-build-metadata.yml \
+            --key-output AuthKey_photo.p8 \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Resolve Photo ASC app
+        id: app
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+        run: |
+          ruby .github/runtime-ios-release-system/scripts/resolve-asc-app.rb \
+            --config "${{ steps.prepare.outputs.config_path }}" \
+            --upload-to-asc true \
+            --key-id "$ASC_KEY_ID" \
+            --issuer-id "$ASC_ISSUER_ID" \
+            --key-path "${{ steps.prepare.outputs.key_path }}" \
+            --output "$RUNNER_TEMP/photo-existing-build-resolved.yml" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Verify exact existing ASC build
+        id: build_status
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          ruby .github/runtime-ios-release-system/scripts/wait-asc.rb \
+            --app-id "${{ steps.app.outputs.asc_app_id }}" \
+            --marketing-version "$MARKETING_VERSION" \
+            --build-number "$BUILD_NUMBER" \
+            --key-id "$ASC_KEY_ID" \
+            --issuer-id "$ASC_ISSUER_ID" \
+            --key-path "${{ steps.prepare.outputs.key_path }}" \
+            --wait-level processing_complete \
+            --timeout-minutes 5 \
+            --poll-seconds 15 \
+            --output asc-existing-build-status.json \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Create version, update notes, and attach existing build
+        id: store_version
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/runtime-ios-release-system/scripts/release-app-store.rb \
+            --config "$RUNNER_TEMP/photo-existing-build-resolved.yml" \
+            --phase finalize \
+            --marketing-version "$MARKETING_VERSION" \
+            --status asc-existing-build-status.json \
+            --key-id "$ASC_KEY_ID" \
+            --issuer-id "$ASC_ISSUER_ID" \
+            --key-path "${{ steps.prepare.outputs.key_path }}" \
+            --submit-to-review false \
+            --update-text-metadata true \
+            --replace-media false \
+            --output asc-existing-build-app-store.json \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Submit prepared version to App Review
+        id: submit_review
+        if: ${{ inputs.submit }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/scripts/submit-asc-review.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-review-submission.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain ASC release evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: photo-asc-existing-build-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            asc-existing-build-status.json
+            asc-existing-build-app-store.json
+            asc-review-submission.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Write release evidence summary
+        if: ${{ always() }}
+        shell: bash
+        env:
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          ASC_PROCESSING_STATE: ${{ steps.build_status.outputs.asc_processing_state }}
+          APP_STORE_VERSION_STATE: ${{ steps.store_version.outputs.app_store_version_state }}
+          TEXT_METADATA_UPDATED: ${{ steps.store_version.outputs.asc_text_metadata_updated }}
+          REVIEW_SUBMITTED: ${{ steps.submit_review.outputs.review_submitted }}
+          REVIEW_SUBMISSION_STATE: ${{ steps.submit_review.outputs.review_submission_state }}
+          SUBMISSION_NO_OP: ${{ steps.submit_review.outputs.submission_no_op }}
+          SUBMISSION_NO_OP_REASON: ${{ steps.submit_review.outputs.submission_no_op_reason }}
+        run: |
+          {
+            echo "## Photo existing-build ASC release"
+            echo "- Marketing version: ${MARKETING_VERSION}"
+            echo "- Existing build number: ${BUILD_NUMBER}"
+            echo "- New IPA upload performed: false"
+            echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-verified}"
+            echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
+            echo "- Text metadata updated and verified: ${TEXT_METADATA_UPDATED:-false}"
+            echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
+            echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
+            echo "- Review submission no-op: ${SUBMISSION_NO_OP:-false}"
+            echo "- Review submission no-op reason: ${SUBMISSION_NO_OP_REASON:-none}"
+          } >> "$GITHUB_STEP_SUMMARY"

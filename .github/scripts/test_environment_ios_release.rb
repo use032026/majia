@@ -197,4 +197,25 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal raw, encoded
     assert_equal pem, raw.unpack1("m0")
   end
+
+  def test_photo_existing_build_release_never_builds_or_uploads_a_new_binary
+    text = File.read(".github/workflows/photo-asc-existing-build-release.yml", encoding: "UTF-8")
+
+    assert_includes text, "environment: photo-production"
+    assert_includes text, "marketing_version:"
+    assert_includes text, "build_number:"
+    assert_includes text, "release_notes_json:"
+    assert_includes text, "39a136d4c560879ec35f3fd23c44f0b1eae4bc30"
+    assert_includes text, "scripts/wait-asc.rb"
+    assert_includes text, "--wait-level processing_complete"
+    assert_includes text, "scripts/release-app-store.rb"
+    assert_includes text, "--phase finalize"
+    assert_includes text, "--submit-to-review false"
+    assert_includes text, "ruby .github/scripts/submit-asc-review.rb"
+    assert_includes text, "New IPA upload performed: false"
+    refute_includes text, "build-upload@"
+    refute_includes text, "IOS_DISTRIBUTION_P12_BASE64"
+    refute_includes text, "IOS_APPSTORE_PROFILE_BASE64"
+    refute_includes text, "scripts/upload.sh"
+  end
 end
