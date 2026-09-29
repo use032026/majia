@@ -115,7 +115,7 @@ jobs:
             --output asc-existing-build-status.json \
             --github-output "$GITHUB_OUTPUT"
 
-      - name: Create version, update notes, and attach existing build
+      - name: Create version and attach existing build
         id: store_version
         shell: bash
         env:
@@ -132,9 +132,27 @@ jobs:
             --issuer-id "$ASC_ISSUER_ID" \
             --key-path "${{ steps.prepare.outputs.key_path }}" \
             --submit-to-review false \
-            --update-text-metadata true \
+            --update-text-metadata false \
             --replace-media false \
             --output asc-existing-build-app-store.json \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Update and verify What's New only
+        id: whats_new
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
+        run: |
+          ruby .github/scripts/sync-asc-whats-new.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --release-notes-json "$RELEASE_NOTES_JSON" \
+            --output asc-existing-build-whats-new.json \
             --github-output "$GITHUB_OUTPUT"
 
       - name: Submit prepared version to App Review
@@ -163,6 +181,7 @@ jobs:
           path: |
             asc-existing-build-status.json
             asc-existing-build-app-store.json
+            asc-existing-build-whats-new.json
             asc-review-submission.json
           if-no-files-found: warn
           retention-days: 30
@@ -175,7 +194,8 @@ jobs:
           BUILD_NUMBER: ${{ inputs.build_number }}
           ASC_PROCESSING_STATE: ${{ steps.build_status.outputs.asc_processing_state }}
           APP_STORE_VERSION_STATE: ${{ steps.store_version.outputs.app_store_version_state }}
-          TEXT_METADATA_UPDATED: ${{ steps.store_version.outputs.asc_text_metadata_updated }}
+          TEXT_METADATA_UPDATED: ${{ steps.whats_new.outputs.asc_whats_new_updated }}
+          WHATS_NEW_LOCALES: ${{ steps.whats_new.outputs.asc_whats_new_locales }}
           REVIEW_SUBMITTED: ${{ steps.submit_review.outputs.review_submitted }}
           REVIEW_SUBMISSION_STATE: ${{ steps.submit_review.outputs.review_submission_state }}
           SUBMISSION_NO_OP: ${{ steps.submit_review.outputs.submission_no_op }}
@@ -189,6 +209,7 @@ jobs:
             echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-verified}"
             echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
             echo "- Text metadata updated and verified: ${TEXT_METADATA_UPDATED:-false}"
+            echo "- What's New locales: ${WHATS_NEW_LOCALES:-not-updated}"
             echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
             echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
             echo "- Review submission no-op: ${SUBMISSION_NO_OP:-false}"
