@@ -1,11 +1,11 @@
-# ASC metadata patch manifest for Lunelle.
+# ASC metadata patch manifest for Jufu.
 # Nothing except export compliance is changed until the corresponding workflow
 # switch is enabled. Uncomment only fields and collections that should change.
 uses_non_exempt_encryption: false
 
 # app_info_localizations:
 #   en-US:
-#     name: "Lunelle"
+#     name: "Jufu"
 #     subtitle: "New subtitle"
 #
 # localizations:

@@ -1,40 +1,48 @@
-name: Photo ASC Existing Build Release
+name: ASC Existing Build Release
 
 on:
   workflow_dispatch:
     inputs:
+      app_environment:
+        description: GitHub Environment containing the app's ASC credentials and iOS identifiers
+        required: true
+        type: choice
+        options:
+          - photo-production
+          - hearthio-production
+          - tripcost-production
+          - sdpacket-production
+          - plotproof_lab-production
       marketing_version:
         description: Existing processed ASC marketing version
         required: true
-        default: 1.0.1
         type: string
       build_number:
         description: Existing processed ASC build number
         required: true
-        default: "1"
         type: string
       release_notes_json:
-        description: Locale-to-whats_new mapping
-        required: true
-        default: '{"en-US":"fix some bugs。"}'
+        description: Optional locale-to-whats_new mapping, for example {"en-US":"Bug fixes."}
+        required: false
+        default: "{}"
         type: string
       submit:
         description: Submit the prepared version to App Review
         required: true
-        default: true
+        default: false
         type: boolean
 
 permissions:
   contents: read
 
 concurrency:
-  group: majia-asc-photo-production-${{ github.repository }}
+  group: majia-asc-${{ inputs.app_environment }}-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
   store_release:
     if: ${{ github.ref == 'refs/heads/main' }}
-    environment: photo-production
+    environment: ${{ inputs.app_environment }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -47,7 +55,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: CherryIce/ios-multi-app-cloud-build-system
-          ref: 39a136d4c560879ec35f3fd23c44f0b1eae4bc30
+          ref: b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9
           path: .github/runtime-ios-release-system
           persist-credentials: false
 
@@ -61,23 +69,20 @@ jobs:
           ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
           ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          APP_ENVIRONMENT: ${{ inputs.app_environment }}
           MARKETING_VERSION: ${{ inputs.marketing_version }}
           RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
         run: |
           ruby .github/scripts/prepare-existing-asc-release.rb \
-            --app-name Lunelle \
-            --project-directory apps/photo \
-            --container-path apps/photo/ios/Runner.xcworkspace \
-            --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"}]' \
+            --app-environment "$APP_ENVIRONMENT" \
             --marketing-version "$MARKETING_VERSION" \
-            --metadata-template apps/photo/app-store/metadata.yml \
             --release-notes-json "$RELEASE_NOTES_JSON" \
-            --config-output photo-existing-build-config.yml \
-            --metadata-output .github/runtime-photo-existing-build-metadata.yml \
-            --key-output AuthKey_photo.p8 \
+            --config-output existing-build-config.yml \
+            --metadata-output .github/runtime-existing-build-metadata.yml \
+            --key-output AuthKey_existing_build.p8 \
             --github-output "$GITHUB_OUTPUT"
 
-      - name: Resolve Photo ASC app
+      - name: Resolve ASC app
         id: app
         shell: bash
         env:
@@ -90,7 +95,7 @@ jobs:
             --key-id "$ASC_KEY_ID" \
             --issuer-id "$ASC_ISSUER_ID" \
             --key-path "${{ steps.prepare.outputs.key_path }}" \
-            --output "$RUNNER_TEMP/photo-existing-build-resolved.yml" \
+            --output "$RUNNER_TEMP/existing-build-resolved.yml" \
             --github-output "$GITHUB_OUTPUT"
 
       - name: Verify exact existing ASC build
@@ -109,7 +114,7 @@ jobs:
             --key-id "$ASC_KEY_ID" \
             --issuer-id "$ASC_ISSUER_ID" \
             --key-path "${{ steps.prepare.outputs.key_path }}" \
-            --wait-level testflight_internal_ready \
+            --wait-level processing_complete \
             --timeout-minutes 5 \
             --poll-seconds 15 \
             --output asc-existing-build-status.json \
@@ -124,7 +129,7 @@ jobs:
           MARKETING_VERSION: ${{ inputs.marketing_version }}
         run: |
           ruby .github/runtime-ios-release-system/scripts/release-app-store.rb \
-            --config "$RUNNER_TEMP/photo-existing-build-resolved.yml" \
+            --config "$RUNNER_TEMP/existing-build-resolved.yml" \
             --phase finalize \
             --marketing-version "$MARKETING_VERSION" \
             --status asc-existing-build-status.json \
@@ -139,6 +144,7 @@ jobs:
 
       - name: Update and verify What's New only
         id: whats_new
+        if: ${{ steps.prepare.outputs.sync_whats_new == 'true' }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -177,7 +183,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: photo-asc-existing-build-${{ github.run_id }}-${{ github.run_attempt }}
+          name: asc-existing-build-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             asc-existing-build-status.json
             asc-existing-build-app-store.json
@@ -190,6 +196,8 @@ jobs:
         if: ${{ always() }}
         shell: bash
         env:
+          APP_ENVIRONMENT: ${{ inputs.app_environment }}
+          APP_NAME: ${{ steps.prepare.outputs.app_name }}
           MARKETING_VERSION: ${{ inputs.marketing_version }}
           BUILD_NUMBER: ${{ inputs.build_number }}
           ASC_PROCESSING_STATE: ${{ steps.build_status.outputs.asc_processing_state }}
@@ -202,13 +210,15 @@ jobs:
           SUBMISSION_NO_OP_REASON: ${{ steps.submit_review.outputs.submission_no_op_reason }}
         run: |
           {
-            echo "## Photo existing-build ASC release"
+            echo "## Existing-build ASC release"
+            echo "- App: ${APP_NAME:-unknown}"
+            echo "- Environment: ${APP_ENVIRONMENT}"
             echo "- Marketing version: ${MARKETING_VERSION}"
             echo "- Existing build number: ${BUILD_NUMBER}"
             echo "- New IPA upload performed: false"
             echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-verified}"
             echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
-            echo "- Text metadata updated and verified: ${TEXT_METADATA_UPDATED:-false}"
+            echo "- What's New updated and verified: ${TEXT_METADATA_UPDATED:-false}"
             echo "- What's New locales: ${WHATS_NEW_LOCALES:-not-updated}"
             echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
             echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"

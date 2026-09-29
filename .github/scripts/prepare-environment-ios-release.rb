@@ -156,6 +156,14 @@ begin
     release_notes_json: options.fetch(:release_notes_json),
     update_text_metadata: update_text_metadata
   )
+  sync_whats_new = MajiaCI::EnvironmentIOSRelease.whats_new_changes?(metadata)
+  external_metadata = MajiaCI::EnvironmentIOSRelease.without_whats_new(metadata)
+  external_update_text_metadata = update_text_metadata &&
+                                  MajiaCI::EnvironmentIOSRelease.text_metadata_changes?(external_metadata)
+  if update_text_metadata && !sync_whats_new && !external_update_text_metadata
+    raise MajiaCI::ReleaseInputError,
+          "update_asc_text_metadata=true requires release notes or a declared text metadata change"
+  end
 
   app_key = options.fetch(:app_key)
   config_path = ".github/runtime-#{app_key}-ios-build.yml"
@@ -176,7 +184,7 @@ begin
     file.write(MajiaCI::EnvironmentIOSRelease.dump_yaml(config))
   end
   File.open(metadata_path, "w", 0o600) do |file|
-    file.write(MajiaCI::EnvironmentIOSRelease.dump_yaml(metadata))
+    file.write(MajiaCI::EnvironmentIOSRelease.dump_yaml(external_metadata))
   end
 
   profiles_base64 = prepare_profiles(required_environment("IOS_APPSTORE_PROFILE_BASE64"), app_key)
@@ -200,6 +208,8 @@ begin
     output.puts "metadata_path=#{metadata_path}"
     output.puts "profiles_archive_base64=#{profiles_base64}"
     output.puts "asc_api_key_p8_base64=#{p8_base64}"
+    output.puts "external_update_text_metadata=#{external_update_text_metadata}"
+    output.puts "sync_whats_new=#{sync_whats_new}"
   end
   puts [
     "Prepared #{app_key}",
@@ -207,6 +217,8 @@ begin
     "auto_create_store_version=#{auto_create}",
     "submit=#{submit}",
     "update_asc_text_metadata=#{update_text_metadata}",
+    "external_update_text_metadata=#{external_update_text_metadata}",
+    "sync_whats_new=#{sync_whats_new}",
     "replace_asc_media=#{replace_media}",
     "automatic_release=true"
   ].join(" ")

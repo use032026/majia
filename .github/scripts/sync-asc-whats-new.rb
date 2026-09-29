@@ -1,12 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "base64"
 require "json"
-require "openssl"
 require "optparse"
 require_relative "lib/asc_whats_new"
-require_relative "lib/environment_ios_release"
 
 options = {}
 OptionParser.new do |parser|
@@ -44,8 +41,7 @@ begin
     key_id: key_id,
     issuer_id: issuer_id
   )
-  encoded_key = MajiaCI::EnvironmentIOSRelease.normalize_p8(required_environment("ASC_API_KEY_P8"))
-  key = OpenSSL::PKey.read(Base64.strict_decode64(encoded_key))
+  key = MajiaCI::ASCReviewStatus.normalize_private_key(required_environment("ASC_API_KEY_P8"))
   release_notes = JSON.parse(options.fetch(:release_notes_json))
   client = MajiaCI::ASCClient.new(key: key, key_id: key_id, issuer_id: issuer_id)
   summary = MajiaCI::ASCWhatsNew.sync(
@@ -66,9 +62,8 @@ begin
     "locales=#{summary.fetch('updated').map { |entry| entry.fetch('applied_locale') }.join(',')}",
     "verified=#{summary.fetch('updated').all? { |entry| entry.fetch('verified') }}"
   ].join(" ")
-rescue MajiaCI::ASCStatusError, MajiaCI::ASCWhatsNewError, MajiaCI::ReleaseInputError,
-       JSON::ParserError, KeyError, ArgumentError, Errno::ENOENT, Errno::EACCES,
-       OpenSSL::PKey::PKeyError => e
+rescue MajiaCI::ASCStatusError, MajiaCI::ASCWhatsNewError, JSON::ParserError,
+       KeyError, ArgumentError, Errno::ENOENT, Errno::EACCES => e
   failure = {
     "schema_version" => 1,
     "requested_marketing_version" => options[:marketing_version],

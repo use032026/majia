@@ -69,6 +69,23 @@ class ASCReviewStatusTest < Minitest::Test
     )
   end
 
+  def test_private_key_normalization_accepts_all_supported_secret_representations
+    pem = OpenSSL::PKey::EC.generate("prime256v1").to_pem
+    representations = [
+      pem,
+      Base64.strict_encode64(pem),
+      pem.gsub("\n", "\\n"),
+      pem.gsub("\n", "\\r\\n"),
+      pem.to_json,
+      "ASC_API_KEY_P8=#{pem}",
+      Base64.strict_encode64(Base64.strict_encode64(pem)),
+      pem.lines.map(&:strip).join(" ")
+    ]
+
+    public_keys = representations.map { |value| Status.normalize_private_key(value).public_key.to_octet_string(:uncompressed) }
+    assert_equal 1, public_keys.uniq.length
+  end
+
   def test_build_status_links_the_version_build_and_active_review_submission
     client = base_client
     client.enqueue(
@@ -176,7 +193,10 @@ class ASCReviewStatusTest < Minitest::Test
   def test_workflow_uses_existing_environment_credentials_without_signing_material
     text = File.read(File.expand_path("../workflows/asc-review-status.yml", __dir__), encoding: "UTF-8")
 
-    %w[tripcost-production hearthio-production sdpacket-production photo-production].each do |environment|
+    %w[
+      tripcost-production hearthio-production sdpacket-production photo-production
+      plotproof_lab-production
+    ].each do |environment|
       assert_includes text, "- #{environment}"
     end
     assert_includes text, "environment: ${{ inputs.app_environment }}"

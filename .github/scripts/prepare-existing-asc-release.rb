@@ -7,15 +7,12 @@ require "json"
 require "optparse"
 require "pathname"
 require_relative "lib/environment_ios_release"
+require_relative "lib/ios_release_apps"
 
 options = {}
 OptionParser.new do |parser|
-  parser.on("--app-name NAME") { |value| options[:app_name] = value }
-  parser.on("--project-directory PATH") { |value| options[:project_directory] = value }
-  parser.on("--container-path PATH") { |value| options[:container_path] = value }
-  parser.on("--targets-json JSON") { |value| options[:targets_json] = value }
+  parser.on("--app-environment NAME") { |value| options[:app_environment] = value }
   parser.on("--marketing-version VERSION") { |value| options[:marketing_version] = value }
-  parser.on("--metadata-template PATH") { |value| options[:metadata_template] = value }
   parser.on("--release-notes-json JSON") { |value| options[:release_notes_json] = value }
   parser.on("--config-output PATH") { |value| options[:config_output] = value }
   parser.on("--metadata-output PATH") { |value| options[:metadata_output] = value }
@@ -56,16 +53,16 @@ end
 
 begin
   required = %i[
-    app_name project_directory container_path targets_json marketing_version metadata_template
-    release_notes_json config_output metadata_output key_output github_output
+    app_environment marketing_version release_notes_json config_output metadata_output key_output github_output
   ]
   missing = required.reject { |key| options[key] && !options[key].empty? }
   raise MajiaCI::ReleaseInputError, "missing options: #{missing.join(', ')}" unless missing.empty?
 
   release = MajiaCI::EnvironmentIOSRelease
-  unless options.fetch(:app_name).match?(release::SAFE_NAME_PATTERN)
-    raise MajiaCI::ReleaseInputError, "app-name is invalid"
-  end
+  app = MajiaCI::IOSReleaseApps.fetch(
+    options.fetch(:app_environment),
+    error_class: MajiaCI::ReleaseInputError
+  )
   unless options.fetch(:marketing_version).match?(release::VERSION_PATTERN)
     raise MajiaCI::ReleaseInputError, "marketing-version must contain three dot-separated integers"
   end
@@ -93,13 +90,13 @@ begin
 
   workspace = File.realpath(ENV.fetch("GITHUB_WORKSPACE", Dir.pwd))
   runner_temp = File.realpath(required_environment("RUNNER_TEMP"))
-  project_directory = normalized_relative_path(options.fetch(:project_directory), "project-directory")
-  container_path = normalized_relative_path(options.fetch(:container_path), "container-path")
+  project_directory = normalized_relative_path(app.fetch("project_directory"), "project-directory")
+  container_path = normalized_relative_path(app.fetch("container_path"), "container-path")
   unless project_directory == "." || container_path.start_with?("#{project_directory}/")
     raise MajiaCI::ReleaseInputError, "container-path must be inside project-directory"
   end
 
-  template_path = normalized_relative_path(options.fetch(:metadata_template), "metadata-template")
+  template_path = normalized_relative_path(app.fetch("metadata_template"), "metadata-template")
   template_real = File.realpath(File.expand_path(template_path, workspace))
   unless template_real.start_with?(workspace + File::SEPARATOR) && File.file?(template_real)
     raise MajiaCI::ReleaseInputError, "metadata-template must resolve inside GITHUB_WORKSPACE"
@@ -109,18 +106,17 @@ begin
   config_path = output_path_under(runner_temp, options.fetch(:config_output), "config-output")
   key_path = output_path_under(runner_temp, options.fetch(:key_output), "key-output")
 
-  metadata = release.build_metadata(
+  metadata_with_notes = release.build_metadata(
     template_path: template_real,
     release_notes_json: options.fetch(:release_notes_json),
     update_text_metadata: true
   )
-  unless metadata.fetch("localizations", {}).values.any? { |locale| !locale.fetch("whats_new", "").strip.empty? }
-    raise MajiaCI::ReleaseInputError, "release-notes-json must contain at least one non-empty whats_new value"
-  end
+  sync_whats_new = release.whats_new_changes?(metadata_with_notes)
+  metadata = release.without_whats_new(metadata_with_notes)
 
-  targets = release.parse_targets(options.fetch(:targets_json))
+  targets = release.parse_targets(MajiaCI::IOSReleaseApps.targets_json(app))
   config = release.build_config(
-    app_name: options.fetch(:app_name),
+    app_name: app.fetch("app_name"),
     team_id: team_id,
     bundle_id: bundle_id,
     scheme: scheme,
@@ -141,8 +137,17 @@ begin
     output.puts "config_path=#{config_path}"
     output.puts "metadata_path=#{metadata_path}"
     output.puts "key_path=#{key_path}"
+    output.puts "app_key=#{app.fetch('app_key')}"
+    output.puts "app_name=#{app.fetch('app_name')}"
+    output.puts "sync_whats_new=#{sync_whats_new}"
   end
-  puts "Prepared existing-build ASC release for #{bundle_id} version #{options.fetch(:marketing_version)}"
+  puts [
+    "Prepared existing-build ASC release",
+    "environment=#{options.fetch(:app_environment)}",
+    "bundle_id=#{bundle_id}",
+    "version=#{options.fetch(:marketing_version)}",
+    "sync_whats_new=#{sync_whats_new}"
+  ].join(" ")
 rescue MajiaCI::ReleaseInputError, ArgumentError, KeyError, Errno::ENOENT, Errno::EACCES => e
   warn e.message
   exit 1

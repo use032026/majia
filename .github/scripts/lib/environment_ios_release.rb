@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require "base64"
 require "json"
-require "openssl"
 require "yaml"
+require_relative "asc_private_key"
 
 module MajiaCI
   class ReleaseInputError < StandardError; end
@@ -131,62 +130,38 @@ module MajiaCI
       end
     end
 
+    def without_whats_new(metadata)
+      result = deep_stringify_keys(metadata)
+      localizations = result["localizations"]
+      return result unless localizations.is_a?(Hash)
+
+      localizations.each_value do |attributes|
+        attributes.delete("whats_new") if attributes.is_a?(Hash)
+      end
+      localizations.delete_if { |_locale, attributes| attributes == {} }
+      result.delete("localizations") if localizations.empty?
+      result
+    end
+
+    def text_metadata_changes?(metadata)
+      %w[copyright uses_idfa app_info_localizations localizations review_detail].any? do |key|
+        value = metadata[key]
+        metadata.key?(key) && value != {} && value != []
+      end
+    end
+
+    def whats_new_changes?(metadata)
+      metadata.fetch("localizations", {}).values.any? do |attributes|
+        attributes.is_a?(Hash) && !attributes.fetch("whats_new", "").to_s.strip.empty?
+      end
+    end
+
     def normalize_p8(secret)
-      compact = secret.to_s.strip
-      raise ReleaseInputError, "ASC_API_KEY_P8 is required when upload_to_asc=true" if compact.empty?
-
-      if compact.start_with?("\"") && compact.end_with?("\"")
-        decoded_json = JSON.parse(compact)
-        compact = decoded_json.strip if decoded_json.is_a?(String)
-      end
-      compact = compact.sub(/\AASC_API_KEY_P8\s*=\s*/, "").strip
-      if compact.match?(/\A-----BEGIN (?:EC )?PRIVATE KEY-----/) && compact.include?("\\n")
-        compact = compact.gsub("\\r\\n", "\n").gsub("\\n", "\n").strip
-      end
-
-      pem_match = compact.match(
-        /\A-----BEGIN ((?:EC )?PRIVATE KEY)-----(.*?)-----END \1-----\z/m
+      ASCPrivateKey.normalize_p8(
+        secret,
+        error_class: ReleaseInputError,
+        required_message: "ASC_API_KEY_P8 is required when upload_to_asc=true"
       )
-      candidates = if pem_match
-                     label = pem_match[1]
-                     body = pem_match[2].gsub(/\s+/, "")
-                     unless body.match?(/\A[A-Za-z0-9+\/]+={0,2}\z/)
-                       raise ReleaseInputError, "ASC_API_KEY_P8 PEM body must be valid Base64"
-                     end
-                     lines = body.scan(/.{1,64}/)
-                     canonical_pem = "-----BEGIN #{label}-----\n#{lines.join("\n")}\n-----END #{label}-----\n"
-                     [["PEM", canonical_pem]]
-                   elsif compact.include?("-----BEGIN") || compact.include?("-----END")
-                     raise ReleaseInputError, "ASC_API_KEY_P8 PEM header or footer is incomplete"
-                   else
-                     decoded = Base64.strict_decode64(compact.gsub(/\s+/, ""))
-                     values = [["Base64", decoded]]
-                     decoded_compact = decoded.to_s.gsub(/\s+/, "")
-                     if decoded.ascii_only? && decoded_compact.match?(/\A[A-Za-z0-9+\/_-]+={0,2}\z/)
-                       begin
-                         values << ["double Base64", Base64.strict_decode64(decoded_compact.tr("-_", "+/"))]
-                       rescue ArgumentError
-                         # The first decoded value remains the only candidate.
-                       end
-                     end
-                     values
-                   end
-
-      candidates.each do |_format, key_bytes|
-        begin
-          key = OpenSSL::PKey.read(key_bytes)
-          next unless key.is_a?(OpenSSL::PKey::EC) && key.private? && key.group.curve_name == "prime256v1"
-
-          return Base64.strict_encode64(key_bytes)
-        rescue OpenSSL::PKey::PKeyError
-          next
-        end
-      end
-
-      formats = candidates.map(&:first).join(" or ")
-      raise ReleaseInputError, "ASC_API_KEY_P8 must contain a P-256 EC private key in #{formats} form"
-    rescue ArgumentError, JSON::ParserError => e
-      raise ReleaseInputError, "ASC_API_KEY_P8 is invalid: #{e.message}"
     end
 
     def build_config(

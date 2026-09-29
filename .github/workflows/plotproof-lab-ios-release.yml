@@ -108,14 +108,14 @@ jobs:
 
       - name: Build, retain, and optionally release PlotProof Lab
         id: release
-        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@6160d17ca99597c95b665823e5222de785348254
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9
         with:
           config_path: ${{ steps.prepare.outputs.config_path }}
           marketing_version: ${{ inputs.marketing_version }}
           build_number: ${{ inputs.build_number }}
           upload_to_asc: ${{ inputs.upload_to_asc }}
           submit_to_review: "false"
-          update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}
+          update_asc_text_metadata: ${{ steps.prepare.outputs.external_update_text_metadata }}
           replace_asc_media: ${{ inputs.replace_asc_media }}
           ios_distribution_p12_base64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
           ios_distribution_p12_password: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
@@ -123,6 +123,25 @@ jobs:
           asc_api_key_p8_base64: ${{ steps.prepare.outputs.asc_api_key_p8_base64 }}
           asc_key_id: ${{ vars.ASC_KEY_ID }}
           asc_issuer_id: ${{ vars.ASC_ISSUER_ID }}
+
+      - name: Update and verify What's New safely
+        id: whats_new
+        if: ${{ steps.prepare.outputs.sync_whats_new == 'true' }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
+        run: |
+          ruby .github/scripts/sync-asc-whats-new.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --release-notes-json "$RELEASE_NOTES_JSON" \
+            --output asc-whats-new-plotproof-lab.json \
+            --github-output "$GITHUB_OUTPUT"
 
       - name: Submit prepared App Store version for review
         id: submit_review
@@ -151,6 +170,15 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Retain What's New evidence
+        if: ${{ always() && steps.prepare.outputs.sync_whats_new == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-whats-new-plotproof-lab-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-whats-new-plotproof-lab.json
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Write release evidence summary
         if: ${{ always() }}
         shell: bash
@@ -170,7 +198,9 @@ jobs:
           SUBMISSION_NO_OP_REASON: ${{ steps.submit_review.outputs.submission_no_op_reason }}
           APP_STORE_NO_OP: ${{ steps.release.outputs.app_store_no_op }}
           APP_STORE_NO_OP_REASON: ${{ steps.release.outputs.app_store_no_op_reason }}
-          ASC_TEXT_METADATA_UPDATED: ${{ steps.release.outputs.asc_text_metadata_updated }}
+          EXTERNAL_TEXT_METADATA_UPDATED: ${{ steps.release.outputs.asc_text_metadata_updated }}
+          WHATS_NEW_UPDATED: ${{ steps.whats_new.outputs.asc_whats_new_updated }}
+          WHATS_NEW_LOCALES: ${{ steps.whats_new.outputs.asc_whats_new_locales }}
           ASC_MEDIA_REPLACED: ${{ steps.release.outputs.asc_media_replaced }}
         run: |
           {
@@ -190,7 +220,9 @@ jobs:
             echo "- Review submission no-op reason: ${SUBMISSION_NO_OP_REASON:-none}"
             echo "- App Store no-op: ${APP_STORE_NO_OP:-false}"
             echo "- App Store no-op reason: ${APP_STORE_NO_OP_REASON:-none}"
-            echo "- Text metadata updated and verified: ${ASC_TEXT_METADATA_UPDATED:-false}"
+            echo "- Other text metadata updated and verified: ${EXTERNAL_TEXT_METADATA_UPDATED:-false}"
+            echo "- What's New updated and verified: ${WHATS_NEW_UPDATED:-false}"
+            echo "- What's New locales: ${WHATS_NEW_LOCALES:-not-updated}"
             echo "- Media replaced and verified: ${ASC_MEDIA_REPLACED:-false}"
             echo "- Release policy: automatic after Apple approval"
           } >> "$GITHUB_STEP_SUMMARY"

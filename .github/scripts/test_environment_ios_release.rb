@@ -2,6 +2,7 @@
 
 require "minitest/autorun"
 require "openssl"
+require "yaml"
 require_relative "lib/environment_ios_release"
 
 class EnvironmentIOSReleaseTest < Minitest::Test
@@ -56,6 +57,17 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal false, metadata["uses_non_exempt_encryption"]
     assert_equal "Bug fixes.", metadata.dig("localizations", "en-US", "whats_new")
     assert_equal "问题修复。", metadata.dig("localizations", "zh-Hans", "whats_new")
+    assert Release.whats_new_changes?(metadata)
+    external_metadata = Release.without_whats_new(metadata)
+    assert_nil external_metadata["localizations"]
+    refute Release.text_metadata_changes?(external_metadata)
+    mixed_metadata = Release.without_whats_new(
+      "localizations" => {
+        "en-US" => { "whats_new" => "Bug fixes.", "description" => "Kept description" }
+      }
+    )
+    assert_equal "Kept description", mixed_metadata.dig("localizations", "en-US", "description")
+    assert Release.text_metadata_changes?(mixed_metadata)
     untouched = Release.build_metadata(
       template_path: template,
       release_notes_json: "{}",
@@ -125,14 +137,15 @@ class EnvironmentIOSReleaseTest < Minitest::Test
   end
 
   def test_all_release_workflows_expose_independent_release_switches_and_pin_expected_action_commits
-    workflows = {
-      ".github/workflows/photo-ios-ci.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
-      ".github/workflows/tripcost-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254",
-      ".github/workflows/donesome-ios-release.yml" => "39a136d4c560879ec35f3fd23c44f0b1eae4bc30",
-      ".github/workflows/sdpacket-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254",
-      ".github/workflows/plotproof-lab-ios-release.yml" => "6160d17ca99597c95b665823e5222de785348254"
-    }
-    workflows.each do |path, expected_pin|
+    expected_pin = "b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9"
+    workflows = %w[
+      .github/workflows/photo-ios-ci.yml
+      .github/workflows/tripcost-ios-release.yml
+      .github/workflows/donesome-ios-release.yml
+      .github/workflows/sdpacket-ios-release.yml
+      .github/workflows/plotproof-lab-ios-release.yml
+    ]
+    workflows.each do |path|
       text = File.read(path, encoding: "UTF-8")
       assert_includes text, "submit:"
       assert_includes text, "description: Submit the created or reused store version to App Review after processing"
@@ -144,8 +157,11 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       refute_includes text, "submit_to_review: ${{ inputs.submit }}"
       assert_includes text, "if: ${{ inputs.submit }}"
       assert_includes text, "ruby .github/scripts/submit-asc-review.rb"
-      assert_includes text, "update_asc_text_metadata: ${{ inputs.update_asc_text_metadata }}"
+      assert_includes text, "update_asc_text_metadata: ${{ steps.prepare.outputs.external_update_text_metadata }}"
       assert_includes text, "replace_asc_media: ${{ inputs.replace_asc_media }}"
+      assert_includes text, "if: ${{ steps.prepare.outputs.sync_whats_new == 'true' }}"
+      assert_includes text, "ruby .github/scripts/sync-asc-whats-new.rb"
+      assert_includes text, "Retain What's New evidence"
       assert_includes text, "REQUESTED_SUBMIT: ${{ inputs.submit }}"
       assert_includes text, 'echo "- Store version create/reuse requested: ${REQUESTED_STORE_VERSION}"'
       assert_includes text, 'echo "- Review submission requested: ${REQUESTED_SUBMIT}"'
@@ -210,16 +226,21 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal pem, raw.unpack1("m0")
   end
 
-  def test_photo_existing_build_release_never_builds_or_uploads_a_new_binary
-    text = File.read(".github/workflows/photo-asc-existing-build-release.yml", encoding: "UTF-8")
+  def test_generic_existing_build_release_supports_every_app_without_uploading_a_new_binary
+    text = File.read(".github/workflows/asc-existing-build-release.yml", encoding: "UTF-8")
 
-    assert_includes text, "environment: photo-production"
+    %w[
+      photo-production hearthio-production tripcost-production sdpacket-production
+      plotproof_lab-production
+    ].each { |environment| assert_includes text, "- #{environment}" }
+    assert_includes text, "environment: ${{ inputs.app_environment }}"
     assert_includes text, "marketing_version:"
     assert_includes text, "build_number:"
     assert_includes text, "release_notes_json:"
-    assert_includes text, "39a136d4c560879ec35f3fd23c44f0b1eae4bc30"
+    assert_includes text, "b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9"
+    assert_includes text, '--app-environment "$APP_ENVIRONMENT"'
     assert_includes text, "scripts/wait-asc.rb"
-    assert_includes text, "--wait-level testflight_internal_ready"
+    assert_includes text, "--wait-level processing_complete"
     assert_includes text, "scripts/release-app-store.rb"
     assert_includes text, "--phase finalize"
     assert_includes text, "--submit-to-review false"
@@ -232,5 +253,11 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     refute_includes text, "IOS_DISTRIBUTION_P12_BASE64"
     refute_includes text, "IOS_APPSTORE_PROFILE_BASE64"
     refute_includes text, "scripts/upload.sh"
+  end
+
+  def test_all_workflows_are_valid_yaml
+    Dir.glob(".github/workflows/*.yml").each do |path|
+      assert_kind_of Hash, YAML.safe_load(File.read(path, encoding: "UTF-8"), aliases: true), path
+    end
   end
 end

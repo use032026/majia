@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "base64"
 require "json"
 require "net/http"
 require "openssl"
 require "time"
 require "uri"
+require_relative "asc_private_key"
 
 module MajiaCI
   class ASCStatusError < StandardError; end
@@ -39,22 +39,7 @@ module MajiaCI
     end
 
     def normalize_private_key(secret)
-      compact = secret.to_s.strip
-      raise ASCStatusError, "ASC_API_KEY_P8 is required" if compact.empty?
-
-      key_bytes = if compact.match?(/-----BEGIN (?:EC )?PRIVATE KEY-----/)
-                    compact.end_with?("\n") ? compact : "#{compact}\n"
-                  else
-                    Base64.strict_decode64(compact.gsub(/\s+/, ""))
-                  end
-      key = OpenSSL::PKey.read(key_bytes)
-      unless key.is_a?(OpenSSL::PKey::EC) && key.private? && key.group.curve_name == "prime256v1"
-        raise ASCStatusError, "ASC_API_KEY_P8 must contain a P-256 EC private key"
-      end
-
-      key
-    rescue ArgumentError, OpenSSL::PKey::PKeyError => e
-      raise ASCStatusError, "ASC_API_KEY_P8 is invalid: #{e.message}"
+      ASCPrivateKey.read_p8(secret, error_class: ASCStatusError)
     end
 
     def jwt(key:, key_id:, issuer_id:, now: Time.now.utc)
