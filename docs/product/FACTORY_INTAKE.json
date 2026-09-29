@@ -1,0 +1,39 @@
+{
+  "app_name": "PaceJar · 节奏罐（工作名，未做商标或 App Store 名称清查）",
+  "working_name": "pace_jar",
+  "target_user": "收入来自兼职、项目款或奖金而有波动，拒绝连接银行，但需要为一个重要目标持续储蓄的中英文个人用户",
+  "problem": "固定周/月储蓄计划默认收入稳定；当用户少存、跳过或临时取出时，普通储蓄罐只显示落后百分比，不能给出透明可选的恢复路径，也会让计划修改覆盖过去承诺",
+  "product_promise": "用一个专注目标把计划与实际分开记录；每次波动后给出保持日期、保持周额或自定周额的可解释恢复方案，并保留全部计划版本，不声称移动、托管或自动储蓄真实资金",
+  "core_loop": "创建专注目标与可承受周额 -> 记录已存、取出或跳过及原因 -> 对照当期计划识别提前、正常或需要恢复 -> 选择恢复策略并预览新周额/日期 -> 保存新计划版本且不改写历史 -> 在本地时间线复盘并复制摘要",
+  "durable_output": "设备本地的储蓄事件与计划版本时间线，以及可复制到其他应用的中英文纯文本复盘摘要",
+  "scope": "release_candidate",
+  "platform": "Flutter，iOS 与 Android；App Store 单独评估 iOS",
+  "launch_regions": [
+    "中国大陆（是否满足备案与分发条件待 App Store Connect 核对）",
+    "英语地区（具体国家待 App Store Connect 配置确认）"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "离线优先，无应用自有后台",
+  "data_handling": "用户输入的目标名称、金额、日期、事件与备注仅保存于应用沙盒的本地 SharedPreferences JSON；应用不连接银行、不上传、不使用分析或广告 SDK。用户可在应用内删除全部数据，并可将纯文本复盘复制到系统剪贴板。MVP 不提供云同步、文件备份或跨设备恢复；系统设备备份行为取决于平台设置",
+  "sensitive_data": "目标金额、余额变化和自由文本可能属于个人财务信息，但只在设备本地处理；不采集账号、银行凭证、支付卡、身份、健康、精确位置或儿童定向数据",
+  "permissions": [
+    "无系统敏感权限；复制复盘仅在用户主动点击时写入系统剪贴板"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS 15.0+（Runner、Flutter AppFrameworkInfo 与 Pods 构建配置已统一为 15.0；仍需以 iOS 15 真机和提交时规则验证）",
+  "visual_direction": "原创的节奏工作台：暖灰纸面、深蓝墨色与珊瑚警示；以计划/实际双轨带、每周检查点和版本时间线为主，不使用 3D 玻璃罐、100 信封网格、竞品插画、品牌、文案或截图布局",
+  "reference_products": [
+    "https://apps.apple.com/cn/app/loot-%E5%AD%98%E9%92%B1%E7%BD%90-%E5%82%A8%E8%93%84-%E9%87%91%E9%8C%A2/id1489821186"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核"
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-29T18:00:00+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/money_box",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": false
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/money_box/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.paceJar",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "shared_preferences_foundation.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": false
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.paceJar",
+          "com.example.paceJar.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.paceJar"
+        ],
+        "expected_bundle_id": null
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.paceJar",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/money_box/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/money_box/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "shared_preferences_foundation.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.paceJar",
+        "archive": "com.example.paceJar"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "pass",
+      "summary": "Screenshot PNG dimensions and alpha were inspected.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPhone-6.9/01-pace.png",
+          "width": 1320,
+          "height": 2868,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPhone-6.9/02-recovery.png",
+          "width": 1320,
+          "height": 2868,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPhone-6.9/03-timeline.png",
+          "width": 1320,
+          "height": 2868,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/en-iPhone-6.9/01-timeline-dark.png",
+          "width": 1320,
+          "height": 2868,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/en-iPhone-6.9/02-pace-dark.png",
+          "width": 1320,
+          "height": 2868,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPad-13/01-pace.png",
+          "width": 2064,
+          "height": 2752,
+          "has_alpha": false
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/money_box/build/app/outputs/flutter-apk/app-debug.apk",
+          "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/product/assets/pacejar-icon.svg"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 145339958,
+      "modified_at": "2026-09-29T17:51:15.705520+08:00",
+      "sha256": "6eff90ba6fb7f3e0a26aef5f8df21fabf50244b9ab39deacd933e7226d1fade0"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/product/assets/pacejar-icon.svg",
+      "size_bytes": 522,
+      "modified_at": "2026-09-29T17:40:17.592612+08:00",
+      "sha256": "958e4d4fa1f813706f7d489d2d42f9a89360f43cdd96908ccd36a478243a5e97"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 73832,
+      "modified_at": "2026-09-29T17:59:46.391696+08:00",
+      "sha256": "ffeaa1f71649627b09bc5d49cee92160e34c5f036163ace1db9f61df839b5604"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPhone-6.9/01-pace.png",
+      "size_bytes": 193891,
+      "modified_at": "2026-09-29T17:26:03.466642+08:00",
+      "sha256": "69ec37e167c40508a8c9fedf2f4e6cc2fa9b2a5fa19b8de8212eaf8a0e44122c"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPhone-6.9/02-recovery.png",
+      "size_bytes": 195906,
+      "modified_at": "2026-09-29T17:26:13.681713+08:00",
+      "sha256": "1bc029ca7e94799e43184d6c8d21456a24a693754faa28a7f07d6d79e03d17fa"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPhone-6.9/03-timeline.png",
+      "size_bytes": 200353,
+      "modified_at": "2026-09-29T17:26:33.333578+08:00",
+      "sha256": "493892042605d3d46696db9363575f0d4f3dd5acdf8284d3f6e76b4782608caa"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/en-iPhone-6.9/01-timeline-dark.png",
+      "size_bytes": 186650,
+      "modified_at": "2026-09-29T17:18:55.746873+08:00",
+      "sha256": "1fc19a9129a700761fadaf3cbeca91e83e02511e93755f0615ed0c100b762031"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/en-iPhone-6.9/02-pace-dark.png",
+      "size_bytes": 195089,
+      "modified_at": "2026-09-29T17:18:43.929662+08:00",
+      "sha256": "b1fc1a2cdc284c26c0136ce3e6de77bd9a88ce481454a0c56e09b794c3cb92cf"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/money_box/docs/release/evidence/store-screenshots/zh-iPad-13/01-pace.png",
+      "size_bytes": 228124,
+      "modified_at": "2026-09-29T17:27:22.042416+08:00",
+      "sha256": "5388ddd2166a536e0e38c25b92ddeed5270111b6ed47c8155e4f171dc8bb1782"
+    }
+  ]
+}
