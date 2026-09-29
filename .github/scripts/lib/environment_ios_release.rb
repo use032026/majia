@@ -141,11 +141,23 @@ module MajiaCI
       end
       compact = compact.sub(/\AASC_API_KEY_P8\s*=\s*/, "").strip
       if compact.match?(/\A-----BEGIN (?:EC )?PRIVATE KEY-----/) && compact.include?("\\n")
-        compact = compact.gsub("\\r\\n", "\n").gsub("\\n", "\n")
+        compact = compact.gsub("\\r\\n", "\n").gsub("\\n", "\n").strip
       end
 
-      candidates = if compact.match?(/-----BEGIN (?:EC )?PRIVATE KEY-----/)
-                     [["PEM", compact.end_with?("\n") ? compact : "#{compact}\n"]]
+      pem_match = compact.match(
+        /\A-----BEGIN ((?:EC )?PRIVATE KEY)-----(.*?)-----END \1-----\z/m
+      )
+      candidates = if pem_match
+                     label = pem_match[1]
+                     body = pem_match[2].gsub(/\s+/, "")
+                     unless body.match?(/\A[A-Za-z0-9+\/]+={0,2}\z/)
+                       raise ReleaseInputError, "ASC_API_KEY_P8 PEM body must be valid Base64"
+                     end
+                     lines = body.scan(/.{1,64}/)
+                     canonical_pem = "-----BEGIN #{label}-----\n#{lines.join("\n")}\n-----END #{label}-----\n"
+                     [["PEM", canonical_pem]]
+                   elsif compact.include?("-----BEGIN") || compact.include?("-----END")
+                     raise ReleaseInputError, "ASC_API_KEY_P8 PEM header or footer is incomplete"
                    else
                      decoded = Base64.strict_decode64(compact.gsub(/\s+/, ""))
                      values = [["Base64", decoded]]

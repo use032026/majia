@@ -198,6 +198,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     json_string = Release.normalize_p8(pem.to_json)
     assignment = Release.normalize_p8("ASC_API_KEY_P8=#{pem}")
     double_encoded = Release.normalize_p8([[pem].pack("m0")].pack("m0"))
+    collapsed = Release.normalize_p8(pem.lines.map(&:strip).join(" "))
 
     assert_equal raw, encoded
     assert_equal raw, escaped_lf
@@ -205,6 +206,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal raw, json_string
     assert_equal raw, assignment
     assert_equal raw, double_encoded
+    assert_equal raw, collapsed
     assert_equal pem, raw.unpack1("m0")
   end
 
