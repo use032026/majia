@@ -1,0 +1,41 @@
+CleanTrail is an offline-first table quality workbench for checking and repairing small CSV, TSV, TXT, and XLSX files on your iPhone or iPad before you hand them off to another person, app, or system.
+
+IMPORT WITH CONTEXT
+
+Open a file through the system picker. For text files, review the detected CSV or TSV format and UTF-8 or GBK encoding. For Excel workbooks, choose the worksheet you want to inspect. CleanTrail confirms these choices before analysis so you stay in control of what is being read.
+
+FIND COMMON DATA PROBLEMS
+
+CleanTrail checks for five practical issues that often cause failed imports or misleading results:
+
+- Missing values
+- Duplicate rows after case and whitespace normalization
+- Unwanted leading or trailing spaces
+- Mixed text and numeric values in a numeric column
+- Inconsistent or invalid date formats
+
+REVIEW EVERY DECISION
+
+Issues appear in a focused repair queue with the affected row, column, current value, and an available suggestion. Apply the suggestion, enter a replacement, remove a duplicate row, or explicitly keep the original. CleanTrail never silently fixes the entire file. After each decision, it inspects the working copy again so newly revealed issues remain visible. You can also undo recent changes during the current session.
+
+PREVIEW BEFORE EXPORT
+
+Check the first five rows in a compact table, scroll horizontally through wide data, and tap a cell to see its complete value. A simple numeric preview helps you validate changes without turning the app into a chart editor.
+
+EXPORT DATA WITH A RECORD
+
+When review is complete, export a cleaned CSV. If unresolved issues remain, CleanTrail clearly marks the output as a draft instead of presenting it as finished. Each export also includes a concise Markdown quality report with row counts, issue totals, quality score, and a summary of decisions. The report intentionally leaves out complete source rows.
+
+PROTECT THE SOURCE
+
+The original file is never overwritten. CleanTrail works with a local project copy containing the source snapshot, working data, detected issues, and audit actions. A local recovery backup helps restore the most recent valid project after an interrupted save.
+
+LOCAL-FIRST BY DESIGN
+
+Import, inspection, repair, preview, and report generation happen on your device. The current version requires no account and includes no developer-operated backend, cloud sync, advertising, behavioral analytics, or cross-app tracking. Export files leave CleanTrail only after you choose a destination in the system share sheet.
+
+BUILT FOR FOCUSED MOBILE WORK
+
+CleanTrail supports Simplified Chinese and English, follows the device light or dark appearance, and is designed for small tables up to 5 MB, 10,000 data rows, 100 columns, and 100,000 cells.
+
+Whether you are preparing supplier data, survey results, operations lists, or finance tables, CleanTrail gives you an explainable path from "something looks wrong" to a file you can hand off with confidence.

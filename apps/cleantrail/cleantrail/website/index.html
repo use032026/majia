@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b6b63">
+    <meta name="color-scheme" content="light">
+    <meta
+      name="description"
+      content="CleanTrail 在手机和平板上本机检查 CSV、TSV、TXT 与 XLSX，逐项确认修复，并导出清洗数据与精简审计报告。"
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CleanTrail 清迹 — 让每一份表格都经得起交付">
+    <meta
+      property="og:description"
+      content="导入、检查、确认、导出。无需账号，不上传表格，不覆盖原文件。"
+    >
+    <meta name="twitter:card" content="summary">
+    <title>CleanTrail 清迹 — 本机表格检查与修复</title>
+    <link rel="icon" href="assets/app-icon.png">
+    <link rel="apple-touch-icon" href="assets/app-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="site.js" defer></script>
+  </head>
+  <body data-page="home">
+    <a class="skip-link" href="#main" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
+
+    <header class="site-header" data-header>
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="CleanTrail 首页">
+          <img src="assets/app-icon.png" alt="" width="44" height="44">
+          <span>CleanTrail <small data-zh="清迹" data-en="">清迹</small></span>
+        </a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-button>
+          <span class="sr-only" data-zh="打开导航" data-en="Open navigation">打开导航</span>
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="主要导航" data-nav>
+          <a href="#workflow" data-zh="工作流" data-en="Workflow">工作流</a>
+          <a href="#features" data-zh="功能" data-en="Features">功能</a>
+          <a href="#privacy" data-zh="隐私优先" data-en="Privacy">隐私优先</a>
+          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
+          <div class="language-switch" role="group" aria-label="语言 / Language">
+            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <span aria-hidden="true"></span>
+            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-grid-lines" aria-hidden="true"></div>
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">
+              <span class="eyebrow-dot" aria-hidden="true"></span>
+              <span data-zh="本机处理 · 原文件不改写" data-en="On-device · Source stays untouched">本机处理 · 原文件不改写</span>
+            </div>
+            <h1>
+              <span data-zh="让每一份表格，" data-en="Make every table">让每一份表格，</span>
+              <span class="accent-text" data-zh="都经得起交付。" data-en="ready to hand off.">都经得起交付。</span>
+            </h1>
+            <p
+              class="hero-lede"
+              data-zh="导入 CSV、TSV、TXT 或 XLSX，在手机或平板上检查缺失、重复、格式混杂与多余空格。每一处修复都由你确认，完成后一起导出清洗数据和审计凭证。"
+              data-en="Import CSV, TSV, TXT, or XLSX files and check missing values, duplicates, mixed formats, and stray spaces on your phone or tablet. You approve every change, then export cleaned data with a compact audit record."
+            >导入 CSV、TSV、TXT 或 XLSX，在手机或平板上检查缺失、重复、格式混杂与多余空格。每一处修复都由你确认，完成后一起导出清洗数据和审计凭证。</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#workflow">
+                <span data-zh="查看三步工作流" data-en="See the three-step flow">查看三步工作流</span>
+                <span aria-hidden="true">↘</span>
+              </a>
+              <a class="text-link" href="privacy.html" data-language-link>
+                <span data-zh="了解数据如何处理" data-en="See how data is handled">了解数据如何处理</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+            <ul class="trust-list" aria-label="产品特点">
+              <li><span aria-hidden="true">✓</span><span data-zh="无需账号" data-en="No account">无需账号</span></li>
+              <li><span aria-hidden="true">✓</span><span data-zh="无广告或行为分析" data-en="No ads or behavior analytics">无广告或行为分析</span></li>
+              <li><span aria-hidden="true">✓</span><span data-zh="中英文界面与报告" data-en="Chinese and English UI and reports">中英文界面与报告</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-visual" aria-label="CleanTrail 应用修复队列界面">
+            <div class="visual-halo" aria-hidden="true"></div>
+            <div class="floating-card float-score" aria-hidden="true">
+              <span>72</span>
+              <div><b data-zh="质量分" data-en="Quality score">质量分</b><small data-zh="问题清晰可见" data-en="Issues stay visible">问题清晰可见</small></div>
+            </div>
+            <div class="floating-card float-source" aria-hidden="true">
+              <span>✓</span>
+              <div><b data-zh="原文件受保护" data-en="Source protected">原文件受保护</b><small data-zh="只修改工作副本" data-en="Working copy only">只修改工作副本</small></div>
+            </div>
+            <div class="phone-frame">
+              <div class="phone-sensor" aria-hidden="true"></div>
+              <img
+                src="assets/app-preview.png"
+                alt="CleanTrail 修复队列，显示质量分和待处理问题 / CleanTrail repair queue with quality score and open issues"
+                width="621"
+                height="1344"
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="proof-strip" aria-label="产品摘要">
+        <div class="shell proof-grid">
+          <div><strong>4</strong><span data-zh="种输入格式" data-en="input formats">种输入格式</span></div>
+          <div><strong>5</strong><span data-zh="类常见质量问题" data-en="quality checks">类常见质量问题</span></div>
+          <div><strong>10,000</strong><span data-zh="行单文件上限" data-en="rows per file">行单文件上限</span></div>
+          <div><strong>0</strong><span data-zh="账号、云同步或追踪" data-en="accounts, cloud sync, or tracking">账号、云同步或追踪</span></div>
+        </div>
+      </section>
+
+      <section class="section workflow-section" id="workflow">
+        <div class="shell">
+          <div class="section-heading centered">
+            <span class="section-kicker" data-zh="从收到文件到放心交付" data-en="From received file to confident handoff">从收到文件到放心交付</span>
+            <h2 data-zh="三步，把问题和决定都说清楚。" data-en="Three steps. Every issue and decision stays clear.">三步，把问题和决定都说清楚。</h2>
+            <p data-zh="CleanTrail 不做静默批量改写。识别结果先确认，问题逐项处理，导出时保留精简的操作说明。" data-en="CleanTrail never performs silent bulk rewrites. Confirm the detected format, decide each issue, and keep a concise record with the export.">CleanTrail 不做静默批量改写。识别结果先确认，问题逐项处理，导出时保留精简的操作说明。</p>
+          </div>
+          <div class="workflow-grid">
+            <article class="workflow-card">
+              <div class="step-number">01</div>
+              <div class="step-icon" aria-hidden="true">↗</div>
+              <h3 data-zh="导入并确认" data-en="Import and confirm">导入并确认</h3>
+              <p data-zh="通过系统文件选择器打开 CSV、TSV、TXT 或 XLSX。进入检查前确认格式、UTF-8/GBK 编码或工作表。" data-en="Open CSV, TSV, TXT, or XLSX through the system picker. Confirm the format, UTF-8/GBK encoding, or worksheet before inspection.">通过系统文件选择器打开 CSV、TSV、TXT 或 XLSX。进入检查前确认格式、UTF-8/GBK 编码或工作表。</p>
+            </article>
+            <article class="workflow-card featured">
+              <div class="step-number">02</div>
+              <div class="step-icon" aria-hidden="true">✓</div>
+              <h3 data-zh="逐项决定" data-en="Decide issue by issue">逐项决定</h3>
+              <p data-zh="查看行、列、当前值与建议；选择采用建议、输入替换值、删除重复行或保留原样。每次决定后自动复检。" data-en="Review the row, column, current value, and suggestion. Apply, replace, remove a duplicate, or keep the original. Every decision triggers a fresh inspection.">查看行、列、当前值与建议；选择采用建议、输入替换值、删除重复行或保留原样。每次决定后自动复检。</p>
+            </article>
+            <article class="workflow-card">
+              <div class="step-number">03</div>
+              <div class="step-icon" aria-hidden="true">⇩</div>
+              <h3 data-zh="预览并导出" data-en="Preview and export">预览并导出</h3>
+              <p data-zh="先看前五行和数值校验，再导出 clean 或明确标记的 draft CSV，同时附上不包含完整原始行的 Markdown 报告。" data-en="Preview the first five rows and numeric validation, then export a clean or clearly marked draft CSV with a Markdown report that omits full source rows.">先看前五行和数值校验，再导出 clean 或明确标记的 draft CSV，同时附上不包含完整原始行的 Markdown 报告。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section features-section" id="features">
+        <div class="shell">
+          <div class="section-heading split-heading">
+            <div>
+              <span class="section-kicker" data-zh="为小型表格交付而设计" data-en="Built for small-table handoffs">为小型表格交付而设计</span>
+              <h2 data-zh="足够严谨，也保持克制。" data-en="Rigorous enough, without getting in your way.">足够严谨，也保持克制。</h2>
+            </div>
+            <p data-zh="不是通用电子表格，也不替你猜测业务含义。CleanTrail 专注于移动端能解释、能撤销、能交付的数据检查闭环。" data-en="It is not a general spreadsheet and it does not guess business meaning for you. CleanTrail focuses on an explainable, reversible, handoff-ready mobile workflow.">不是通用电子表格，也不替你猜测业务含义。CleanTrail 专注于移动端能解释、能撤销、能交付的数据检查闭环。</p>
+          </div>
+          <div class="feature-bento">
+            <article class="feature-card feature-wide issue-feature">
+              <div>
+                <span class="mini-kicker" data-zh="五类检查" data-en="Five checks">五类检查</span>
+                <h3 data-zh="常见问题，集中到一个修复队列。" data-en="Common problems, one focused repair queue.">常见问题，集中到一个修复队列。</h3>
+                <p data-zh="检查缺失值、规范化后的重复行、首尾空格、数字列类型混杂，以及日期格式不一致或无效。" data-en="Detect missing values, normalized duplicate rows, surrounding whitespace, mixed types in numeric columns, and inconsistent or invalid dates.">检查缺失值、规范化后的重复行、首尾空格、数字列类型混杂，以及日期格式不一致或无效。</p>
+              </div>
+              <ul class="issue-list" aria-hidden="true">
+                <li><span>01</span><b data-zh="日期格式不一致" data-en="Mixed date formats">日期格式不一致</b><em>row 2 · date</em></li>
+                <li><span>02</span><b data-zh="多余空格" data-en="Stray spaces">多余空格</b><em>row 2 · region</em></li>
+                <li><span>03</span><b data-zh="缺失值" data-en="Missing value">缺失值</b><em>row 3 · value</em></li>
+              </ul>
+            </article>
+            <article class="feature-card preview-feature">
+              <span class="mini-kicker" data-zh="紧凑预览" data-en="Compact preview">紧凑预览</span>
+              <h3 data-zh="先核对，再交付。" data-en="Review before handoff.">先核对，再交付。</h3>
+              <p data-zh="前五行表格支持横向查看，点击单元格可展开完整值；数值折线只用于验证修复结果。" data-en="Review the first five rows horizontally, open any cell for its full value, and use the numeric line only to validate repairs.">前五行表格支持横向查看，点击单元格可展开完整值；数值折线只用于验证修复结果。</p>
+              <div class="mini-chart" aria-hidden="true"><span></span><i></i><b></b><em></em></div>
+            </article>
+            <article class="feature-card audit-feature">
+              <span class="mini-kicker" data-zh="审计凭证" data-en="Audit record">审计凭证</span>
+              <h3 data-zh="记录决定，不复制整份敏感数据。" data-en="Record decisions, not the whole sensitive dataset.">记录决定，不复制整份敏感数据。</h3>
+              <p data-zh="报告包含文件、数量、质量分和操作摘要，刻意不嵌入完整原始行内容。" data-en="The report includes the file, counts, score, and action summary while intentionally excluding complete source rows.">报告包含文件、数量、质量分和操作摘要，刻意不嵌入完整原始行内容。</p>
+            </article>
+            <article class="feature-card source-feature">
+              <span class="mini-kicker" data-zh="原始数据保护" data-en="Source protection">原始数据保护</span>
+              <h3 data-zh="修复工作副本，原文件不覆盖。" data-en="Repair a working copy. Never overwrite the source.">修复工作副本，原文件不覆盖。</h3>
+              <p data-zh="项目快照、工作副本和审计动作保存在 App 私有目录；会话内可撤销，保存中断时使用本地备份恢复。" data-en="The source snapshot, working copy, and audit actions stay in the app-private directory, with session undo and a local recovery backup for interrupted saves.">项目快照、工作副本和审计动作保存在 App 私有目录；会话内可撤销，保存中断时使用本地备份恢复。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section privacy-section" id="privacy">
+        <div class="shell privacy-card">
+          <div class="privacy-copy">
+            <span class="section-kicker light" data-zh="表格留在你的设备上" data-en="Your tables stay on your device">表格留在你的设备上</span>
+            <h2 data-zh="隐私不是设置项，而是数据流本身。" data-en="Privacy is the data flow, not a toggle.">隐私不是设置项，而是数据流本身。</h2>
+            <p data-zh="当前版本没有账号、开发者后台、云同步、广告、分析或追踪。表格由你通过系统文件选择器打开，在本机处理；只有你主动选择分享目标时，导出文件才会离开 CleanTrail。" data-en="The current version has no account, developer backend, cloud sync, ads, analytics, or tracking. You open tables through the system picker, processing stays on-device, and exported files leave CleanTrail only when you choose a share destination.">当前版本没有账号、开发者后台、云同步、广告、分析或追踪。表格由你通过系统文件选择器打开，在本机处理；只有你主动选择分享目标时，导出文件才会离开 CleanTrail。</p>
+            <a class="button button-light" href="privacy.html" data-language-link>
+              <span data-zh="阅读完整隐私政策" data-en="Read the full privacy policy">阅读完整隐私政策</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <ul class="privacy-list">
+            <li><span>01</span><div><strong data-zh="不建立开发者数据账户" data-en="No developer data account">不建立开发者数据账户</strong><small data-zh="无需注册、登录或上传资料" data-en="No registration, sign-in, or profile upload">无需注册、登录或上传资料</small></div></li>
+            <li><span>02</span><div><strong data-zh="系统文件选择器" data-en="System file picker">系统文件选择器</strong><small data-zh="只读取你主动选择的文件" data-en="Reads only the file you select">只读取你主动选择的文件</small></div></li>
+            <li><span>03</span><div><strong data-zh="分享由你触发" data-en="Sharing is your choice">分享由你触发</strong><small data-zh="目标应用自行负责其副本" data-en="The destination controls its own copy">目标应用自行负责其副本</small></div></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section support-section" id="support">
+        <div class="shell support-card">
+          <div>
+            <span class="section-kicker" data-zh="支持与隐私咨询" data-en="Support and privacy questions">支持与隐私咨询</span>
+            <h2 data-zh="有问题，直接告诉我们。" data-en="Questions? Tell us directly.">有问题，直接告诉我们。</h2>
+            <p data-zh="如需产品支持，或对数据处理方式有疑问，请通过下方邮箱联系。" data-en="For product support or questions about data handling, contact us at the email below.">如需产品支持，或对数据处理方式有疑问，请通过下方邮箱联系。</p>
+          </div>
+          <a class="support-email" href="mailto:15211857631@163.com">
+            <span aria-hidden="true">@</span>
+            <strong>15211857631@163.com</strong>
+            <i aria-hidden="true">↗</i>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-main">
+        <a class="footer-brand" href="#top">
+          <img src="assets/app-icon.png" alt="" width="48" height="48">
+          <span><strong>CleanTrail</strong><small data-zh="让每一份表格都经得起交付" data-en="Make every table ready to hand off">让每一份表格都经得起交付</small></span>
+        </a>
+        <nav aria-label="页脚导航">
+          <a href="#workflow" data-zh="工作流" data-en="Workflow">工作流</a>
+          <a href="#support" data-zh="支持" data-en="Support">支持</a>
+          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy Policy">隐私政策</a>
+        </nav>
+      </div>
+      <div class="shell footer-bottom">
+        <span>© <span data-current-year>2026</span> CleanTrail.</span>
+        <span data-zh="静态页面 · 不设置追踪 Cookie" data-en="Static pages · No tracking cookies">静态页面 · 不设置追踪 Cookie</span>
+      </div>
+    </footer>
+  </body>
+</html>
