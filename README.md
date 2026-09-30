@@ -16,6 +16,7 @@
 | PhotoReport（现场照片记录） | [`apps/photoreport/`](apps/photoreport/) | [`CherryIce/PhotoReport`](https://github.com/CherryIce/PhotoReport)，迁移基点 `ad5cf6b8006ae4a569ea2bae1445dae3fa28c95f` |
 | Steady21（微成） | [`apps/steady21/`](apps/steady21/) | [`CherryIce/steady21`](https://github.com/CherryIce/steady21)，迁移基点 `0e273393c3cea00440c30d2b108beb813be7dcf5` |
 | PaceJar（源项目 `Looters`） | [`apps/looters/`](apps/looters/) | [`CherryIce/Looters`](https://github.com/CherryIce/Looters)，迁移基点 `822d7d343e9c80de4f912d03cb9b1d5517abf8ac` |
+| EchoPage（源项目 `Diary`） | [`apps/Diary/`](apps/Diary/) | [`CherryIce/Diary`](https://github.com/CherryIce/Diary)，迁移基点 `17679f8904bdd74d49ecf911fc332a8f1b05cf2d` |
 
 具体功能、平台限制、本地命令和发布缺口以各 Flutter 工程内的 `README.md` 与 `docs/` 为准。
 
@@ -31,7 +32,7 @@
 | KIFXPRO | [`KIFXPRO iOS Release`](.github/workflows/sdpacket-ios-release.yml) | `sdpacket-production` | `Runner` | 支持 |
 | PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
 
-`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar` 和 `Trip Delta` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
+`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar`、`Trip Delta` 和 `Diary` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
 
 ### 发布开关
 
