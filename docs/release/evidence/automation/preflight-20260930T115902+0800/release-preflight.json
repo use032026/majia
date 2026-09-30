@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-30T11:59:02+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/reader_edit",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": false
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.readerEdit",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "file_selector_ios.framework",
+      "path_provider_foundation.framework",
+      "shared_preferences_foundation.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": false
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.readerEdit",
+          "com.example.readerEdit.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.readerEdit"
+        ],
+        "expected_bundle_id": "com.example.readerEdit"
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.readerEdit",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/file_selector_ios.framework/file_selector_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "file_selector_ios.framework",
+        "path_provider_foundation.framework",
+        "shared_preferences_foundation.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.readerEdit",
+        "archive": "com.example.readerEdit"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "pass",
+      "summary": "Screenshot PNG dimensions and alpha were inspected.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/docs/release/evidence/runtime/iphone17promax-home-zh-light-store.png",
+          "width": 1320,
+          "height": 2868,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/docs/release/evidence/runtime/ipad-pro13-home-zh-light-store.png",
+          "width": 2064,
+          "height": 2752,
+          "has_alpha": false
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/reader_edit/assets/branding/readeredit-icon-source.png",
+          "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/app/outputs/flutter-apk/app-debug.apk"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/assets/branding/readeredit-icon-source.png",
+      "size_bytes": 1657046,
+      "modified_at": "2026-09-30T09:49:19.903001+08:00",
+      "sha256": "01d7dab3abec7bd12b11a3ae33f93a56387d23799bb0afb13c00c381551f3bc2"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 163847254,
+      "modified_at": "2026-09-30T11:58:24.623087+08:00",
+      "sha256": "8074431ef056911783bb422e32a8a77a8cdcf365809af02f523f2d23b8220cba"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 74112,
+      "modified_at": "2026-09-30T11:58:50.784146+08:00",
+      "sha256": "c4f5f1138a972f06682263ee8b11ad3e94b8fa6eca85cf88414a9ce2d6bc3d9b"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/docs/release/evidence/runtime/iphone17promax-home-zh-light-store.png",
+      "size_bytes": 677938,
+      "modified_at": "2026-09-30T10:22:38.283680+08:00",
+      "sha256": "01a4a72450e8fac15e471122597e92d4a7aa2ac7824ba43539596cebc80a69a7"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/reader_edit/docs/release/evidence/runtime/ipad-pro13-home-zh-light-store.png",
+      "size_bytes": 466641,
+      "modified_at": "2026-09-30T10:28:19.724407+08:00",
+      "sha256": "cef778669ead4712df47f8d4c2e01642c53459dece2d2bb322f65c32309a7cab"
+    }
+  ]
+}
