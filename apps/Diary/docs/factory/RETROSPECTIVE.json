@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "diary-20260930T095943+0800",
+    "project_ref": "diary-echopage",
+    "scope": "release_candidate",
+    "skill_revision": "unknown: local skill checkout has no recorded release id in this run",
+    "project_revision": "unknown: project is not a Git repository; bounded hashes are in EVIDENCE_REGISTER.md",
+    "finished_at": "2026-09-30T10:58:02+08:00",
+    "product_verdict": "functional_passed_store_blocked"
+  },
+  "summary": {
+    "worked": [
+      "Originality gate passed at 3.9/5 before implementation; the future-question and Echo state machine remained the primary workflow.",
+      "Independent review exposed persistence, edit-state, overlay-dismissal and semantic-load defects; each received a focused regression test.",
+      "The final quality gate passed format, analyze, 32 tests, Android Debug and iOS unsigned Release Archive; see docs/release/evidence/automation/20260930T105552+0800/QUALITY_GATE.md.",
+      "Simulator inspection covered the core thread path, Chinese/English, light/dark, iPhone SE AX XXXL and iPad empty layout."
+    ],
+    "failed": [
+      "The first independent review did not pass because deletion could leave private text in the in-app backup and several state transitions lacked failure-safe coverage.",
+      "The first maximum-Dynamic-Type runtime capture showed the extended FAB overflowing horizontally; a compact high-scale variant fixed it.",
+      "Mechanical release preflight is blocked by placeholder identity, missing public URLs, unsigned Archive and non-store screenshots."
+    ],
+    "untested": [
+      "Physical devices, iOS 15, Android runtime, VoiceOver/TalkBack and the complete orientation/theme/state matrix.",
+      "Real operating-system backup, migration and restore; process termination, low storage and large data sets.",
+      "Production signing, App Store Connect processing, TestFlight and App Review."
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "privacy.local-delete-backup-resurrection",
+      "severity": "P0",
+      "symptom": "Content removed permanently from the current snapshot remained in the app backup and could reappear after current-file corruption.",
+      "phase": "independent functional review",
+      "cause_confidence": "confirmed",
+      "cause": "Permanent deletion used the normal save path, which intentionally retained the prior snapshot as a recovery backup.",
+      "evidence": [
+        "test/file_repository_test.dart",
+        "docs/release/FUNCTIONAL_REVIEW.md"
+      ],
+      "proposed_change": "Require privacy deletion tests to inspect every app-managed recovery copy, not only the active model.",
+      "regression_check": "Corrupt current after permanent deletion and verify backup recovery cannot restore deleted content; also inject both replacement failures."
+    },
+    {
+      "pattern_key": "flutter.overlay.pending-save-dismiss",
+      "severity": "P2",
+      "symptom": "A modal composer could be dismissed by back, barrier or drag while an asynchronous save was pending.",
+      "phase": "independent functional review",
+      "cause_confidence": "confirmed",
+      "cause": "Only sheet buttons observed the saving flag; the modal route retained its default dismissal paths.",
+      "evidence": [
+        "test/core_flow_widget_test.dart",
+        "docs/release/FUNCTIONAL_REVIEW.md"
+      ],
+      "proposed_change": "For write overlays, add a delayed-save test covering all route dismissal paths and exactly-once persistence.",
+      "regression_check": "While the fake repository gate is incomplete, back, barrier and drag leave the sheet visible; completion writes one Echo."
+    },
+    {
+      "pattern_key": "flutter.dynamic-type.extended-fab-overflow",
+      "severity": "P2",
+      "symptom": "At iOS AX XXXL on an iPhone SE, the extended floating action label overflowed across the screen.",
+      "phase": "simulator visual review",
+      "cause_confidence": "confirmed",
+      "cause": "The label-based FAB was not adapted for the platform's maximum accessibility text scale.",
+      "evidence": [
+        "docs/release/evidence/runtime/iphone-se-home-en-dark-axxxl.png",
+        "test/core_flow_widget_test.dart"
+      ],
+      "proposed_change": "Include a smallest-phone maximum-Dynamic-Type runtime capture and use compact semantic controls when labels cannot fit.",
+      "regression_check": "The 3.2x widget path reaches detail, editor and settings without exceptions; final AX XXXL screenshot shows an icon FAB within bounds."
+    }
+  ]
+}

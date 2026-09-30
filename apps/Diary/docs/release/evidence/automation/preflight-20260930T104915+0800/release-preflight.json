@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-30T10:49:15+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/diary",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": false
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/diary/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/diary/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.diary",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "path_provider_foundation.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": false
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.diary",
+          "com.example.diary.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.diary"
+        ],
+        "expected_bundle_id": "com.example.diary"
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/diary/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.diary",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/diary/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/diary/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "path_provider_foundation.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.diary",
+        "archive": "com.example.diary"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "warning",
+      "summary": "Screenshots exist but at least one has alpha or is unreadable.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/diary/docs/release/evidence/runtime/iphone-se-thread-closed-zh.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/diary/docs/release/evidence/runtime/ipad-10-empty-zh.png",
+          "width": 1640,
+          "height": 2360,
+          "has_alpha": true
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/diary/build/app/outputs/flutter-apk/app-debug.apk",
+          "/Users/starburst/Downloads/app-ui-atlas/diary/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/diary/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 144352568,
+      "modified_at": "2026-09-30T10:48:14.671867+08:00",
+      "sha256": "087894205711c1c6edb1fbd156673f469c167cd0abf62e3c79a1f4c16b8fe3d6"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/diary/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 73808,
+      "modified_at": "2026-09-30T10:48:44.991111+08:00",
+      "sha256": "d4d2d9a89f3e31cc32804c785a6562c20fc8934e0c550b8b20e4702412927809"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/diary/docs/release/evidence/runtime/iphone-se-thread-closed-zh.png",
+      "size_bytes": 107069,
+      "modified_at": "2026-09-30T10:43:07.659071+08:00",
+      "sha256": "8312492540f1ac76f1691c0a69e59311c0e8e1f37a5e4cab576437b106a06a28"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/diary/docs/release/evidence/runtime/ipad-10-empty-zh.png",
+      "size_bytes": 162519,
+      "modified_at": "2026-09-30T10:44:13.520852+08:00",
+      "sha256": "67549da0c98393ad6078ae5d58a25826ab1899edff1023ec74dad104d7a984ab"
+    }
+  ]
+}
