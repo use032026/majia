@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "readeredit-2026-09-30-rc1",
+    "project_ref": "/Users/starburst/Downloads/app-ui-atlas/reader_edit",
+    "scope": "Flutter MVP, functional review, UI acceptance, and non-uploading App Store preflight",
+    "skill_revision": "sha256:9d8212c51331f3fc2167f438e8673eefcb29585d9996ebfdc1c3f62f14cd133b",
+    "project_revision": "source-snapshot-sha256:cb08e7ac7dda8a434e2b0afc808e814a0149aaefc5fb2b7c92c8f2d948c2b9c5",
+    "finished_at": "2026-09-30T12:01:40+08:00",
+    "product_verdict": "passed_mvp_with_runtime_boundaries_store_blocked"
+  },
+  "summary": {
+    "worked": [
+      "Reader-signal-to-revision-loop remained distinct from generic writing and publishing apps",
+      "Independent review found persistence and reassessment defects before final gate",
+      "Small-screen large-text tests found two real overflows",
+      "Simulator first launch exposed an immutable empty-list crash that static tests had missed",
+      "User feedback exposed that a revision-only workflow did not support real long-form novel work",
+      "The revised product now supports local novels, chapters, TXT/Markdown import, reading-time editing, and schema v1 to v2 migration",
+      "Final gate passed format, analyze, 29 tests, Android debug, and unsigned iOS archive"
+    ],
+    "failed": [
+      "Initial local-only storage rotation could resurrect deleted content",
+      "Initial fresh-install path attempted to sort an immutable empty list",
+      "First screenshot candidate retained an alpha channel",
+      "The first Chinese heading matcher misclassified body lines such as 第一章正文 as headings before its boundary rule was tightened"
+    ],
+    "untested": [
+      "Physical devices and iOS 15 minimum deployment",
+      "VoiceOver and TalkBack",
+      "Actual external file selection from Files, iCloud, and third-party providers",
+      "Extreme long-text performance, GBK or GB18030 decoding, complete landscape, iPad core flow, low-storage, and forced-termination matrix",
+      "Signed distribution, upload, TestFlight processing, and App Review"
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "long-form-import-is-a-core-workflow-not-a-form-field",
+      "severity": "P1",
+      "cause_confidence": "confirmed",
+      "symptom": "The initial MVP required users to paste a draft into a revision form and had no durable novel or chapter editing workspace.",
+      "phase": "post-MVP user acceptance",
+      "cause": "The initial slice optimized the differentiating revision mechanism but omitted the long-form input and maintenance workflow needed before revision.",
+      "proposed_change": "For long-form authoring products, validate capture and durable workspace needs before freezing the MVP around a differentiating downstream workflow.",
+      "regression_check": "Create or import a novel, open a chapter, edit from reading mode, restart, and verify text remains before entering any specialized revision flow.",
+      "evidence": [
+        "lib/domain/novel.dart",
+        "test/ui/core_workflow_test.dart",
+        "docs/release/FUNCTIONAL_REVIEW.md"
+      ]
+    },
+    {
+      "pattern_key": "local-snapshot-destructive-delete",
+      "severity": "P0",
+      "cause_confidence": "confirmed",
+      "symptom": "Deleted sessions remained in the previous recovery snapshot and could reappear after primary corruption.",
+      "phase": "independent functional review",
+      "cause": "Destructive deletion reused the normal save rotation that intentionally retained the previous primary snapshot.",
+      "proposed_change": "Model destructive commits separately and replace every primary, backup, and pending snapshot with the post-deletion state.",
+      "regression_check": "Corrupt primary after per-session deletion and erase-all, then assert recovery cannot return deleted IDs.",
+      "evidence": [
+        "test/data/session_repository_test.dart",
+        "docs/release/FUNCTIONAL_REVIEW.md"
+      ]
+    },
+    {
+      "pattern_key": "fresh-install-immutable-empty-result",
+      "severity": "P0",
+      "cause_confidence": "confirmed",
+      "symptom": "A newly installed simulator build opened the load-failure screen before any user data existed.",
+      "phase": "simulator runtime acceptance",
+      "cause": "The repository returned a const empty list and the store attempted to sort it in place.",
+      "proposed_change": "Copy repository results into a mutable list before sorting and always exercise a true fresh-install runtime state.",
+      "regression_check": "Load a fresh file repository, perform the first write, restart, and assert the session is readable.",
+      "evidence": [
+        "lib/app/reader_edit_store.dart",
+        "test/data/session_repository_test.dart"
+      ]
+    },
+    {
+      "pattern_key": "core-pages-large-text-matrix",
+      "severity": "P2",
+      "cause_confidence": "confirmed",
+      "symptom": "Home and Scan overflowed on a 320 by 720 viewport at 1.6 text scale.",
+      "phase": "UI regression expansion",
+      "cause": "Horizontal rows assumed that headings, controls, progress, and metrics fit at default text scale.",
+      "proposed_change": "Use wrapping or vertical composition for mixed text and controls, and cover every core page at compact large-text settings.",
+      "regression_check": "Navigate Home, Queue, Scan, Editor, and Summary at 320 by 720 and 1.6 text scale with no framework exception.",
+      "evidence": [
+        "test/ui/core_workflow_test.dart",
+        "docs/release/FUNCTIONAL_REVIEW.md"
+      ]
+    },
+    {
+      "pattern_key": "store-screenshot-alpha-and-dimensions",
+      "severity": "P1",
+      "cause_confidence": "confirmed",
+      "symptom": "A visually correct simulator PNG failed mechanical Store screenshot checks because it retained alpha.",
+      "phase": "App Store mechanical preflight",
+      "cause": "Raw simulator capture properties were not treated as release metadata requirements.",
+      "proposed_change": "Mechanically inspect dimensions and alpha for each required device class and preserve no-alpha PNG candidates.",
+      "regression_check": "Preflight must pass screenshot checks for 1320 by 2868 iPhone and 2064 by 2752 iPad PNG files.",
+      "evidence": [
+        "docs/release/evidence/automation/preflight-20260930T102828+0800/RELEASE_PREFLIGHT.md",
+        "docs/release/APP_STORE_PREFLIGHT.md"
+      ]
+    }
+  ]
+}

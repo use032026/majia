@@ -1,0 +1,39 @@
+{
+  "app_name": "ReaderEdit",
+  "working_name": "reader_edit",
+  "target_user": "需要在手机或平板上离线创建、导入、阅读和反复修订小说章节的中英文独立写作者",
+  "problem": "长篇作者既需要低摩擦地维护整本小说和章节，也需要在阅读时立即修改，并在精修阶段识别读者在哪一段感到清楚、拖沓或迷失",
+  "product_promise": "把本地小说书架、章节阅读编辑与结构化读者视角修订放在同一个无账号工作区",
+  "core_loop": "创建小说或导入 TXT/Markdown -> 按章节阅读 -> 随时切换编辑并本地保存 -> 对适合的章节发起读者视角通读 -> 处理信号队列并核对修改",
+  "durable_output": "保存在设备上的小说、章节和修订会话；包含可直接编辑的章节正文，以及原稿、逐段读者信号、备注、修订稿和完成状态",
+  "scope": "release_candidate",
+  "platform": "Flutter，iOS 与 Android；App Store 单独评估 iOS",
+  "launch_regions": [
+    "中国大陆",
+    "提供英文商店本地化的其他可用地区"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "离线优先，无应用自有后台",
+  "data_handling": "用户可输入、粘贴或通过系统文件选择器导入 TXT/Markdown；小说、章节、草稿、批注和设置仅在应用沙盒保存，不上传、不分析。用户可删除单个小说、章节、修订会话或清空全部数据；修订稿仅在用户明确操作时复制到系统剪贴板。MVP 不提供跨设备备份。",
+  "sensitive_data": "可能承载用户私人创作内容，但不要求或主动收集身份、健康、金融、儿童或定位数据；隐私文案必须提示剪贴板导出边界与卸载/清空删除方式",
+  "permissions": [
+    "无运行时权限；导入使用系统文件选择器"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS 15.0；最终以 iOS 26 模拟器和真机验证、Xcode 26 归档结果及当前 Apple 要求为准",
+  "visual_direction": "原创的编辑批注台：温暖纸张底色、深墨文字、鲜明蓝紫作为读者信号焦点；用段落轨道、边注标记和前后版本对照表达流程，避免社区信息流或通用卡片仪表盘",
+  "reference_products": [
+    "https://apps.apple.com/cn/app/%E4%BD%9C%E5%AE%B6%E5%8A%A9%E6%89%8B/id1044537226"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核"
+  ]
+}
