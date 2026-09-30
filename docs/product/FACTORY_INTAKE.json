@@ -1,0 +1,41 @@
+{
+  "app_name": "回声页 · EchoPage（工作名，未做商标可用性确认）",
+  "working_name": "diary",
+  "target_user": "会写日记却很少回看、希望看清一段想法如何变化的中英文个人记录者",
+  "problem": "普通日记把每次书写变成互不相连的存档；用户当下留下的问题、担心或期待很少在之后被重新看见，因此难以获得跨时间的视角和可回溯的变化记录",
+  "product_promise": "把一篇日记变成一次可回访的自我对话：今天留下一个问题，未来补写回声，再决定关闭或继续这条线索",
+  "core_loop": "写下当下片段并留下给未来自己的问题 -> 选择回访日期 -> 在回访队列重新阅读原文 -> 补写后来发生了什么及看法如何变化 -> 关闭或重新安排 -> 复制导出完整的前后对照记录",
+  "durable_output": "保存在应用沙盒中的回声线索，包含原始日记、未来问题、回访日期、一次或多次后记、变化标记和可复制的中英文纯文本记录；应用不把内容发送到开发者服务，但操作系统或用户启用的设备/云端备份、迁移与恢复可能包含该沙盒数据",
+  "scope": "release_candidate",
+  "platform": "Flutter，iOS 与 Android；App Store 单独评估 iOS",
+  "launch_regions": [
+    "中国大陆",
+    "提供英文商店本地化的其他可用地区"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "离线优先，无应用自有后台",
+  "data_handling": "用户手动输入的日记正文、问题、后记和设置以应用沙盒内本地 JSON 保存；应用无自有后台、无账号、无分析/广告 SDK，不主动联网，也不提供开发者自有的云同步或自动备份。操作系统或用户启用的设备/iCloud/Google 备份、迁移与恢复可能包含应用沙盒数据，开发者无法读取或删除这些系统备份。用户可删除单篇、清空全部应用内数据，并可在明确操作后将单篇前后对照纯文本复制到系统剪贴板。",
+  "sensitive_data": "日记可能包含用户自愿写入的私人内容；产品不要求身份、健康、金融、儿童、定位或通讯录数据，也不作诊断或治疗承诺。隐私材料必须明确本地存储、剪贴板边界以及删除与卸载行为。",
+  "permissions": [
+    "无运行时权限"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS 15.0；最终以当前 Xcode、模拟器、真机和 Apple 提交要求为准",
+  "visual_direction": "原创的折页与边注系统：柔和纸张底色、深墨文字、珊瑚红作为回声线索，原文与后记用一条偏移时间脊线连接；避免竞品的拟物手账、社交信息流、情绪树洞和通用卡片仪表盘。",
+  "reference_products": [
+    "https://apps.apple.com/cn/app/%E5%90%BE%E8%AE%B0-%E6%97%A5%E8%AE%B0%E6%9C%AC-%E8%AE%B0%E4%BA%8B%E6%9C%AC/id1084747109",
+    "https://apps.apple.com/cn/app/moo%E6%97%A5%E8%AE%B0-%E4%BD%A0%E7%9A%84%E5%BF%83%E6%83%85%E6%A0%91%E6%B4%9E/id1473250948",
+    "https://apps.apple.com/cn/app/%E5%A2%A8%E8%AE%B0-%E7%B2%BE%E7%BE%8E%E6%97%A5%E8%AE%B0%E6%9C%AC-%E7%AC%94%E8%AE%B0%E6%9C%AC/id1221871966"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核"
+  ]
+}
