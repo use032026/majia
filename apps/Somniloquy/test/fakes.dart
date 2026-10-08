@@ -7,10 +7,12 @@ class MemorySessionRepository implements SessionRepository {
     List<NightSession> sessions = const [],
     String localeCode = 'zh',
     RecordingMarker? marker,
+    bool onboardingCompleted = true,
   }) : state = RepositoryState(
          sessions: [...sessions],
          localeCode: localeCode,
          recordingMarker: marker,
+         hasCompletedOnboarding: onboardingCompleted,
        ) {
     audioPaths.addAll(sessions.map((item) => item.audioPath));
     if (marker != null) audioPaths.add(marker.audioPath);
@@ -50,6 +52,7 @@ class MemorySessionRepository implements SessionRepository {
       sessions: sessions,
       localeCode: state.localeCode,
       recordingMarker: state.recordingMarker,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
     );
   }
 
@@ -62,6 +65,7 @@ class MemorySessionRepository implements SessionRepository {
       sessions: state.sessions.where((item) => item.id != sessionId).toList(),
       localeCode: state.localeCode,
       recordingMarker: state.recordingMarker,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
     );
   }
 
@@ -69,7 +73,11 @@ class MemorySessionRepository implements SessionRepository {
   Future<void> clearAll() async {
     if (failDelete) throw StateError('delete failed');
     audioPaths.clear();
-    state = RepositoryState(sessions: const [], localeCode: state.localeCode);
+    state = RepositoryState(
+      sessions: const [],
+      localeCode: state.localeCode,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
+    );
   }
 
   @override
@@ -79,6 +87,18 @@ class MemorySessionRepository implements SessionRepository {
       sessions: state.sessions,
       localeCode: localeCode,
       recordingMarker: state.recordingMarker,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
+    );
+  }
+
+  @override
+  Future<void> saveOnboardingCompleted(bool completed) async {
+    if (failSave) throw StateError('save failed');
+    state = RepositoryState(
+      sessions: state.sessions,
+      localeCode: state.localeCode,
+      recordingMarker: state.recordingMarker,
+      hasCompletedOnboarding: completed,
     );
   }
 
@@ -90,6 +110,7 @@ class MemorySessionRepository implements SessionRepository {
       sessions: state.sessions,
       localeCode: state.localeCode,
       recordingMarker: marker,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
     );
   }
 
@@ -99,6 +120,7 @@ class MemorySessionRepository implements SessionRepository {
     state = RepositoryState(
       sessions: state.sessions,
       localeCode: state.localeCode,
+      hasCompletedOnboarding: state.hasCompletedOnboarding,
     );
   }
 
@@ -161,16 +183,24 @@ class FakeRecorderService implements RecorderService {
 class FakeClipPlayerService implements ClipPlayerService {
   String? path;
   Duration? position;
+  Duration? maxDuration;
+  int stopCalls = 0;
 
   @override
-  Future<void> play(String path, Duration position) async {
+  Future<void> play(
+    String path,
+    Duration position, {
+    Duration? maxDuration,
+  }) async {
     this.path = path;
     this.position = position;
+    this.maxDuration = maxDuration;
   }
 
   @override
   Future<void> stop() async {
     path = null;
+    stopCalls += 1;
   }
 
   @override

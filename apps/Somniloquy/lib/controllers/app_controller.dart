@@ -36,6 +36,7 @@ class AppController extends ChangeNotifier {
 
   List<NightSession> _sessions = [];
   String _localeCode = 'zh';
+  bool _hasCompletedOnboarding = false;
   bool _loading = true;
   bool _busy = false;
   bool _loadFailed = false;
@@ -50,6 +51,7 @@ class AppController extends ChangeNotifier {
   double? _currentDb;
   bool _sampling = false;
   String? _playingMomentId;
+  String? _playingSessionId;
 
   List<NightSession> get sessions => List.unmodifiable(_sessions);
   List<NightSession> get reviewedSessions =>
@@ -57,6 +59,7 @@ class AppController extends ChangeNotifier {
   List<NightSession> get pendingReviews =>
       List.unmodifiable(_sessions.where((item) => !item.isReviewed));
   String get localeCode => _localeCode;
+  bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   bool get loading => _loading;
   bool get busy => _busy;
   bool get loadFailed => _loadFailed;
@@ -69,6 +72,7 @@ class AppController extends ChangeNotifier {
   double? get currentDb => _currentDb;
   NightSession? get reviewSession => _reviewSession;
   String? get playingMomentId => _playingMomentId;
+  String? get playingSessionId => _playingSessionId;
 
   Future<void> initialize() async {
     _loading = true;
@@ -80,6 +84,7 @@ class AppController extends ChangeNotifier {
       _sessions = [...state.sessions]
         ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
       _localeCode = state.localeCode == 'en' ? 'en' : 'zh';
+      _hasCompletedOnboarding = state.hasCompletedOnboarding;
       final drafts = _sessions.where((item) => !item.isReviewed);
       _reviewSession = drafts.isEmpty ? null : drafts.first;
       final marker = state.recordingMarker;
@@ -369,7 +374,26 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  Future<bool> completeOnboarding() async {
+    if (_hasCompletedOnboarding) return true;
+    _error = null;
+    try {
+      await _repository.saveOnboardingCompleted(true);
+      _hasCompletedOnboarding = true;
+      notifyListeners();
+      return true;
+    } catch (_) {
+      _error = ControllerError.save;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> playMoment(NightSession session, SoundMoment moment) async {
+    if (_playingMomentId == moment.id) {
+      await stopPlayback();
+      return;
+    }
     _error = null;
     try {
       if (!await _repository.audioExists(session.audioPath)) {
@@ -377,19 +401,52 @@ class AppController extends ChangeNotifier {
         notifyListeners();
         return;
       }
+      _playbackResetTimer?.cancel();
+      _playingSessionId = null;
       _playingMomentId = moment.id;
       notifyListeners();
       final start = Duration(
         seconds: (moment.offsetSeconds - 5).clamp(0, 1 << 30),
       );
-      await _player.play(session.audioPath, start);
-      _playbackResetTimer?.cancel();
+      const clipDuration = Duration(seconds: 12);
+      await _player.play(session.audioPath, start, maxDuration: clipDuration);
       _playbackResetTimer = Timer(const Duration(seconds: 12), () {
-        _playingMomentId = null;
-        notifyListeners();
+        unawaited(stopPlayback());
       });
     } catch (_) {
       _playingMomentId = null;
+      _playingSessionId = null;
+      _error = ControllerError.playback;
+      notifyListeners();
+    }
+  }
+
+  Future<void> playSession(NightSession session) async {
+    if (_playingSessionId == session.id) {
+      await stopPlayback();
+      return;
+    }
+    _error = null;
+    try {
+      if (!await _repository.audioExists(session.audioPath)) {
+        _error = ControllerError.playback;
+        notifyListeners();
+        return;
+      }
+      _playbackResetTimer?.cancel();
+      _playingMomentId = null;
+      _playingSessionId = session.id;
+      notifyListeners();
+      await _player.play(session.audioPath, Duration.zero);
+      final duration = session.duration > Duration.zero
+          ? session.duration
+          : const Duration(seconds: 1);
+      _playbackResetTimer = Timer(duration, () {
+        unawaited(stopPlayback());
+      });
+    } catch (_) {
+      _playingMomentId = null;
+      _playingSessionId = null;
       _error = ControllerError.playback;
       notifyListeners();
     }
@@ -398,6 +455,7 @@ class AppController extends ChangeNotifier {
   Future<void> stopPlayback() async {
     _playbackResetTimer?.cancel();
     _playingMomentId = null;
+    _playingSessionId = null;
     await _player.stop();
     notifyListeners();
   }

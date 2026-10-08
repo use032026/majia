@@ -31,15 +31,18 @@ void main() {
 
       await repository.saveSession(session);
       await repository.saveLocale('en');
+      await repository.saveOnboardingCompleted(true);
       final reloaded = FileSessionRepository.forRoot(root);
       final state = await reloaded.load();
       expect(state.localeCode, 'en');
+      expect(state.hasCompletedOnboarding, isTrue);
       expect(state.sessions.single.morningNote, 'train');
       expect(await reloaded.audioExists(audioPath), isTrue);
 
       await reloaded.deleteSession('night_1');
       final afterDelete = await FileSessionRepository.forRoot(root).load();
       expect(afterDelete.sessions, isEmpty);
+      expect(afterDelete.hasCompletedOnboarding, isTrue);
       expect(await reloaded.audioExists(audioPath), isFalse);
     },
   );

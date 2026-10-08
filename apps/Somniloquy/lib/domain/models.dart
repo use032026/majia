@@ -160,11 +160,13 @@ class RepositoryState {
     required this.sessions,
     required this.localeCode,
     this.recordingMarker,
+    this.hasCompletedOnboarding = false,
   });
 
   final List<NightSession> sessions;
   final String localeCode;
   final RecordingMarker? recordingMarker;
+  final bool hasCompletedOnboarding;
 }
 
 class MomentDetector {

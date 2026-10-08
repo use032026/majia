@@ -12,6 +12,7 @@ abstract class SessionRepository {
   Future<void> deleteSession(String sessionId);
   Future<void> clearAll();
   Future<void> saveLocale(String localeCode);
+  Future<void> saveOnboardingCompleted(bool completed);
   Future<void> markRecordingStarted(RecordingMarker marker);
   Future<void> clearRecordingMarker();
   Future<void> discardRecordingMarker();
@@ -82,6 +83,7 @@ class FileSessionRepository implements SessionRepository {
       recordingMarker: markerJson is Map<String, Object?>
           ? RecordingMarker.fromJson(markerJson)
           : null,
+      hasCompletedOnboarding: raw['hasCompletedOnboarding'] as bool? ?? false,
     );
     return _cached!;
   }
@@ -107,6 +109,7 @@ class FileSessionRepository implements SessionRepository {
         sessions: sessions,
         localeCode: state.localeCode,
         recordingMarker: state.recordingMarker,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
       ),
     );
   }
@@ -124,6 +127,7 @@ class FileSessionRepository implements SessionRepository {
         sessions: state.sessions.where((item) => item.id != sessionId).toList(),
         localeCode: state.localeCode,
         recordingMarker: state.recordingMarker,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
       ),
     );
   }
@@ -136,7 +140,11 @@ class FileSessionRepository implements SessionRepository {
     }
     await _audioDirectory.create(recursive: true);
     await _write(
-      RepositoryState(sessions: const [], localeCode: state.localeCode),
+      RepositoryState(
+        sessions: const [],
+        localeCode: state.localeCode,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
+      ),
     );
   }
 
@@ -148,6 +156,20 @@ class FileSessionRepository implements SessionRepository {
         sessions: state.sessions,
         localeCode: localeCode,
         recordingMarker: state.recordingMarker,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
+      ),
+    );
+  }
+
+  @override
+  Future<void> saveOnboardingCompleted(bool completed) async {
+    final state = await load();
+    await _write(
+      RepositoryState(
+        sessions: state.sessions,
+        localeCode: state.localeCode,
+        recordingMarker: state.recordingMarker,
+        hasCompletedOnboarding: completed,
       ),
     );
   }
@@ -160,6 +182,7 @@ class FileSessionRepository implements SessionRepository {
         sessions: state.sessions,
         localeCode: state.localeCode,
         recordingMarker: marker,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
       ),
     );
   }
@@ -168,7 +191,11 @@ class FileSessionRepository implements SessionRepository {
   Future<void> clearRecordingMarker() async {
     final state = await load();
     await _write(
-      RepositoryState(sessions: state.sessions, localeCode: state.localeCode),
+      RepositoryState(
+        sessions: state.sessions,
+        localeCode: state.localeCode,
+        hasCompletedOnboarding: state.hasCompletedOnboarding,
+      ),
     );
   }
 
@@ -201,6 +228,7 @@ class FileSessionRepository implements SessionRepository {
     final payload = <String, Object?>{
       'schemaVersion': 1,
       'localeCode': state.localeCode,
+      'hasCompletedOnboarding': state.hasCompletedOnboarding,
       'sessions': state.sessions.map((item) => item.toJson()).toList(),
       'recordingMarker': state.recordingMarker?.toJson(),
     };

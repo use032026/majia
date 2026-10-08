@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/app_controller.dart';
@@ -153,25 +156,21 @@ class _TonightPageState extends State<TonightPage> {
     final c = widget.controller;
     final s = widget.strings;
     return _PageFrame(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ListView(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final useColumns = constraints.maxWidth >= 640;
+          final intro = _buildIntro(context);
+          final setup = _buildSetupCard(context);
+          final trust = _buildTrustPanel(context);
+          return ListView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.fromLTRB(24, 26, 24, 116),
+            padding: EdgeInsets.fromLTRB(
+              useColumns ? 32 : 20,
+              useColumns ? 32 : 20,
+              useColumns ? 32 : 20,
+              32,
+            ),
             children: [
-              const Align(alignment: Alignment.centerLeft, child: _AppGlyph()),
-              const SizedBox(height: 26),
-              Text(
-                s.t('tonightTitle'),
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                s.t('tonightSubtitle'),
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 22),
               if (c.error != null) ...[
                 _ErrorBanner(controller: c, strings: s),
                 const SizedBox(height: 16),
@@ -193,75 +192,171 @@ class _TonightPageState extends State<TonightPage> {
                 ),
                 const SizedBox(height: 4),
               ],
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        key: const Key('prompt_field'),
-                        controller: _promptController,
-                        maxLength: 160,
-                        maxLines: 4,
-                        minLines: 2,
-                        textInputAction: TextInputAction.done,
-                        decoration: InputDecoration(
-                          labelText: s.t('promptLabel'),
-                          hintText: s.t('promptHint'),
-                          alignLabelWithHint: true,
-                        ),
+              if (useColumns)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        children: [intro, const SizedBox(height: 24), trust],
                       ),
-                      const SizedBox(height: 18),
-                      Text(
-                        s.t('contextTitle'),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: _contextKeys
-                            .map(
-                              (key) => FilterChip(
-                                label: Text(s.contextName(key)),
-                                selected: _contexts.contains(key),
-                                onSelected: (selected) => setState(() {
-                                  selected
-                                      ? _contexts.add(key)
-                                      : _contexts.remove(key);
-                                }),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              _TrustStrip(icon: Icons.lock_outline, text: s.t('localOnly')),
-              const SizedBox(height: 8),
-              _TrustStrip(
-                icon: Icons.health_and_safety_outlined,
-                text: s.t('notMedical'),
-              ),
+                    ),
+                    const SizedBox(width: 28),
+                    Expanded(flex: 6, child: setup),
+                  ],
+                )
+              else ...[
+                intro,
+                const SizedBox(height: 20),
+                setup,
+                const SizedBox(height: 14),
+                trust,
+              ],
             ],
-          ),
-          Positioned(
-            left: 24,
-            right: 24,
-            bottom: 14,
-            child: FilledButton.icon(
-              key: const Key('prepare_button'),
-              onPressed: c.busy || c.interruptedMarker != null
-                  ? null
-                  : _showConsent,
-              icon: const Icon(Icons.mic_none_rounded),
-              label: Text(s.t('prepare')),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildIntro(BuildContext context) {
+    final s = widget.strings;
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const _AppGlyph(size: 44),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${s.t('appName')} · ${s.t('tonight')}',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    s.t('tonightTitle'),
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      fontSize: 30,
+                    ),
+                  ),
+                ],
+              ),
             ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          s.t('tonightSubtitle'),
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSetupCard(BuildContext context) {
+    final c = widget.controller;
+    final s = widget.strings;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Card(
+      color: colors.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28),
+        side: BorderSide(color: colors.outlineVariant.withValues(alpha: 0.55)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(s.t('promptLabel'), style: theme.textTheme.titleMedium),
+            const SizedBox(height: 10),
+            TextField(
+              key: const Key('prompt_field'),
+              controller: _promptController,
+              maxLength: 160,
+              maxLines: 3,
+              minLines: 1,
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                hintText: s.t('promptHint'),
+                counterText: '',
+                prefixIcon: const Icon(Icons.edit_note_rounded),
+                filled: true,
+                fillColor: colors.surface,
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(s.t('contextTitle'), style: theme.textTheme.titleMedium),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _contextKeys
+                  .map(
+                    (key) => FilterChip(
+                      label: Text(s.contextName(key)),
+                      selected: _contexts.contains(key),
+                      showCheckmark: false,
+                      visualDensity: VisualDensity.compact,
+                      onSelected: (selected) => setState(() {
+                        selected ? _contexts.add(key) : _contexts.remove(key);
+                      }),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                key: const Key('prepare_button'),
+                onPressed: c.busy || c.interruptedMarker != null
+                    ? null
+                    : _showConsent,
+                icon: const Icon(Icons.mic_none_rounded),
+                label: Text(s.t('prepare')),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrustPanel(BuildContext context) {
+    final s = widget.strings;
+    final colors = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.primary.withValues(alpha: 0.055),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Column(
+          children: [
+            _TrustStrip(icon: Icons.lock_outline, text: s.t('localOnly')),
+            const SizedBox(height: 10),
+            _TrustStrip(
+              icon: Icons.health_and_safety_outlined,
+              text: s.t('notMedical'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -471,18 +566,19 @@ class RecordingPage extends StatelessWidget {
   }
 
   Future<void> _confirmStop(BuildContext context) async {
-    final shouldStop = await showDialog<bool>(
+    final shouldStop = await _showIosAlert<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(strings.t('stopTitle')),
         content: Text(strings.t('stopBody')),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context, false),
             child: Text(strings.t('keepRecording')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
             key: const Key('confirm_stop_button'),
+            isDefaultAction: true,
             onPressed: () => Navigator.pop(context, true),
             child: Text(strings.t('confirmStop')),
           ),
@@ -634,27 +730,26 @@ class _MorningReviewPageState extends State<MorningReviewPage> {
   }
 
   Future<void> _exitReview() async {
-    final action = await showDialog<_ReviewExitAction>(
+    final action = await _showIosAlert<_ReviewExitAction>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(widget.strings.t('reviewExitTitle')),
         content: Text(widget.strings.t('reviewExitBody')),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context),
             child: Text(widget.strings.t('continueReview')),
           ),
-          TextButton(
+          CupertinoDialogAction(
             key: const Key('keep_review_draft_button'),
+            isDefaultAction: true,
             onPressed: () => Navigator.pop(context, _ReviewExitAction.keep),
             child: Text(widget.strings.t('keepDraft')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
             key: const Key('delete_review_draft_button'),
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(context, _ReviewExitAction.delete),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
             child: Text(widget.strings.t('deleteDraft')),
           ),
         ],
@@ -789,94 +884,103 @@ class NightDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final matches = controller.sessions.where((item) => item.id == sessionId);
-    if (matches.isEmpty) return const SizedBox.shrink();
-    final session = matches.first;
-    final kept = session.moments
-        .where(
-          (item) =>
-              item.label != MomentLabel.pending &&
-              item.label != MomentLabel.ignored,
-        )
-        .toList();
-    return Scaffold(
-      appBar: AppBar(title: Text(strings.t('nightDetail'))),
-      body: SafeArea(
-        top: false,
-        child: _PageFrame(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 18, 24, 36),
-            children: [
-              Text(
-                strings.formatDate(session.startedAt),
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 18),
-              _DetailBlock(
-                title: strings.t('duration'),
-                body: strings.formatDuration(session.duration),
-              ),
-              if (session.prompt.isNotEmpty)
-                _DetailBlock(title: strings.t('prompt'), body: session.prompt),
-              if (session.contextTags.isNotEmpty)
-                _DetailBlock(
-                  title: strings.t('background'),
-                  body: session.contextTags
-                      .map(strings.contextName)
-                      .join(' · '),
-                ),
-              _DetailBlock(
-                title: strings.t('note'),
-                body: session.morningNote.isEmpty
-                    ? strings.t('noNote')
-                    : session.morningNote,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                strings.t('confirmedMoments'),
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 10),
-              if (kept.isEmpty)
-                Text(strings.t('noMoments'))
-              else
-                ...kept.map(
-                  (moment) => Card(
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      leading: IconButton(
-                        tooltip: strings.t('play'),
-                        onPressed: () => controller.playMoment(session, moment),
-                        icon: Icon(
-                          controller.playingMomentId == moment.id
-                              ? Icons.graphic_eq
-                              : Icons.play_arrow_rounded,
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        final matches = controller.sessions.where(
+          (item) => item.id == sessionId,
+        );
+        if (matches.isEmpty) return const SizedBox.shrink();
+        final session = matches.first;
+        final kept =
+            session.moments
+                .where(
+                  (item) =>
+                      item.label != MomentLabel.pending &&
+                      item.label != MomentLabel.ignored,
+                )
+                .toList()
+              ..sort((a, b) => a.offsetSeconds.compareTo(b.offsetSeconds));
+        return PopScope(
+          onPopInvokedWithResult: (didPop, _) {
+            if (didPop) unawaited(controller.stopPlayback());
+          },
+          child: Scaffold(
+            appBar: AppBar(title: Text(strings.t('nightDetail'))),
+            body: SafeArea(
+              top: false,
+              child: _PageFrame(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 36),
+                  children: [
+                    if (controller.error != null) ...[
+                      _ErrorBanner(controller: controller, strings: strings),
+                      const SizedBox(height: 14),
+                    ],
+                    Text(
+                      strings.formatDate(session.startedAt),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 14),
+                    _RecordingPlaybackCard(
+                      session: session,
+                      strings: strings,
+                      playing: controller.playingSessionId == session.id,
+                      onPressed: () => controller.playSession(session),
+                    ),
+                    const SizedBox(height: 16),
+                    _NightSummaryCard(session: session, strings: strings),
+                    const SizedBox(height: 26),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            strings.t('confirmedMoments'),
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        _CountBadge(label: strings.changeCount(kept.length)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    if (kept.isEmpty)
+                      _InfoCard(
+                        icon: Icons.graphic_eq_outlined,
+                        text: strings.t('noConfirmedChanges'),
+                      )
+                    else
+                      ...kept.indexed.map(
+                        (entry) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _ReviewedMomentCard(
+                            index: entry.$1 + 1,
+                            moment: entry.$2,
+                            strings: strings,
+                            playing: controller.playingMomentId == entry.$2.id,
+                            onPressed: () =>
+                                controller.playMoment(session, entry.$2),
+                          ),
                         ),
                       ),
-                      title: Text(strings.labelName(moment.label)),
-                      subtitle: Text(
-                        '${strings.momentTime(moment.offsetSeconds)} · ${strings.t('labeledByYou')}',
+                    const SizedBox(height: 22),
+                    OutlinedButton.icon(
+                      key: const Key('delete_night_button'),
+                      onPressed: controller.busy
+                          ? null
+                          : () => _delete(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
                       ),
+                      icon: const Icon(Icons.delete_outline),
+                      label: Text(strings.t('deleteNight')),
                     ),
-                  ),
+                  ],
                 ),
-              const SizedBox(height: 28),
-              OutlinedButton.icon(
-                key: const Key('delete_night_button'),
-                onPressed: controller.busy ? null : () => _delete(context),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                icon: const Icon(Icons.delete_outline),
-                label: Text(strings.t('deleteNight')),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -890,6 +994,290 @@ class NightDetailPage extends StatelessWidget {
     if (confirmed != true) return;
     final deleted = await controller.deleteSession(sessionId);
     if (deleted && context.mounted) Navigator.pop(context);
+  }
+}
+
+class _RecordingPlaybackCard extends StatelessWidget {
+  const _RecordingPlaybackCard({
+    required this.session,
+    required this.strings,
+    required this.playing,
+    required this.onPressed,
+  });
+
+  final NightSession session;
+  final AppStrings strings;
+  final bool playing;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Card(
+      key: const Key('full_recording_card'),
+      color: colors.primary.withValues(alpha: 0.065),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: colors.primary.withValues(alpha: 0.16)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: colors.primary,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(
+                    Icons.multitrack_audio_rounded,
+                    color: colors.onPrimary,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        strings.t('fullRecording'),
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        strings.t('recordingStoredLocally'),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  strings.formatDuration(session.duration),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                key: const Key('play_recording_button'),
+                onPressed: onPressed,
+                icon: Icon(
+                  playing ? Icons.stop_rounded : Icons.play_arrow_rounded,
+                ),
+                label: Text(
+                  strings.t(playing ? 'stopPlayback' : 'playFullRecording'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NightSummaryCard extends StatelessWidget {
+  const _NightSummaryCard({required this.session, required this.strings});
+
+  final NightSession session;
+  final AppStrings strings;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <Widget>[
+      if (session.prompt.isNotEmpty)
+        _NightSummaryRow(
+          icon: Icons.bedtime_outlined,
+          title: strings.t('prompt'),
+          body: session.prompt,
+        ),
+      if (session.contextTags.isNotEmpty)
+        _NightSummaryRow(
+          icon: Icons.sell_outlined,
+          title: strings.t('background'),
+          body: session.contextTags.map(strings.contextName).join(' · '),
+        ),
+      _NightSummaryRow(
+        icon: Icons.wb_sunny_outlined,
+        title: strings.t('note'),
+        body: session.morningNote.isEmpty
+            ? strings.t('noNote')
+            : session.morningNote,
+      ),
+    ];
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+        child: Column(
+          children: rows.indexed
+              .expand(
+                (entry) => [
+                  if (entry.$1 > 0) const Divider(height: 1),
+                  entry.$2,
+                ],
+              )
+              .toList(growable: false),
+        ),
+      ),
+    );
+  }
+}
+
+class _NightSummaryRow extends StatelessWidget {
+  const _NightSummaryRow({
+    required this.icon,
+    required this.title,
+    required this.body,
+  });
+
+  final IconData icon;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 21, color: theme.colorScheme.primary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: theme.textTheme.labelLarge),
+                const SizedBox(height: 4),
+                Text(body, style: theme.textTheme.bodyLarge),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CountBadge extends StatelessWidget {
+  const _CountBadge({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: colors.primary.withValues(alpha: 0.09),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          color: colors.primary,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _ReviewedMomentCard extends StatelessWidget {
+  const _ReviewedMomentCard({
+    required this.index,
+    required this.moment,
+    required this.strings,
+    required this.playing,
+    required this.onPressed,
+  });
+
+  final int index;
+  final SoundMoment moment;
+  final AppStrings strings;
+  final bool playing;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Card(
+      key: Key('reviewed_moment_${moment.id}'),
+      color: playing ? colors.primaryContainer : null,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: colors.primary.withValues(alpha: 0.09),
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                '$index',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: colors.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    strings.changeTitle(index),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    strings.labelName(moment.label),
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    strings.momentOffset(moment.offsetSeconds),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton.filledTonal(
+              key: Key('play_moment_${moment.id}'),
+              tooltip: strings.t(playing ? 'stopPlayback' : 'play'),
+              onPressed: onPressed,
+              icon: Icon(
+                playing ? Icons.stop_rounded : Icons.play_arrow_rounded,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -930,6 +1318,8 @@ class SettingsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
                   SegmentedButton<String>(
+                    key: const Key('language_selector'),
+                    showSelectedIcon: false,
                     segments: [
                       ButtonSegment(
                         value: 'zh',
@@ -948,17 +1338,36 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 12),
-          _InfoCard(
-            icon: Icons.lock_outline,
-            title: strings.t('privacyTitle'),
-            text: strings.t('privacyBody'),
+          const SizedBox(height: 26),
+          Text(
+            strings.t('privacySection'),
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
-          _InfoCard(
-            icon: Icons.health_and_safety_outlined,
-            title: strings.t('medicalTitle'),
-            text: strings.t('medicalBody'),
+          Card(
+            child: Column(
+              children: [
+                _SettingsInfoRow(
+                  key: const Key('privacy_policy_row'),
+                  icon: Icons.description_outlined,
+                  title: strings.t('privacyTitle'),
+                  text: strings.t('privacyLinkBody'),
+                  trailing: const Icon(Icons.open_in_new_rounded, size: 20),
+                ),
+                const Divider(height: 1, indent: 64),
+                _SettingsInfoRow(
+                  icon: Icons.lock_outline_rounded,
+                  title: strings.t('localPrivacyTitle'),
+                  text: strings.t('privacyBody'),
+                ),
+                const Divider(height: 1, indent: 64),
+                _SettingsInfoRow(
+                  icon: Icons.health_and_safety_outlined,
+                  title: strings.t('medicalTitle'),
+                  text: strings.t('medicalBody'),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 26),
           Text(
@@ -1300,28 +1709,6 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _DetailBlock extends StatelessWidget {
-  const _DetailBlock({required this.title, required this.body});
-
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.labelLarge),
-          const SizedBox(height: 6),
-          Text(body, style: Theme.of(context).textTheme.bodyLarge),
-        ],
-      ),
-    );
-  }
-}
-
 class _PageFrame extends StatelessWidget {
   const _PageFrame({required this.child});
 
@@ -1429,23 +1816,31 @@ class _TrustStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20),
+        Icon(icon, size: 18, color: theme.colorScheme.primary),
         const SizedBox(width: 10),
-        Expanded(child: Text(text)),
+        Expanded(
+          child: Text(
+            text,
+            style: theme.textTheme.bodySmall?.copyWith(
+              height: 1.35,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
       ],
     );
   }
 }
 
 class _InfoCard extends StatelessWidget {
-  const _InfoCard({required this.icon, required this.text, this.title});
+  const _InfoCard({required this.icon, required this.text});
 
   final IconData icon;
   final String text;
-  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -1457,23 +1852,74 @@ class _InfoCard extends StatelessWidget {
           children: [
             Icon(icon),
             const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (title != null) ...[
-                    Text(
-                      title!,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 6),
-                  ],
-                  Text(text),
-                ],
+            Expanded(child: Text(text)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsInfoRow extends StatelessWidget {
+  const _SettingsInfoRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.text,
+    this.trailing,
+  });
+
+  final IconData icon;
+  final String title;
+  final String text;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Icon(icon, size: 19, color: theme.colorScheme.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    height: 1.45,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: 10),
+            Padding(
+              padding: const EdgeInsets.only(top: 7),
+              child: IconTheme(
+                data: IconThemeData(color: theme.colorScheme.onSurfaceVariant),
+                child: trailing!,
               ),
             ),
           ],
-        ),
+        ],
       ),
     );
   }
@@ -1485,25 +1931,40 @@ Future<bool?> _confirmDestructive(
   required String body,
   required String action,
 }) {
-  return showDialog<bool>(
+  return _showIosAlert<bool>(
     context: context,
-    builder: (context) => AlertDialog(
+    builder: (context) => CupertinoAlertDialog(
       title: Text(title),
       content: Text(body),
       actions: [
-        TextButton(
+        CupertinoDialogAction(
           onPressed: () => Navigator.pop(context, false),
           child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
-        FilledButton(
+        CupertinoDialogAction(
           key: const Key('confirm_destructive_button'),
+          isDestructiveAction: true,
           onPressed: () => Navigator.pop(context, true),
-          style: FilledButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
           child: Text(action),
         ),
       ],
+    ),
+  );
+}
+
+Future<T?> _showIosAlert<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+}) {
+  final brightness = Theme.of(context).brightness;
+  return showCupertinoDialog<T>(
+    context: context,
+    builder: (dialogContext) => CupertinoTheme(
+      data: CupertinoThemeData(
+        brightness: brightness,
+        primaryColor: CupertinoColors.systemBlue,
+      ),
+      child: builder(dialogContext),
     ),
   );
 }

@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'controllers/app_controller.dart';
 import 'ui/home_shell.dart';
+import 'ui/onboarding_screen.dart';
 
 class SomniloquyApp extends StatelessWidget {
   const SomniloquyApp({super.key, required this.controller});
@@ -26,7 +27,9 @@ class SomniloquyApp extends StatelessWidget {
         themeMode: ThemeMode.system,
         theme: _theme(Brightness.light),
         darkTheme: _theme(Brightness.dark),
-        home: HomeShell(controller: controller),
+        home: controller.hasCompletedOnboarding || controller.loadFailed
+            ? HomeShell(controller: controller)
+            : OnboardingScreen(controller: controller),
       ),
     );
   }

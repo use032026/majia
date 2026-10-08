@@ -50,7 +50,7 @@ class DeviceRecorderService implements RecorderService {
 }
 
 abstract class ClipPlayerService {
-  Future<void> play(String path, Duration position);
+  Future<void> play(String path, Duration position, {Duration? maxDuration});
   Future<void> stop();
   Future<void> dispose();
 }
@@ -60,7 +60,11 @@ class DeviceClipPlayerService implements ClipPlayerService {
   Timer? _stopTimer;
 
   @override
-  Future<void> play(String path, Duration position) async {
+  Future<void> play(
+    String path,
+    Duration position, {
+    Duration? maxDuration,
+  }) async {
     _stopTimer?.cancel();
     await _player.stop();
     await _player.play(
@@ -68,7 +72,9 @@ class DeviceClipPlayerService implements ClipPlayerService {
       position: position,
       mode: PlayerMode.mediaPlayer,
     );
-    _stopTimer = Timer(const Duration(seconds: 12), _player.stop);
+    if (maxDuration != null) {
+      _stopTimer = Timer(maxDuration, _player.stop);
+    }
   }
 
   @override

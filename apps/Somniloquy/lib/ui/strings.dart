@@ -9,6 +9,19 @@ class AppStrings {
 
   static const _zh = <String, String>{
     'appName': 'Somniloquy',
+    'onboardingSkip': '跳过',
+    'onboardingNext': '下一步',
+    'onboardingStart': '进入今晚',
+    'onboardingListenTitle': '只记录，不替你判断',
+    'onboardingListenBody': '整夜录音保存在本机。Somniloquy 只找出声音变化的位置，意义由你亲自确认。',
+    'onboardingListenNote': '没有睡眠分数 · 没有自动诊断',
+    'onboardingReviewTitle': '醒来后，听你想听的',
+    'onboardingReviewBody': '你可以重听整段录音，也可以逐个查看变化时刻，再留下一点醒来时的回忆。',
+    'onboardingReviewNote': '只罗列你亲自核对过的变化',
+    'onboardingPrivacyTitle': '隐私，从开始录音前说清楚',
+    'onboardingPrivacyBody': '录音前请确认已获得同室人员同意。内容不主动上传，你也可随时永久删除。',
+    'onboardingPrivacyNote': '本地保存 · 人工核对 · 随时删除',
+    'onboardingSaveFailed': '暂时无法保存引导状态，请重试。',
     'tonight': '今晚',
     'archive': '夜间卡片',
     'settings': '设置',
@@ -60,15 +73,23 @@ class AppStrings {
     'emptyArchive': '还没有夜间卡片',
     'emptyArchiveBody': '完成一次本地录音和晨间核对后，它会出现在这里。',
     'nightDetail': '夜间卡片',
+    'fullRecording': '整段录音',
+    'playFullRecording': '播放整段录音',
+    'stopPlayback': '停止播放',
+    'recordingStoredLocally': '录音保存在本机，可随时重听',
     'prompt': '睡前提示',
     'note': '晨间回忆',
-    'confirmedMoments': '已核对声音时刻',
+    'confirmedMoments': '已核对声音变化',
+    'noConfirmedChanges': '本次没有需要单独罗列的已核对声音变化。',
     'noNote': '未填写晨间回忆',
     'deleteNight': '永久删除这张卡片',
     'deleteTitle': '永久删除？',
     'deleteBody': '这会移除夜间卡片和应用管理的原始音频，无法撤销。',
     'delete': '永久删除',
-    'privacyTitle': '隐私与边界',
+    'privacySection': '隐私与安全',
+    'privacyTitle': '隐私政策',
+    'privacyLinkBody': '完整隐私协议将通过网页打开',
+    'localPrivacyTitle': '本地保存',
     'privacyBody':
         '无账号、无自有后台、无广告或分析 SDK。录音、声音时刻、标签和笔记写入应用沙盒，应用不会主动上传。若你启用系统设备备份，这些本地数据可能随设备备份保存。',
     'medicalTitle': '不是医疗工具',
@@ -91,7 +112,7 @@ class AppStrings {
     'errorStop': '录音尚未安全结束，请保持应用打开并重试。',
     'errorSave': '保存失败，当前内容仍保留在页面中，请重试。',
     'errorDelete': '删除未完成，请重试并确认文件已清理。',
-    'errorPlayback': '无法播放此声音时刻；本地音频可能缺失或不可用。',
+    'errorPlayback': '无法播放这段本地录音；音频可能缺失或不可用。',
     'dismiss': '知道了',
     'events': '个时刻',
     'duration': '录音时长',
@@ -101,6 +122,23 @@ class AppStrings {
 
   static const _en = <String, String>{
     'appName': 'Somniloquy',
+    'onboardingSkip': 'Skip',
+    'onboardingNext': 'Next',
+    'onboardingStart': 'Enter tonight',
+    'onboardingListenTitle': 'Record without guessing',
+    'onboardingListenBody':
+        'The full recording stays on this device. Somniloquy only finds where sound changed; you decide what it means.',
+    'onboardingListenNote': 'No sleep score · No automatic diagnosis',
+    'onboardingReviewTitle': 'Listen to what matters in the morning',
+    'onboardingReviewBody':
+        'Replay the full recording or review each sound change, then leave a small memory from when you woke up.',
+    'onboardingReviewNote': 'Only changes you personally reviewed are listed',
+    'onboardingPrivacyTitle': 'Privacy is clear before recording starts',
+    'onboardingPrivacyBody':
+        'Confirm that anyone sharing the room has agreed before recording. Nothing is actively uploaded, and you can permanently delete it anytime.',
+    'onboardingPrivacyNote': 'Stored locally · Human reviewed · Deletable',
+    'onboardingSaveFailed':
+        'The onboarding choice could not be saved. Please try again.',
     'tonight': 'Tonight',
     'archive': 'Night cards',
     'settings': 'Settings',
@@ -162,16 +200,24 @@ class AppStrings {
     'emptyArchiveBody':
         'Complete a local recording and morning review to create one.',
     'nightDetail': 'Night card',
+    'fullRecording': 'Full recording',
+    'playFullRecording': 'Play full recording',
+    'stopPlayback': 'Stop playback',
+    'recordingStoredLocally': 'Stored on this device and ready to replay',
     'prompt': 'Bedtime prompt',
     'note': 'Morning memory',
-    'confirmedMoments': 'Reviewed sound moments',
+    'confirmedMoments': 'Reviewed sound changes',
+    'noConfirmedChanges': 'There are no reviewed sound changes to list.',
     'noNote': 'No morning memory was added',
     'deleteNight': 'Permanently delete this card',
     'deleteTitle': 'Delete permanently?',
     'deleteBody':
         'This removes the night card and the original audio managed by the app. It cannot be undone.',
     'delete': 'Delete permanently',
-    'privacyTitle': 'Privacy and boundaries',
+    'privacySection': 'Privacy & Safety',
+    'privacyTitle': 'Privacy Policy',
+    'privacyLinkBody': 'The complete policy will open in a web page',
+    'localPrivacyTitle': 'Stored locally',
     'privacyBody':
         'No account, backend, ads, or analytics SDK. Recordings, sound moments, labels, and notes are stored in the app sandbox and are not actively uploaded by the app. If device backup is enabled, this local data may be included in that system backup.',
     'medicalTitle': 'Not a medical tool',
@@ -204,7 +250,7 @@ class AppStrings {
     'errorDelete':
         'Deletion did not finish. Retry and verify that the file is gone.',
     'errorPlayback':
-        'This moment cannot be played. Its local audio may be missing or unavailable.',
+        'This local recording cannot be played. The audio may be missing or unavailable.',
     'dismiss': 'Got it',
     'events': 'moments',
     'duration': 'Recording length',
@@ -274,4 +320,20 @@ class AppStrings {
   }
 
   String momentTime(int seconds) => formatDuration(Duration(seconds: seconds));
+
+  String changeTitle(int index) =>
+      isEnglish ? 'Sound change $index' : '声音变化 $index';
+
+  String changeCount(int count) {
+    if (!isEnglish) return '$count 个变化';
+    return count == 1 ? '1 change' : '$count changes';
+  }
+
+  String momentOffset(int seconds) => isEnglish
+      ? '${momentTime(seconds)} after recording started'
+      : '录音开始后 ${momentTime(seconds)}';
+
+  String onboardingProgress(int current, int total) => isEnglish
+      ? 'Introduction $current of $total'
+      : '引导第 $current 页，共 $total 页';
 }

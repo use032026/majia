@@ -201,4 +201,53 @@ void main() {
       controller.dispose();
     },
   );
+
+  test(
+    'full recording and reviewed moments use distinct playback modes',
+    () async {
+      final session = NightSession(
+        id: 'reviewed',
+        startedAt: DateTime(2026, 10, 8, 23),
+        endedAt: DateTime(2026, 10, 8, 23, 42),
+        audioPath: '/memory/reviewed.m4a',
+        prompt: '',
+        contextTags: const [],
+        moments: const [
+          SoundMoment(
+            id: 'm1',
+            offsetSeconds: 30,
+            peakDb: -18,
+            label: MomentLabel.environment,
+          ),
+        ],
+        isReviewed: true,
+      );
+      final player = FakeClipPlayerService();
+      final controller = AppController(
+        repository: MemorySessionRepository(sessions: [session]),
+        recorder: FakeRecorderService(),
+        player: player,
+      );
+      await controller.initialize();
+
+      await controller.playSession(session);
+      expect(controller.playingSessionId, session.id);
+      expect(controller.playingMomentId, isNull);
+      expect(player.path, session.audioPath);
+      expect(player.position, Duration.zero);
+      expect(player.maxDuration, isNull);
+
+      await controller.playMoment(session, session.moments.single);
+      expect(controller.playingSessionId, isNull);
+      expect(controller.playingMomentId, 'm1');
+      expect(player.position, const Duration(seconds: 25));
+      expect(player.maxDuration, const Duration(seconds: 12));
+
+      await controller.playMoment(session, session.moments.single);
+      expect(controller.playingMomentId, isNull);
+      expect(player.path, isNull);
+      expect(player.stopCalls, greaterThan(0));
+      controller.dispose();
+    },
+  );
 }
