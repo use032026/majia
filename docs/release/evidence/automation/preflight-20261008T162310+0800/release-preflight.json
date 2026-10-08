@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-08T16:23:10+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/somniloquy",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": true,
+    "root": "/Users/starburst/Downloads/app-ui-atlas/somniloquy",
+    "branch": "master",
+    "sha": null,
+    "dirty": true,
+    "status_short": "?? .gitignore\n?? .metadata\n?? README.md\n?? analysis_options.yaml\n?? android/\n?? assets/\n?? docs/\n?? ios/\n?? lib/\n?? pubspec.lock\n?? pubspec.yaml\n?? test/"
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.somniloquy",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "audioplayers_darwin.framework",
+      "path_provider_foundation.framework",
+      "record_ios.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": true,
+        "root": "/Users/starburst/Downloads/app-ui-atlas/somniloquy",
+        "branch": "master",
+        "sha": null,
+        "dirty": true,
+        "status_short": "?? .gitignore\n?? .metadata\n?? README.md\n?? analysis_options.yaml\n?? android/\n?? assets/\n?? docs/\n?? ios/\n?? lib/\n?? pubspec.lock\n?? pubspec.yaml\n?? test/"
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.somniloquy",
+          "com.example.somniloquy.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.somniloquy"
+        ],
+        "expected_bundle_id": "com.example.somniloquy"
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.somniloquy",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/record_ios.framework/record_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "audioplayers_darwin.framework",
+        "path_provider_foundation.framework",
+        "record_ios.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.somniloquy",
+        "archive": "com.example.somniloquy"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "warning",
+      "summary": "Screenshots exist but at least one has alpha or is unreadable.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/docs/release/evidence/runtime/iphone-se-zh-tonight.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/docs/release/evidence/runtime/ipad-pro-11-zh-tonight.png",
+          "width": 1668,
+          "height": 2420,
+          "has_alpha": true
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/somniloquy/assets/app_icon_1024.png",
+          "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/app/outputs/flutter-apk/app-debug.apk"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/assets/app_icon_1024.png",
+      "size_bytes": 947390,
+      "modified_at": "2026-10-08T16:04:53.679640+08:00",
+      "sha256": "0e01bde05f61cd3cae9a6a9e5e23279b49ddd8924b2171badfcd6440393c6166"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 145200602,
+      "modified_at": "2026-10-08T16:22:08.415163+08:00",
+      "sha256": "527ed851d2f3c8c72da860ecffdd0e62623e567929c1e199dec1731042cc0996"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 74080,
+      "modified_at": "2026-10-08T16:22:51.917562+08:00",
+      "sha256": "68b6de3a4ca00c29ea6196f6a0d88f429eb7b29e63de53ccdf13baf8bbad0b63"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/docs/release/evidence/runtime/iphone-se-zh-tonight.png",
+      "size_bytes": 115208,
+      "modified_at": "2026-10-08T16:18:01.976401+08:00",
+      "sha256": "9a026130a20984eaea8b0cc4f99a08f76d281654a8c0050f5f53c9d83ab6492a"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/somniloquy/docs/release/evidence/runtime/ipad-pro-11-zh-tonight.png",
+      "size_bytes": 210408,
+      "modified_at": "2026-10-08T16:20:45.373985+08:00",
+      "sha256": "f06aac23bc7c09c695fa50da124352c7fb771bfc3189d126a6b483c01d7926e9"
+    }
+  ]
+}

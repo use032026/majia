@@ -1,0 +1,39 @@
+{
+  "app_name": "Somniloquy",
+  "working_name": "somniloquy",
+  "target_user": "对梦话、夜间声音与梦境回忆好奇，但不希望上传卧室录音、也不需要医疗诊断的成年人",
+  "problem": "整夜录音难以复听，自动健康评分容易造成误解，而用户真正想保留的是少量可确认的声音片段、梦境线索和当晚背景",
+  "product_promise": "把一整夜的本地录音压缩成可人工核对的声音时刻，并与晨间回忆组合成私密、可回看的夜间卡片；不诊断睡眠或呼吸问题",
+  "core_loop": "睡前写下回忆提示与当晚背景 -> 明示同意后本地录音并以环境基线提取声音时刻 -> 早晨逐条试听和人工标注 -> 补充梦境回忆并保存夜间卡片 -> 在历史中按背景与已确认标签回看",
+  "durable_output": "仅保存在设备上的夜间卡片：原始录音引用、声音时刻、人工标签、梦境笔记与背景标签",
+  "scope": "release_candidate",
+  "platform": "Flutter，iOS 与 Android；App Store 单独评估 iOS",
+  "launch_regions": [
+    "中国大陆（假设，需发行主体最终确认）",
+    "美国（假设，需发行主体最终确认）"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "离线优先，无应用自有后台",
+  "data_handling": "麦克风录音、用户输入的梦境笔记、当晚背景标签和人工声音标签仅写入应用沙盒；无账号、无应用自有后台、无分析或广告 SDK、默认不上传；用户可删除单晚或全部数据，删除时同时移除应用管理的音频文件与索引。本 MVP 不提供云同步或自动备份承诺；系统级设备备份行为需在发布前按最终 entitlement 与 Apple 数据保护配置复核",
+  "sensitive_data": "处理高度私密的卧室音频和可能与睡眠相关的自述信息，但不接入 HealthKit、不生成医疗诊断、不声称检测呼吸暂停或睡眠阶段；使用者必须确认对同室人员录音已取得适用法律要求的同意",
+  "permissions": [
+    "麦克风：用户点击开始录音并阅读录音提示后即时请求；拒绝时保留可理解的恢复路径，不影响查看历史和设置"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS 15.0；最终以真机、依赖插件和提交时 Apple/Xcode 要求复核",
+  "visual_direction": "原创“夜间纸页”系统：深靛夜色、晨光珊瑚强调、低噪点星轨时间线；信息层级围绕今晚准备、醒后核对、卡片归档，而不是睡眠评分仪表盘",
+  "reference_products": [
+    "https://apps.apple.com/cn/app/id6760106243"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核"
+  ]
+}

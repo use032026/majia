@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "somniloquy-20261008-01",
+    "project_ref": "somniloquy",
+    "scope": "release_candidate",
+    "skill_revision": "sha256:9d8212c51331f3fc2167f438e8673eefcb29585d9996ebfdc1c3f62f14cd133b",
+    "project_revision": "unknown: unborn master branch with no commit",
+    "finished_at": "2026-10-08T16:24:00+08:00",
+    "product_verdict": "functional_passed_store_blocked"
+  },
+  "summary": {
+    "worked": [
+      "Differentiation gate passed at 4.0/5; see docs/product/DIFFERENTIATION.md",
+      "Independent functional review passed with no open P0/P1; see docs/release/FUNCTIONAL_REVIEW.md",
+      "Format, analyzer, 16 tests, Android debug build and unsigned iOS Archive passed; see docs/release/evidence/automation/20261008T162136+0800/QUALITY_GATE.md",
+      "iPhone SE and iPad Pro simulator pages were visually inspected; see docs/release/evidence/runtime"
+    ],
+    "failed": [
+      "Release preflight was blocked by placeholder Bundle ID, missing privacy/support URLs and unsigned Archive; see docs/release/evidence/automation/preflight-20261008T162310+0800/RELEASE_PREFLIGHT.md"
+    ],
+    "untested": [
+      "Physical iOS 15+ device overnight lock-screen/background recording, interruptions, low storage, battery and thermal behavior",
+      "VoiceOver/TalkBack full flow and final file protection/backup behavior",
+      "Distribution signing, App Store Connect metadata, upload, processing, TestFlight and App Review"
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "flutter.primary-action.first-viewport",
+      "severity": "P1",
+      "symptom": "The primary Prepare action initially fell below the first iPhone SE viewport even though a scroll-based Widget assertion passed",
+      "phase": "simulator visual review",
+      "cause_confidence": "confirmed",
+      "cause": "The action was placed after scroll content instead of being kept in a stable reachable area",
+      "evidence": [
+        "docs/release/FUNCTIONAL_REVIEW.md",
+        "docs/release/evidence/runtime/iphone-se-zh-tonight.png",
+        "test/widget_flow_test.dart"
+      ],
+      "proposed_change": "Require a first-viewport visibility assertion for the primary action on the smallest supported phone, not only scroll-until-visible",
+      "regression_check": "At 320pt width and 568pt height with 1.3x text, the primary action is present without framework exceptions and the actual iPhone SE screenshot shows it above navigation"
+    },
+    {
+      "pattern_key": "flutter.pending-work.rehydrate",
+      "severity": "P1",
+      "symptom": "A stopped but unreviewed recording was persisted yet could not resume its review state after controller recreation",
+      "phase": "independent functional review",
+      "cause_confidence": "confirmed",
+      "cause": "Persistence loaded sessions but did not reconstruct the workflow state from isReviewed=false",
+      "evidence": [
+        "docs/release/FUNCTIONAL_REVIEW.md",
+        "test/app_controller_test.dart"
+      ],
+      "proposed_change": "Add an explicit rehydration check for every durable intermediate state in the functional-review checklist",
+      "regression_check": "A new controller restores the pending review, keeps it out of formal archive, and permits keep, resume or delete"
+    },
+    {
+      "pattern_key": "local-private-data.delete-retry-order",
+      "severity": "P1",
+      "symptom": "Removing an index before deleting its private audio could make a failed deletion impossible to retry from the UI",
+      "phase": "independent fix re-review",
+      "cause_confidence": "confirmed",
+      "cause": "The two-step delete operation temporarily discarded the only durable pointer before the fallible file deletion completed",
+      "evidence": [
+        "docs/release/FUNCTIONAL_REVIEW.md",
+        "test/file_session_repository_test.dart"
+      ],
+      "proposed_change": "For local private-data deletion reviews, require a fault-injected partial-failure test that preserves a retry path",
+      "regression_check": "Injected file deletion failure keeps both index and audio; a later retry removes both"
+    }
+  ]
+}
