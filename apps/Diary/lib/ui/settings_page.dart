@@ -50,7 +50,9 @@ class SettingsPage extends StatelessWidget {
         listenable: controller,
         builder: (context, _) {
           return ListView(
-            padding: const EdgeInsets.only(bottom: 36),
+            padding: EdgeInsets.only(
+              bottom: bottomSafeSpacing(context, minimum: 36),
+            ),
             children: <Widget>[
               PageWidth(
                 child: Column(

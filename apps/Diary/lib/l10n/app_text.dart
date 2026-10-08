@@ -46,7 +46,22 @@ class AppText {
       : 'Turn this on to schedule another revisit. Normal edits keep the thread closed.';
   String get inThreeDays => isZh ? '3 天后' : 'In 3 days';
   String get inOneWeek => isZh ? '7 天后' : 'In 7 days';
+  String get inTwoWeeks => isZh ? '14 天后' : 'In 2 weeks';
   String get inOneMonth => isZh ? '30 天后' : 'In 30 days';
+  String get inThreeMonths => isZh ? '3 个月后' : 'In 3 months';
+  String get inSixMonths => isZh ? '半年后' : 'In 6 months';
+  String get inOneYear => isZh ? '1 年后' : 'In 1 year';
+
+  String revisitAfter(int days) => switch (days) {
+    3 => inThreeDays,
+    7 => inOneWeek,
+    14 => inTwoWeeks,
+    30 => inOneMonth,
+    90 => inThreeMonths,
+    180 => inSixMonths,
+    365 => inOneYear,
+    _ => isZh ? '$days 天后' : 'In $days days',
+  };
   String get save => isZh ? '保存' : 'Save';
   String get cancel => isZh ? '取消' : 'Cancel';
   String get saving => isZh ? '正在保存…' : 'Saving…';

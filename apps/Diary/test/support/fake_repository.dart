@@ -54,6 +54,7 @@ DiaryEntry sampleEntry({
   DateTime? deletedAt,
 }) {
   final created = now ?? DateTime(2026, 9, 30, 9);
+  final defaultRevisitAt = (now ?? DateTime.now()).add(const Duration(days: 7));
   return DiaryEntry(
     id: id,
     createdAt: created,
@@ -62,9 +63,7 @@ DiaryEntry sampleEntry({
     body: body,
     mood: EntryMood.uncertain,
     futureQuestion: question,
-    revisitAt: closedAt == null
-        ? revisitAt ?? created.add(const Duration(days: 7))
-        : null,
+    revisitAt: closedAt == null ? revisitAt ?? defaultRevisitAt : null,
     echoes: echoes,
     closedAt: closedAt,
     deletedAt: deletedAt,

@@ -91,14 +91,21 @@ class TrashPage extends StatelessWidget {
         builder: (context, _) {
           final entries = controller.trashEntries;
           if (entries.isEmpty) {
-            return EmptyState(
-              icon: Icons.restore_from_trash_outlined,
-              title: text.trashEmpty,
-              body: '',
+            return BottomSafeArea(
+              child: EmptyState(
+                icon: Icons.restore_from_trash_outlined,
+                title: text.trashEmpty,
+                body: '',
+              ),
             );
           }
           return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
+            padding: EdgeInsets.fromLTRB(
+              20,
+              12,
+              20,
+              bottomSafeSpacing(context, minimum: 36),
+            ),
             itemCount: entries.length,
             separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) {

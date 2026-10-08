@@ -141,6 +141,7 @@ class _HomeShellState extends State<HomeShell> {
                       )
               : null,
           bottomNavigationBar: NavigationBar(
+            maintainBottomViewPadding: true,
             selectedIndex: _index,
             onDestinationSelected: (value) => setState(() => _index = value),
             destinations: <NavigationDestination>[

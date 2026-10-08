@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../domain/diary_entry.dart';
@@ -35,6 +37,23 @@ String shiftLabel(AppText text, EchoShift shift) {
     EchoShift.changed => text.changed,
     EchoShift.resolved => text.resolved,
   };
+}
+
+double bottomSafeSpacing(BuildContext context, {double minimum = 20}) {
+  final mediaQuery = MediaQuery.of(context);
+  return minimum +
+      math.max(mediaQuery.viewPadding.bottom, mediaQuery.viewInsets.bottom);
+}
+
+class BottomSafeArea extends StatelessWidget {
+  const BottomSafeArea({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(top: false, maintainBottomViewPadding: true, child: child);
+  }
 }
 
 class PageWidth extends StatelessWidget {

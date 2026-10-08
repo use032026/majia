@@ -163,100 +163,101 @@ class EntryDetailPage extends StatelessWidget {
               ),
             ],
           ),
-          body: SafeArea(
-            top: false,
-            child: ListView(
-              padding: const EdgeInsets.only(bottom: 36),
-              children: <Widget>[
-                PageWidth(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: <Widget>[
-                          Chip(
-                            avatar: Icon(moodIcon(entry.mood), size: 18),
-                            label: Text(moodLabel(text, entry.mood)),
-                          ),
-                          Chip(
-                            avatar: Icon(
-                              entry.isClosed
-                                  ? Icons.check_circle_outline
-                                  : Icons.schedule_rounded,
-                              size: 18,
-                            ),
-                            label: Text(
-                              entry.futureQuestion.isEmpty
-                                  ? text.plainPage
-                                  : entry.isClosed
-                                  ? text.closed
-                                  : text.open,
-                            ),
-                          ),
-                          Text(
-                            formatDiaryDate(context, entry.createdAt),
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: scheme.onSurfaceVariant),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 22),
-                      _PaperSection(
-                        eyebrow: text.originalPage,
-                        child: SelectableText(
-                          entry.body,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _PaperSection(
-                        eyebrow: text.questionForLater,
-                        emphasized: entry.futureQuestion.isNotEmpty,
-                        child: Text(
-                          entry.futureQuestion.isEmpty
-                              ? text.noQuestion
-                              : entry.futureQuestion,
-                          style: entry.futureQuestion.isEmpty
-                              ? Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: scheme.onSurfaceVariant)
-                              : Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                      if (entry.echoes.isNotEmpty) ...<Widget>[
-                        const SizedBox(height: 26),
-                        Text(
-                          text.echoes,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 12),
-                        ...entry.echoes.map(
-                          (echo) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: _EchoTile(echo: echo),
-                          ),
-                        ),
-                      ],
-                      if (entry.hasOpenThread) ...<Widget>[
-                        const SizedBox(height: 14),
-                        FilledButton.icon(
-                          key: const ValueKey<String>('add_echo'),
-                          onPressed: controller.isSaving
-                              ? null
-                              : () => _addEcho(context, entry),
-                          icon: const Icon(
-                            Icons.subdirectory_arrow_right_rounded,
-                          ),
-                          label: Text(text.addEcho),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
+          body: ListView(
+            key: const ValueKey<String>('entry_detail_scroll'),
+            padding: EdgeInsets.only(
+              bottom: bottomSafeSpacing(context, minimum: 36),
             ),
+            children: <Widget>[
+              PageWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: <Widget>[
+                        Chip(
+                          avatar: Icon(moodIcon(entry.mood), size: 18),
+                          label: Text(moodLabel(text, entry.mood)),
+                        ),
+                        Chip(
+                          avatar: Icon(
+                            entry.isClosed
+                                ? Icons.check_circle_outline
+                                : Icons.schedule_rounded,
+                            size: 18,
+                          ),
+                          label: Text(
+                            entry.futureQuestion.isEmpty
+                                ? text.plainPage
+                                : entry.isClosed
+                                ? text.closed
+                                : text.open,
+                          ),
+                        ),
+                        Text(
+                          formatDiaryDate(context, entry.createdAt),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 22),
+                    _PaperSection(
+                      eyebrow: text.originalPage,
+                      child: SelectableText(
+                        entry.body,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _PaperSection(
+                      eyebrow: text.questionForLater,
+                      emphasized: entry.futureQuestion.isNotEmpty,
+                      child: Text(
+                        entry.futureQuestion.isEmpty
+                            ? text.noQuestion
+                            : entry.futureQuestion,
+                        style: entry.futureQuestion.isEmpty
+                            ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: scheme.onSurfaceVariant,
+                              )
+                            : Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    if (entry.echoes.isNotEmpty) ...<Widget>[
+                      const SizedBox(height: 26),
+                      Text(
+                        text.echoes,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 12),
+                      ...entry.echoes.map(
+                        (echo) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _EchoTile(echo: echo),
+                        ),
+                      ),
+                    ],
+                    if (entry.hasOpenThread) ...<Widget>[
+                      const SizedBox(height: 14),
+                      FilledButton.icon(
+                        key: const ValueKey<String>('add_echo'),
+                        onPressed: controller.isSaving
+                            ? null
+                            : () => _addEcho(context, entry),
+                        icon: const Icon(
+                          Icons.subdirectory_arrow_right_rounded,
+                        ),
+                        label: Text(text.addEcho),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -430,13 +431,10 @@ class _EchoComposerState extends State<_EchoComposer> {
     final text = AppText.of(context);
     return PopScope(
       canPop: !_saving,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          0,
-          20,
-          20 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.fromLTRB(20, 0, 20, bottomSafeSpacing(context)),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(

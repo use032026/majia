@@ -44,6 +44,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       visualDensity: VisualDensity.standard,
+      chipTheme: const ChipThemeData(showCheckmark: false),
       textTheme: const TextTheme(
         displaySmall: TextStyle(fontWeight: FontWeight.w700, height: 1.08),
         headlineSmall: TextStyle(fontWeight: FontWeight.w700, height: 1.18),
