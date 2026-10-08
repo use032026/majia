@@ -1,0 +1,2 @@
+"CFBundleDisplayName" = "Somniloquy";
+"NSMicrophoneUsageDescription" = "Somniloquy 仅会在你开始本地夜间录音后使用麦克风，帮助你亲自核对声音时刻。";

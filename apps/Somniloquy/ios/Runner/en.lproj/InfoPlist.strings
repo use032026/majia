@@ -1,0 +1,2 @@
+"CFBundleDisplayName" = "Somniloquy";
+"NSMicrophoneUsageDescription" = "Somniloquy uses the microphone only after you start a local night recording, so you can review sound moments yourself.";
