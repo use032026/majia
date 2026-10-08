@@ -2648,30 +2648,6 @@ abstract class AppLocalizations {
   /// **'Policies, permissions, and disclaimers'**
   String get settingsPrivacySummary;
 
-  /// No description provided for @kifxMiniTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'KIFX Mini Program'**
-  String get kifxMiniTitle;
-
-  /// No description provided for @kifxMiniSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap to open the KIFX Mini Program'**
-  String get kifxMiniSubtitle;
-
-  /// No description provided for @kifxMiniUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'The KIFX Mini Program is available on iOS only.'**
-  String get kifxMiniUnavailable;
-
-  /// No description provided for @kifxMiniOpenFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'The KIFX Mini Program cannot be opened right now. Try again later.'**
-  String get kifxMiniOpenFailed;
-
   /// No description provided for @syncStatusEnabledShort.
   ///
   /// In en, this message translates to:

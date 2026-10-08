@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trip_cost/app/app.dart';
@@ -9,7 +7,6 @@ import 'package:trip_cost/core/domain/core_models.dart';
 import 'package:trip_cost/core/domain/repositories.dart';
 import 'package:trip_cost/core/infrastructure/app_providers.dart';
 import 'package:trip_cost/core/money/currency.dart';
-import 'package:trip_cost/features/settings/application/kifx_mini_auto_open_store.dart';
 import 'package:trip_cost/features/startup/application/startup_controller.dart';
 import 'package:trip_cost/features/startup/data/startup_state_store.dart';
 
@@ -46,71 +43,6 @@ void main() {
 
     expect(find.text('Home'), findsOneWidget);
     expect(find.text('Skip'), findsNothing);
-  });
-
-  testWidgets('returning user automatically opens an enabled KIFX Mini', (
-    tester,
-  ) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    addTearDown(() => debugDefaultTargetPlatformOverride = null);
-    const channel = MethodChannel('stmini_flutter/methods');
-    final calls = <MethodCall>[];
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (call) async {
-          calls.add(call);
-          return null;
-        });
-    addTearDown(
-      () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, null),
-    );
-
-    await tester.pumpWidget(
-      _testApp(
-        _FakeStartupStateStore(isComplete: true),
-        kifxMiniAutoOpenStore: _MemoryKifxMiniAutoOpenStore(enabled: true),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Home'), findsOneWidget);
-    expect(calls.map((call) => call.method), <String>[
-      'initialize',
-      'openMini',
-    ]);
-    expect(tester.takeException(), isNull);
-    debugDefaultTargetPlatformOverride = null;
-  });
-
-  testWidgets('failed automatic KIFX opening falls back to home', (
-    tester,
-  ) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    addTearDown(() => debugDefaultTargetPlatformOverride = null);
-    const channel = MethodChannel('stmini_flutter/methods');
-    final calls = <MethodCall>[];
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (call) async {
-          calls.add(call);
-          throw PlatformException(code: 'unavailable');
-        });
-    addTearDown(
-      () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, null),
-    );
-
-    await tester.pumpWidget(
-      _testApp(
-        _FakeStartupStateStore(isComplete: true),
-        kifxMiniAutoOpenStore: _MemoryKifxMiniAutoOpenStore(enabled: true),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Home'), findsOneWidget);
-    expect(calls.map((call) => call.method), <String>['initialize']);
-    expect(tester.takeException(), isNull);
-    debugDefaultTargetPlatformOverride = null;
   });
 
   testWidgets('local preference read failure falls back to onboarding', (
@@ -466,7 +398,6 @@ Widget _testApp(
   MemorySettingsRepository? settings,
   TripRepository? tripRepository,
   AppLanguageMode initialLanguageMode = AppLanguageMode.system,
-  KifxMiniAutoOpenStore? kifxMiniAutoOpenStore,
 }) {
   final database = createIsolatedTestDatabase();
   return ProviderScope(
@@ -474,8 +405,6 @@ Widget _testApp(
       appDatabaseProvider.overrideWithValue(database),
       initialAppLanguageModeProvider.overrideWithValue(initialLanguageMode),
       startupStateStoreProvider.overrideWithValue(store),
-      if (kifxMiniAutoOpenStore != null)
-        kifxMiniAutoOpenStoreProvider.overrideWithValue(kifxMiniAutoOpenStore),
       rateRepositoryProvider.overrideWithValue(createFakeRateRepository()),
       settingsRepositoryProvider.overrideWithValue(
         settings ?? MemorySettingsRepository(),
@@ -525,20 +454,6 @@ class _ThrowingStartupStateStore implements StartupStateStore {
 
   @override
   Future<void> resetOnboarding() async {}
-}
-
-final class _MemoryKifxMiniAutoOpenStore implements KifxMiniAutoOpenStore {
-  _MemoryKifxMiniAutoOpenStore({required this.enabled});
-
-  bool enabled;
-
-  @override
-  Future<void> enable() async {
-    enabled = true;
-  }
-
-  @override
-  Future<bool> isEnabled() async => enabled;
 }
 
 final class _SaveThenThrowOnceTripRepository implements TripRepository {

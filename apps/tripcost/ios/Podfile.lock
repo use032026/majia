@@ -2,16 +2,11 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - HXWRefresh (1.1.0)
   - image_picker_ios (0.0.1):
     - Flutter
-  - Masonry (1.1.0)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - SDWebImage (5.21.7):
-    - SDWebImage/Core (= 5.21.7)
-  - SDWebImage/Core (5.21.7)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -40,15 +35,8 @@ PODS:
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
     - sqlite3/session
-  - stmini_flutter (0.1.1):
+  - url_launcher_ios (0.0.1):
     - Flutter
-    - HXWRefresh
-    - Masonry
-    - SDWebImage
-    - Toast-Swift
-    - ZIPFoundation (~> 0.9)
-  - Toast-Swift (5.1.1)
-  - ZIPFoundation (0.9.20)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -57,16 +45,11 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/darwin`)
-  - stmini_flutter (from `.symlinks/plugins/stmini_flutter/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
-    - HXWRefresh
-    - Masonry
-    - SDWebImage
     - sqlite3
-    - Toast-Swift
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   connectivity_plus:
@@ -81,23 +64,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/darwin"
-  stmini_flutter:
-    :path: ".symlinks/plugins/stmini_flutter/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  HXWRefresh: 0bef2dd826f90f056562a605326cf07a27595c79
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
-  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
-  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqlite3: a51c07cf16e023d6c48abd5e5791a61a47354921
   sqlite3_flutter_libs: b3e120efe9a82017e5552a620f696589ed4f62ab
-  stmini_flutter: 165cc93b01477ce0c7043a05af74cd5f09520774
-  Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
-  ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
 PODFILE CHECKSUM: 92accab0dd503fefe942e03fd19a8eed01412fae
 

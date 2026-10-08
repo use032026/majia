@@ -1365,18 +1365,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsPrivacySummary => '政策、权限与免责声明';
 
   @override
-  String get kifxMiniTitle => 'KIFX小程序';
-
-  @override
-  String get kifxMiniSubtitle => '点击打开 KIFX 小程序';
-
-  @override
-  String get kifxMiniUnavailable => 'KIFX 小程序仅支持 iOS 设备。';
-
-  @override
-  String get kifxMiniOpenFailed => 'KIFX 小程序暂时无法打开，请稍后重试。';
-
-  @override
   String get syncStatusEnabledShort => '已开启';
 
   @override

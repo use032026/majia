@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:stmini_flutter/stmini_flutter.dart';
 import 'package:trip_cost/core/domain/core_models.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const _privacyPolicyHost = 'tripcost.fit';
 const _privacyPolicyPath = '/privacy.html';
@@ -22,6 +22,10 @@ Uri privacyPolicyUriFor({
   });
 }
 
-Future<void> openPrivacyPolicy(Uri uri, {required String title}) {
-  return StminiFlutter.openWeb(uri.toString(), title: title);
+Future<void> openPrivacyPolicy(Uri uri) async {
+  await launchUrl(
+    uri,
+    mode: LaunchMode.inAppBrowserView,
+    browserConfiguration: const BrowserConfiguration(showTitle: true),
+  );
 }
