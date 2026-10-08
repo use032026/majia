@@ -1,0 +1,82 @@
+schema_version: 1
+
+identity:
+  app_name: "Somniloquy"
+  operator: ""
+  bundle_id: "com.example.somniloquy"
+
+contact:
+  support_email: ""
+  production_domain: ""
+
+platforms:
+  iphone: true
+  ipad: true
+
+listing:
+  primary_locale: en-US
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: ""
+  confirmed:
+    - no_account
+    - no_analytics_or_advertising_sdk
+    - no_tracking
+    - no_active_content_upload
+    - app_sandbox_storage
+    - microphone_requested_after_user_consent
+    - user_controlled_single_night_and_full_deletion
+    - no_export_or_sharing_in_current_version
+    - no_healthkit_or_medical_diagnosis
+  open_questions:
+    - final_operator_identity
+    - final_support_email
+    - final_production_domain
+    - final_privacy_effective_date
+    - final_signed_archive_privacy_report
+    - device_backup_and_file_protection_behavior_on_release_build
+
+website:
+  locales:
+    - en
+
+screenshots:
+  locale: en-US
+  source_policy: real-runtime-only
+  scenes:
+    - id: tonight
+      source: source/01-tonight-en.png
+      headline: Remember the Night Your Way
+      subheadline: Add a bedtime prompt and context before recording begins.
+    - id: recording
+      source: source/02-recording-en.png
+      headline: See When Recording Is Active
+      subheadline: A clear indicator and timer stay visible while audio remains local.
+    - id: morning-review
+      source: source/03-review-en.png
+      headline: Review Sound Changes Yourself
+      subheadline: Listen, label, and add a morning memory before saving.
+    - id: privacy-settings
+      source: source/04-settings-en.png
+      headline: Privacy Boundaries, In the App
+      subheadline: See local storage, backup, and non-medical limits.
+    - id: ipad-tonight
+      source: source/05-ipad-tonight-en.png
+      headline: A Spacious Night Workspace
+      subheadline: Prepare a local recording on iPad with every control in view.
+    - id: ipad-recording
+      source: source/06-ipad-recording-en.png
+      headline: See When Recording Is Active
+      subheadline: Keep the timer, sound level, and stop action in view.
+    - id: ipad-morning-review
+      source: source/07-ipad-review-en.png
+      headline: Review Sound Changes Yourself
+      subheadline: Listen, label, and add a morning memory before saving.
+    - id: ipad-privacy-settings
+      source: source/08-ipad-settings-en.png
+      headline: Privacy Boundaries, In the App
+      subheadline: See local storage, backup, and non-medical limits.
+
+paths:
+  app_root: "apps/Somniloquy"

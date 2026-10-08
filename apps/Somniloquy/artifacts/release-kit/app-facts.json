@@ -1,0 +1,86 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/Somniloquy/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "Somniloquy",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/Somniloquy/android/app/src/main/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.RECORD_AUDIO"
+        ]
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/Somniloquy/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/Somniloquy",
+  "dependency_signals": {
+    "microphone_or_speech": [
+      "record"
+    ],
+    "networking": [
+      "audioplayers"
+    ]
+  },
+  "generated_at": "2026-10-08T09:51:54.650723+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.example.somniloquy",
+      "com.example.somniloquy.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "Somniloquy",
+        "path": "/Users/starburst/majia/apps/Somniloquy/ios/Runner/Info.plist",
+        "usage_descriptions": {
+          "NSMicrophoneUsageDescription": "Somniloquy uses the microphone only after you start a local night recording, so you can review sound moments yourself."
+        }
+      }
+    ],
+    "privacy_manifests": [
+      {
+        "path": "/Users/starburst/majia/apps/Somniloquy/ios/Runner/PrivacyInfo.xcprivacy",
+        "payload": {
+          "NSPrivacyAccessedAPITypes": [],
+          "NSPrivacyCollectedDataTypes": [],
+          "NSPrivacyTracking": false,
+          "NSPrivacyTrackingDomains": []
+        }
+      }
+    ],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [],
+  "network_hosts_observed": [],
+  "pubspec": {
+    "dependencies": [
+      "audioplayers",
+      "cupertino_icons",
+      "flutter_localizations",
+      "path_provider",
+      "record"
+    ],
+    "description": "A new Flutter project.",
+    "name": "somniloquy",
+    "path": "/Users/starburst/majia/apps/Somniloquy/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

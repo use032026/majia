@@ -1,0 +1,23 @@
+Somniloquy helps you turn a long night recording into a small set of moments you can review yourself—without sleep scores or automatic health conclusions.
+
+Before recording, Somniloquy explains what it will capture and asks you to confirm the consent needed for anyone sharing the room. The app records locally for up to 12 hours and marks changes in sound volume as candidate moments.
+
+In the morning, replay the full recording or listen around each candidate moment. Label what you hear, add a dream or memory, and save a night card only after you review it.
+
+Use Somniloquy to:
+• Add a bedtime prompt and night context
+• Record with a clear on-screen indicator
+• Review candidate sound moments manually
+• Label possible speech, breathing sounds, environmental sounds, or uncertainty
+• Save morning notes and reviewed night cards
+• Revisit local recordings and night context
+• Delete one night or all app-managed local data
+
+Privacy and boundaries:
+• No account, ads, or analytics SDK
+• Recordings, labels, and notes are stored in the app sandbox
+• The app does not actively upload your content
+• Device backups may include local app data if system backup is enabled
+• Somniloquy is not a medical tool and does not detect sleep stages, apnea, disease, or sleep quality
+
+Recording laws and consent requirements vary. Make sure you have the permission required to record anyone sharing the room.

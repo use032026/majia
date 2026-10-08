@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "app_name": "Somniloquy",
+  "icon": "../../assets/app_icon_1024.png",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#11152B",
+    "background_bottom": "#273056",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#D8DFFF"
+  },
+  "items": [
+    {
+      "source": "source/01-tonight-en.png",
+      "output": "final/iphone/01-tonight.png",
+      "size": [1206, 2622],
+      "headline": "Remember the Night Your Way",
+      "subheadline": "Add a bedtime prompt and context before recording begins."
+    },
+    {
+      "source": "source/02-recording-en.png",
+      "output": "final/iphone/02-recording.png",
+      "size": [1206, 2622],
+      "headline": "See When Recording Is Active",
+      "subheadline": "A clear indicator and timer stay visible while audio remains local."
+    },
+    {
+      "source": "source/03-review-en.png",
+      "output": "final/iphone/03-review.png",
+      "size": [1206, 2622],
+      "headline": "Review Sound Changes Yourself",
+      "subheadline": "Listen, label, and add a morning memory before saving."
+    },
+    {
+      "source": "source/04-settings-en.png",
+      "output": "final/iphone/04-privacy.png",
+      "size": [1206, 2622],
+      "headline": "Privacy Boundaries, In the App",
+      "subheadline": "See local storage, backup, and non-medical limits."
+    },
+    {
+      "source": "source/05-ipad-tonight-en.png",
+      "output": "final/ipad/01-tonight.png",
+      "size": [2064, 2752],
+      "headline": "A Spacious Night Workspace",
+      "subheadline": "Prepare a local recording on iPad with every control in view."
+    },
+    {
+      "source": "source/06-ipad-recording-en.png",
+      "output": "final/ipad/02-recording.png",
+      "size": [2064, 2752],
+      "headline": "See When Recording Is Active",
+      "subheadline": "Keep the timer, sound level, and stop action in view."
+    },
+    {
+      "source": "source/07-ipad-review-en.png",
+      "output": "final/ipad/03-review.png",
+      "size": [2064, 2752],
+      "headline": "Review Sound Changes Yourself",
+      "subheadline": "Listen, label, and add a morning memory before saving."
+    },
+    {
+      "source": "source/08-ipad-settings-en.png",
+      "output": "final/ipad/04-privacy.png",
+      "size": [2064, 2752],
+      "headline": "Privacy Boundaries, In the App",
+      "subheadline": "See local storage, backup, and non-medical limits."
+    }
+  ]
+}
