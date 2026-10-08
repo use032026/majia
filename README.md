@@ -18,6 +18,7 @@
 | PaceJar（源项目 `Looters`） | [`apps/looters/`](apps/looters/) | [`CherryIce/Looters`](https://github.com/CherryIce/Looters)，迁移基点 `822d7d343e9c80de4f912d03cb9b1d5517abf8ac` |
 | EchoPage（源项目 `Diary`） | [`apps/Diary/`](apps/Diary/) | [`CherryIce/Diary`](https://github.com/CherryIce/Diary)，迁移基点 `17679f8904bdd74d49ecf911fc332a8f1b05cf2d` |
 | ReaderEdit | [`apps/ReaderEdit/`](apps/ReaderEdit/) | [`CherryIce/ReaderEdit`](https://github.com/CherryIce/ReaderEdit)，迁移基点 `9863eac49e4e76c3e7dd5fac986204e0c727f7a8` |
+| Somniloquy（夜间声音笔记） | [`apps/Somniloquy/`](apps/Somniloquy/) | 独立 Flutter MVP，迁移基点 `e443a5cb66e591212e5bd6a74d82cda79038840a` |
 
 具体功能、平台限制、本地命令和发布缺口以各 Flutter 工程内的 `README.md` 与 `docs/` 为准。
 
@@ -33,7 +34,7 @@
 | KIFXPRO | [`KIFXPRO iOS Release`](.github/workflows/sdpacket-ios-release.yml) | `sdpacket-production` | `Runner` | 支持 |
 | PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
 
-`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar`、`Trip Delta`、`Diary` 和 `ReaderEdit` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
+`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar`、`Trip Delta`、`Diary`、`ReaderEdit` 和 `Somniloquy` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
 
 ### 发布开关
 
