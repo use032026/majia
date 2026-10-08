@@ -24,8 +24,7 @@ dependencies:
   sealed_currencies: ^2.5.0
   shared_preferences: ^2.5.5
   sqlite3_flutter_libs: ^0.5.42
-  stmini_flutter:
-    path: packages/stmini_flutter
+  url_launcher: ^6.3.2
   uuid: ^4.6.0
 
 dev_dependencies:

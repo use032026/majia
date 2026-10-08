@@ -1429,20 +1429,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsPrivacySummary => 'Policies, permissions, and disclaimers';
 
   @override
-  String get kifxMiniTitle => 'KIFX Mini Program';
-
-  @override
-  String get kifxMiniSubtitle => 'Tap to open the KIFX Mini Program';
-
-  @override
-  String get kifxMiniUnavailable =>
-      'The KIFX Mini Program is available on iOS only.';
-
-  @override
-  String get kifxMiniOpenFailed =>
-      'The KIFX Mini Program cannot be opened right now. Try again later.';
-
-  @override
   String get syncStatusEnabledShort => 'On';
 
   @override

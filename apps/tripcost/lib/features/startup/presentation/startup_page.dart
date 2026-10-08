@@ -1,13 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trip_cost/app/router/app_routes.dart';
 import 'package:trip_cost/app/theme/app_theme.dart';
-import 'package:trip_cost/features/settings/application/kifx_mini_auto_open_store.dart';
-import 'package:trip_cost/features/settings/application/kifx_mini_launcher.dart';
 import 'package:trip_cost/features/startup/application/startup_controller.dart';
 
 class StartupPage extends ConsumerStatefulWidget {
@@ -33,9 +28,6 @@ class _StartupPageState extends ConsumerState<StartupPage> {
   void _scheduleNavigation(StartupDestination destination) {
     if (_navigationScheduled) return;
     _navigationScheduled = true;
-    final autoOpenStore = destination == StartupDestination.home
-        ? ref.read(kifxMiniAutoOpenStoreProvider)
-        : null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.go(
@@ -43,24 +35,7 @@ class _StartupPageState extends ConsumerState<StartupPage> {
             ? AppRoutes.home
             : AppRoutes.onboarding,
       );
-      if (destination == StartupDestination.home) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          unawaited(_autoOpenKifxIfEnabled(autoOpenStore!));
-        });
-      }
     });
-  }
-
-  Future<void> _autoOpenKifxIfEnabled(
-    KifxMiniAutoOpenStore autoOpenStore,
-  ) async {
-    if (defaultTargetPlatform != TargetPlatform.iOS) return;
-    try {
-      if (!await autoOpenStore.isEnabled()) return;
-      await launchKifxMini();
-    } on Object {
-      // Startup must always fall back to the normal TripCost home screen.
-    }
   }
 }
 
