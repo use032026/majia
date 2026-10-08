@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f1e8">
+    <meta name="color-scheme" content="light">
+    <meta
+      name="description"
+      content="回声页 EchoPage 是一款离线优先的双语反思日记：写下此刻，给未来留一个问题，再回来听见自己的回声。"
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="回声页 EchoPage — 把日记写成一场跨时间的对话">
+    <meta
+      property="og:description"
+      content="无需账号、没有广告，日记内容默认保存在设备本地。写下此刻，安排回看，再记录想法如何改变。"
+    >
+    <meta name="twitter:card" content="summary">
+    <title>回声页 EchoPage — 把日记写成一场跨时间的对话</title>
+    <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/app-icon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <script src="site.js" defer></script>
+  </head>
+  <body data-page="home">
+    <a class="skip-link" href="#main" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
+
+    <header class="site-header" data-header>
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="回声页 EchoPage 首页">
+          <img src="assets/app-icon.svg" alt="" width="44" height="44">
+          <span><b>回声页</b><small>EchoPage</small></span>
+        </a>
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav" data-menu-button>
+          <span class="sr-only" data-zh="打开导航" data-en="Open navigation">打开导航</span>
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="主要导航" data-nav>
+          <a href="#rhythm" data-zh="如何使用" data-en="How it works">如何使用</a>
+          <a href="#preview" data-zh="界面预览" data-en="Preview">界面预览</a>
+          <a href="#privacy" data-zh="本地优先" data-en="Local-first">本地优先</a>
+          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
+          <div class="language-switch" role="group" aria-label="语言 / Language">
+            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <span aria-hidden="true"></span>
+            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="paper-grid" aria-hidden="true"></div>
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">
+              <span class="eyebrow-mark" aria-hidden="true"></span>
+              <span data-zh="离线优先 · 双语日记" data-en="Local-first · Bilingual journal">离线优先 · 双语日记</span>
+            </div>
+            <h1>
+              <span data-zh="写给此刻，" data-en="Write for now.">写给此刻，</span>
+              <em data-zh="也写给未来的自己。" data-en="Return with perspective.">也写给未来的自己。</em>
+            </h1>
+            <p
+              class="hero-lede"
+              data-zh="回声页把一篇日记变成一次可回访的自我对话：写下当下，给未来留一个问题，在约定的时间重新阅读，再记录想法如何改变。"
+              data-en="EchoPage turns a journal entry into a conversation across time: capture the moment, leave your future self a question, return on schedule, and record what changed."
+            >回声页把一篇日记变成一次可回访的自我对话：写下当下，给未来留一个问题，在约定的时间重新阅读，再记录想法如何改变。</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#rhythm">
+                <span data-zh="看看回声如何发生" data-en="See the reflection loop">看看回声如何发生</span>
+                <span aria-hidden="true">↓</span>
+              </a>
+              <a class="text-link" href="privacy.html" data-language-link>
+                <span data-zh="了解数据边界" data-en="Understand your data">了解数据边界</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+            <ul class="trust-list" aria-label="产品特点">
+              <li><span aria-hidden="true">✓</span><span data-zh="无需账号" data-en="No account">无需账号</span></li>
+              <li><span aria-hidden="true">✓</span><span data-zh="无广告与分析" data-en="No ads or analytics">无广告与分析</span></li>
+              <li><span aria-hidden="true">✓</span><span data-zh="不主动联网" data-en="No active network access">不主动联网</span></li>
+            </ul>
+          </div>
+
+          <div class="hero-art" aria-label="一条从此刻延伸到未来的日记线索">
+            <div class="echo-ring ring-one" aria-hidden="true"></div>
+            <div class="echo-ring ring-two" aria-hidden="true"></div>
+            <article class="note-card note-now">
+              <div class="note-meta"><span data-zh="此刻" data-en="NOW">此刻</span><time>09.28</time></div>
+              <h2 data-zh="第一次独自去远方" data-en="My first journey alone">第一次独自去远方</h2>
+              <p data-zh="抵达陌生城市时，我既紧张又兴奋。" data-en="Arriving in a new city, I felt nervous and excited.">抵达陌生城市时，我既紧张又兴奋。</p>
+              <div class="future-question">
+                <small data-zh="给未来的问题" data-en="A QUESTION FOR LATER">给未来的问题</small>
+                <strong data-zh="离开熟悉的地方后，我会更相信自己的选择吗？" data-en="Will distance help me trust my own choices?">离开熟悉的地方后，我会更相信自己的选择吗？</strong>
+              </div>
+            </article>
+            <div class="echo-connector" aria-hidden="true"><span></span><i></i><span></span></div>
+            <article class="note-card note-echo">
+              <div class="note-meta"><span data-zh="后来的回声" data-en="A LATER ECHO">后来的回声</span><time>10.07</time></div>
+              <p data-zh="我不再每天走同一条路，但会在需要整理思路的早晨选择它。" data-en="I no longer take the same route every day, but I choose it on mornings when I need clarity.">我不再每天走同一条路，但会在需要整理思路的早晨选择它。</p>
+              <span class="perspective" data-zh="可以放下" data-en="Ready to let go">可以放下</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="fact-strip" aria-label="产品摘要">
+        <div class="shell fact-grid">
+          <div><strong>0</strong><span data-zh="账号、广告或订阅" data-en="accounts, ads, or subscriptions">账号、广告或订阅</span></div>
+          <div><strong>3 / 7 / 30</strong><span data-zh="天后安排一次回看" data-en="days until your next revisit">天后安排一次回看</span></div>
+          <div><strong data-zh="本地" data-en="Local">本地</strong><span data-zh="日记默认保存在设备沙盒" data-en="journal data stays in the app sandbox">日记默认保存在设备沙盒</span></div>
+          <div><strong>中 / EN</strong><span data-zh="跟随系统的双语界面" data-en="a bilingual interface">跟随系统的双语界面</span></div>
+        </div>
+      </section>
+
+      <section class="section rhythm-section" id="rhythm">
+        <div class="shell">
+          <div class="section-heading centered">
+            <span class="section-kicker" data-zh="一条线索的旅程" data-en="A thread through time">一条线索的旅程</span>
+            <h2 data-zh="不是多写一点，而是回来再看一次。" data-en="Not more journaling. One meaningful return.">不是多写一点，而是回来再看一次。</h2>
+            <p data-zh="回声页围绕一个小而完整的循环设计，让当时的想法和后来的答案留在同一条线索里。" data-en="EchoPage is built around one focused loop, keeping the original moment and every later perspective in the same thread.">回声页围绕一个小而完整的循环设计，让当时的想法和后来的答案留在同一条线索里。</p>
+          </div>
+          <div class="rhythm-grid">
+            <article class="rhythm-card">
+              <span class="step-number">01</span>
+              <div class="step-symbol" aria-hidden="true">✎</div>
+              <h3 data-zh="写下此刻" data-en="Capture the moment">写下此刻</h3>
+              <p data-zh="留下正文、标题和当下色调。正文之外，其余都可以保持简单。" data-en="Save the page, an optional title, and the tone of the moment. Everything else can stay simple.">留下正文、标题和当下色调。正文之外，其余都可以保持简单。</p>
+            </article>
+            <article class="rhythm-card">
+              <span class="step-number">02</span>
+              <div class="step-symbol" aria-hidden="true">?</div>
+              <h3 data-zh="给未来留问" data-en="Ask your future self">给未来留问</h3>
+              <p data-zh="把还没有答案的事写成一个问题，并安排 3、7 或 30 天后回看。" data-en="Turn the unresolved thought into a question and schedule a return in 3, 7, or 30 days.">把还没有答案的事写成一个问题，并安排 3、7 或 30 天后回看。</p>
+            </article>
+            <article class="rhythm-card featured">
+              <span class="step-number">03</span>
+              <div class="step-symbol" aria-hidden="true">↻</div>
+              <h3 data-zh="回来听见回声" data-en="Return and add an Echo">回来听见回声</h3>
+              <p data-zh="重读原文，写下后来的视角，再标记它是相同、更清楚、方向改变或可以放下。" data-en="Reread the original, add what you know now, then mark whether your view stayed, clarified, shifted, or can be released.">重读原文，写下后来的视角，再标记它是相同、更清楚、方向改变或可以放下。</p>
+            </article>
+            <article class="rhythm-card">
+              <span class="step-number">04</span>
+              <div class="step-symbol" aria-hidden="true">✓</div>
+              <h3 data-zh="关闭或继续" data-en="Close or continue">关闭或继续</h3>
+              <p data-zh="答案已经足够，就关闭线索；还想再看看，就让它七天后再次回来。" data-en="Close the thread when it feels complete, or let it return again seven days later.">答案已经足够，就关闭线索；还想再看看，就让它七天后再次回来。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section preview-section" id="preview">
+        <div class="shell">
+          <div class="section-heading split-heading">
+            <div>
+              <span class="section-kicker" data-zh="真实应用界面" data-en="Inside EchoPage">真实应用界面</span>
+              <h2 data-zh="从记录到回看，线索始终清楚。" data-en="A clear thread from capture to reflection.">从记录到回看，线索始终清楚。</h2>
+            </div>
+            <p data-zh="克制的纸张色、明确的到期状态和完整的前后记录，让注意力停留在内容本身。" data-en="A quiet paper palette, visible due states, and complete before-and-after records keep the focus on what you wrote.">克制的纸张色、明确的到期状态和完整的前后记录，让注意力停留在内容本身。</p>
+          </div>
+          <div class="screen-gallery">
+            <figure class="screen-card screen-one">
+              <div class="screen-frame"><img src="assets/screen-now.png" alt="回声页此刻页面，显示到期线索和最近记录" data-alt-zh="回声页此刻页面，显示到期线索和最近记录" data-alt-en="EchoPage Now screen with a due thread and recent pages" loading="lazy" width="1242" height="2688"></div>
+              <figcaption><b>01</b><span data-zh="写下此刻" data-en="Capture now">写下此刻</span></figcaption>
+            </figure>
+            <figure class="screen-card screen-two">
+              <div class="screen-frame"><img src="assets/screen-revisit.png" alt="回声页回看页面，显示到期与未来回看" data-alt-zh="回声页回看页面，显示到期与未来回看" data-alt-en="EchoPage Revisit screen with due and upcoming reflections" loading="lazy" width="1242" height="2688"></div>
+              <figcaption><b>02</b><span data-zh="在约定的时间回看" data-en="Return at the right time">在约定的时间回看</span></figcaption>
+            </figure>
+            <figure class="screen-card screen-three">
+              <div class="screen-frame"><img src="assets/screen-thread.png" alt="回声页详情页面，显示原文、问题与后来的回声" data-alt-zh="回声页详情页面，显示原文、问题与后来的回声" data-alt-en="EchoPage detail screen with the original page, question, and later Echoes" loading="lazy" width="1242" height="2688"></div>
+              <figcaption><b>03</b><span data-zh="看见想法如何变化" data-en="See how your view changed">看见想法如何变化</span></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section privacy-section" id="privacy">
+        <div class="shell privacy-grid">
+          <div class="privacy-copy">
+            <span class="section-kicker" data-zh="本地优先，不只是口号" data-en="Local-first, by design">本地优先，不只是口号</span>
+            <h2 data-zh="私人文字，默认只留在你的设备里。" data-en="Private words stay on your device by default.">私人文字，默认只留在你的设备里。</h2>
+            <p data-zh="当前版本没有账号、开发者后台、广告、行为分析或远程配置，也不会主动联网。日记和回声以 JSON 文件保存在应用 Documents 沙盒中。" data-en="The current version has no account, developer backend, ads, behavioral analytics, or remote configuration, and it does not actively connect to the network. Pages and Echoes are stored as JSON in the app's Documents sandbox.">当前版本没有账号、开发者后台、广告、行为分析或远程配置，也不会主动联网。日记和回声以 JSON 文件保存在应用 Documents 沙盒中。</p>
+            <a class="button button-light" href="privacy.html" data-language-link>
+              <span data-zh="阅读完整隐私政策" data-en="Read the full privacy policy">阅读完整隐私政策</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div class="privacy-cards">
+            <article>
+              <span aria-hidden="true">⌂</span>
+              <div><h3 data-zh="保存在本地" data-en="Stored locally">保存在本地</h3><p data-zh="主文件、待写文件和应用内备份均在当前安装的应用沙盒中。" data-en="The current, pending, and in-app backup files remain inside this installation's sandbox.">主文件、待写文件和应用内备份均在当前安装的应用沙盒中。</p></div>
+            </article>
+            <article>
+              <span aria-hidden="true">↗</span>
+              <div><h3 data-zh="只在你选择时复制" data-en="Copied only when you choose">只在你选择时复制</h3><p data-zh="只有主动选择“复制完整记录”时，内容才会写入系统剪贴板。" data-en="Content reaches the system clipboard only when you choose Copy complete record.">只有主动选择“复制完整记录”时，内容才会写入系统剪贴板。</p></div>
+            </article>
+            <article>
+              <span aria-hidden="true">↺</span>
+              <div><h3 data-zh="明确的删除边界" data-en="Clear deletion boundaries">明确的删除边界</h3><p data-zh="永久删除会清理当前安装中的应用文件；历史系统备份仍由平台和你的设置控制。" data-en="Permanent deletion clears app-managed files in the current installation; historical system backups remain controlled by the platform and your settings.">永久删除会清理当前安装中的应用文件；历史系统备份仍由平台和你的设置控制。</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing-section">
+        <div class="shell closing-card">
+          <div class="closing-mark" aria-hidden="true"><span></span><i></i><span></span></div>
+          <span class="section-kicker" data-zh="有些答案，需要晚一点才听得见" data-en="Some answers need time to become audible">有些答案，需要晚一点才听得见</span>
+          <h2 data-zh="为此刻留一页，为未来留一个问题。" data-en="Leave a page for now—and a question for later.">为此刻留一页，为未来留一个问题。</h2>
+          <p data-zh="回声页仍在准备上架，当前官网不提供下载链接。" data-en="EchoPage is being prepared for release; this website does not yet offer a download link.">回声页仍在准备上架，当前官网不提供下载链接。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-grid">
+        <div class="footer-brand">
+          <img src="assets/app-icon.svg" alt="" width="46" height="46">
+          <div><strong>回声页 · EchoPage</strong><small data-zh="把日记写成一场跨时间的对话" data-en="A journal that answers back, with time">把日记写成一场跨时间的对话</small></div>
+        </div>
+        <div class="footer-links">
+          <a href="#top" data-zh="返回顶部" data-en="Back to top">返回顶部</a>
+          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
+        </div>
+        <p>© <span data-current-year></span> EchoPage</p>
+      </div>
+    </footer>
+  </body>
+</html>

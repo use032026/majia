@@ -5,6 +5,7 @@ import 'l10n/app_text.dart';
 import 'state/diary_controller.dart';
 import 'ui/app_theme.dart';
 import 'ui/home_shell.dart';
+import 'ui/onboarding_screen.dart';
 
 class EchoPageApp extends StatelessWidget {
   const EchoPageApp({super.key, required this.controller});
@@ -39,7 +40,9 @@ class EchoPageApp extends StatelessWidget {
           ],
           home: controller.storageLocked
               ? _StorageLockedScreen(controller: controller)
-              : HomeShell(controller: controller),
+              : controller.snapshot.hasCompletedOnboarding
+              ? HomeShell(controller: controller)
+              : OnboardingScreen(controller: controller),
         );
       },
     );

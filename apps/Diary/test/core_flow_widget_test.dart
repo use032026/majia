@@ -18,7 +18,9 @@ Future<DiaryController> pumpDiary(
     localeCode: 'en',
   ),
 }) async {
-  final repository = FakeDiaryRepository(initial: initial);
+  final repository = FakeDiaryRepository(
+    initial: initial.copyWith(hasCompletedOnboarding: true),
+  );
   final controller = DiaryController(repository);
   await controller.initialize();
   await tester.pumpWidget(EchoPageApp(controller: controller));
@@ -362,7 +364,11 @@ void main() {
   ) async {
     final entry = sampleEntry();
     final repository = FakeDiaryRepository(
-      initial: DiarySnapshot(localeCode: 'en', entries: <DiaryEntry>[entry]),
+      initial: DiarySnapshot(
+        localeCode: 'en',
+        hasCompletedOnboarding: true,
+        entries: <DiaryEntry>[entry],
+      ),
     );
     final controller = DiaryController(repository);
     await controller.initialize();
@@ -401,7 +407,11 @@ void main() {
   ) async {
     final entry = sampleEntry();
     final repository = FakeDiaryRepository(
-      initial: DiarySnapshot(localeCode: 'en', entries: <DiaryEntry>[entry]),
+      initial: DiarySnapshot(
+        localeCode: 'en',
+        hasCompletedOnboarding: true,
+        entries: <DiaryEntry>[entry],
+      ),
     );
     final controller = DiaryController(repository);
     await controller.initialize();
@@ -513,7 +523,11 @@ void main() {
   ) async {
     final deleted = sampleEntry(deletedAt: DateTime(2026, 10, 1));
     final repository = FakeDiaryRepository(
-      initial: DiarySnapshot(localeCode: 'en', entries: <DiaryEntry>[deleted]),
+      initial: DiarySnapshot(
+        localeCode: 'en',
+        hasCompletedOnboarding: true,
+        entries: <DiaryEntry>[deleted],
+      ),
     );
     final controller = DiaryController(repository);
     await controller.initialize();

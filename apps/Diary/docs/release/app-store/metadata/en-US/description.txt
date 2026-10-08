@@ -1,0 +1,45 @@
+EchoPage is a local-first reflection journal for thoughts that deserve a second look. Capture what is happening now, leave a question for your future self, return when the time is right, and record how your perspective changed.
+
+Instead of leaving every entry as an isolated page, EchoPage connects the original moment with the answers that come later. Each reflection becomes a thread you can revisit, continue, or close.
+
+CAPTURE THE MOMENT
+
+Write a page without needing to understand everything first. Add an optional title, choose the tone that best matches the moment, and focus on the words that matter. A page can remain a simple journal entry, or become the beginning of a reflection thread.
+
+LEAVE A QUESTION FOR LATER
+
+Add one question you want your future self to answer. Choose when to revisit it—from 3 days to 1 year—and the thread will appear in the Revisit view when it is due. Upcoming and ready-to-revisit entries stay clearly separated, so you can return at your own pace.
+
+ADD AN ECHO
+
+When you revisit a page, read the original entry and question before writing what happened afterward. Mark how your perspective feels now: mostly the same, clearer, changed direction, or ready to close. Close the thread when the answer feels complete, or let it return again in 7 days.
+
+SEE THE WHOLE STORY
+
+Every thread keeps the original page, future question, revisit status, and later Echoes together. Search across titles, journal text, questions, and Echoes. Filter threads by waiting or closed status, reopen a completed thread when needed, and see how an idea developed without piecing together separate entries.
+
+KEEP CONTROL OF YOUR WRITING
+
+Move pages to Recently Deleted before removing them permanently. Restore pages when you change your mind, empty Recently Deleted when you are ready, or clear all local journal data with an explicit confirmation. EchoPage also keeps a readable in-app recovery copy to reduce the risk of an interrupted save replacing your last good data.
+
+COPY A COMPLETE REFLECTION
+
+When you choose Copy Full Record, EchoPage creates a plain-text version containing the original page, question, Echo dates, and perspective markers. Nothing is copied until you start the action, and you decide where the text goes next.
+
+LOCAL-FIRST BY DESIGN
+
+Your pages, questions, Echoes, and preferences are stored in the app sandbox on your device. EchoPage does not require an account and has no developer-operated backend, ads, behavioral analytics, tracking, remote configuration, or in-app purchases. It requests no runtime permissions and does not send journal content to a developer service.
+
+Operating-system backup, migration, or restore features may include app data depending on your platform and settings. These system services are separate from EchoPage and cannot be accessed or managed by the developer.
+
+MADE FOR FOCUSED, PERSONAL WRITING
+
+• Simplified Chinese and English
+• System, light, and dark appearance
+• Responsive layouts for iPhone and iPad
+• Search across pages, questions, and Echoes
+• Waiting and closed thread filters
+• Recently Deleted with restore and permanent deletion
+• No account, ads, subscriptions, or social feed
+
+Write for the person you are now. Return with the perspective you have later. EchoPage keeps both moments in the same place.

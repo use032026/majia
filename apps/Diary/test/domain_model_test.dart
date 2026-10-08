@@ -15,6 +15,7 @@ void main() {
     final original = DiarySnapshot(
       localeCode: 'en',
       themeMode: 'dark',
+      hasCompletedOnboarding: true,
       entries: <DiaryEntry>[
         sampleEntry(
           now: now,
@@ -28,9 +29,19 @@ void main() {
 
     expect(restored.localeCode, 'en');
     expect(restored.themeMode, 'dark');
+    expect(restored.hasCompletedOnboarding, isTrue);
     expect(restored.entries.single.title, original.entries.single.title);
     expect(restored.entries.single.echoes.single.shift, EchoShift.clearer);
     expect(restored.entries.single.createdAt.isAtSameMomentAs(now), isTrue);
+  });
+
+  test('older snapshot without onboarding state remains readable', () {
+    final json = const DiarySnapshot.empty().toJson()
+      ..remove('onboardingCompletedV1');
+
+    final restored = DiarySnapshot.fromJson(json);
+
+    expect(restored.hasCompletedOnboarding, isFalse);
   });
 
   test('search includes original page, question, and later echoes', () {

@@ -278,4 +278,17 @@ void main() {
     expect(repository.stored.themeMode, 'dark');
     expect(repository.saveCount, 2);
   });
+
+  test('onboarding completes only after persistence succeeds', () async {
+    await controller.initialize();
+    repository.failSave = true;
+
+    expect(await controller.completeOnboarding(), isFalse);
+    expect(controller.snapshot.hasCompletedOnboarding, isFalse);
+
+    repository.failSave = false;
+    expect(await controller.completeOnboarding(), isTrue);
+    expect(controller.snapshot.hasCompletedOnboarding, isTrue);
+    expect(repository.stored.hasCompletedOnboarding, isTrue);
+  });
 }

@@ -200,26 +200,32 @@ class DiarySnapshot {
     required this.entries,
     this.localeCode = 'system',
     this.themeMode = 'system',
+    this.hasCompletedOnboarding = false,
   });
 
   const DiarySnapshot.empty()
     : entries = const <DiaryEntry>[],
       localeCode = 'system',
-      themeMode = 'system';
+      themeMode = 'system',
+      hasCompletedOnboarding = false;
 
   final List<DiaryEntry> entries;
   final String localeCode;
   final String themeMode;
+  final bool hasCompletedOnboarding;
 
   DiarySnapshot copyWith({
     List<DiaryEntry>? entries,
     String? localeCode,
     String? themeMode,
+    bool? hasCompletedOnboarding,
   }) {
     return DiarySnapshot(
       entries: entries ?? this.entries,
       localeCode: localeCode ?? this.localeCode,
       themeMode: themeMode ?? this.themeMode,
+      hasCompletedOnboarding:
+          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
     );
   }
 
@@ -227,6 +233,7 @@ class DiarySnapshot {
     'schemaVersion': 1,
     'localeCode': localeCode,
     'themeMode': themeMode,
+    'onboardingCompletedV1': hasCompletedOnboarding,
     'entries': entries.map((entry) => entry.toJson()).toList(),
   };
 
@@ -237,6 +244,8 @@ class DiarySnapshot {
     final rawEntries = json['entries']! as List<Object?>;
     final localeCode = (json['localeCode'] as String?) ?? 'system';
     final themeMode = (json['themeMode'] as String?) ?? 'system';
+    final hasCompletedOnboarding =
+        (json['onboardingCompletedV1'] as bool?) ?? false;
     if (!const <String>{'system', 'zh', 'en'}.contains(localeCode)) {
       throw const FormatException('Unsupported diary locale.');
     }
@@ -255,6 +264,7 @@ class DiarySnapshot {
     return DiarySnapshot(
       localeCode: localeCode,
       themeMode: themeMode,
+      hasCompletedOnboarding: hasCompletedOnboarding,
       entries: entries,
     );
   }

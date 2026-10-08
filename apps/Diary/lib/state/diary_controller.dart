@@ -224,6 +224,10 @@ class DiaryController extends ChangeNotifier {
     return _commit(_snapshot.copyWith(themeMode: mode));
   }
 
+  Future<bool> completeOnboarding() {
+    return _commit(_snapshot.copyWith(hasCompletedOnboarding: true));
+  }
+
   Future<bool> _replace(DiaryEntry replacement) {
     final entries = _snapshot.entries
         .map((entry) => entry.id == replacement.id ? replacement : entry)

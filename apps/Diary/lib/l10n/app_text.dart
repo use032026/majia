@@ -12,6 +12,25 @@ class AppText {
   }
 
   String get appName => isZh ? '回声页' : 'EchoPage';
+  String get onboardingSkip => isZh ? '跳过' : 'Skip';
+  String get onboardingNext => isZh ? '下一步' : 'Next';
+  String get onboardingStart => isZh ? '开始记录' : 'Start writing';
+  String get onboardingFirstTitle => isZh ? '写下此刻' : 'Capture this moment';
+  String get onboardingFirstBody => isZh
+      ? '先把发生的事写下来，无需在落笔前想明白一切。'
+      : 'Write down what is happening without needing to understand it all first.';
+  String get onboardingSecondTitle =>
+      isZh ? '留一个问题给未来' : 'Leave a question for later';
+  String get onboardingSecondBody => isZh
+      ? '为这页安排回看日期，让尚未回答的问题在合适的时候回来。'
+      : 'Choose a revisit date so an unanswered question can return at the right time.';
+  String get onboardingThirdTitle => isZh ? '听见想法的回声' : 'Notice what changed';
+  String get onboardingThirdBody => isZh
+      ? '重新阅读，补写后来的变化，然后关闭线索或继续等待。所有内容只保存在本机。'
+      : 'Read it again, add what changed, then close the thread or let it continue. Everything stays on this device.';
+
+  String onboardingPage(int current, int total) =>
+      isZh ? '引导第 $current 页，共 $total 页' : 'Onboarding page $current of $total';
   String get today => isZh ? '此刻' : 'Now';
   String get revisit => isZh ? '回看' : 'Revisit';
   String get archive => isZh ? '线索' : 'Threads';
