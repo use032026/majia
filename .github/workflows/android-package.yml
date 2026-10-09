@@ -91,8 +91,8 @@ jobs:
               exit 1
             fi
           done
-          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$APP_PATH/android/release-keystore.jks"
-          chmod 600 "$APP_PATH/android/release-keystore.jks"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$APP_PATH/android/app/release-keystore.jks"
+          chmod 600 "$APP_PATH/android/app/release-keystore.jks"
           {
             echo "storePassword=$ANDROID_KEYSTORE_PASSWORD"
             echo "keyPassword=$ANDROID_KEY_PASSWORD"
