@@ -40,7 +40,7 @@ PHOTO_ANDROID_KEY_PASSWORD
 
 `*_ANDROID_KEYSTORE_BASE64` 是 JKS 或 PKCS#12 文件的单行 Base64 内容。macOS 可用 `base64 -i release.jks | tr -d '\n'` 生成；不要提交 `key.properties`、`.jks`、`.keystore`、`.p12` 或任何密码到仓库。
 
-应用清单和凭据前缀维护在 [`.github/android-packages.json`](../.github/android-packages.json)。新增 Android 马甲包时，先确保它有 `android/` 平台，再登记路径、显示名称、包名和新的凭据前缀。
+应用清单和凭据前缀维护在 [`.github/android-packages.json`](../.github/android-packages.json)。新增 Android 马甲包时，先确保它有 `android/` 平台，再登记路径、显示名称、包名和新的凭据前缀。已有马甲的验签、新马甲的签名创建、接入工作流和常见故障处理见 [Android 马甲包配置指南](android-majia-configuration.md)。
 
 ## 当前范围
 

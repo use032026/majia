@@ -91,7 +91,7 @@
 
 ## 其他自动化
 
-- [`Android Package`](.github/workflows/android-package.yml) 是 11 个已有 Android Flutter 工程共用的手动打包入口；不使用 GitHub Environment，按应用前缀读取 Repository Secrets 中的独立签名凭据，并保留 APK/AAB Artifact。配置方式见 [`docs/android-packaging.md`](docs/android-packaging.md)。
+- [`Android Package`](.github/workflows/android-package.yml) 是 11 个已有 Android Flutter 工程共用的手动打包入口；不使用 GitHub Environment，按应用前缀读取 Repository Secrets 中的独立签名凭据，并保留 APK/AAB Artifact。打包入口见 [`docs/android-packaging.md`](docs/android-packaging.md)，已有/新建马甲的完整接入指南见 [`docs/android-majia-configuration.md`](docs/android-majia-configuration.md)。
 - [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 使用与构建发布流程相同的仓库内提交脚本，可独立提交现有版本；结果会写入 Job Summary 并保留 30 天 JSON 证据。已提交版本会作为幂等 no-op 返回。
 - [`ASC Existing Build Release`](.github/workflows/asc-existing-build-release.yml) 为五个生产 Environment 创建或复用商店版本并关联已处理构建，可选更新说明和提交审核，不重新打包或上传 IPA。
 - [`ASC Review Status`](.github/workflows/asc-review-status.yml) 是只读查询，可按版本获取五个生产 Environment 对应应用的 ASC 处理、TestFlight 与审核状态，并保留 30 天 JSON 快照。
