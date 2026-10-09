@@ -1,6 +1,6 @@
 # TripCost
 
-TripCost 是旅行真实消费成本助手的开发代号。当前工程已完成 M5：Flutter 主应用仅启用 iOS，最低 iOS 15；已具备精确金额、Drift schema v3、Frankfurter v2 与离线汇率链路、快速换算、支付成本与 DCC，以及行程 CRUD、预算仪表盘、消费账本、实际入账和本地费用校准。历史汇率与支付规则均以快照随消费保存。
+TripCost 是旅行真实消费成本助手 RoamSum 的开发代号。Flutter 主应用支持 iOS 15+ 与 Android 24+；已具备精确金额、Drift、Frankfurter v2 与离线汇率链路、快速换算、支付成本与 DCC，以及行程 CRUD、预算仪表盘、消费账本、实际入账和本地费用校准。历史汇率与支付规则均以快照随消费保存。iCloud 与 Widget 仅在 Apple 平台启用；Android OCR 使用随包分发的本机模型。
 
 ## 本地启动
 
@@ -10,6 +10,8 @@ flutter gen-l10n
 flutter test
 flutter run -d <ios-simulator-id>
 ```
+
+Android 使用正式包名 `com.tripcost.lite`。云端 APK/AAB 由仓库根目录的 `Android Package` 工作流生成；没有 `TRIPCOST_ANDROID_*` 正式签名 Secrets 时，只能以 `sign_release=false` 生成内部验证包。
 
 环境参数通过 `--dart-define` 注入：
 

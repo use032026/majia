@@ -2909,7 +2909,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyBody.
   ///
   /// In en, this message translates to:
-  /// **'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device. Receipt originals are not uploaded. If you enable iCloud sync, structured app data is sent to your private CloudKit database; receipt originals are excluded. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet. Trip summary images are added to Photos only after you tap Save to Photos; any iCloud Photos sync follows your system settings.'**
+  /// **'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device, and receipt originals are not uploaded. On Apple platforms, you may choose to enable structured iCloud sync; Android does not offer iCloud sync. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet. Trip summary images are added to the system photo library only after you tap Save to Photos; any later cloud photo sync follows your system settings.'**
   String get privacyPolicyBody;
 
   /// No description provided for @disclaimerTitle.
@@ -2933,7 +2933,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionsBody.
   ///
   /// In en, this message translates to:
-  /// **'Camera and photo-library read access are requested only after you choose the matching scan action. Add-only photo access is requested only after you tap Save to Photos on a trip-summary preview. Camera photos and selected images are processed locally with Apple Vision. Notifications and location are not required. iCloud is contacted only when structured-data sync is enabled. Receipt originals stay on this device and are not included in CloudKit sync. CSV, PDF, backups, and trip summary images are generated on this device.'**
+  /// **'Camera or required photo access is requested only after you choose the matching scan action. The app writes to the system photo library only after you tap Save to Photos on a trip-summary preview. Camera photos and selected images are processed on device: Apple platforms use Apple Vision, while Android uses ML Kit models bundled with the app. Notifications and location are not required. iCloud is contacted only on Apple platforms after structured-data sync is enabled; Android does not offer iCloud sync. Receipt originals are not uploaded. CSV, PDF, backups, and trip summary images are generated on this device.'**
   String get permissionsBody;
 }
 

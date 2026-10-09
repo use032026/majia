@@ -61,6 +61,12 @@
       "secret_prefix": "STEADY21",
       "application_id": "com.example.steady21"
     },
+    "tripcost": {
+      "display_name": "RoamSum (TripCost)",
+      "path": "apps/tripcost",
+      "secret_prefix": "TRIPCOST",
+      "application_id": "com.tripcost.lite"
+    },
     "trip_delta": {
       "display_name": "Trip Delta",
       "path": "apps/trip_delta",

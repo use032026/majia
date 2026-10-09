@@ -7,6 +7,9 @@ import 'package:pigeon/pigeon.dart';
     dartPackageName: 'trip_cost',
     swiftOut: 'ios/Runner/Generated/PlatformApis.g.swift',
     swiftOptions: SwiftOptions(),
+    kotlinOut:
+        'android/app/src/main/kotlin/com/tripcost/lite/PlatformApis.g.kt',
+    kotlinOptions: KotlinOptions(package: 'com.tripcost.lite'),
   ),
 )
 enum OcrRecognitionMode { fast, accurate }

@@ -177,4 +177,4 @@ pbpaste | wc -c
 
 ## 当前已接入应用
 
-现有可选应用与 Secret 前缀见 [Android 打包说明](android-packaging.md)。`PhotoReport` 与 `TripCost` 当前没有 Android 工程，需要先完成“新建马甲”的 Android 平台步骤后再接入。
+现有可选应用与 Secret 前缀见 [Android 打包说明](android-packaging.md)。`PhotoReport` 当前没有 Android 工程，需要先完成“新建马甲”的 Android 平台步骤后再接入；TripCost 已完成 Android 工程与工作流登记，但正式签名仍依赖独立的 `TRIPCOST_ANDROID_*` Secrets。

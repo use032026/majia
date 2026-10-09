@@ -18,6 +18,7 @@ on:
           - plotproof_lab
           - sdpacket
           - steady21
+          - tripcost
           - trip_delta
       artifact:
         description: Release artifact type

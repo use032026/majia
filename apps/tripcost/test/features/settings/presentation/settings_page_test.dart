@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,45 @@ import '../../../helpers/isolated_test_database.dart';
 import '../../../helpers/m4_fakes.dart';
 
 void main() {
+  testWidgets('Android settings omit the Apple-only iCloud category', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    try {
+      final database = createIsolatedTestDatabase();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(database),
+            settingsRepositoryProvider.overrideWithValue(
+              MemorySettingsRepository(),
+            ),
+          ],
+          child: CupertinoApp(
+            locale: const Locale('en'),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const SettingsPage(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('settings-category-icloud-sync')),
+        findsNothing,
+      );
+      expect(find.byKey(const Key('settings-category-data')), findsOneWidget);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
   testWidgets('secondary categories cover the persistent bottom navigation', (
     tester,
   ) async {

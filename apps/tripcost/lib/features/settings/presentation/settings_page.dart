@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:trip_cost/app/theme/app_theme.dart';
 import 'package:trip_cost/core/domain/core_models.dart';
@@ -15,9 +16,12 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context);
     final settingsState = ref.watch(generalSettingsControllerProvider);
-    final syncState = ref.watch(syncSettingsControllerProvider);
+    final supportsICloud = defaultTargetPlatform == TargetPlatform.iOS;
+    final syncState = supportsICloud
+        ? ref.watch(syncSettingsControllerProvider)
+        : null;
     final settings = settingsState.value;
-    final sync = syncState.value;
+    final sync = syncState?.value;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -63,18 +67,19 @@ class SettingsPage extends ConsumerWidget {
             _SettingsCategoryGroup(
               title: localizations.settingsSectionDataDevices,
               children: <Widget>[
-                _SettingsCategoryRow(
-                  key: const Key('settings-category-icloud-sync'),
-                  icon: CupertinoIcons.cloud,
-                  title: localizations.syncTitle,
-                  subtitle: sync == null
-                      ? '—'
-                      : sync.enabled
-                      ? localizations.syncStatusEnabledShort
-                      : localizations.syncStatusDisabledShort,
-                  onPressed: () =>
-                      _pushRoot(context, const CloudSyncSettingsPage()),
-                ),
+                if (supportsICloud)
+                  _SettingsCategoryRow(
+                    key: const Key('settings-category-icloud-sync'),
+                    icon: CupertinoIcons.cloud,
+                    title: localizations.syncTitle,
+                    subtitle: sync == null
+                        ? '—'
+                        : sync.enabled
+                        ? localizations.syncStatusEnabledShort
+                        : localizations.syncStatusDisabledShort,
+                    onPressed: () =>
+                        _pushRoot(context, const CloudSyncSettingsPage()),
+                  ),
                 _SettingsCategoryRow(
                   key: const Key('settings-category-data'),
                   icon: CupertinoIcons.archivebox,

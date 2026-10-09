@@ -61,15 +61,15 @@
           <div>
             <span class="section-kicker" data-zh="清楚、克制、由你掌控" data-en="Clear, minimal, and under your control">清楚、克制、由你掌控</span>
             <h1 data-zh="隐私政策" data-en="Privacy Policy">隐私政策</h1>
-            <p data-zh="本政策说明 RoamSum 如何处理 App 与官网中的信息。简单来说：无需注册，核心记录默认保存在本机，票据原图不会上传，iCloud 结构化同步由你选择。" data-en="This policy explains how RoamSum handles information in the app and on this website. In short: no registration, core records stay on your device by default, receipt originals are not uploaded, and structured iCloud sync is your choice.">
-              本政策说明 RoamSum 如何处理 App 与官网中的信息。简单来说：无需注册，核心记录默认保存在本机，票据原图不会上传，iCloud 结构化同步由你选择。
+            <p data-zh="本政策说明 RoamSum 如何处理 App 与官网中的信息。简单来说：无需注册，核心记录默认保存在本机，票据原图不会上传；Apple 平台上的 iCloud 结构化同步由你选择。" data-en="This policy explains how RoamSum handles information in the app and on this website. In short: no registration, core records stay on your device by default, receipt originals are not uploaded, and structured iCloud sync is optional on Apple platforms.">
+              本政策说明 RoamSum 如何处理 App 与官网中的信息。简单来说：无需注册，核心记录默认保存在本机，票据原图不会上传；Apple 平台上的 iCloud 结构化同步由你选择。
             </p>
           </div>
           <div class="legal-meta">
             <span data-zh="生效日期" data-en="Effective date">生效日期</span>
-            <strong data-zh="2026 年 9 月 23 日" data-en="September 23, 2026">2026 年 9 月 23 日</strong>
+            <strong data-zh="2026 年 10 月 9 日" data-en="October 9, 2026">2026 年 10 月 9 日</strong>
             <span data-zh="政策版本" data-en="Policy version">政策版本</span>
-            <strong>1.0</strong>
+            <strong>1.1</strong>
           </div>
         </div>
       </section>
@@ -114,7 +114,7 @@
             <article class="policy-article" lang="zh-CN">
               <section id="zh-scope">
                 <h2>1. 适用范围与运营者</h2>
-                <p>本隐私政策适用于 RoamSum iOS App、桌面小组件以及本官网。RoamSum 是一款免费的旅行真实消费成本助手，由 RoamSum 独立开发者运营。</p>
+                <p>本隐私政策适用于 RoamSum iOS 与 Android App、Apple 平台桌面小组件以及本官网。RoamSum 是一款免费的旅行真实消费成本助手，由 RoamSum 独立开发者运营。</p>
                 <p>RoamSum 不要求你注册账号，也不会要求你提供姓名、手机号或邮箱来使用核心功能。我们不读取或保存完整银行卡号、有效期、CVV、安全码、银行登录凭据、身份证件、短信或邮件。</p>
                 <div class="policy-callout">本政策描述当前 V1.0 的实际数据处理方式。如果未来加入账号、分析、推送或其他联网功能，我们会在功能启用前更新本政策和必要的授权说明。</div>
               </section>
@@ -128,13 +128,13 @@
                       <tr><th>信息类别</th><th>内容示例</th><th>默认位置</th><th>何时外发</th></tr>
                     </thead>
                     <tbody>
-                      <tr><td>行程与预算</td><td>目的地、日期、预算、行程名称</td><td>本机数据库</td><td>仅在你开启 iCloud 同步后进入你的 CloudKit 私有数据库</td></tr>
-                      <tr><td>消费与支付规则</td><td>金额、币种、类别、商户备注、支付方式名称、卡组织、账单币种、手续费、返现、实际入账金额</td><td>本机数据库</td><td>仅在你开启 iCloud 同步后同步结构化记录；不包含完整卡号、CVV 或银行凭据</td></tr>
+                      <tr><td>行程与预算</td><td>目的地、日期、预算、行程名称</td><td>本机数据库</td><td>仅在 Apple 平台由你开启 iCloud 同步后进入你的 CloudKit 私有数据库；Android 不提供该同步</td></tr>
+                      <tr><td>消费与支付规则</td><td>金额、币种、类别、商户备注、支付方式名称、卡组织、账单币种、手续费、返现、实际入账金额</td><td>本机数据库</td><td>仅在 Apple 平台由你开启 iCloud 同步后同步结构化记录；不包含完整卡号、CVV 或银行凭据</td></tr>
                       <tr><td>票据与扫描内容</td><td>你拍摄或选择的价签、菜单、小票图片，以及本地 OCR 识别出的候选金额和文字</td><td>本机内存、临时目录或 App 私有目录</td><td>原图与 OCR 内容不上传，也不进入 CloudKit</td></tr>
                       <tr><td>汇率与币种查询</td><td>基础币种、目标币种、查询日期、汇率来源与缓存时间</td><td>本机缓存</td><td>在线刷新时向 Frankfurter 发送币种和日期参数；网络服务可能处理 IP 地址、User-Agent 等标准连接信息</td></tr>
-                      <tr><td>设置与同步元数据</td><td>默认币种、语言、刷新频率、收藏币种、同步开关、记录版本、冲突和删除标记</td><td>本机数据库</td><td>开启 iCloud 同步后，必要的结构化设置和同步元数据会进入 CloudKit；设备本地偏好可能不参与同步</td></tr>
-                      <tr><td>小组件摘要</td><td>选定币种对、参考汇率、预算与近期消费的最小摘要</td><td>本机 App Group 共享文件</td><td>仅由本机 RoamSum 小组件读取，不发送到第三方</td></tr>
-                      <tr><td>导出与备份</td><td>你生成的 CSV、PDF 和 JSON 备份</td><td>本机临时目录</td><td>只有你在 iOS 系统分享面板选择目标后才离开 App</td></tr>
+                      <tr><td>设置与同步元数据</td><td>默认币种、语言、刷新频率、收藏币种、同步开关、记录版本、冲突和删除标记</td><td>本机数据库</td><td>Apple 平台开启 iCloud 同步后，必要的结构化设置和同步元数据会进入 CloudKit；Android 不提供该同步</td></tr>
+                      <tr><td>小组件摘要</td><td>选定币种对、参考汇率、预算与近期消费的最小摘要</td><td>Apple 平台本机 App Group 共享文件</td><td>仅由本机 RoamSum 小组件读取，不发送到第三方；Android 不提供该小组件</td></tr>
+                      <tr><td>导出与备份</td><td>你生成的 CSV、PDF 和 JSON 备份</td><td>本机临时目录</td><td>只有你在系统分享面板选择目标后才离开 App</td></tr>
                       <tr><td>行程摘要图片</td><td>行程名称、目的地、日期和聚合预算数据；不包含票据或消费明细</td><td>生成时位于本机内存</td><td>仅在你点击“保存到相册”后添加到系统照片图库；iCloud 照片同步取决于你的系统设置</td></tr>
                     </tbody>
                   </table>
@@ -148,11 +148,11 @@
                 <p>RoamSum 仅为以下目的处理信息：</p>
                 <ul>
                   <li>完成汇率换算、数学表达式计算、支付成本比较和 DCC 额外成本检查；</li>
-                  <li>使用 Apple Vision 在设备上识别价格、票据文字和候选金额；</li>
+                  <li>在设备上识别价格、票据文字和候选金额：Apple 平台使用 Apple Vision，Android 使用随 App 分发的 ML Kit 模型；</li>
                   <li>创建和展示行程、预算、消费账本、实际入账校准与历史快照；</li>
                   <li>按你的设置缓存或刷新每日参考汇率，并在离线时提供最近缓存；</li>
-                  <li>在你主动开启时，通过 CloudKit 在同一 Apple 账户的设备间同步结构化数据；</li>
-                  <li>刷新本机小组件，或按你的操作生成、分享、备份与恢复数据；</li>
+                  <li>在 Apple 平台由你主动开启时，通过 CloudKit 在同一 Apple 账户的设备间同步结构化数据；</li>
+                  <li>在 Apple 平台刷新本机小组件，或按你的操作生成、分享、备份与恢复数据；</li>
                   <li>维护数据完整性、处理同步冲突并防止旧数据覆盖新记录。</li>
                 </ul>
                 <p>RoamSum 不会将这些信息用于广告、跨 App 追踪、用户画像、信用评估、出售数据或训练第三方 AI 模型。</p>
@@ -162,10 +162,10 @@
                 <h2>4. 第三方服务、共享与披露</h2>
                 <p>RoamSum 不出售个人信息。以下服务仅在对应功能需要时参与处理：</p>
                 <ul>
-                  <li><strong>Apple Vision：</strong>在设备本地执行 OCR。图片不因使用 Vision 而上传给 RoamSum 服务器。</li>
-                  <li><strong>Apple iCloud / CloudKit：</strong>当你在 App 内开启同步时，结构化数据会存入你的 CloudKit 私有数据库。CloudKit 的处理和安全措施受 <a href="https://www.apple.com/legal/privacy/" rel="noopener noreferrer">Apple 隐私政策</a>约束。</li>
+                  <li><strong>设备端 OCR：</strong>Apple 平台使用 Apple Vision，Android 使用随 App 分发的 Google ML Kit 模型。识别在设备上运行，图片不会因 OCR 上传给 RoamSum 或 Google 服务器。</li>
+                  <li><strong>Apple iCloud / CloudKit：</strong>仅在 Apple 平台且由你开启同步时，结构化数据会存入你的 CloudKit 私有数据库。Android 不提供该同步。CloudKit 的处理和安全措施受 <a href="https://www.apple.com/legal/privacy/" rel="noopener noreferrer">Apple 隐私政策</a>约束。</li>
                   <li><strong>Frankfurter 与 Cloudflare：</strong>在线汇率请求发往 <a href="https://frankfurter.dev/" rel="noopener noreferrer">Frankfurter 公共 API</a>。Frankfurter 说明其 API 本身不收集个人数据，但公共服务使用 Cloudflare，Cloudflare 可能为安全、性能和基础分析处理标准网络信息；相关处理受其各自政策约束。</li>
-                  <li><strong>你选择的分享目标：</strong>当你通过 iOS 分享面板导出 CSV、PDF 或备份时，接收 App、联系人或云服务由你选择，之后由对应接收方按照其政策处理。</li>
+                  <li><strong>你选择的分享目标：</strong>当你通过系统分享面板导出 CSV、PDF 或备份时，接收 App、联系人或云服务由你选择，之后由对应接收方按照其政策处理。</li>
                 </ul>
                 <p>如法律要求、为保护用户或公众安全、或处理有效法律程序，我们可能依法披露必要信息。但由于 RoamSum 的核心数据默认留在本机，且开发者无法通过 CloudKit 控制台查看用户私有数据库内容，我们通常不持有可供披露的核心账本数据。</p>
               </section>
@@ -176,9 +176,9 @@
                   <li><strong>相机：</strong>仅在你选择拍照扫描时请求，用于拍摄价签、菜单、小票或账单并在设备上识别。</li>
                   <li><strong>照片读取：</strong>仅在你选择从相册导入时请求，用于读取你明确选择的图片并在设备上识别。</li>
                   <li><strong>照片添加：</strong>仅在你从行程摘要预览页点击“保存到相册”时请求，用于把该摘要 PNG 添加到系统照片图库。</li>
-                  <li><strong>iCloud：</strong>只有你开启结构化数据同步时才访问 CloudKit。iCloud 不可用不会阻止本地记账与查看。</li>
+                  <li><strong>iCloud：</strong>仅在 Apple 平台且由你开启结构化数据同步时访问 CloudKit；Android 不提供该同步。iCloud 不可用不会阻止本地记账与查看。</li>
                 </ul>
-                <p>V1.0 不需要定位、通讯录、麦克风、通知或 App Tracking Transparency 权限。拒绝相机或照片权限后，你仍可以手动输入金额和记账。你可随时在 iOS“设置”中修改权限。</p>
+                <p>V1.0 不需要定位、通讯录、麦克风、通知或 App Tracking Transparency 权限。拒绝相机或照片权限后，你仍可以手动输入金额和记账。你可随时在系统“设置”中修改权限。</p>
               </section>
 
               <section id="zh-retention">
@@ -211,7 +211,7 @@
               <section id="zh-security">
                 <h2>8. 安全、存储地点与跨境处理</h2>
                 <p>RoamSum 采用数据最小化、本地优先、系统沙盒、按需权限和结构化同步隔离等措施。CloudKit 使用 Apple 账户身份验证及传输和存储保护；但任何电子存储或传输方式都无法保证绝对安全。</p>
-                <p>本机数据位于你的 Apple 设备。若你使用 iCloud 或在线汇率，Apple、Frankfurter、Cloudflare 及其基础设施可能在你所在国家或地区以外处理数据。此类服务按各自隐私政策和适用法律提供保护。请勿在商户备注等自由文本字段中填写不必要的敏感个人信息。</p>
+                <p>本机数据位于你的设备。若你在 Apple 平台使用 iCloud，或在任一平台使用在线汇率，Apple、Frankfurter、Cloudflare 及其基础设施可能在你所在国家或地区以外处理数据。此类服务按各自隐私政策和适用法律提供保护。请勿在商户备注等自由文本字段中填写不必要的敏感个人信息。</p>
               </section>
 
               <section id="zh-children">
@@ -261,7 +261,7 @@
             <article class="policy-article" lang="en">
               <section id="en-scope">
                 <h2>1. Scope and operator</h2>
-                <p>This Privacy Policy applies to the RoamSum iOS app, its home-screen widget, and this website. RoamSum is a free true travel cost assistant operated by an independent RoamSum developer.</p>
+                <p>This Privacy Policy applies to the RoamSum iOS and Android apps, the Apple-platform home-screen widget, and this website. RoamSum is a free true travel cost assistant operated by an independent RoamSum developer.</p>
                 <p>RoamSum does not require an account and does not ask for your name, phone number, or email address to use its core features. We do not read or store full payment card numbers, expiration dates, CVV or security codes, bank credentials, identity documents, text messages, or email.</p>
                 <div class="policy-callout">This policy describes the actual data handling in V1.0. If account, analytics, notification, or other connected features are added later, we will update this policy and any required consent disclosures before enabling them.</div>
               </section>
@@ -275,13 +275,13 @@
                       <tr><th>Category</th><th>Examples</th><th>Default location</th><th>When it leaves the device</th></tr>
                     </thead>
                     <tbody>
-                      <tr><td>Trips and budgets</td><td>Destination, dates, budget, and trip name</td><td>On-device database</td><td>Only to your private CloudKit database after you enable iCloud sync</td></tr>
-                      <tr><td>Expenses and payment rules</td><td>Amounts, currencies, category, merchant notes, payment method name, card network, billing currency, fees, cashback, and final posted amount</td><td>On-device database</td><td>Structured records sync only after you enable iCloud; full card numbers, CVV, and bank credentials are not included</td></tr>
+                      <tr><td>Trips and budgets</td><td>Destination, dates, budget, and trip name</td><td>On-device database</td><td>Only to your private CloudKit database after you enable iCloud sync on an Apple platform; Android does not offer this sync</td></tr>
+                      <tr><td>Expenses and payment rules</td><td>Amounts, currencies, category, merchant notes, payment method name, card network, billing currency, fees, cashback, and final posted amount</td><td>On-device database</td><td>Structured records sync only after you enable iCloud on an Apple platform; full card numbers, CVV, and bank credentials are not included</td></tr>
                       <tr><td>Receipts and scans</td><td>Price tags, menus, receipts, or bills you capture or select, plus OCR candidates and recognized text</td><td>Device memory, temporary storage, or the app's private directory</td><td>Original images and OCR content are not uploaded and do not enter CloudKit</td></tr>
                       <tr><td>Rate and currency queries</td><td>Base currency, quote currency, date, rate source, and cache time</td><td>On-device cache</td><td>Currency and date parameters go to Frankfurter for online refresh; network providers may process standard connection data such as IP address and User-Agent</td></tr>
-                      <tr><td>Settings and sync metadata</td><td>Default currency, language, refresh interval, favorites, sync setting, record versions, conflicts, and deletion markers</td><td>On-device database</td><td>Necessary structured settings and sync metadata enter CloudKit after sync is enabled; some device-local preferences are excluded</td></tr>
-                      <tr><td>Widget summary</td><td>A minimal summary of the selected currency pair, reference rate, budget, and recent expenses</td><td>On-device App Group file</td><td>Read only by the RoamSum widget on your device; not sent to third parties</td></tr>
-                      <tr><td>Exports and backups</td><td>CSV, PDF, and JSON backup files you create</td><td>On-device temporary directory</td><td>Only after you choose a destination in the iOS share sheet</td></tr>
+                      <tr><td>Settings and sync metadata</td><td>Default currency, language, refresh interval, favorites, sync setting, record versions, conflicts, and deletion markers</td><td>On-device database</td><td>Necessary structured settings and sync metadata enter CloudKit after sync is enabled on an Apple platform; Android does not offer this sync</td></tr>
+                      <tr><td>Widget summary</td><td>A minimal summary of the selected currency pair, reference rate, budget, and recent expenses</td><td>On-device App Group file on Apple platforms</td><td>Read only by the RoamSum widget on your Apple device; Android does not offer this widget</td></tr>
+                      <tr><td>Exports and backups</td><td>CSV, PDF, and JSON backup files you create</td><td>On-device temporary directory</td><td>Only after you choose a destination in the system share sheet</td></tr>
                       <tr><td>Trip summary images</td><td>Trip name, destination, dates, and aggregate budget data; no receipts or expense details</td><td>Device memory while generated</td><td>Added to the system photo library only after you tap Save to Photos; iCloud Photos sync follows your system settings</td></tr>
                     </tbody>
                   </table>
@@ -295,11 +295,11 @@
                 <p>RoamSum handles information only to:</p>
                 <ul>
                   <li>perform currency conversion, expression calculation, payment-cost comparison, and DCC markup checks;</li>
-                  <li>recognize prices, receipt text, and candidate amounts on device with Apple Vision;</li>
+                  <li>recognize prices, receipt text, and candidate amounts on device with Apple Vision on Apple platforms or bundled ML Kit models on Android;</li>
                   <li>create and show trips, budgets, expense records, final-posting reconciliation, and historical snapshots;</li>
                   <li>cache or refresh daily reference rates according to your settings and provide the latest cache offline;</li>
-                  <li>sync structured data across devices on the same Apple Account when you enable CloudKit sync;</li>
-                  <li>refresh the on-device widget or create, share, back up, and restore data at your request; and</li>
+                  <li>sync structured data across devices on the same Apple Account when you enable CloudKit sync on an Apple platform;</li>
+                  <li>refresh the Apple-platform widget or create, share, back up, and restore data at your request; and</li>
                   <li>maintain data integrity, resolve sync conflicts, and prevent stale records from overwriting newer ones.</li>
                 </ul>
                 <p>RoamSum does not use this information for advertising, cross-app tracking, profiling, credit scoring, data sales, or training third-party AI models.</p>
@@ -309,10 +309,10 @@
                 <h2>4. Third-party services, sharing, and disclosure</h2>
                 <p>RoamSum does not sell personal information. The following services participate only when a feature requires them:</p>
                 <ul>
-                  <li><strong>Apple Vision:</strong> performs OCR on your device. Using Vision does not upload the image to a RoamSum server.</li>
-                  <li><strong>Apple iCloud / CloudKit:</strong> stores structured data in your private CloudKit database after you enable sync in the app. CloudKit processing and safeguards are governed by <a href="https://www.apple.com/legal/privacy/" rel="noopener noreferrer">Apple's Privacy Policy</a>.</li>
+                  <li><strong>On-device OCR:</strong> Apple platforms use Apple Vision and Android uses Google ML Kit models bundled with the app. Recognition runs on device; OCR does not upload the image to RoamSum or Google servers.</li>
+                  <li><strong>Apple iCloud / CloudKit:</strong> stores structured data in your private CloudKit database only after you enable sync on an Apple platform. Android does not offer this sync. CloudKit processing and safeguards are governed by <a href="https://www.apple.com/legal/privacy/" rel="noopener noreferrer">Apple's Privacy Policy</a>.</li>
                   <li><strong>Frankfurter and Cloudflare:</strong> online rate requests go to the <a href="https://frankfurter.dev/" rel="noopener noreferrer">Frankfurter public API</a>. Frankfurter states that its API itself does not collect personal data, but that its public service uses Cloudflare, which may process standard network information for security, performance, and basic analytics. Their respective policies govern that processing.</li>
-                  <li><strong>Share destinations you choose:</strong> when you export a CSV, PDF, or backup through the iOS share sheet, you choose the recipient app, person, or cloud service. That recipient then handles the file under its own policy.</li>
+                  <li><strong>Share destinations you choose:</strong> when you export a CSV, PDF, or backup through the system share sheet, you choose the recipient app, person, or cloud service. That recipient then handles the file under its own policy.</li>
                 </ul>
                 <p>We may disclose necessary information where required by law, to protect users or the public, or in response to valid legal process. However, because core RoamSum data stays on device by default and developers cannot view users' private CloudKit database content in the Developer Portal, we generally do not possess the core ledger data to disclose.</p>
               </section>
@@ -323,9 +323,9 @@
                   <li><strong>Camera:</strong> requested only when you choose to scan with the camera, to capture and recognize a price tag, menu, receipt, or bill on device.</li>
                   <li><strong>Photos read access:</strong> requested only when you choose to import from your photo library, to read the image you explicitly select and recognize it on device.</li>
                   <li><strong>Photos add access:</strong> requested only when you tap Save to Photos on the trip-summary preview, to add that summary PNG to the system photo library.</li>
-                  <li><strong>iCloud:</strong> CloudKit is accessed only after you enable structured-data sync. Local entry and viewing continue to work when iCloud is unavailable.</li>
+                  <li><strong>iCloud:</strong> CloudKit is accessed only after you enable structured-data sync on an Apple platform; Android does not offer this sync. Local entry and viewing continue to work when iCloud is unavailable.</li>
                 </ul>
-                <p>V1.0 does not require location, contacts, microphone, notifications, or App Tracking Transparency permission. If you decline camera or photo access, you can still enter amounts and expenses manually. You can change permissions at any time in iOS Settings.</p>
+                <p>V1.0 does not require location, contacts, microphone, notifications, or App Tracking Transparency permission. If you decline camera or photo access, you can still enter amounts and expenses manually. You can change permissions at any time in system Settings.</p>
               </section>
 
               <section id="en-retention">
@@ -358,7 +358,7 @@
               <section id="en-security">
                 <h2>8. Security, storage location, and international processing</h2>
                 <p>RoamSum uses data minimization, local-first storage, the operating system sandbox, just-in-time permissions, and separation of structured sync data. CloudKit uses Apple Account authentication and protections in transit and at rest. However, no electronic storage or transmission method can be guaranteed absolutely secure.</p>
-                <p>On-device data resides on your Apple device. If you use iCloud or online rates, Apple, Frankfurter, Cloudflare, and their infrastructure may process data outside your country or region. Those services apply safeguards under their own privacy policies and applicable laws. Avoid entering unnecessary sensitive personal information in free-text fields such as merchant notes.</p>
+                <p>On-device data resides on your device. If you use iCloud on an Apple platform or online rates on any platform, Apple, Frankfurter, Cloudflare, and their infrastructure may process data outside your country or region. Those services apply safeguards under their own privacy policies and applicable laws. Avoid entering unnecessary sensitive personal information in free-text fields such as merchant notes.</p>
               </section>
 
               <section id="en-children">
@@ -440,7 +440,7 @@
         </div>
         <div class="footer-meta">
           <p>© <span data-current-year>2026</span> RoamSum</p>
-          <p data-zh="本政策最后更新于 2026 年 9 月 23 日。" data-en="This policy was last updated on September 23, 2026.">本政策最后更新于 2026 年 9 月 23 日。</p>
+          <p data-zh="本政策最后更新于 2026 年 10 月 9 日。" data-en="This policy was last updated on October 9, 2026.">本政策最后更新于 2026 年 10 月 9 日。</p>
         </div>
       </div>
     </footer>
