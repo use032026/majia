@@ -1,0 +1,139 @@
+name: Android Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: Android app to package
+        required: true
+        type: choice
+        options:
+          - diary
+          - readeredit
+          - somniloquy
+          - cleantrail
+          - hearthio
+          - looters
+          - photo
+          - plotproof_lab
+          - sdpacket
+          - steady21
+          - trip_delta
+      artifact:
+        description: Release artifact type
+        required: true
+        default: appbundle
+        type: choice
+        options:
+          - appbundle
+          - apk
+      version_name:
+        description: Optional release version name, such as 1.2.3; leave blank to use pubspec.yaml
+        required: false
+        type: string
+      build_number:
+        description: Optional positive Android version code; leave blank to use pubspec.yaml
+        required: false
+        type: string
+      sign_release:
+        description: Sign the release using this app's repository secrets
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-android-package-${{ inputs.app }}-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Package ${{ inputs.app }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Resolve app configuration
+        id: config
+        shell: bash
+        run: python3 .github/scripts/android-release-config.py --app "${{ inputs.app }}" --github-output "$GITHUB_OUTPUT"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.35.7
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: ${{ steps.config.outputs.app_path }}
+        run: flutter pub get
+
+      - name: Materialize app-specific signing credentials
+        if: ${{ inputs.sign_release }}
+        shell: bash
+        env:
+          APP_PATH: ${{ steps.config.outputs.app_path }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets[format('{0}_ANDROID_KEYSTORE_BASE64', steps.config.outputs.secret_prefix)] }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets[format('{0}_ANDROID_KEYSTORE_PASSWORD', steps.config.outputs.secret_prefix)] }}
+          ANDROID_KEY_ALIAS: ${{ secrets[format('{0}_ANDROID_KEY_ALIAS', steps.config.outputs.secret_prefix)] }}
+          ANDROID_KEY_PASSWORD: ${{ secrets[format('{0}_ANDROID_KEY_PASSWORD', steps.config.outputs.secret_prefix)] }}
+        run: |
+          set -euo pipefail
+          for variable in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!variable}" ]; then
+              echo "::error::Missing required repository secret for ${variable}. See docs/android-packaging.md."
+              exit 1
+            fi
+          done
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$APP_PATH/android/release-keystore.jks"
+          chmod 600 "$APP_PATH/android/release-keystore.jks"
+          {
+            echo "storePassword=$ANDROID_KEYSTORE_PASSWORD"
+            echo "keyPassword=$ANDROID_KEY_PASSWORD"
+            echo "keyAlias=$ANDROID_KEY_ALIAS"
+            echo "storeFile=release-keystore.jks"
+          } > "$APP_PATH/android/key.properties"
+
+      - name: Build release APK
+        if: ${{ inputs.artifact == 'apk' }}
+        working-directory: ${{ steps.config.outputs.app_path }}
+        shell: bash
+        env:
+          VERSION_NAME: ${{ inputs.version_name }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          set -euo pipefail
+          args=(build apk --release)
+          [ -z "$VERSION_NAME" ] || args+=(--build-name "$VERSION_NAME")
+          [ -z "$BUILD_NUMBER" ] || args+=(--build-number "$BUILD_NUMBER")
+          flutter "${args[@]}"
+
+      - name: Build release Android App Bundle
+        if: ${{ inputs.artifact == 'appbundle' }}
+        working-directory: ${{ steps.config.outputs.app_path }}
+        shell: bash
+        env:
+          VERSION_NAME: ${{ inputs.version_name }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          set -euo pipefail
+          args=(build appbundle --release)
+          [ -z "$VERSION_NAME" ] || args+=(--build-name "$VERSION_NAME")
+          [ -z "$BUILD_NUMBER" ] || args+=(--build-number "$BUILD_NUMBER")
+          flutter "${args[@]}"
+
+      - name: Retain Android package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ steps.config.outputs.app_key }}-${{ inputs.artifact }}-${{ github.run_number }}
+          path: |
+            ${{ steps.config.outputs.app_path }}/build/app/outputs/flutter-apk/*-release.apk
+            ${{ steps.config.outputs.app_path }}/build/app/outputs/bundle/release/*.aab
+          if-no-files-found: error
+          retention-days: 30

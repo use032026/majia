@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "apps": {
+    "diary": {
+      "display_name": "Diary",
+      "path": "apps/Diary",
+      "secret_prefix": "DIARY",
+      "application_id": "com.example.diary"
+    },
+    "readeredit": {
+      "display_name": "ReaderEdit",
+      "path": "apps/ReaderEdit",
+      "secret_prefix": "READEREDIT",
+      "application_id": "com.example.reader_edit"
+    },
+    "somniloquy": {
+      "display_name": "Somniloquy",
+      "path": "apps/Somniloquy",
+      "secret_prefix": "SOMNILOQUY",
+      "application_id": "com.example.somniloquy"
+    },
+    "cleantrail": {
+      "display_name": "CleanTrail",
+      "path": "apps/cleantrail/cleantrail",
+      "secret_prefix": "CLEANTRAIL",
+      "application_id": "com.example.cleantrail"
+    },
+    "hearthio": {
+      "display_name": "LAURUS (Hearthio)",
+      "path": "apps/donesome/Hearthio",
+      "secret_prefix": "HEARTHIO",
+      "application_id": "com.example.hearthio"
+    },
+    "looters": {
+      "display_name": "looters",
+      "path": "apps/looters",
+      "secret_prefix": "LOOTERS",
+      "application_id": "com.example.pace_jar"
+    },
+    "photo": {
+      "display_name": "Jufu",
+      "path": "apps/photo",
+      "secret_prefix": "PHOTO",
+      "application_id": "com.hxw.jufu"
+    },
+    "plotproof_lab": {
+      "display_name": "PlotProof Lab",
+      "path": "apps/plotproof_lab/plotproof_lab",
+      "secret_prefix": "PLOTPROOF_LAB",
+      "application_id": "com.example.plotproofLab"
+    },
+    "sdpacket": {
+      "display_name": "KIFXPRO",
+      "path": "apps/sdpacket",
+      "secret_prefix": "SDPACKET",
+      "application_id": "com.starburst.moving_box"
+    },
+    "steady21": {
+      "display_name": "Steady21",
+      "path": "apps/steady21",
+      "secret_prefix": "STEADY21",
+      "application_id": "com.example.steady21"
+    },
+    "trip_delta": {
+      "display_name": "Trip Delta",
+      "path": "apps/trip_delta",
+      "secret_prefix": "TRIP_DELTA",
+      "application_id": "com.example.trip_delta"
+    }
+  }
+}
