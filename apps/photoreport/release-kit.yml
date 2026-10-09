@@ -1,0 +1,59 @@
+schema_version: 1
+
+identity:
+  app_name: "Site Photo Log"
+  operator: ""
+  bundle_id: "com.starburst.photoReport"
+
+contact:
+  support_email: ""
+  production_domain: ""
+
+platforms:
+  iphone: true
+  ipad: true
+
+listing:
+  primary_locale: en-US
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: "2026-08-28"
+  confirmed:
+    - "No account is required for the implemented app flows."
+    - "Projects, records, photos, annotations, generated PDFs, and backups are handled on device by default."
+    - "Camera and photo-library access are requested only for user-initiated capture or import."
+    - "The current dependency set contains no advertising or behavioral analytics SDK."
+    - "Exports leave the app only through a user-initiated iOS share flow."
+  open_questions:
+    - "Confirm the public operator name."
+    - "Confirm the public support email."
+    - "Confirm the production website domain."
+
+website:
+  locales:
+    - en
+
+screenshots:
+  locale: en-US
+  source_policy: real-runtime-only
+  scenes:
+    - id: capture-context
+      source: "artifacts/app-store-previews/source/iphone-01-capture.png"
+      headline: "Capture the Full Context"
+      subheadline: "Keep photos, locations, and notes together from the start."
+    - id: clear-annotations
+      source: "artifacts/app-store-previews/source/iphone-02-annotate.png"
+      headline: "Make Every Detail Clear"
+      subheadline: "Use boxes, arrows, and notes for fast before-and-after context."
+    - id: offline-pdf
+      source: "artifacts/app-store-previews/source/iphone-03-export.png"
+      headline: "From Site Notes to Shareable PDF"
+      subheadline: "Keep core records on device, then export when you choose."
+    - id: project-workspace
+      source: "artifacts/app-store-previews/source/iphone-04-workspace.png"
+      headline: "One Workspace for Every Site"
+      subheadline: "Create a project, add photos, then organize and share."
+
+paths:
+  app_root: "apps/photoreport"

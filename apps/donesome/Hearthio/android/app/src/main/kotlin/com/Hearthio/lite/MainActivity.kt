@@ -1,4 +1,4 @@
-package com.example.hearthio
+package com.Hearthio.lite
 
 import android.Manifest
 import android.content.Intent
