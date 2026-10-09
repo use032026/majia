@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "store": "google_play",
+  "app_name": "PaceJar",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#17324D",
+    "background_bottom": "#2E6F6D",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#F5F1E8"
+  },
+  "items": [
+    {"kind": "screenshot", "locale": "en-US", "source": "source/en-US-01-pace-android.png", "output": "final/en-US/phone/01-pace.png", "size": [1080, 1920], "headline": "Know Where You Stand"},
+    {"kind": "screenshot", "locale": "en-US", "source": "source/en-US-02-recovery-android.png", "output": "final/en-US/phone/02-recovery.png", "size": [1080, 1920], "headline": "Recover Without Rewriting", "background_top": "#A64332", "background_bottom": "#17324D"},
+    {"kind": "screenshot", "locale": "en-US", "source": "source/en-US-03-records-android.png", "output": "final/en-US/phone/03-records.png", "size": [1080, 1920], "headline": "Keep Every Change Visible"},
+    {"kind": "screenshot", "locale": "en-US", "source": "source/en-US-04-settings-android.png", "output": "final/en-US/phone/04-settings.png", "size": [1080, 1920], "headline": "Private by Design", "background_top": "#2E6F6D", "background_bottom": "#17324D"},
+    {"kind": "screenshot", "locale": "zh-CN", "source": "source/zh-CN-01-pace-android.png", "output": "final/zh-CN/phone/01-pace.png", "size": [1080, 1920], "headline": "看清当前节奏"},
+    {"kind": "screenshot", "locale": "zh-CN", "source": "source/zh-CN-02-recovery-android.png", "output": "final/zh-CN/phone/02-recovery.png", "size": [1080, 1920], "headline": "重算未来，不改写过去", "background_top": "#A64332", "background_bottom": "#17324D"},
+    {"kind": "screenshot", "locale": "zh-CN", "source": "source/zh-CN-03-records-android.png", "output": "final/zh-CN/phone/03-records.png", "size": [1080, 1920], "headline": "每次变化都有记录"},
+    {"kind": "screenshot", "locale": "zh-CN", "source": "source/zh-CN-04-settings-android.png", "output": "final/zh-CN/phone/04-settings.png", "size": [1080, 1920], "headline": "默认离线，数据留在本机", "background_top": "#2E6F6D", "background_bottom": "#17324D"},
+    {"kind": "feature_graphic", "locale": "en-US", "output": "final/feature-graphic-en.png", "size": [1024, 500], "headline": "Make Room for Uneven Weeks"},
+    {"kind": "feature_graphic", "locale": "zh-CN", "output": "final/feature-graphic-zh.png", "size": [1024, 500], "headline": "给波动留一点余地"}
+  ]
+}
