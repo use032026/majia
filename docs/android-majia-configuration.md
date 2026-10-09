@@ -73,20 +73,60 @@ flutter create --platforms=android .
 
 设置唯一 Application ID，例如 `com.yourcompany.newapp`，并同步完成应用名、图标和版本号。新应用不得沿用其他马甲的包名或签名。
 
-### 2. 创建独立签名
+### 2. 创建独立签名并保存私有凭据
 
-为新应用生成并妥善备份独立 JKS。下面是示例；请替换别名和保存路径，并将密码保存到密码管理器：
+新马甲必须有一套**独立**签名。建议按工程目录名统一命名：工程为 `newapp` 时，JKS 文件为 `newapp-upload.jks`，key alias 也为 `newapp`。alias 只是 JKS 内的条目名，但统一为工程名可避免多个马甲混淆。
+
+1. 在仓库之外创建一个只有自己可读的目录，例如 `~/Downloads/NewApp-android-signing/`。不要放入项目目录，也不要上传云盘、Git 或聊天。
+2. 为 keystore 密码和 key 密码各生成一条高强度随机密码，并保存在密码管理器。可在 macOS 终端执行（只会复制一条密码，不会显示在屏幕上）：
+
+   ```sh
+   openssl rand -hex 24 | pbcopy
+   ```
+
+3. 用该工程名创建 JKS。执行时将两次密码替换为刚刚保存的私有值；不要把真实密码写入文档、截图或命令历史：
+
+   ```sh
+   keytool -genkeypair -v \
+     -keystore ~/Downloads/NewApp-android-signing/newapp-upload.jks \
+     -storetype JKS \
+     -alias newapp \
+     -keyalg RSA -keysize 4096 -sigalg SHA256withRSA \
+     -validity 10000
+   ```
+
+4. 在同一个私有目录创建 `key.properties`，内容如下。四个值均是私密信息，文件权限应为仅自己可读：
+
+   ```properties
+   storePassword=<keystore 密码>
+   keyPassword=<key 密码>
+   keyAlias=newapp
+   storeFile=newapp-upload.jks
+   ```
+
+5. 校验 JKS 可被读取（不要在命令中或终端输出中泄露密码），并至少保留离线加密备份和受控密码管理器备份。签名丢失后无法更新已发布应用。
+
+### 3. 创建新马甲的四项 GitHub Secret
+
+假设此马甲在配置文件中的 `secret_prefix` 是 `NEWAPP`，进入仓库 **Settings → Secrets and variables → Actions → New repository secret**，分别创建：
+
+| Secret 名称 | 填写内容 |
+| --- | --- |
+| `NEWAPP_ANDROID_KEYSTORE_BASE64` | `newapp-upload.jks` 的单行 Base64 内容 |
+| `NEWAPP_ANDROID_KEYSTORE_PASSWORD` | `key.properties` 的 `storePassword` |
+| `NEWAPP_ANDROID_KEY_ALIAS` | 工程名 alias，例如 `newapp` |
+| `NEWAPP_ANDROID_KEY_PASSWORD` | `key.properties` 的 `keyPassword` |
+
+在 macOS 上将 JKS 转为单行 Base64 并复制到剪贴板：
 
 ```sh
-keytool -genkeypair -v \
-  -keystore newapp-upload.jks \
-  -alias newapp_upload \
-  -keyalg RSA -keysize 2048 -validity 10000
+base64 -i ~/Downloads/NewApp-android-signing/newapp-upload.jks | tr -d '\n' | pbcopy
+pbpaste | wc -c
 ```
 
-签名丢失后无法更新已发布应用。请至少保留离线加密备份和受控密码管理器备份。
+第二条命令只能用于确认长度非零；不要把 `pbpaste` 的内容显示、截图或发给他人。GitHub 保存 Secret 后编辑页始终显示为空，这是正常的安全行为；它不表示值丢失。
 
-### 3. 接入通用工作流
+### 4. 接入通用工作流
 
 1. 在 [`.github/android-packages.json`](../.github/android-packages.json) 的 `apps` 下新增应用。`secret_prefix` 必须全大写、唯一，例如：
 
@@ -103,7 +143,7 @@ keytool -genkeypair -v \
 
 3. 在新应用的 `android/app/build.gradle.kts` 接入 `android/key.properties` 签名读取逻辑。可复制仓库中任一已接入项目的相同区块，例如 [Jufu 的 Android 构建配置](../apps/photo/android/app/build.gradle.kts)。`key.properties` 和 `release-keystore.jks` 已被 `.gitignore` 排除，工作流会在 runner 上临时生成它们。
 
-4. 创建 `NEWAPP_ANDROID_*` 四项 Repository Secrets，字段含义与已有马甲完全相同。
+4. 按上一节创建 `NEWAPP_ANDROID_*` 四项 Repository Secrets。`secret_prefix`、四项 Secret 名称和工作流下拉 app 名必须指向同一个马甲。
 
 5. 提交、推送后，在 **Actions → Android Package** 中选择 `newapp`，先构建 APK 验证安装和签名，再构建 AAB。
 
