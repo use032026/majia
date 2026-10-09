@@ -134,4 +134,164 @@ void main() {
     expect(controller.goal!.plans, hasLength(1));
     expect(repository.saveCalls, 0);
   });
+
+  test('completed goal is archived before a new goal is created', () async {
+    final completed = sampleGoal(
+      targetCents: 20000,
+      events: <SavingsEvent>[
+        SavingsEvent(
+          id: 'finish',
+          type: SavingsEventType.deposit,
+          amountCents: 10000,
+          occurredAt: now,
+        ),
+      ],
+    );
+    final repository = FakeGoalRepository()..goal = completed;
+    final controller = AppController(repository: repository, now: () => now);
+    await controller.initialize();
+
+    expect(await controller.archiveCompletedGoal(), isTrue);
+    expect(controller.goal, isNull);
+    expect(controller.completedGoals, hasLength(1));
+    expect(controller.completedGoals.single.id, completed.id);
+
+    expect(
+      await controller.createGoal(
+        CreateGoalInput(
+          name: 'Next goal',
+          currency: r'$',
+          targetCents: 50000,
+          startingCents: 0,
+          weeklyCents: 5000,
+          targetDate: DateTime(2027, 1, 1),
+        ),
+      ),
+      isTrue,
+    );
+    expect(controller.goal!.name, 'Next goal');
+    expect(controller.completedGoals.single.id, completed.id);
+  });
+
+  test('failed archive preserves the completed active goal', () async {
+    final completed = sampleGoal(
+      targetCents: 20000,
+      events: <SavingsEvent>[
+        SavingsEvent(
+          id: 'finish',
+          type: SavingsEventType.deposit,
+          amountCents: 10000,
+          occurredAt: now,
+        ),
+      ],
+    );
+    final repository = FakeGoalRepository()
+      ..goal = completed
+      ..failSave = true;
+    final controller = AppController(repository: repository, now: () => now);
+    await controller.initialize();
+
+    expect(await controller.archiveCompletedGoal(), isFalse);
+    expect(controller.goal, same(completed));
+    expect(controller.completedGoals, isEmpty);
+    expect(controller.errorCode, 'saveFailed');
+  });
+
+  test(
+    'deleting one completed goal preserves active and other goals',
+    () async {
+      final first = sampleGoal(
+        id: 'completed-1',
+        targetCents: 20000,
+        events: <SavingsEvent>[
+          SavingsEvent(
+            id: 'finish-1',
+            type: SavingsEventType.deposit,
+            amountCents: 10000,
+            occurredAt: now,
+          ),
+        ],
+      );
+      final second = sampleGoal(
+        id: 'completed-2',
+        targetCents: 20000,
+        events: <SavingsEvent>[
+          SavingsEvent(
+            id: 'finish-2',
+            type: SavingsEventType.deposit,
+            amountCents: 10000,
+            occurredAt: now,
+          ),
+        ],
+      );
+      final repository = FakeGoalRepository()
+        ..goal = sampleGoal(id: 'active')
+        ..completedGoals = <SavingsGoal>[first, second];
+      final controller = AppController(repository: repository, now: () => now);
+      await controller.initialize();
+
+      expect(await controller.deleteCompletedGoal(first.id), isTrue);
+      expect(controller.goal!.id, 'active');
+      expect(controller.completedGoals.map((goal) => goal.id), <String>[
+        second.id,
+      ]);
+      expect(repository.completedGoals.map((goal) => goal.id), <String>[
+        second.id,
+      ]);
+    },
+  );
+
+  test('failed completed-goal deletion preserves every goal', () async {
+    final completed = sampleGoal(
+      id: 'completed',
+      targetCents: 20000,
+      events: <SavingsEvent>[
+        SavingsEvent(
+          id: 'finish',
+          type: SavingsEventType.deposit,
+          amountCents: 10000,
+          occurredAt: now,
+        ),
+      ],
+    );
+    final active = sampleGoal(id: 'active');
+    final repository = FakeGoalRepository()
+      ..goal = active
+      ..completedGoals = <SavingsGoal>[completed]
+      ..failSave = true;
+    final controller = AppController(repository: repository, now: () => now);
+    await controller.initialize();
+
+    expect(await controller.deleteCompletedGoal(completed.id), isFalse);
+    expect(controller.goal, same(active));
+    expect(controller.completedGoals.single, same(completed));
+    expect(repository.completedGoals.single, same(completed));
+    expect(controller.errorCode, 'saveFailed');
+  });
+
+  test('delete all removes the active goal and completed history', () async {
+    final completed = sampleGoal(
+      id: 'completed',
+      targetCents: 20000,
+      events: <SavingsEvent>[
+        SavingsEvent(
+          id: 'finish',
+          type: SavingsEventType.deposit,
+          amountCents: 10000,
+          occurredAt: now,
+        ),
+      ],
+    );
+    final repository = FakeGoalRepository()
+      ..goal = sampleGoal(id: 'active')
+      ..completedGoals = <SavingsGoal>[completed];
+    final controller = AppController(repository: repository, now: () => now);
+    await controller.initialize();
+
+    expect(await controller.deleteAllData(), isTrue);
+    expect(controller.goal, isNull);
+    expect(controller.completedGoals, isEmpty);
+    expect(repository.goal, isNull);
+    expect(repository.completedGoals, isEmpty);
+  });
 }

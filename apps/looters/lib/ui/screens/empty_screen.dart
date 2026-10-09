@@ -29,57 +29,70 @@ class EmptyScreen extends StatelessWidget {
         ),
         actions: <Widget>[AppBarControls(controller: controller)],
       ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 680),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const OfflineBadge(),
-                  const SizedBox(height: 30),
-                  _EmptyTrackGraphic(
-                    plannedLabel: text.get('planTrack'),
-                    actualLabel: text.get('actualTrack'),
-                  ),
-                  const SizedBox(height: 34),
-                  Text(
-                    text.get('emptyTitle'),
-                    style: Theme.of(context).textTheme.displaySmall,
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    text.get('emptyBody'),
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Icon(
-                        Icons.history_toggle_off,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(child: Text(text.get('whyDifferent'))),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  FilledButton.icon(
-                    key: const Key('create-goal'),
-                    onPressed: onCreate,
-                    icon: const Icon(Icons.arrow_forward),
-                    label: Text(text.get('createGoal')),
-                  ),
-                  const SizedBox(height: 18),
-                  Text(
-                    text.get('manualOnly'),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
+      body: EmptyGoalContent(onCreate: onCreate),
+    );
+  }
+}
+
+class EmptyGoalContent extends StatelessWidget {
+  const EmptyGoalContent({super.key, required this.onCreate});
+
+  final VoidCallback onCreate;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = AppText.of(context);
+    return SafeArea(
+      top: false,
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 40),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 680),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const OfflineBadge(),
+                const SizedBox(height: 30),
+                _EmptyTrackGraphic(
+                  plannedLabel: text.get('planTrack'),
+                  actualLabel: text.get('actualTrack'),
+                ),
+                const SizedBox(height: 34),
+                Text(
+                  text.get('emptyTitle'),
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  text.get('emptyBody'),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 18),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(
+                      Icons.history_toggle_off,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(text.get('whyDifferent'))),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                FilledButton.icon(
+                  key: const Key('create-goal'),
+                  onPressed: onCreate,
+                  icon: const Icon(Icons.arrow_forward),
+                  label: Text(text.get('createGoal')),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  text.get('manualOnly'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
             ),
           ),
         ),

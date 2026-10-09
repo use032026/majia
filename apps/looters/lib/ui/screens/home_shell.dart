@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_text.dart';
 import '../../state/app_controller.dart';
 import '../widgets/common.dart';
+import 'create_goal_screen.dart';
+import 'empty_screen.dart';
 import 'pace_screen.dart';
 import 'settings_screen.dart';
 import 'timeline_screen.dart';
@@ -50,7 +52,7 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
       NavigationDestination(
         icon: const Icon(Icons.history_outlined),
         selectedIcon: const Icon(Icons.history),
-        label: text.get('timeline'),
+        label: text.get('records'),
       ),
       NavigationDestination(
         icon: const Icon(Icons.tune_outlined),
@@ -59,10 +61,12 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
       ),
     ];
     final pages = <Widget>[
-      PaceScreen(
-        controller: widget.controller,
-        openTimeline: () => setState(() => _index = 1),
-      ),
+      widget.controller.goal == null
+          ? EmptyGoalContent(onCreate: () => _openCreate(context))
+          : PaceScreen(
+              controller: widget.controller,
+              openTimeline: () => setState(() => _index = 1),
+            ),
       TimelineScreen(controller: widget.controller),
       SettingsScreen(controller: widget.controller),
     ];
@@ -123,4 +127,10 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
       },
     );
   }
+
+  Future<void> _openCreate(BuildContext context) => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => CreateGoalScreen(controller: widget.controller),
+    ),
+  );
 }

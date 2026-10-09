@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../config/app_links.dart';
 import '../../l10n/app_text.dart';
 import '../../state/app_controller.dart';
 import '../widgets/common.dart';
@@ -27,89 +30,120 @@ class SettingsScreen extends StatelessWidget {
                   text.get('settings'),
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                const SizedBox(height: 18),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          text.get('language'),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 12),
-                        SegmentedButton<String>(
-                          segments: const <ButtonSegment<String>>[
-                            ButtonSegment<String>(
-                              value: 'zh',
-                              label: Text('简体中文'),
-                            ),
-                            ButtonSegment<String>(
-                              value: 'en',
-                              label: Text('English'),
-                            ),
-                          ],
-                          selected: <String>{controller.localeCode},
-                          onSelectionChanged: (value) =>
-                              controller.setLocaleCode(value.first),
-                        ),
-                        const SizedBox(height: 14),
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(text.get('darkMode')),
-                          secondary: Icon(
-                            controller.darkMode
-                                ? Icons.dark_mode
-                                : Icons.light_mode,
+                const SizedBox(height: 24),
+                _SectionLabel(text.get('preferences')),
+                const SizedBox(height: 8),
+                _SettingsGroup(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _PreferenceHeading(
+                            icon: Icons.translate,
+                            title: text.get('language'),
+                            subtitle: text.get('languageHelp'),
                           ),
-                          value: controller.darkMode,
-                          onChanged: controller.setDarkMode,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            const Icon(Icons.privacy_tip_outlined),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                text.get('privacyTitle'),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
+                          const SizedBox(height: 14),
+                          SizedBox(
+                            width: double.infinity,
+                            child: SegmentedButton<String>(
+                              key: const Key('language-selector'),
+                              segments: const <ButtonSegment<String>>[
+                                ButtonSegment<String>(
+                                  value: 'zh',
+                                  label: Text('简体中文'),
+                                ),
+                                ButtonSegment<String>(
+                                  value: 'en',
+                                  label: Text('English'),
+                                ),
+                              ],
+                              selected: <String>{controller.localeCode},
+                              showSelectedIcon:
+                                  MediaQuery.textScalerOf(context).scale(1) <
+                                  1.6,
+                              expandedInsets: EdgeInsets.zero,
+                              onSelectionChanged: (value) =>
+                                  controller.setLocaleCode(value.first),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(text.get('privacyBody')),
-                        const SizedBox(height: 12),
-                        const OfflineBadge(),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const Divider(height: 1, indent: 62),
+                    _SettingsRow(
+                      key: const Key('dark-mode-setting'),
+                      icon: controller.darkMode
+                          ? Icons.dark_mode_outlined
+                          : Icons.light_mode_outlined,
+                      title: text.get('darkMode'),
+                      subtitle: text.get(
+                        controller.darkMode ? 'darkModeOn' : 'darkModeOff',
+                      ),
+                      trailing: CupertinoSwitch(
+                        value: controller.darkMode,
+                        onChanged: controller.setDarkMode,
+                      ),
+                      onTap: () => controller.setDarkMode(!controller.darkMode),
+                      semanticsButton: false,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _SectionLabel(text.get('privacyTitle')),
+                const SizedBox(height: 8),
+                _SettingsGroup(
+                  children: <Widget>[
+                    _SettingsRow(
+                      key: const Key('privacy-policy'),
+                      icon: Icons.shield_outlined,
+                      title: text.get('privacyPolicy'),
+                      subtitle: text.get('privacyPolicyHelp'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => _openPrivacy(context),
+                    ),
+                    const Divider(height: 1, indent: 62),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _PreferenceHeading(
+                            icon: Icons.storage_outlined,
+                            title: text.get('localData'),
+                            subtitle: text.get('privacyBody'),
+                          ),
+                          const SizedBox(height: 12),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 46),
+                            child: OfflineBadge(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 if (controller.errorCode != null) ...<Widget>[
                   const SizedBox(height: 14),
                   ErrorBanner(message: text.get('saveFailed')),
                 ],
-                const SizedBox(height: 26),
-                OutlinedButton.icon(
-                  key: const Key('delete-all'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                  onPressed: () => _delete(context),
-                  icon: const Icon(Icons.delete_forever_outlined),
-                  label: Text(text.get('deleteAll')),
+                const SizedBox(height: 24),
+                _SectionLabel(text.get('dataManagement')),
+                const SizedBox(height: 8),
+                _SettingsGroup(
+                  children: <Widget>[
+                    _SettingsRow(
+                      key: const Key('delete-all'),
+                      icon: Icons.delete_outline,
+                      title: text.get('deleteAll'),
+                      subtitle: text.get('deleteAllHelp'),
+                      trailing: const Icon(Icons.chevron_right),
+                      destructive: true,
+                      onTap: () => _delete(context),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -119,25 +153,235 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _openPrivacy(BuildContext context) async {
+    final text = AppText.of(context);
+    final uri = AppLinks.privacyPolicyUriFor(controller.localeCode);
+    if (uri == null) {
+      _showMessage(context, text.get('privacyLinkUnavailable'));
+      return;
+    }
+
+    try {
+      final opened = await launchUrl(
+        uri,
+        mode: LaunchMode.inAppBrowserView,
+        browserConfiguration: const BrowserConfiguration(showTitle: true),
+      );
+      if (context.mounted && !opened) {
+        _showMessage(context, text.get('privacyLinkFailed'));
+      }
+    } on Exception {
+      if (context.mounted) {
+        _showMessage(context, text.get('privacyLinkFailed'));
+      }
+    }
+  }
+
+  void _showMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
   Future<void> _delete(BuildContext context) async {
     final text = AppText.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      barrierDismissible: true,
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(text.get('deleteTitle')),
         content: Text(text.get('deleteBody')),
         actions: <Widget>[
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(text.get('cancel')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(text.get('delete')),
           ),
         ],
       ),
     );
-    if (confirmed == true) await controller.deleteGoal();
+    if (confirmed == true) await controller.deleteAllData();
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel(this.label);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      child: Column(children: children),
+    );
+  }
+}
+
+class _PreferenceHeading extends StatelessWidget {
+  const _PreferenceHeading({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _SettingsIcon(icon: icon),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                title,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
+  const _SettingsRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+    required this.onTap,
+    this.destructive = false,
+    this.semanticsButton = true,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget trailing;
+  final VoidCallback onTap;
+  final bool destructive;
+  final bool semanticsButton;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = destructive
+        ? Theme.of(context).colorScheme.error
+        : Theme.of(context).colorScheme.onSurface;
+    final row = InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            _SettingsIcon(icon: icon, color: color),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: destructive
+                          ? color.withValues(alpha: 0.82)
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            IconTheme(
+              data: IconThemeData(color: color.withValues(alpha: 0.72)),
+              child: trailing,
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!semanticsButton) return row;
+    return Semantics(
+      container: true,
+      button: true,
+      label: title,
+      hint: subtitle,
+      excludeSemantics: true,
+      child: row,
+    );
+  }
+}
+
+class _SettingsIcon extends StatelessWidget {
+  const _SettingsIcon({required this.icon, this.color});
+
+  final IconData icon;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final foreground = color ?? Theme.of(context).colorScheme.primary;
+    return Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        color: foreground.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      alignment: Alignment.center,
+      child: Icon(icon, size: 19, color: foreground),
+    );
   }
 }

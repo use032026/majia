@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -37,6 +38,16 @@ class PaceJarApp extends StatelessWidget {
           themeMode: controller.darkMode ? ThemeMode.dark : ThemeMode.light,
           theme: _theme(Brightness.light),
           darkTheme: _theme(Brightness.dark),
+          builder: (context, child) {
+            final materialTheme = Theme.of(context);
+            return CupertinoTheme(
+              data: CupertinoThemeData(
+                brightness: materialTheme.brightness,
+                primaryColor: materialTheme.colorScheme.primary,
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
           home: RootView(controller: controller),
         );
       },

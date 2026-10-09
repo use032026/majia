@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
@@ -38,15 +39,15 @@ class PaceScreen extends StatelessWidget {
                 final wide = constraints.maxWidth >= 900;
                 final primary = <Widget>[
                   _StatusCard(goal: goal, snapshot: snapshot),
-                  const SizedBox(height: 16),
-                  _Metrics(goal: goal, snapshot: snapshot),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    key: const Key('record-week'),
-                    onPressed: () => _record(context),
-                    icon: const Icon(Icons.edit_note),
-                    label: Text(text.get('recordWeek')),
-                  ),
+                  if (snapshot.status != PaceStatus.completed) ...<Widget>[
+                    const SizedBox(height: 14),
+                    FilledButton.icon(
+                      key: const Key('record-week'),
+                      onPressed: () => _record(context),
+                      icon: const Icon(Icons.edit_note),
+                      label: Text(text.get('recordWeek')),
+                    ),
+                  ],
                   if (snapshot.status == PaceStatus.needsRecovery ||
                       snapshot.status == PaceStatus.expired) ...<Widget>[
                     const SizedBox(height: 16),
@@ -66,6 +67,8 @@ class PaceScreen extends StatelessWidget {
                       openTimeline: openTimeline,
                     ),
                   ],
+                  const SizedBox(height: 12),
+                  _PaceDetails(goal: goal, snapshot: snapshot),
                 ];
                 final secondary = <Widget>[
                   _RecentEvents(goal: goal, openTimeline: openTimeline),
@@ -122,21 +125,23 @@ class _StatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
-    final info = _statusInfo(context, text, snapshot.status);
-    final planFraction = (snapshot.expectedCents / goal.targetCents).clamp(
-      0.0,
-      1.0,
-    );
-    final actualFraction = (snapshot.savedCents / goal.targetCents).clamp(
-      0.0,
-      1.0,
-    );
+    final firstRecord =
+        goal.events.isEmpty && snapshot.status != PaceStatus.completed;
+    final info = firstRecord
+        ? (
+            text.get('firstRecordStatus'),
+            Icons.edit_note_outlined,
+            Theme.of(context).colorScheme.secondary,
+            text.get('firstRecordHelp'),
+          )
+        : _statusInfo(context, text, snapshot.status);
+    final progress = (snapshot.savedCents / goal.targetCents).clamp(0.0, 1.0);
     final semantic =
-        '${info.$1}. ${text.get('planTrack')}: '
-        '${formatMoney(snapshot.expectedCents, goal.currency)}. '
-        '${text.get('actualTrack')}: ${formatMoney(snapshot.savedCents, goal.currency)}. '
-        '${text.get('difference')}: '
-        '${formatMoney(snapshot.savedCents - snapshot.expectedCents, goal.currency)}.';
+        '${info.$1}. ${goal.name}. ${text.get('savedProgress')}: '
+        '${formatMoney(snapshot.savedCents, goal.currency)} / '
+        '${formatMoney(goal.targetCents, goal.currency)}. '
+        '${text.get('remainingShort')}: '
+        '${formatMoney(snapshot.remainingCents, goal.currency)}.';
     return Semantics(
       label: semantic,
       child: ExcludeSemantics(
@@ -181,21 +186,65 @@ class _StatusCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Text(info.$4),
-                const SizedBox(height: 24),
-                _Track(
-                  label: text.get('planTrack'),
-                  value: formatMoney(snapshot.expectedCents, goal.currency),
-                  fraction: planFraction,
-                  color: Theme.of(context).colorScheme.primary,
+                const SizedBox(height: 18),
+                Text(
+                  text.get('savedProgress'),
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
+                const SizedBox(height: 4),
+                Text(
+                  '${formatMoney(snapshot.savedCents, goal.currency)} / '
+                  '${formatMoney(goal.targetCents, goal.currency)}',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(99),
+                  child: LinearProgressIndicator(
+                    minHeight: 10,
+                    value: progress,
+                    color: Theme.of(context).colorScheme.secondary,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                if (snapshot.status == PaceStatus.completed &&
+                    goal.completedAt != null)
+                  Text(
+                    '${text.get('completedOn')}: '
+                    '${text.date(goal.completedAt!)}',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  )
+                else ...<Widget>[
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: <Widget>[
+                      Text(
+                        '${text.get('remainingShort')} '
+                        '${formatMoney(snapshot.remainingCents, goal.currency)}',
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      Text('· ${text.remainingWeeks(snapshot.weeksRemaining)}'),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${text.get('plannedWeekly')}: '
+                    '${formatMoney(goal.currentPlan.weeklyCents, goal.currency)}',
+                  ),
+                ],
                 const SizedBox(height: 16),
-                _Track(
-                  label: text.get('actualTrack'),
-                  value: formatMoney(snapshot.savedCents, goal.currency),
-                  fraction: actualFraction,
-                  color: Theme.of(context).colorScheme.secondary,
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: info.$3.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(info.$4),
                 ),
               ],
             ),
@@ -246,56 +295,8 @@ class _StatusCard extends StatelessWidget {
   };
 }
 
-class _Track extends StatelessWidget {
-  const _Track({
-    required this.label,
-    required this.value,
-    required this.fraction,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final double fraction;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Expanded(child: Text(label)),
-            const SizedBox(width: 10),
-            Flexible(
-              child: Text(
-                value,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 7),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(99),
-          child: LinearProgressIndicator(
-            minHeight: 9,
-            value: fraction,
-            color: color,
-            backgroundColor: Theme.of(
-              context,
-            ).colorScheme.surfaceContainerHighest,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Metrics extends StatelessWidget {
-  const _Metrics({required this.goal, required this.snapshot});
+class _PaceDetails extends StatelessWidget {
+  const _PaceDetails({required this.goal, required this.snapshot});
 
   final SavingsGoal goal;
   final PaceSnapshot snapshot;
@@ -303,92 +304,54 @@ class _Metrics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final itemWidth = constraints.maxWidth < 520
-            ? constraints.maxWidth
-            : (constraints.maxWidth - 12) / 2;
-        return Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: <Widget>[
-            _Metric(
-              width: itemWidth,
-              label: text.get('weeklyPlan'),
-              value: formatMoney(goal.currentPlan.weeklyCents, goal.currency),
-              icon: Icons.calendar_view_week_outlined,
+    return Card(
+      child: ExpansionTile(
+        key: const PageStorageKey<String>('pace-details'),
+        leading: const Icon(Icons.insights_outlined),
+        title: Text(text.get('paceDetails')),
+        childrenPadding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+        children: <Widget>[
+          _DetailRow(
+            label: text.get('plannedWeekly'),
+            value: formatMoney(goal.currentPlan.weeklyCents, goal.currency),
+          ),
+          _DetailRow(
+            label: text.get('weeklyNeeded'),
+            value: formatMoney(snapshot.requiredWeeklyCents, goal.currency),
+          ),
+          _DetailRow(
+            label: text.get('planTrack'),
+            value: formatMoney(snapshot.expectedCents, goal.currency),
+          ),
+          _DetailRow(
+            label: text.get('difference'),
+            value: formatMoney(
+              snapshot.savedCents - snapshot.expectedCents,
+              goal.currency,
             ),
-            _Metric(
-              width: itemWidth,
-              label: text.get('weeklyNeeded'),
-              value: formatMoney(snapshot.requiredWeeklyCents, goal.currency),
-              icon: Icons.speed_outlined,
-            ),
-            _Metric(
-              width: itemWidth,
-              label: text.get('difference'),
-              value: formatMoney(
-                snapshot.savedCents - snapshot.expectedCents,
-                goal.currency,
-              ),
-              icon: Icons.compare_arrows,
-            ),
-            _Metric(
-              width: itemWidth,
-              label: text.get('remaining'),
-              value: formatMoney(snapshot.remainingCents, goal.currency),
-              icon: Icons.outlined_flag,
-              hint: text.remainingWeeks(snapshot.weeksRemaining),
-            ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _Metric extends StatelessWidget {
-  const _Metric({
-    required this.width,
-    required this.label,
-    required this.value,
-    required this.icon,
-    this.hint,
-  });
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({required this.label, required this.value});
 
-  final double width;
   final String label;
   final String value;
-  final IconData icon;
-  final String? hint;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Icon(icon, size: 22),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(label, style: Theme.of(context).textTheme.bodySmall),
-                    const SizedBox(height: 4),
-                    Text(value, style: Theme.of(context).textTheme.titleLarge),
-                    if (hint != null)
-                      Text(hint!, style: Theme.of(context).textTheme.bodySmall),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Row(
+        children: <Widget>[
+          Expanded(child: Text(label)),
+          const SizedBox(width: 14),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w700)),
+        ],
       ),
     );
   }
@@ -595,20 +558,16 @@ class _CompletedCard extends StatelessWidget {
             const SizedBox(height: 8),
             FilledButton.icon(
               key: const Key('start-new'),
-              onPressed: () => _replace(context),
-              icon: const Icon(Icons.restart_alt),
+              onPressed: () => _archiveAndStart(context),
+              icon: const Icon(Icons.archive_outlined),
               label: Text(text.get('startNew')),
             ),
             if (controller.errorCode != null) ...<Widget>[
               const SizedBox(height: 12),
               ErrorBanner(
-                message: text.get(
-                  controller.errorCode == 'copyFailed'
-                      ? 'copyFailed'
-                      : 'saveFailed',
-                ),
+                message: text.get('saveFailed'),
                 onRetry: controller.errorCode == 'saveFailed'
-                    ? () => _replace(context)
+                    ? () => _archiveAndStart(context)
                     : null,
               ),
             ],
@@ -618,43 +577,33 @@ class _CompletedCard extends StatelessWidget {
     );
   }
 
-  Future<void> _replace(BuildContext context) async {
+  Future<void> _archiveAndStart(BuildContext context) async {
     final text = AppText.of(context);
-    final result = await showDialog<String>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(text.get('replaceTitle')),
-        content: Text(text.get('replaceBody')),
+      barrierDismissible: true,
+      builder: (dialogContext) => CupertinoAlertDialog(
+        title: Text(text.get('archiveTitle')),
+        content: Text(text.get('archiveBody')),
         actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+          CupertinoDialogAction(
+            onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(text.get('cancel')),
           ),
-          TextButton(
-            onPressed: () async {
-              final copied = await controller.copySummary();
-              if (dialogContext.mounted) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  SnackBar(
-                    content: Text(text.get(copied ? 'copied' : 'copyFailed')),
-                  ),
-                );
-              }
-            },
-            child: Text(text.get('copySummary')),
-          ),
-          FilledButton(
-            key: const Key('confirm-replace'),
-            onPressed: () => Navigator.pop(dialogContext, 'replace'),
-            child: Text(text.get('delete')),
+          CupertinoDialogAction(
+            key: const Key('confirm-archive'),
+            isDefaultAction: true,
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(text.get('archiveAndStart')),
           ),
         ],
       ),
     );
-    if (result != 'replace' || !context.mounted) return;
-    final cleared = await controller.deleteGoal();
-    if (cleared && context.mounted) {
-      await Navigator.of(context).push(
+    if (confirmed != true || !context.mounted) return;
+    final navigator = Navigator.of(context);
+    final archived = await controller.archiveCompletedGoal();
+    if (archived && navigator.mounted) {
+      await navigator.push(
         MaterialPageRoute<void>(
           builder: (_) => CreateGoalScreen(controller: controller),
         ),

@@ -3,6 +3,7 @@ import 'package:pace_jar/domain/models.dart';
 
 class FakeGoalRepository implements GoalRepository {
   SavingsGoal? goal;
+  List<SavingsGoal> completedGoals = <SavingsGoal>[];
   String? localeCode;
   bool? darkMode;
   bool failSave = false;
@@ -12,9 +13,10 @@ class FakeGoalRepository implements GoalRepository {
   int saveCalls = 0;
 
   @override
-  Future<void> clearGoal() async {
+  Future<void> clearLibrary() async {
     if (failClear) throw StateError('clear failed');
     goal = null;
+    completedGoals = <SavingsGoal>[];
     corrupt = false;
   }
 
@@ -22,10 +24,10 @@ class FakeGoalRepository implements GoalRepository {
   Future<bool?> loadDarkMode() async => darkMode;
 
   @override
-  Future<SavingsGoal?> loadGoal() async {
+  Future<GoalLibrary> loadLibrary() async {
     if (failLoad) throw StateError('load failed');
     if (corrupt) throw const FormatException('corrupt');
-    return goal;
+    return GoalLibrary(activeGoal: goal, completedGoals: completedGoals);
   }
 
   @override
@@ -38,10 +40,11 @@ class FakeGoalRepository implements GoalRepository {
   }
 
   @override
-  Future<void> saveGoal(SavingsGoal value) async {
+  Future<void> saveLibrary(GoalLibrary value) async {
     saveCalls++;
     if (failSave) throw StateError('save failed');
-    goal = value;
+    goal = value.activeGoal;
+    completedGoals = value.completedGoals.toList();
   }
 
   @override
@@ -52,6 +55,7 @@ class FakeGoalRepository implements GoalRepository {
 }
 
 SavingsGoal sampleGoal({
+  String id = 'goal-1',
   DateTime? createdAt,
   int targetCents = 100000,
   int startingCents = 10000,
@@ -63,7 +67,7 @@ SavingsGoal sampleGoal({
 }) {
   final created = createdAt ?? DateTime(2026, 9, 1, 9);
   return SavingsGoal(
-    id: 'goal-1',
+    id: id,
     name: name,
     currency: r'$',
     targetCents: targetCents,

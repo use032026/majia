@@ -257,6 +257,56 @@ class SavingsGoal {
   }
 }
 
+class GoalLibrary {
+  GoalLibrary({this.activeGoal, List<SavingsGoal> completedGoals = const []})
+    : completedGoals = UnmodifiableListView(completedGoals) {
+    final ids = <String>{};
+    if (activeGoal != null && !ids.add(activeGoal!.id)) {
+      throw const FormatException('Duplicate goal id');
+    }
+    for (final goal in completedGoals) {
+      if (goal.completedAt == null) {
+        throw const FormatException('Archived goal is not complete');
+      }
+      if (!ids.add(goal.id)) {
+        throw const FormatException('Duplicate goal id');
+      }
+    }
+  }
+
+  final SavingsGoal? activeGoal;
+  final List<SavingsGoal> completedGoals;
+
+  Map<String, Object?> toJson() => <String, Object?>{
+    'activeGoal': activeGoal?.toJson(),
+    'completedGoals': completedGoals.map((goal) => goal.toJson()).toList(),
+  };
+
+  factory GoalLibrary.fromJson(Map<String, Object?> json) {
+    final rawActive = json['activeGoal'];
+    final rawCompleted = json['completedGoals'];
+    if (rawActive != null && rawActive is! Map<Object?, Object?>) {
+      throw const FormatException('Invalid active goal');
+    }
+    if (rawCompleted is! List<Object?>) {
+      throw const FormatException('Invalid completed goals');
+    }
+    return GoalLibrary(
+      activeGoal: rawActive == null
+          ? null
+          : SavingsGoal.fromJson(
+              (rawActive as Map<Object?, Object?>).cast<String, Object?>(),
+            ),
+      completedGoals: rawCompleted.map((value) {
+        if (value is! Map<Object?, Object?>) {
+          throw const FormatException('Invalid completed goal');
+        }
+        return SavingsGoal.fromJson(value.cast<String, Object?>());
+      }).toList(),
+    );
+  }
+}
+
 String _requiredString(Map<String, Object?> json, String key) {
   final value = json[key];
   if (value is! String || value.isEmpty) {

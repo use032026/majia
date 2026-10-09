@@ -44,6 +44,7 @@ class AppController extends ChangeNotifier {
   static const calculator = PaceCalculator();
 
   SavingsGoal? _goal;
+  List<SavingsGoal> _completedGoals = const <SavingsGoal>[];
   bool _loading = true;
   bool _corruptRecord = false;
   bool _loadFailure = false;
@@ -52,6 +53,7 @@ class AppController extends ChangeNotifier {
   String? _errorCode;
 
   SavingsGoal? get goal => _goal;
+  List<SavingsGoal> get completedGoals => _completedGoals;
   bool get loading => _loading;
   bool get corruptRecord => _corruptRecord;
   bool get loadFailure => _loadFailure;
@@ -73,14 +75,18 @@ class AppController extends ChangeNotifier {
       if (locale == 'zh' || locale == 'en') _localeCode = locale!;
       _darkMode = await _repository.loadDarkMode() ?? false;
       try {
-        _goal = await _repository.loadGoal();
+        final library = await _repository.loadLibrary();
+        _goal = library.activeGoal;
+        _completedGoals = library.completedGoals;
         _corruptRecord = false;
       } on FormatException {
         _goal = null;
+        _completedGoals = const <SavingsGoal>[];
         _corruptRecord = true;
       }
     } catch (_) {
       _goal = null;
+      _completedGoals = const <SavingsGoal>[];
       _corruptRecord = false;
       _loadFailure = true;
       _errorCode = 'loadFailed';
@@ -91,7 +97,7 @@ class AppController extends ChangeNotifier {
   }
 
   Future<bool> createGoal(CreateGoalInput input) async {
-    if (_loadFailure) return false;
+    if (_loadFailure || _goal != null) return false;
     _errorCode = null;
     final createdAt = _now();
     final goal = SavingsGoal(
@@ -209,12 +215,57 @@ class AppController extends ChangeNotifier {
     );
   }
 
-  Future<bool> deleteGoal() async {
+  Future<bool> archiveCompletedGoal() async {
+    if (_loadFailure) return false;
+    final current = _goal;
+    if (current == null || current.completedAt == null) return false;
+    _errorCode = null;
+    final archived = <SavingsGoal>[
+      current,
+      ..._completedGoals.where((goal) => goal.id != current.id),
+    ];
+    try {
+      final library = GoalLibrary(completedGoals: archived);
+      await _repository.saveLibrary(library);
+      _goal = null;
+      _completedGoals = library.completedGoals;
+      notifyListeners();
+      return true;
+    } catch (_) {
+      _errorCode = 'saveFailed';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteCompletedGoal(String goalId) async {
+    if (_loadFailure || !_completedGoals.any((goal) => goal.id == goalId)) {
+      return false;
+    }
+    _errorCode = null;
+    final remaining = _completedGoals
+        .where((goal) => goal.id != goalId)
+        .toList();
+    try {
+      final library = GoalLibrary(activeGoal: _goal, completedGoals: remaining);
+      await _repository.saveLibrary(library);
+      _completedGoals = library.completedGoals;
+      notifyListeners();
+      return true;
+    } catch (_) {
+      _errorCode = 'saveFailed';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteAllData() async {
     if (_loadFailure) return false;
     _errorCode = null;
     try {
-      await _repository.clearGoal();
+      await _repository.clearLibrary();
       _goal = null;
+      _completedGoals = const <SavingsGoal>[];
       _corruptRecord = false;
       notifyListeners();
       return true;
@@ -225,7 +276,7 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  Future<bool> clearCorruptRecord() async => deleteGoal();
+  Future<bool> clearCorruptRecord() async => deleteAllData();
 
   Future<void> setLocaleCode(String value) async {
     if (value != 'zh' && value != 'en') return;
@@ -255,8 +306,8 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  String buildSummary() {
-    final current = _goal;
+  String buildSummary([SavingsGoal? selectedGoal]) {
+    final current = selectedGoal ?? _goal;
     if (current == null) return '';
     final pace = calculator.evaluate(current, _now());
     final zh = _localeCode == 'zh';
@@ -284,8 +335,8 @@ class AppController extends ChangeNotifier {
     return buffer.toString();
   }
 
-  Future<bool> copySummary() async {
-    final summary = buildSummary();
+  Future<bool> copySummary([SavingsGoal? selectedGoal]) async {
+    final summary = buildSummary(selectedGoal);
     if (summary.isEmpty) return false;
     try {
       await _clipboardWriter(summary);
@@ -303,7 +354,9 @@ class AppController extends ChangeNotifier {
 
   Future<bool> _persistThenCommit(SavingsGoal next) async {
     try {
-      await _repository.saveGoal(next);
+      await _repository.saveLibrary(
+        GoalLibrary(activeGoal: next, completedGoals: _completedGoals),
+      );
       _goal = next;
       _corruptRecord = false;
       _errorCode = null;

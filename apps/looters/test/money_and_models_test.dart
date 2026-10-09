@@ -112,4 +112,30 @@ void main() {
     );
     expect(goal.completedAt, DateTime(2026, 9, 10));
   });
+
+  test('goal library keeps one active goal and completed history', () {
+    final completed = sampleGoal(
+      targetCents: 20000,
+      events: <SavingsEvent>[
+        SavingsEvent(
+          id: 'finish',
+          type: SavingsEventType.deposit,
+          amountCents: 10000,
+          occurredAt: DateTime(2026, 9, 10),
+        ),
+      ],
+    );
+    final library = GoalLibrary(
+      activeGoal: sampleGoal(id: 'current', name: 'Current'),
+      completedGoals: <SavingsGoal>[completed],
+    );
+
+    final restored = GoalLibrary.fromJson(library.toJson());
+    expect(restored.activeGoal!.name, 'Current');
+    expect(restored.completedGoals.single.completedAt, DateTime(2026, 9, 10));
+    expect(
+      () => restored.completedGoals.add(completed),
+      throwsUnsupportedError,
+    );
+  });
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_text.dart';
@@ -36,7 +37,7 @@ class RootView extends StatelessWidget {
     if (controller.corruptRecord) {
       return _CorruptRecordScreen(controller: controller);
     }
-    if (controller.goal == null) {
+    if (controller.goal == null && controller.completedGoals.isEmpty) {
       return EmptyScreen(
         controller: controller,
         onCreate: () => Navigator.of(context).push(
@@ -193,17 +194,19 @@ class _CorruptRecordScreenState extends State<_CorruptRecordScreen> {
 
   Future<void> _confirmClear() async {
     final text = AppText.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      barrierDismissible: true,
+      builder: (context) => CupertinoAlertDialog(
         title: Text(text.get('clearCorrupt')),
         content: Text(text.get('deleteBody')),
         actions: <Widget>[
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context, false),
             child: Text(text.get('cancel')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(context, true),
             child: Text(text.get('delete')),
           ),
