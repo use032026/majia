@@ -1,8 +1,8 @@
 # Per-app manifest
 
-`<app-root>/release-kit.yml` stores the small set of durable facts and creative
-choices that cannot be rediscovered safely on every run. It is input to the agent;
-the deterministic scripts do not require a YAML parser.
+`<app-root>/release-kit.yml` stores durable facts and creative choices that cannot be
+rediscovered safely on every run. It is input to the agent; deterministic scripts do
+not require a YAML parser.
 
 Use the scaffold script to create it from `assets/release-kit.yml.tmpl`. Preserve
 confirmed values on later runs. Do not replace a non-empty value with a guess.
@@ -14,32 +14,48 @@ confirmed values on later runs. Do not replace a non-empty value with a guess.
 - `contact.support_email`
 - `contact.production_domain`
 - `privacy.effective_date`
-- `platforms.iphone` and `platforms.ipad`
+- `platforms.ios.iphone` and `platforms.ios.ipad`
+- `platforms.android.phone`
+- `website.default_locale` and both `en` and `zh-Hans` in `website.locales`
 
-Bundle identifiers and versions should normally be extracted from project files and
-recorded only when multiple targets make selection ambiguous.
+Bundle identifiers, package names, and versions should normally be extracted from
+project files and recorded only when multiple targets make selection ambiguous.
 
 ## Screenshot scenes
 
-Each scene describes a real, reproducible app state. `source` is relative to
-`artifacts/app-store-previews/preview-spec.json` unless absolute.
+Each scene describes a real, reproducible app state. Source paths are relative to the
+corresponding `preview-spec.json` unless absolute.
 
 ```yaml
 screenshots:
-  locale: en-US
-  scenes:
-    - id: home
-      source: source/01-home.png
-      headline: Plan With Clarity
-      subheadline: See today's work and what comes next.
-    - id: detail
-      source: source/02-detail.png
-      headline: Keep Every Detail Together
-      subheadline: Notes, status, and history in one focused view.
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: home
+        source: source/01-home-ios.png
+        headline: Plan With Clarity
+        subheadline: See today's work and what comes next.
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: home
+        source: source/01-home-android.png
+        headline_en: Plan With Clarity
+        headline_zh: 清晰规划每一天
 ```
 
 Headlines are creative direction, not evidence. Verify them against the app before
-using them. A missing source capture is an open item, not permission to synthesize UI.
+using them. A missing iOS or Android source capture is an open item, not permission
+to synthesize UI or reuse a capture from the other platform.
+
+## Website localization
+
+Store complete English and Simplified Chinese product and privacy copy. Do not infer
+a privacy claim in one language that does not exist in the other. The checked-in HTML
+contains both languages; `site.js` chooses the active presentation.
 
 ## Privacy review
 

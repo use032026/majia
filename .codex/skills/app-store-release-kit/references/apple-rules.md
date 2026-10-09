@@ -1,6 +1,6 @@
 # Apple listing rules
 
-Last checked: 2026-10-08. Recheck the official pages before relying on this file for
+Last checked: 2026-10-09. Recheck the official pages before relying on this file for
 a later release because required device slots and accepted dimensions change.
 
 Official sources:

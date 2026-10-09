@@ -90,6 +90,9 @@ def main() -> None:
     (root / "artifacts" / "app-store-previews" / "source").mkdir(parents=True, exist_ok=True)
     (root / "artifacts" / "app-store-previews" / "final").mkdir(parents=True, exist_ok=True)
     (root / "artifacts" / "app-store-previews" / "qa").mkdir(parents=True, exist_ok=True)
+    (root / "artifacts" / "google-play-listing" / "source").mkdir(parents=True, exist_ok=True)
+    (root / "artifacts" / "google-play-listing" / "final").mkdir(parents=True, exist_ok=True)
+    (root / "artifacts" / "google-play-listing" / "qa").mkdir(parents=True, exist_ok=True)
     print(destination)
 
 
