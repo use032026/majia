@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "app_name": "PaceJar",
+  "icon": "../../ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#17324D",
+    "background_bottom": "#2E6F6D",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#F5F1E8"
+  },
+  "items": [
+    {
+      "source": "source/iphone-en-pace.png",
+      "output": "final/iphone/01-pace.png",
+      "size": [1206, 2622],
+      "headline": "Know Where You Stand",
+      "subheadline": "See real progress against the current plan at a glance."
+    },
+    {
+      "source": "source/iphone-en-recovery.png",
+      "output": "final/iphone/02-recovery.png",
+      "size": [1206, 2622],
+      "headline": "Recover Without Rewriting",
+      "subheadline": "Compare a new weekly amount and target date before saving.",
+      "background_top": "#D86F52",
+      "background_bottom": "#17324D"
+    },
+    {
+      "source": "source/iphone-en-records.png",
+      "output": "final/iphone/03-timeline.png",
+      "size": [1206, 2622],
+      "headline": "Keep Every Change Visible",
+      "subheadline": "Review money events and plan versions in one timeline."
+    },
+    {
+      "source": "source/ipad-en-pace.png",
+      "output": "final/ipad/01-overview.png",
+      "size": [2064, 2752],
+      "headline": "See the Whole Plan",
+      "subheadline": "A spacious view of progress, gaps, and recent changes."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/looters/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "PaceJar",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/looters/android/app/src/main/AndroidManifest.xml",
+        "permissions": []
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/looters/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/looters",
+  "dependency_signals": {
+    "local_storage": [
+      "shared_preferences"
+    ]
+  },
+  "generated_at": "2026-10-09T02:56:38.451456+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.example.paceJar",
+      "com.example.paceJar.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "PaceJar",
+        "path": "/Users/starburst/majia/apps/looters/ios/Runner/Info.plist",
+        "usage_descriptions": {}
+      }
+    ],
+    "privacy_manifests": [
+      {
+        "path": "/Users/starburst/majia/apps/looters/ios/Runner/PrivacyInfo.xcprivacy",
+        "payload": {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            }
+          ],
+          "NSPrivacyCollectedDataTypes": [],
+          "NSPrivacyTracking": false,
+          "NSPrivacyTrackingDomains": []
+        }
+      }
+    ],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [],
+  "network_hosts_observed": [],
+  "pubspec": {
+    "dependencies": [
+      "cupertino_icons",
+      "flutter_localizations",
+      "intl",
+      "shared_preferences",
+      "url_launcher"
+    ],
+    "description": "Offline, bilingual savings-pace and recovery planning.",
+    "name": "pace_jar",
+    "path": "/Users/starburst/majia/apps/looters/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

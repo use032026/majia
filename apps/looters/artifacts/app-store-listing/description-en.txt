@@ -1,0 +1,22 @@
+Plans change when income changes. PaceJar helps you track one active savings goal without connecting a bank or moving money.
+
+Set a target amount, starting balance, target date, and weekly amount. Record what you actually set aside, take out, or skip. PaceJar keeps the plan and your real activity separate, so you can see whether you are on pace and what changed.
+
+When life interrupts the plan, compare three recovery paths:
+
+• Keep the target date and recalculate the weekly amount
+• Keep the weekly amount and move the target date
+• Choose an affordable weekly amount and preview the new date
+
+Review the updated amount and date before saving. Each adjustment becomes a new plan version, while earlier events and commitments remain visible on the timeline.
+
+Built for clear, manual planning:
+
+• One focused goal at a time, with completed goals kept for review
+• A combined timeline for deposits, withdrawals, skipped weeks, and plan versions
+• Plain-text recap copying when you want to keep or share a summary
+• English and Simplified Chinese interfaces
+• Light and dark appearance with responsive iPhone and iPad layouts
+• Local storage with no account, advertising, or analytics SDK
+
+PaceJar is a planning and record-keeping tool. It does not connect to a bank, move or hold real money, or provide investment, credit, return guarantees, or personalized financial advice.

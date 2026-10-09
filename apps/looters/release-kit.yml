@@ -1,0 +1,63 @@
+schema_version: 1
+
+identity:
+  app_name: "PaceJar"
+  operator: ""
+  bundle_id: "com.example.paceJar" # Placeholder in the current Xcode project; not a production identity.
+
+contact:
+  support_email: ""
+  production_domain: ""
+
+platforms:
+  iphone: true
+  ipad: true
+
+listing:
+  primary_locale: en-US
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: ""
+  confirmed:
+    - "No account or sign-in flow is implemented."
+    - "Goal names, amounts, dates, events, plan versions, language, and appearance preferences are stored locally with SharedPreferences."
+    - "The current iOS privacy manifest declares no tracking and no collected data types, and declares the UserDefaults required-reason API."
+    - "No advertising or analytics SDK is declared in pubspec.yaml."
+    - "The app writes a plain-text review summary to the system clipboard only after the user taps Copy review summary."
+    - "The configured privacy-policy action opens only a valid HTTPS URL and appends the selected app language."
+    - "No camera, photo, microphone, location, contacts, Bluetooth, or notification usage description is present in the iOS app plist."
+  open_questions:
+    - "Confirm the responsible operator or legal entity."
+    - "Confirm a monitored support email address."
+    - "Confirm the production HTTPS domain and final privacy-policy URL."
+    - "Confirm the privacy-policy effective date."
+    - "Review the final signed build's Xcode Privacy Report and App Store Connect privacy answers."
+
+website:
+  locales:
+    - en
+
+screenshots:
+  locale: en-US
+  source_policy: real-runtime-only
+  scenes:
+    - id: pace
+      source: source/iphone-en-pace.png
+      headline: Know Where You Stand
+      subheadline: See real progress against the current plan at a glance.
+    - id: recovery
+      source: source/iphone-en-recovery.png
+      headline: Recover Without Rewriting
+      subheadline: Compare a new weekly amount and target date before saving.
+    - id: timeline
+      source: source/iphone-en-records.png
+      headline: Keep Every Change Visible
+      subheadline: Review money events and plan versions in one timeline.
+    - id: ipad-overview
+      source: source/ipad-en-pace.png
+      headline: See the Whole Plan
+      subheadline: A spacious view of progress, gaps, and recent changes.
+
+paths:
+  app_root: "apps/looters"
