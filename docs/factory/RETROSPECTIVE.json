@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "almanac-20261010-release-candidate",
+    "project_ref": "/Users/starburst/Downloads/app-ui-atlas/almanac",
+    "scope": "release_candidate",
+    "skill_revision": "local-app-product-factory-unversioned",
+    "project_revision": "non-git-local-directory",
+    "finished_at": "2026-10-10T16:10:49+08:00",
+    "product_verdict": "code_complete_store_blocked_high_risk"
+  },
+  "summary": {
+    "worked": [
+      "Research and product roles changed the initial random almanac concept into a durable choose-seal-reflect-folio loop.",
+      "Three independent functional reviews found and closed emoji-length, midnight-rollover, persistence, recovery, export, theme-state, large-text, and accessibility issues.",
+      "The final repeatable gate passed format, analyze, 23 tests, Android debug build, and iOS unsigned archive.",
+      "iPhone, 11-inch and 13-inch iPad, and Android simulator evidence kept runtime claims separate from signing and store claims."
+    ],
+    "failed": [
+      "The first mechanical preflight included a mistyped icon artifact path and alpha-channel simulator screenshots; both inputs were corrected and the preflight was rerun.",
+      "Release identity, signing, public URLs, and store-account facts were unavailable and correctly remained blockers."
+    ],
+    "untested": [
+      "Physical devices and minimum supported operating systems.",
+      "VoiceOver, TalkBack, full Dynamic Type, landscape, 16 KB page-size runtime, and real storage exhaustion.",
+      "Production signing, App Store Connect, Play Console, TestFlight/internal testing, upload, and review.",
+      "Trademark/name clearance and China mainland distribution requirements."
+    ]
+  },
+  "lessons": []
+}

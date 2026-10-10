@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-10T16:10:49+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/almanac",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": false
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.almanac",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "shared_preferences_foundation.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": false
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.almanac",
+          "com.example.almanac.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.almanac"
+        ],
+        "expected_bundle_id": "com.example.almanac"
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.almanac",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "shared_preferences_foundation.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.almanac",
+        "archive": "com.example.almanac"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "pass",
+      "summary": "Screenshot PNG dimensions and alpha were inspected.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-en-light-sealed.png",
+          "width": 1206,
+          "height": 2622,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-en-reflection-sheet.png",
+          "width": 1206,
+          "height": 2622,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-en-folio-detail.png",
+          "width": 1206,
+          "height": 2622,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-zh-dark-settings.png",
+          "width": 1206,
+          "height": 2622,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-zh-dark-sealed.png",
+          "width": 1206,
+          "height": 2622,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad11-zh-light-welcome.png",
+          "width": 1668,
+          "height": 2420,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad11-zh-light-today.png",
+          "width": 1668,
+          "height": 2420,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad13-en-light-welcome.png",
+          "width": 2064,
+          "height": 2752,
+          "has_alpha": false
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad13-en-light-today.png",
+          "width": 2064,
+          "height": 2752,
+          "has_alpha": false
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/almanac/build/app/outputs/bundle/release/app-release.aab",
+          "/Users/starburst/Downloads/app-ui-atlas/almanac/assets/branding/app_icon.svg",
+          "/Users/starburst/Downloads/app-ui-atlas/almanac/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/app/outputs/bundle/release/app-release.aab",
+      "size_bytes": 41490483,
+      "modified_at": "2026-10-10T15:59:53.483655+08:00",
+      "sha256": "9d5d2d6fb0ea99dfb257b1c9040e45be2b1cb3d9710fba4edf8e647e1dfd65a3"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/assets/branding/app_icon.svg",
+      "size_bytes": 604,
+      "modified_at": "2026-10-10T15:39:34.152687+08:00",
+      "sha256": "51c6e0028dcc0dc5851d0b6851d234db027f6cb13aff027c7d7920161cf52795"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "size_bytes": 13442,
+      "modified_at": "2026-10-10T15:39:42.520899+08:00",
+      "sha256": "2d9dd46bac9c5f5b5f944b1c8bd9266bf9bb0bd26cb517d314f043a4bcb449d9"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 145292433,
+      "modified_at": "2026-10-10T15:58:16.359623+08:00",
+      "sha256": "bc2019187c07456410a6dac25691bbaca58da7b9b4239e2163bf14ca195a3158"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 73832,
+      "modified_at": "2026-10-10T15:55:22.430852+08:00",
+      "sha256": "14ed5fe766ef065df2c4c70c8d9cee3be93da81d3940238c768f89ce2e4a3cb0"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-en-light-sealed.png",
+      "size_bytes": 200609,
+      "modified_at": "2026-10-10T16:01:26.387391+08:00",
+      "sha256": "4edb3747968f34501e107b05e76e80d137af99833a021f0c3989be6bab40c17c"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-en-reflection-sheet.png",
+      "size_bytes": 188407,
+      "modified_at": "2026-10-10T16:01:26.515655+08:00",
+      "sha256": "d3fbc6010abc6f3a2deac15b97dc72ac336310da7fd5d8a07cd39686a96635d0"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-en-folio-detail.png",
+      "size_bytes": 173117,
+      "modified_at": "2026-10-10T16:01:26.256718+08:00",
+      "sha256": "eebf2452949698ff97b8f4a92a381142b99fe7f3fdf6db836d1befd5716f0b6e"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-zh-dark-settings.png",
+      "size_bytes": 189357,
+      "modified_at": "2026-10-10T16:01:26.773991+08:00",
+      "sha256": "722c4a53a28a96e1d8fb190bf9a0ea44656faade162e2f02e3253882b901cfad"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-iphone16pro-zh-dark-sealed.png",
+      "size_bytes": 163845,
+      "modified_at": "2026-10-10T16:01:26.644604+08:00",
+      "sha256": "9792c9e9e57df23a72497162a6b880c1a4cd0b211e1067d904ca5e35750e562e"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad11-zh-light-welcome.png",
+      "size_bytes": 128859,
+      "modified_at": "2026-10-10T16:01:26.129844+08:00",
+      "sha256": "892e0e99d06df3a221acc9328ad1547fede8cb55e80c6ff6e23fcf8d6912a5ae"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad11-zh-light-today.png",
+      "size_bytes": 158448,
+      "modified_at": "2026-10-10T16:01:25.976101+08:00",
+      "sha256": "7cf0f4ac7662f106fca1e36a7ca29ca01e0b2aba789a80590d1fcc0375f81100"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad13-en-light-welcome.png",
+      "size_bytes": 135663,
+      "modified_at": "2026-10-10T16:10:40.527150+08:00",
+      "sha256": "bf125de992cc615ee2d2483ba1b71538565e87dfd3e44de22e207e32e1625567"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/almanac/docs/release/evidence/store-screenshots/ios-ipad13-en-light-today.png",
+      "size_bytes": 200225,
+      "modified_at": "2026-10-10T16:10:40.315853+08:00",
+      "sha256": "ddb41f97c858da078317e0940ca5b61630bfc972d4dba293b558a380a430cf86"
+    }
+  ]
+}
