@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "store": "google_play",
+  "app_name": "RoamSum",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#075FFF",
+    "background_bottom": "#071B52",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#CFE8FF"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/01-home-android.png",
+      "output": "final/en-US/phone/01-convert.png",
+      "size": [1080, 1920],
+      "headline": "Convert With Daily Reference Rates"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/02-trips-android.png",
+      "output": "final/en-US/phone/02-plan.png",
+      "size": [1080, 1920],
+      "headline": "Plan Routes And Budgets"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/03-scan-android.png",
+      "output": "final/en-US/phone/03-scan.png",
+      "size": [1080, 1920],
+      "headline": "Scan Prices On Device"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/04-compare-android.png",
+      "output": "final/en-US/phone/04-compare.png",
+      "size": [1080, 1920],
+      "headline": "Compare Estimated Payment Costs"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/05-ledger-android.png",
+      "output": "final/en-US/phone/05-ledger.png",
+      "size": [1080, 1920],
+      "headline": "Track Every Trip Expense"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/01-home-android.png",
+      "output": "final/zh-CN/phone/01-convert.png",
+      "size": [1080, 1920],
+      "headline": "使用每日参考汇率换算"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/02-trips-android.png",
+      "output": "final/zh-CN/phone/02-plan.png",
+      "size": [1080, 1920],
+      "headline": "规划路线与预算"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/03-scan-android.png",
+      "output": "final/zh-CN/phone/03-scan.png",
+      "size": [1080, 1920],
+      "headline": "在设备上扫描价格"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/04-compare-android.png",
+      "output": "final/zh-CN/phone/04-compare.png",
+      "size": [1080, 1920],
+      "headline": "比较预计支付成本"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/05-ledger-android.png",
+      "output": "final/zh-CN/phone/05-ledger.png",
+      "size": [1080, 1920],
+      "headline": "记录每一笔旅行消费"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "en-US",
+      "output": "final/feature-graphic-en.png",
+      "size": [1024, 500],
+      "headline": "Know The Cost Before You Pay"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "zh-CN",
+      "output": "final/feature-graphic-zh.png",
+      "size": [1024, 500],
+      "headline": "付款前先看清成本"
+    }
+  ]
+}

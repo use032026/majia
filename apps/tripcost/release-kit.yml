@@ -1,0 +1,96 @@
+schema_version: 2
+
+identity:
+  app_name: "RoamSum"
+  operator: "RoamSum independent developer"
+  bundle_id: "com.tripcost.lite"
+  android_package: "com.tripcost.lite"
+
+contact:
+  support_email: "djl13333995679@163.com"
+  production_domain: "https://tripcost.fit"
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: "2026-10-09"
+  confirmed:
+    - "No account is required."
+    - "Trips, expenses, settings, and receipt images are stored on device by default."
+    - "Receipt OCR runs on device with Apple Vision or bundled Android ML Kit models."
+    - "Optional Apple-platform sync sends structured data to the user's private CloudKit database; receipt originals are excluded."
+    - "Reference-rate requests use the Frankfurter public API."
+    - "CSV, PDF, backups, and trip-summary images leave the app only through user-initiated export or save actions."
+  open_questions:
+    - "Confirm the exact public legal operator identity before publication."
+    - "Confirm the existing support email as the final public contact address."
+    - "Identify the production website host and its server-log privacy terms."
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: plan
+        source: final/iphone-dynamic-island/01-plan-every-trip.png
+        headline: "Plan Every Trip With Confidence"
+      - id: scan
+        source: final/iphone-dynamic-island/02-scan-and-understand.png
+        headline: "Scan Prices. Understand Costs."
+      - id: compare
+        source: final/iphone-dynamic-island/03-compare-before-paying.png
+        headline: "Compare Before You Pay"
+      - id: ledger
+        source: final/iphone-dynamic-island/04-true-trip-cost.png
+        headline: "See What Your Trip Really Cost"
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: home
+        source: source/01-home-android.png
+        headline_en: "Convert With Daily Reference Rates"
+        headline_zh: "使用每日参考汇率换算"
+      - id: trips
+        source: source/02-trips-android.png
+        headline_en: "Plan Routes And Budgets"
+        headline_zh: "规划路线与预算"
+      - id: scan
+        source: source/03-scan-android.png
+        headline_en: "Scan Prices On Device"
+        headline_zh: "在设备上扫描价格"
+      - id: compare
+        source: source/04-compare-android.png
+        headline_en: "Compare Estimated Payment Costs"
+        headline_zh: "比较预计支付成本"
+      - id: ledger
+        source: source/05-ledger-android.png
+        headline_en: "Track Every Trip Expense"
+        headline_zh: "记录每一笔旅行消费"
+
+paths:
+  app_root: "apps/tripcost"

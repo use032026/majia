@@ -23,7 +23,13 @@
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
   </head>
-  <body data-page="home">
+  <body
+    data-page="home"
+    data-title-en="RoamSum — A True Travel Cost Assistant"
+    data-title-zh="RoamSum — 旅行真实消费成本助手"
+    data-description-en="Scan local prices, compare payment costs, spot DCC markups, and keep your travel budget on track."
+    data-description-zh="RoamSum 是免费的旅行真实消费成本助手：扫描价格、比较支付成本、识别 DCC 加价，并持续掌握旅行预算。"
+  >
     <a
       class="skip-link"
       href="#main"
@@ -55,9 +61,9 @@
           <a href="#privacy" data-zh="隐私优先" data-en="Privacy">隐私优先</a>
           <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
           <div class="language-switch" role="group" aria-label="语言 / Language">
-            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <button type="button" data-language-option="zh" aria-pressed="true">中</button>
             <span aria-hidden="true"></span>
-            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+            <button type="button" data-language-option="en" aria-pressed="false">EN</button>
           </div>
         </nav>
       </div>
@@ -77,8 +83,11 @@
               <span data-zh="看懂价格，" data-en="Know the price.">看懂价格，</span>
               <span class="gradient-text" data-zh="再决定怎么付。" data-en="Choose how to pay.">再决定怎么付。</span>
             </h1>
-            <p class="hero-lede" data-zh="RoamSum 不只是换算汇率。它帮你扫描当地价格、比较不同支付方式的预计成本、识别 DCC 加价，并持续掌握旅行预算。" data-en="RoamSum goes beyond currency conversion. Scan local prices, compare the estimated cost of different payment methods, spot DCC markups, and keep your trip budget on track.">
-              RoamSum 不只是换算汇率。它帮你扫描当地价格、比较不同支付方式的预计成本、识别 DCC 加价，并持续掌握旅行预算。
+            <p class="hero-lede" data-lang="zh">
+              RoamSum 不只是换算汇率。它帮你扫描当地价格、比较不同支付方式的预计成本、识别 DCC 加价，并持续掌握旅行预算。你还可以建立多目的地行程、保存消费汇率快照，并在账本中查看预算余量。
+            </p>
+            <p class="hero-lede" data-lang="en" hidden>
+              RoamSum goes beyond currency conversion. Scan local prices, compare the estimated cost of different payment methods, spot DCC markups, and keep your trip budget on track. Build multi-destination trips, preserve rate snapshots for expenses, and see the remaining budget in the ledger.
             </p>
             <div class="hero-actions">
               <a class="button button-primary" href="#features">

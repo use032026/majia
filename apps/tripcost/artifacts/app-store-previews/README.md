@@ -6,6 +6,7 @@ screens with deterministic preview data.
 ## Upload-ready files
 
 - `final/iphone-6.5/`: four portrait PNGs at 1242 × 2688 pixels.
+- `final/iphone-dynamic-island/`: four portrait PNGs at 1206 × 2622 pixels.
 - `final/ipad-13/`: four portrait PNGs at 2064 × 2752 pixels.
 
 All final PNGs are opaque RGB images with no alpha channel.

@@ -1,0 +1,6 @@
+01-convert.png: Convert a Japanese yen price to Chinese yuan using a dated daily reference rate.
+02-plan.png: View a Tokyo and Seoul itinerary with route stops, total budget, spending, and remaining budget.
+03-scan.png: Choose the camera or photo library for on-device price and receipt recognition.
+04-compare.png: Compare two payment methods with estimated fees, markup, cashback, and total cost.
+05-ledger.png: Review monthly travel spending, category totals, and individual expenses in the ledger.
+feature-graphic-en.png: RoamSum branding with the message Know The Cost Before You Pay on a blue gradient.

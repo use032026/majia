@@ -74,11 +74,15 @@
       element.textContent = element.dataset[language];
     });
 
-    document.querySelectorAll("[data-lang-choice]").forEach((button) => {
+    document.querySelectorAll("[data-language-option]").forEach((button) => {
       button.setAttribute(
         "aria-pressed",
-        String(button.dataset.langChoice === language),
+        String(button.dataset.languageOption === language),
       );
+    });
+
+    document.querySelectorAll("[data-lang]").forEach((block) => {
+      block.hidden = block.dataset.lang !== language;
     });
 
     document.querySelectorAll("[data-policy-language]").forEach((block) => {
@@ -106,9 +110,9 @@
   const initialLanguage = savedLanguage();
   setLanguage(initialLanguage, false);
 
-  document.querySelectorAll("[data-lang-choice]").forEach((button) => {
+  document.querySelectorAll("[data-language-option]").forEach((button) => {
     button.addEventListener("click", () => {
-      setLanguage(button.dataset.langChoice);
+      setLanguage(button.dataset.languageOption);
     });
   });
 

@@ -1,0 +1,122 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/tripcost/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "RoamSum",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/tripcost/android/app/src/main/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.CAMERA",
+          "android.permission.INTERNET",
+          "android.permission.WRITE_EXTERNAL_STORAGE"
+        ]
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/tripcost/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/tripcost",
+  "dependency_signals": {
+    "camera_or_photos": [
+      "image_picker"
+    ],
+    "local_storage": [
+      "drift",
+      "shared_preferences"
+    ]
+  },
+  "generated_at": "2026-10-10T02:39:21.323693+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "$(APP_RUNNER_BUNDLE_ID)",
+      "$(APP_RUNNER_BUNDLE_ID).RunnerTests",
+      "$(APP_WIDGET_BUNDLE_ID)"
+    ],
+    "info_plists": [
+      {
+        "display_name": "RoamSum",
+        "path": "/Users/starburst/majia/apps/tripcost/ios/Runner/Info.plist",
+        "usage_descriptions": {
+          "NSCameraUsageDescription": "Take a photo to recognize prices on this device.",
+          "NSPhotoLibraryAddUsageDescription": "Save trip summary images you create in RoamSum to your photo library.",
+          "NSPhotoLibraryUsageDescription": "Choose an image to recognize prices on this device."
+        }
+      },
+      {
+        "display_name": "$(APP_WIDGET_DISPLAY_NAME)",
+        "path": "/Users/starburst/majia/apps/tripcost/ios/TripCostWidget/Info.plist",
+        "usage_descriptions": {}
+      }
+    ],
+    "privacy_manifests": [],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [
+    {
+      "host": "api.frankfurter.dev",
+      "path": "lib/core/config/app_environment.dart"
+    },
+    {
+      "host": "api.frankfurter.dev",
+      "path": "lib/core/rates/data/frankfurter_api_client.dart"
+    },
+    {
+      "host": "pub.dev",
+      "path": "android/app/src/main/kotlin/com/tripcost/lite/PlatformApis.g.kt"
+    },
+    {
+      "host": "pub.dev",
+      "path": "ios/Runner/Generated/PlatformApis.g.swift"
+    },
+    {
+      "host": "pub.dev",
+      "path": "lib/core/platform/generated/platform_apis.g.dart"
+    }
+  ],
+  "network_hosts_observed": [
+    "api.frankfurter.dev",
+    "pub.dev"
+  ],
+  "pubspec": {
+    "dependencies": [
+      "connectivity_plus",
+      "cupertino_icons",
+      "drift",
+      "flutter_localizations",
+      "flutter_riverpod",
+      "go_router",
+      "image_picker",
+      "intl",
+      "path",
+      "path_provider",
+      "sealed_countries",
+      "sealed_currencies",
+      "shared_preferences",
+      "sqlite3_flutter_libs",
+      "url_launcher",
+      "uuid"
+    ],
+    "description": "Travel purchase cost, payment comparison, and budget assistant.",
+    "name": "trip_cost",
+    "path": "/Users/starburst/majia/apps/tripcost/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

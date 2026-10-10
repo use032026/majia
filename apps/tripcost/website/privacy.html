@@ -20,7 +20,14 @@
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
   </head>
-  <body class="legal-page" data-page="privacy">
+  <body
+    class="legal-page"
+    data-page="privacy"
+    data-title-en="RoamSum Privacy Policy"
+    data-title-zh="RoamSum 隐私政策"
+    data-description-en="Learn how RoamSum handles trips, expenses, receipts, and rate data on device, plus optional iCloud sync."
+    data-description-zh="了解 RoamSum 如何在设备本地处理旅行、消费、票据和汇率数据，以及可选的 iCloud 同步。"
+  >
     <a class="skip-link" href="#policy" data-zh="跳到隐私政策" data-en="Skip to privacy policy">跳到隐私政策</a>
 
     <header class="site-header is-scrolled" data-header>
@@ -47,9 +54,9 @@
           <a href="privacy.html" data-language-link aria-current="page" data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
           <a href="mailto:djl13333995679@163.com" data-contact-trigger data-zh="联系" data-en="Contact">联系</a>
           <div class="language-switch" role="group" aria-label="语言 / Language">
-            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <button type="button" data-language-option="zh" aria-pressed="true">中</button>
             <span aria-hidden="true"></span>
-            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+            <button type="button" data-language-option="en" aria-pressed="false">EN</button>
           </div>
         </nav>
       </div>
@@ -94,7 +101,7 @@
             </div>
           </div>
 
-          <div class="legal-layout" data-policy-language="zh">
+          <div class="legal-layout" data-policy-language="zh" data-lang="zh">
             <nav class="policy-toc" aria-label="隐私政策目录">
               <strong>本页目录</strong>
               <a href="#zh-scope">1. 适用范围</a>
@@ -241,7 +248,7 @@
             </article>
           </div>
 
-          <div class="legal-layout" data-policy-language="en" hidden>
+          <div class="legal-layout" data-policy-language="en" data-lang="en" hidden>
             <nav class="policy-toc" aria-label="Privacy policy contents">
               <strong>On this page</strong>
               <a href="#en-scope">1. Scope</a>
