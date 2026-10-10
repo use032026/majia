@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "store": "google_play",
+  "app_name": "Jufu",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#725286",
+    "background_bottom": "#2B2232",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#EEE4F8"
+  },
+  "items": [
+    {"kind":"screenshot","locale":"en-US","source":"source/01-onboarding-android.png","output":"final/en-US/phone/01-onboarding.png","size":[1080,1920],"headline":"Start with a favorite"},
+    {"kind":"screenshot","locale":"en-US","source":"source/02-effects-onboarding-android.png","output":"final/en-US/phone/02-effects-introduction.png","size":[1080,1920],"headline":"Shape the mood"},
+    {"kind":"screenshot","locale":"en-US","source":"source/03-watermark-onboarding-android.png","output":"final/en-US/phone/03-watermark-introduction.png","size":[1080,1920],"headline":"Make every image yours"},
+    {"kind":"screenshot","locale":"en-US","source":"source/04-start-android.png","output":"final/en-US/phone/04-start.png","size":[1080,1920],"headline":"A focused place to begin"},
+    {"kind":"screenshot","locale":"en-US","source":"source/05-effects-android.png","output":"final/en-US/phone/05-effects.png","size":[1080,1920],"headline":"Fine-tune soft effects"},
+    {"kind":"screenshot","locale":"en-US","source":"source/06-watermark-android.png","output":"final/en-US/phone/06-watermark.png","size":[1080,1920],"headline":"Add your own words"},
+    {"kind":"screenshot","locale":"zh-CN","source":"source/zh-04-start-android.png","output":"final/zh-CN/phone/01-start.png","size":[1080,1920],"headline":"从一张喜欢的照片开始"},
+    {"kind":"screenshot","locale":"zh-CN","source":"source/zh-05-effects-android.png","output":"final/zh-CN/phone/02-effects.png","size":[1080,1920],"headline":"调出轻盈光感"},
+    {"kind":"screenshot","locale":"zh-CN","source":"source/zh-06-watermark-android.png","output":"final/zh-CN/phone/03-watermark.png","size":[1080,1920],"headline":"留下你的专属印记"},
+    {"kind":"screenshot","locale":"zh-CN","source":"source/zh-07-crop-android.png","output":"final/zh-CN/phone/04-crop.png","size":[1080,1920],"headline":"构图比例随心切换"},
+    {"kind":"feature_graphic","locale":"en-US","output":"final/feature-graphic-en.png","size":[1024,500],"headline":"A Refined Finish for Every Photo"},
+    {"kind":"feature_graphic","locale":"zh-CN","output":"final/feature-graphic-zh.png","size":[1024,500],"headline":"为照片留下精致余韵"}
+  ]
+}

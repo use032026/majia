@@ -34,8 +34,9 @@ cloud features, analytics, advertising, or account support changes.
 
 The legal pages currently show:
 
-- operator: `Jufu独立开发者` (brand-renamed; reconfirm the legal operator before publishing)
+- operator: `Jufu独立开发者` (confirmed)
 - support/privacy email: `djl13333995679@163.com`
+- privacy policy effective date: `2026-09-18` (confirmed)
 
 Then obtain appropriate legal review for the release regions. These pages are
 product-specific compliance drafts, not legal advice.

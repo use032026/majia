@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "store": "app_store",
+  "app_name": "Jufu",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "icon": "../../website/assets/app-icon.png",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#725286",
+    "background_bottom": "#2B2232",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#EEE4F8"
+  },
+  "items": [
+    {"kind":"screenshot","source":"source/01-onboarding-ios.png","output":"final/iphone/01-onboarding.png","size":[1206,2622],"headline":"Start With a Favorite","subheadline":"Choose one photo and begin in a focused workspace."},
+    {"kind":"screenshot","source":"source/02-effects-onboarding-ios.png","output":"final/iphone/02-effects-introduction.png","size":[1206,2622],"headline":"Shape the Mood","subheadline":"Refine the crop and explore soft effects."},
+    {"kind":"screenshot","source":"source/03-watermark-onboarding-ios.png","output":"final/iphone/03-watermark-introduction.png","size":[1206,2622],"headline":"Make Every Image Yours","subheadline":"Add a text watermark and compare with the original."},
+    {"kind":"screenshot","source":"source/04-start-ios.png","output":"final/iphone/04-start.png","size":[1206,2622],"headline":"A Focused Place to Begin","subheadline":"No account. Choose a photo when you are ready."},
+    {"kind":"screenshot","source":"source/05-effects-ios.png","output":"final/iphone/05-effects.png","size":[1206,2622],"headline":"Fine-Tune Soft Effects","subheadline":"Adjust the look, strength, brightness, and monochrome."},
+    {"kind":"screenshot","source":"source/06-watermark-ios.png","output":"final/iphone/06-watermark.png","size":[1206,2622],"headline":"Add Your Own Words","subheadline":"Style and position a personal text watermark."},
+    {"kind":"screenshot","source":"source/ipad-01-onboarding-ios.png","output":"final/ipad/01-onboarding.png","size":[2064,2752],"headline":"Start With a Favorite","subheadline":"Choose one photo and begin in a focused workspace."},
+    {"kind":"screenshot","source":"source/ipad-02-effects-onboarding-ios.png","output":"final/ipad/02-effects-introduction.png","size":[2064,2752],"headline":"Shape the Mood","subheadline":"Refine the crop and explore soft effects."},
+    {"kind":"screenshot","source":"source/ipad-03-watermark-onboarding-ios.png","output":"final/ipad/03-watermark-introduction.png","size":[2064,2752],"headline":"Make Every Image Yours","subheadline":"Add a text watermark and compare with the original."},
+    {"kind":"screenshot","source":"source/ipad-04-start-ios.png","output":"final/ipad/04-start.png","size":[2064,2752],"headline":"A Spacious, Focused Workspace","subheadline":"Choose a photo when you are ready."},
+    {"kind":"screenshot","source":"source/ipad-05-effects-ios.png","output":"final/ipad/05-effects.png","size":[2064,2752],"headline":"Every Control in View","subheadline":"Tune effects, brightness, and the final look."}
+  ]
+}

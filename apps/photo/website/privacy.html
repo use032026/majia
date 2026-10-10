@@ -1,478 +1,122 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#725286">
     <meta name="color-scheme" content="light">
-    <meta
-      name="description"
-      content="了解 Jufu 如何在设备本地处理照片、编辑内容、生成图片和语言偏好。"
-    >
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Jufu 隐私政策">
-    <meta
-      property="og:description"
-      content="了解 Jufu 如何在设备本地处理照片、编辑内容、生成图片和语言偏好。"
-    >
-    <meta name="twitter:card" content="summary">
-    <title>Jufu 隐私政策</title>
+    <meta name="description" content="Privacy Policy for Jufu, including on-device photo editing, local preferences, permissions, saving, and website data boundaries.">
+    <title>Privacy Policy — Jufu</title>
     <link rel="icon" href="assets/app-icon.png">
     <link rel="apple-touch-icon" href="assets/app-icon.png">
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
   </head>
-  <body class="legal-page" data-page="privacy">
-    <a
-      class="skip-link"
-      href="#main"
-      data-zh="跳到主要内容"
-      data-en="Skip to main content"
-    >跳到主要内容</a>
-
+  <body
+    class="legal-page"
+    data-page="privacy"
+    data-title-en="Privacy Policy — Jufu"
+    data-title-zh="隐私政策 — Jufu"
+    data-description-en="Privacy Policy for Jufu, including on-device photo editing, local preferences, permissions, saving, and website data boundaries."
+    data-description-zh="Jufu 隐私政策，说明设备本地照片编辑、本地偏好、系统权限、保存和网站数据边界。"
+  >
     <header class="site-header is-scrolled" data-header>
       <div class="shell header-inner">
-        <a class="brand" href="index.html" data-language-link aria-label="Jufu 首页">
+        <a class="brand" href="index.html" data-local-page aria-label="Jufu home">
           <img src="assets/app-icon.png" alt="" width="44" height="44">
           <span>Jufu</span>
         </a>
-
-        <button
-          class="menu-button"
-          type="button"
-          aria-expanded="false"
-          aria-controls="site-nav"
-          data-menu-button
-        >
-          <span class="sr-only" data-zh="打开导航" data-en="Open navigation">打开导航</span>
-          <span></span><span></span><span></span>
-        </button>
-
-        <nav class="site-nav" id="site-nav" aria-label="主要导航" data-nav>
-          <a href="index.html" data-language-link data-zh="官网" data-en="Home">官网</a>
-          <a href="privacy.html" data-language-link aria-current="page" data-zh="隐私政策" data-en="Privacy">隐私政策</a>
-          <a href="terms.html" data-language-link data-zh="用户协议" data-en="Terms">用户协议</a>
-          <div class="language-switch" role="group" aria-label="语言 / Language">
-            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
-            <span aria-hidden="true"></span>
-            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
-          </div>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="index.html" data-local-page><span data-lang="en">Product</span><span data-lang="zh">产品</span></a>
+          <a href="mailto:djl13333995679@163.com"><span data-lang="en">Support</span><span data-lang="zh">支持</span></a>
         </nav>
+        <div class="language-switch" role="group" aria-label="Language / 语言">
+          <button type="button" data-language-option="en">EN</button>
+          <span aria-hidden="true"></span>
+          <button type="button" data-language-option="zh">中文</button>
+        </div>
       </div>
     </header>
 
-    <main id="main">
-      <section class="legal-hero">
-        <div class="shell legal-hero-inner">
-          <a class="legal-breadcrumb" href="index.html" data-language-link>
-            <span aria-hidden="true">←</span>
-            <span data-zh="返回 Jufu 官网" data-en="Back to Jufu">返回 Jufu 官网</span>
-          </a>
-          <h1 data-zh="隐私政策" data-en="Privacy Policy">隐私政策</h1>
-          <p
-            data-zh="本政策说明 Jufu 如何处理你主动选择的照片、编辑内容、生成图片、语言偏好，以及访问本静态网站时可能产生的信息。"
-            data-en="This policy explains how Jufu handles photos you choose, editing content, generated images, language preferences, and information that may arise when you visit this static website."
-          >本政策说明 Jufu 如何处理你主动选择的照片、编辑内容、生成图片、语言偏好，以及访问本静态网站时可能产生的信息。</p>
-          <div class="legal-meta">
-            <span data-zh="草案更新：2026 年 9 月 18 日" data-en="Draft updated: September 18, 2026">草案更新：2026 年 9 月 18 日</span>
-            <span data-zh="适用于 Jufu 1.0 当前实现" data-en="Based on the current Jufu 1.0 implementation">适用于 Jufu 1.0 当前实现</span>
-          </div>
-        </div>
-      </section>
+    <main class="policy release-policy">
+      <article data-lang="en">
+        <p class="eyebrow">Effective September 18, 2026</p>
+        <h1>Privacy Policy</h1>
+        <p>This policy explains how the current Jufu 1.0 mobile app and its static product website handle information. Jufu is operated by Jufu独立开发者. Questions can be sent to <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a>. This product-specific policy is not legal advice.</p>
 
-      <section class="legal-content">
-        <div class="shell legal-grid">
-          <aside class="policy-toc" aria-label="政策目录">
-            <div class="policy-language" data-policy-language="zh">
-              <strong>本页目录</strong>
-              <nav>
-                <a href="#zh-scope">1. 适用范围与主体</a>
-                <a href="#zh-summary">2. 隐私摘要</a>
-                <a href="#zh-data">3. 处理的信息</a>
-                <a href="#zh-photos">4. 照片处理方式</a>
-                <a href="#zh-permissions">5. 系统权限</a>
-                <a href="#zh-sharing">6. 共享与对外传输</a>
-                <a href="#zh-retention">7. 保存与删除</a>
-                <a href="#zh-website">8. 网站与外部链接</a>
-                <a href="#zh-rights">9. 你的控制与权利</a>
-                <a href="#zh-security">10. 安全与数据边界</a>
-                <a href="#zh-changes">11. 政策更新</a>
-                <a href="#zh-contact">12. 联系我们</a>
-              </nav>
-            </div>
-            <div class="policy-language" data-policy-language="en" hidden>
-              <strong>On this page</strong>
-              <nav>
-                <a href="#en-scope">1. Scope and controller</a>
-                <a href="#en-summary">2. Privacy summary</a>
-                <a href="#en-data">3. Information handled</a>
-                <a href="#en-photos">4. Photo processing</a>
-                <a href="#en-permissions">5. System permissions</a>
-                <a href="#en-sharing">6. Sharing and transfers</a>
-                <a href="#en-retention">7. Retention and deletion</a>
-                <a href="#en-website">8. Website and links</a>
-                <a href="#en-rights">9. Your controls and rights</a>
-                <a href="#en-security">10. Security and data boundaries</a>
-                <a href="#en-changes">11. Policy changes</a>
-                <a href="#en-contact">12. Contact us</a>
-              </nav>
-            </div>
-          </aside>
+        <h2>Information and data</h2>
+        <p>Jufu does not require an account or sign-in. When you choose a photo through the operating system, the app reads that selected image so it can show a preview, determine its dimensions, apply crop, zoom, effects, brightness, and watermark settings, and generate a result. The selected photo, watermark text, and edit settings are used in the app's local runtime and are not uploaded to a developer server by the current implementation.</p>
+        <p>The app stores your language choice and whether onboarding has been completed in local preferences. It does not save edits as a recoverable project library. The website separately stores only the selected site language, “en” or “zh”, in browser localStorage.</p>
 
-          <article class="policy-article">
-            <div class="policy-language" data-policy-language="zh">
-              <p class="policy-intro">我们重视你的照片与创作内容。Jufu 当前版本不要求注册账号，不建立云端作品库，也不把选中的照片、文字水印或生成图片上传到开发者服务器。以下内容帮助你了解应用和本网站各自如何处理信息。</p>
+        <h2>Device permissions</h2>
+        <p>Photo selection access lets you choose one image through the system photo interface. Add-to-Photos or storage access is used only when you ask Jufu to save a generated image. On iOS, the app requests add-only Photo Library authorization for saving; the system photo picker controls selection. On Android 10 and later, the app writes through MediaStore, while Android 9 and earlier may use the declared storage permission. The current app does not request camera, microphone, precise location, contacts, notifications, health, Bluetooth, or App Tracking Transparency permission.</p>
 
-              <section id="zh-scope">
-                <h2>1. 适用范围与处理主体</h2>
-                <p>本政策适用于 Jufu 移动应用及其官方静态网站。应用的软件包名称、商店页面或下载渠道可能显示 Jufu 或项目内部名称，但均以实际发布版本为准。</p>
-                <p>个人信息处理者/开发者：</p>
-                <div class="policy-contact">
-                  <p><strong>运营主体：</strong><span>Jufu独立开发者</span></p>
-                  <p><strong>联系邮箱：</strong><a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a></p>
-                </div>
-                <p>本政策不替代 Apple、Google、设备操作系统、应用商店、浏览器或网站托管服务商各自的隐私政策。</p>
-              </section>
+        <h2>Network and third-party services</h2>
+        <p>The current app includes no developer API client, account service, cloud editing, advertising SDK, or behavioral analytics SDK. Its Privacy Policy and Terms of Use links open <a href="https://lunelleglobal.com">lunelleglobal.com</a> in your external browser. Your browser, network provider, DNS, hosting, CDN, and security providers may process ordinary connection data such as IP address, request time, browser information, and security logs according to the production hosting configuration and their own policies. Any such retention follows the applicable production configuration and provider policies.</p>
+        <p>Apple, Google, an app store, the operating system, a device manufacturer, a cloud photo service, or a backup service may independently process data under its own settings and policy. Their processing is outside Jufu's local editor.</p>
 
-              <section id="zh-summary">
-                <h2>2. 隐私摘要</h2>
-                <ul>
-                  <li><strong>无需账号：</strong>当前版本不提供注册、登录、用户档案或开发者云端空间。</li>
-                  <li><strong>本地编辑：</strong>你选择的照片、效果参数、裁剪信息和文字水印用于设备本地预览与生成图片。</li>
-                  <li><strong>不上传作品：</strong>当前版本没有把照片、编辑参数或生成图片上传到开发者服务器的功能。</li>
-                  <li><strong>主动保存：</strong>只有你点击“保存到相册”后，应用才会请求相应系统权限并将生成的 PNG 图片写入系统照片库。</li>
-                  <li><strong>少量本地偏好：</strong>你选择的界面语言会保存在设备本地；照片编辑项目本身不会作为可恢复的云端项目保存。</li>
-                  <li><strong>无广告或行为分析：</strong>当前项目代码未集成广告 SDK、第三方行为分析 SDK或跨应用追踪功能。</li>
-                </ul>
-              </section>
+        <h2>Storage, retention, and deletion</h2>
+        <p>Unsaved editing state exists only for the current app session and may disappear when you replace the photo, close the app, or the operating system clears temporary files. Photo-picker components may create temporary local files governed by the operating system or app sandbox. Language and onboarding preferences remain until you change them, clear app data, or uninstall Jufu.</p>
+        <p>Images that you save remain in the system photo library until you delete them there. Uninstalling Jufu does not delete saved images or copies maintained by device backup or cloud photo services. The website language preference remains until browser site data is cleared. Production website logs, if enabled, follow the final hosting configuration and applicable requirements.</p>
 
-              <section id="zh-data">
-                <h2>3. 我们处理的信息与目的</h2>
-                <div class="policy-table-wrap">
-                  <table class="policy-table">
-                    <thead>
-                      <tr><th>信息类型</th><th>如何产生</th><th>处理目的</th><th>位置</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><strong>你选择的照片</strong></td>
-                        <td>你通过系统照片选择界面明确选择一张图片</td>
-                        <td>读取尺寸、显示预览、应用效果与裁剪，并生成最终图片</td>
-                        <td>设备本地；不上传到开发者服务器</td>
-                      </tr>
-                      <tr>
-                        <td><strong>编辑内容与参数</strong></td>
-                        <td>你输入水印文字，并调整颜色、大小、透明度、位置、效果、亮度、缩放和裁剪</td>
-                        <td>即时渲染预览与生成结果</td>
-                        <td>当前编辑会话的设备内存或应用临时运行环境</td>
-                      </tr>
-                      <tr>
-                        <td><strong>生成图片</strong></td>
-                        <td>你点击“保存到相册”后，应用在本地渲染 PNG 图片</td>
-                        <td>把你确认的编辑结果保存到系统照片库</td>
-                        <td>由系统照片库管理，直至你自行删除</td>
-                      </tr>
-                      <tr>
-                        <td><strong>应用语言偏好</strong></td>
-                        <td>你选择跟随系统、English 或简体中文</td>
-                        <td>在后续启动时显示相应界面语言</td>
-                        <td>应用本地偏好存储</td>
-                      </tr>
-                      <tr>
-                        <td><strong>网站语言偏好</strong></td>
-                        <td>你在本网站选择中文或 English</td>
-                        <td>在后续访问时继续显示所选语言</td>
-                        <td>浏览器 localStorage；不用于广告追踪</td>
-                      </tr>
-                      <tr>
-                        <td><strong>网站连接信息</strong></td>
-                        <td>你访问正式部署的网站时，由网络和托管基础设施自动产生</td>
-                        <td>传送页面、安全防护、故障排查和基础运行日志</td>
-                        <td>由网站运行所需的托管与网络基础设施按其实际配置处理</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <p>我们不会要求你为使用核心编辑功能提供姓名、手机号码、身份证件、精确位置、联系人、麦克风内容或支付信息。</p>
-              </section>
+        <h2>Exports and sharing</h2>
+        <p>When you tap Save to Photos, Jufu renders PNG data on the device and asks the operating system to add the generated image to the photo library. The app does not automatically overwrite the original and has no built-in upload or social-sharing flow in the current version. You control any later export or sharing through the photo library, operating system, or another app. The current implementation does not sell photos, watermark text, edit settings, or local preferences and does not use them for cross-app tracking.</p>
 
-              <section id="zh-photos">
-                <h2>4. 照片与编辑内容如何被处理</h2>
-                <h3>4.1 选择照片</h3>
-                <p>Jufu 只在你点击选择照片并通过系统界面确认后，读取你明确选中的图片。当前版本的主要流程使用相册来源，不调用相机，也不会在后台遍历、识别或上传你的整个照片库。</p>
-                <h3>4.2 本地编辑</h3>
-                <p>效果矩阵、亮度、裁剪比例、缩放、位置和文字水印在设备本地参与渲染。为了让应用读取你选择的图片，操作系统或照片选择组件可能在应用沙盒中建立临时文件或缓存副本；这些副本由系统、组件或应用沙盒生命周期管理，不会因该过程自动上传到开发者服务器。</p>
-                <h3>4.3 保存结果</h3>
-                <p>当你点击“保存到相册”时，应用在本地生成 PNG 数据，并通过 iOS Photos 或 Android MediaStore 写入系统照片库。应用不会自动覆盖原图。生成图片可能包含你添加的文字，也可能保留原照片本身具有的可见内容；保存、分享或发布前请自行检查。</p>
-                <h3>4.4 当前不提供的能力</h3>
-                <p>当前版本不提供账号同步、在线备份、云端编辑、协作、作品社区或开发者后台恢复功能。卸载应用、退出当前编辑或系统清理临时文件后，我们通常无法替你恢复未保存的编辑状态。</p>
-              </section>
+        <h2>Children's privacy</h2>
+        <p>Jufu is a general photo-editing tool and is not directed to children. The current app does not create user profiles or knowingly collect children's personal information through a developer service. A parent or guardian should supervise a child's device, photo-library permissions, saved images, backups, and any later sharing. Contact us if you believe the released service handles a child's information in a way that requires action.</p>
 
-              <section id="zh-permissions">
-                <h2>5. 系统权限</h2>
-                <ul>
-                  <li><strong>照片读取/选择：</strong>用于让你从系统照片界面选择一张待编辑图片。具体授权界面和访问范围由操作系统版本决定。</li>
-                  <li><strong>添加到照片/存储：</strong>仅在你主动保存结果时，用于把生成图片写入系统照片库。iOS 使用添加照片权限；较旧 Android 版本可能使用系统存储权限，新版 Android 使用系统媒体存储接口。</li>
-                </ul>
-                <p>当前版本的核心流程不请求相机、麦克风、精确位置、联系人、日历、蓝牙、健康、通知或 App Tracking Transparency 权限。如果拒绝照片选择权限，你无法导入图片；如果拒绝保存权限，你仍可继续编辑，但无法把结果写入系统相册。</p>
-                <p>你可以随时在系统设置中更改权限。权限名称和路径可能因 iOS、Android 或设备厂商版本而异。</p>
-              </section>
+        <h2>Your choices and requests</h2>
+        <p>You decide whether to select a photo, change an edit, and save a generated image. You can change or withdraw photo permissions in system settings, remove saved images from the photo library, change the app language, clear local app or browser data, and uninstall the app. Because Jufu has no account or developer-hosted artwork library, the operator ordinarily cannot locate, export, correct, or delete photos kept only on your device by using your name or email.</p>
 
-              <section id="zh-sharing">
-                <h2>6. 信息共享、披露与对外传输</h2>
-                <p>当前应用没有把照片、编辑参数、语言偏好或生成图片发送给开发者服务器的代码路径，也未集成广告网络或第三方行为分析 SDK。因此，开发者通常无法访问你的应用内照片和编辑内容。</p>
-                <p>以下场景可能涉及其他主体，但不等同于我们出售你的个人信息：</p>
-                <ul>
-                  <li><strong>设备操作系统与照片库：</strong>负责照片选择、权限管理和保存结果。</li>
-                  <li><strong>应用商店与分发平台：</strong>可能为了下载、购买记录（如适用）、更新、安全或崩溃诊断而独立处理信息，具体以其政策和你的设备设置为准。</li>
-                  <li><strong>网站托管与网络服务：</strong>为传送页面、安全防护和故障排查，网站运行所需的基础设施可能处理 IP 地址、请求时间、浏览器标识和必要的安全日志。这些信息不包含应用内照片、编辑参数或生成图片。</li>
-                  <li><strong>法律要求：</strong>如果适用法律要求，或为保护用户、公众或合法权益所必需，我们可能在有权机关要求范围内配合；但由于核心应用数据不上传，我们通常并不持有可供披露的照片或编辑项目。</li>
-                </ul>
-                <p>我们不出售你的照片、编辑内容或语言偏好，不使用它们建立广告画像，也不进行跨应用追踪。</p>
-              </section>
+        <h2>Changes to this policy</h2>
+        <p>We will reassess this policy before releasing a feature that changes data flows, such as accounts, cloud sync, online processing, camera capture, analytics, advertising, payments, or built-in sharing. Material changes may be communicated through the website, app, store release notes, or another method required by law. The date at the top identifies this policy's effective date.</p>
 
-              <section id="zh-retention">
-                <h2>7. 信息保存与删除</h2>
-                <ul>
-                  <li><strong>当前编辑状态：</strong>仅为当前使用过程服务，不作为可恢复项目库长期保存。应用退出、重新开始编辑或系统回收运行环境后，未保存状态可能丢失。</li>
-                  <li><strong>临时图片文件：</strong>可能由照片选择组件或操作系统保存在应用沙盒缓存中，通常由系统或应用生命周期清理。你也可以通过清除应用数据或卸载应用移除应用沙盒内容，但这不会删除已经保存到系统照片库的图片。</li>
-                  <li><strong>语言偏好：</strong>保存在设备本地，直到你更改设置、清除应用数据或卸载应用。</li>
-                  <li><strong>已保存图片：</strong>保留在系统照片库，直至你在照片应用或文件系统中自行删除；系统备份或同步副本按你的 Apple、Google 或设备设置处理。</li>
-                  <li><strong>网站语言偏好：</strong>保存在浏览器 localStorage，直到你清除网站数据或浏览器存储。</li>
-                  <li><strong>网站访问日志：</strong>如网站运行所需的基础设施保存访问或安全日志，其保存期限按实际配置和适用规则处理。</li>
-                </ul>
-                <div class="policy-callout">卸载 Jufu 不会自动删除你已经保存到系统照片库的图片，也不会删除操作系统或云相册已经建立的备份/同步副本。请在相应系统服务中自行管理这些内容。</div>
-              </section>
+        <h2>Contact</h2>
+        <p>Operator: Jufu独立开发者<br>Privacy and support email: <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a><br>Product website: <a href="https://lunelleglobal.com">lunelleglobal.com</a></p>
+      </article>
 
-              <section id="zh-website">
-                <h2>8. 本网站、语言存储与外部链接</h2>
-                <p>本网站为依赖较少的静态页面，当前页面代码不设置 Cookie，不加载第三方广告、分析脚本、社交追踪像素或嵌入式表单。为了记住中英文选择，页面会把“zh”或“en”写入浏览器 localStorage；你可清除网站数据删除该值。</p>
-                <p>托管网站所必需的服务器、CDN、DNS 或安全服务可能自动处理标准连接信息，用于页面传输、安全防护和故障排查；这些处理不涉及应用内照片、编辑参数或生成图片。</p>
-                <p>应用设置页会在外部浏览器中打开隐私政策和用户协议。点击后，你将离开应用本地环境并连接到对应网站；浏览器、网络运营商和网站运行所需的网络服务可能依其规则处理连接信息。对于网站中的第三方链接，我们建议你先阅读目标服务的隐私规则。</p>
-              </section>
+      <article data-lang="zh">
+        <p class="eyebrow">生效日期：2026 年 9 月 18 日</p>
+        <h1>隐私政策</h1>
+        <p>本政策说明 Jufu 1.0 当前移动应用及其静态产品网站如何处理信息。Jufu 的运营主体为 Jufu独立开发者；如有问题，请发送邮件至 <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a>。本文件是面向产品的隐私政策，不构成法律意见。</p>
 
-              <section id="zh-rights">
-                <h2>9. 你的控制与权利</h2>
-                <p>你可以：</p>
-                <ul>
-                  <li>决定是否选择照片、编辑照片以及是否保存生成结果；</li>
-                  <li>在系统设置中查看、限制或撤回照片相关权限；</li>
-                  <li>在应用设置中更改语言，或清除应用数据/卸载应用以移除本地偏好和沙盒内容；</li>
-                  <li>在系统照片库中查看、编辑、分享或删除已保存图片；</li>
-                  <li>清除浏览器网站数据，以删除本网站保存的语言偏好；</li>
-                  <li>就正式网站日志或隐私问题通过本政策所列邮箱联系我们。</li>
-                </ul>
-                <p>由于当前版本没有账号和开发者云端作品库，开发者通常无法通过姓名或邮箱检索、导出或删除你设备内的照片和编辑状态。对本地数据的访问、更正、导出和删除主要由你通过应用、系统照片库和设备设置直接完成。</p>
-              </section>
+        <h2>信息与数据</h2>
+        <p>Jufu 不要求注册账号或登录。当你通过操作系统选择一张照片后，应用会读取这张明确选中的图片，用于显示预览、获取尺寸、应用裁剪、缩放、效果、亮度与水印设置，并生成最终图片。当前实现只在应用本地运行环境中使用选中的照片、水印文字和编辑参数，不会把这些内容上传到开发者服务器。</p>
+        <p>应用会在本地偏好中保存你的界面语言选择和是否已完成引导，不会把编辑内容保存为可恢复的项目库。网站会另外在浏览器 localStorage 中保存所选网站语言，值仅为“en”或“zh”。</p>
 
-              <section id="zh-security">
-                <h2>10. 安全与数据边界</h2>
-                <p>我们通过减少数据收集、在设备本地完成核心编辑、不建立账号库等方式降低风险。但任何设备、系统、网络或存储方式都无法保证绝对安全。请使用设备锁、系统更新和可信备份，并谨慎处理包含敏感人物、证件、位置线索或其他私人内容的照片。</p>
-              </section>
+        <h2>设备权限</h2>
+        <p>照片选择权限用于通过系统照片界面选择一张图片；添加到照片或存储权限只在你要求 Jufu 保存生成图片时使用。iOS 保存时会请求仅添加到照片图库的授权，照片选择范围由系统选择器控制。Android 10 及以上版本通过 MediaStore 写入图片，Android 9 及以下版本可能使用已声明的存储权限。当前应用不请求相机、麦克风、精确位置、联系人、通知、健康、蓝牙或 App Tracking Transparency 权限。</p>
 
-              <section id="zh-changes">
-                <h2>11. 本政策的更新</h2>
-                <p>当应用增加账号、云同步、相机、分享、分析、广告、订阅、在线处理或其他会改变数据流的功能时，我们会在上线前重新评估并更新本政策。重大变更可能通过应用内提示、网站公告、商店更新说明或适用法律要求的其他方式通知。</p>
-                <p>页面顶部会显示最近更新时间。更新后的政策自发布时适用，但法律另有要求的除外。</p>
-              </section>
+        <h2>网络与第三方服务</h2>
+        <p>当前应用未集成开发者 API 客户端、账号服务、云端编辑、广告 SDK 或行为分析 SDK。应用中的隐私政策与用户协议链接会在外部浏览器打开 <a href="https://lunelleglobal.com">lunelleglobal.com</a>。浏览器、网络运营商、DNS、托管、CDN 和安全服务商可能按照正式部署配置及其政策处理 IP 地址、请求时间、浏览器信息和安全日志等常规连接数据；如有保留，其期限遵循实际生产配置和服务商政策。</p>
+        <p>Apple、Google、应用商店、操作系统、设备厂商、云相册或备份服务也可能依据各自设置和政策独立处理数据；这类处理不属于 Jufu 本地编辑器本身。</p>
 
-              <section id="zh-contact">
-                <h2>12. 联系我们</h2>
-                <p>如对本政策、照片处理方式、系统权限或正式网站日志有疑问，请通过以下方式联系：</p>
-                <div class="policy-contact">
-                  <p><strong>运营主体：</strong><span>Jufu独立开发者</span></p>
-                  <p><strong>隐私联系邮箱：</strong><a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a></p>
-                </div>
-                <p class="legal-note">本草案的功能描述依据 2026 年 8 月 27 日的代码检查；品牌名称于 2026 年 9 月 18 日更新为 Jufu。正式发布版本、商店隐私标签、权限说明和本政策应保持一致。</p>
-              </section>
-            </div>
+        <h2>存储、保留与删除</h2>
+        <p>未保存的编辑状态只用于当前应用会话；当你更换照片、关闭应用或系统清理临时文件时，这些状态可能消失。系统照片选择组件可能创建临时本地文件，并遵循操作系统或应用沙盒的生命周期。语言与引导完成偏好会一直保留，直至你修改设置、清除应用数据或卸载 Jufu。</p>
+        <p>你主动保存的图片会保留在系统照片库中，直至你自行删除。卸载 Jufu 不会删除已经保存的图片，也不会删除设备备份或云相册保存的副本。网站语言偏好会保留到你清除浏览器站点数据为止。若正式网站启用访问或安全日志，其保留方式取决于最终托管配置和适用要求。</p>
 
-            <div class="policy-language" data-policy-language="en" hidden>
-              <p class="policy-intro">We respect your photos and creative content. The current version of Jufu requires no account, provides no developer-hosted artwork library, and does not upload your selected photo, watermark text, or generated image to a developer server. This policy explains the separate data boundaries of the app and this website.</p>
+        <h2>导出与共享</h2>
+        <p>当你点击“保存到相册”时，Jufu 会在设备本地生成 PNG 数据，并请求操作系统把生成图片添加到照片库。应用不会自动覆盖原图，当前版本也没有内置上传或社交分享流程。之后是否导出或分享，由你通过照片库、操作系统或其他应用决定。当前实现不会出售照片、水印文字、编辑参数或本地偏好，也不会利用这些内容进行跨应用追踪。</p>
 
-              <section id="en-scope">
-                <h2>1. Scope and controller</h2>
-                <p>This policy applies to the Jufu mobile app and its official static website. The package, store listing, or distribution channel may display Jufu or an internal project name; the actually released version controls.</p>
-                <p>The privacy controller/developer is:</p>
-                <div class="policy-contact">
-                  <p><strong>Operator:</strong> <span>Jufu独立开发者</span></p>
-                  <p><strong>Privacy email:</strong> <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a></p>
-                </div>
-                <p>This policy does not replace the privacy policies of Apple, Google, your operating system, an app store, your browser, or the eventual website hosting provider.</p>
-              </section>
+        <h2>儿童隐私</h2>
+        <p>Jufu 是通用照片编辑工具，并非面向儿童设计。当前应用不创建用户档案，也不会通过开发者服务主动收集儿童个人信息。家长或监护人应监督儿童设备、照片库权限、保存图片、备份及后续分享。如你认为正式发布的服务以需要处理的方式涉及儿童信息，请联系我们。</p>
 
-              <section id="en-summary">
-                <h2>2. Privacy summary</h2>
-                <ul>
-                  <li><strong>No account:</strong> the current version offers no registration, sign-in, user profile, or developer-hosted cloud storage.</li>
-                  <li><strong>On-device editing:</strong> your selected photo, effect settings, crop data, and watermark text are used locally to preview and generate an image.</li>
-                  <li><strong>No artwork upload:</strong> the current version has no feature that uploads photos, edit settings, or generated images to a developer server.</li>
-                  <li><strong>User-initiated saving:</strong> the app requests the relevant system permission and writes a generated PNG to Photos only after you tap “Save to Photos.”</li>
-                  <li><strong>Minimal local preference:</strong> your interface language is stored on device. Photo edits are not retained as recoverable cloud projects.</li>
-                  <li><strong>No ads or behavioral analytics:</strong> the current project contains no advertising SDK, third-party behavioral analytics SDK, or cross-app tracking feature.</li>
-                </ul>
-              </section>
+        <h2>你的选择与请求</h2>
+        <p>你可以决定是否选择照片、是否修改编辑内容以及是否保存生成图片；也可以在系统设置中修改或撤回照片权限，在照片库删除已保存图片，修改应用语言，清除应用或浏览器本地数据，或卸载应用。由于 Jufu 没有账号或开发者云端作品库，运营者通常无法仅凭你的姓名或邮箱查找、导出、更正或删除只保存在你设备上的照片与编辑状态。</p>
 
-              <section id="en-data">
-                <h2>3. Information we handle and why</h2>
-                <div class="policy-table-wrap">
-                  <table class="policy-table">
-                    <thead>
-                      <tr><th>Information</th><th>How it arises</th><th>Purpose</th><th>Location</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><strong>Your selected photo</strong></td>
-                        <td>You explicitly select one image through the system photo interface</td>
-                        <td>Read dimensions, show a preview, apply effects and crop, and generate the final image</td>
-                        <td>On device; not uploaded to a developer server</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Edit content and settings</strong></td>
-                        <td>You enter watermark text and adjust its style, position, effect, brightness, zoom, and crop</td>
-                        <td>Render the live preview and final result</td>
-                        <td>Device memory or the app's temporary runtime environment for the current edit</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Generated image</strong></td>
-                        <td>The app renders a PNG after you tap “Save to Photos”</td>
-                        <td>Save the result you approved</td>
-                        <td>Managed by the system photo library until you delete it</td>
-                      </tr>
-                      <tr>
-                        <td><strong>App language preference</strong></td>
-                        <td>You choose Follow System, English, or Simplified Chinese</td>
-                        <td>Display your preferred interface language on later launches</td>
-                        <td>Local app preferences</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Website language preference</strong></td>
-                        <td>You choose Chinese or English on this site</td>
-                        <td>Keep showing the selected language on later visits</td>
-                        <td>Browser localStorage; not used for advertising</td>
-                      </tr>
-                      <tr>
-                        <td><strong>Website connection data</strong></td>
-                        <td>Generated automatically by network and hosting infrastructure when you visit a deployed site</td>
-                        <td>Deliver pages, protect security, troubleshoot failures, and keep basic operational logs</td>
-                        <td>Handled under the actual configuration of the hosting and network infrastructure needed to operate the website</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <p>We do not require your name, phone number, government identifier, precise location, contacts, microphone content, or payment details to use the core editing features.</p>
-              </section>
+        <h2>政策变更</h2>
+        <p>如果未来版本新增账号、云同步、在线处理、相机拍摄、分析、广告、支付或内置分享等会改变数据流的功能，我们会在上线前重新评估并更新本政策。重大变更可能通过网站、应用、商店更新说明或法律要求的其他方式通知。页面顶部日期为本政策的生效日期。</p>
 
-              <section id="en-photos">
-                <h2>4. How photos and edits are processed</h2>
-                <h3>4.1 Choosing a photo</h3>
-                <p>Jufu reads an image only after you tap to choose a photo and confirm the selection through the system interface. The current primary flow uses the photo library, does not open the camera, and does not scan, recognize, or upload your entire photo library in the background.</p>
-                <h3>4.2 Editing on device</h3>
-                <p>Effect matrices, brightness, crop ratio, zoom, position, and watermark text are rendered locally. To make the selected image available to the app, the operating system or photo-picker component may create a temporary file or cached copy in the app sandbox. Those copies follow the system, component, or sandbox lifecycle and are not automatically uploaded to a developer server.</p>
-                <h3>4.3 Saving the result</h3>
-                <p>When you tap “Save to Photos,” the app generates PNG data locally and writes it through iOS Photos or Android MediaStore. Jufu does not automatically overwrite the original. A generated image may contain the text you added and any visible content already present in the original; review it before saving, sharing, or publishing.</p>
-                <h3>4.4 Features not currently provided</h3>
-                <p>The current version provides no account sync, online backup, cloud editing, collaboration, artwork community, or developer-side recovery service. If you uninstall the app, leave the current edit, or the system clears temporary files, we generally cannot restore an unsaved editing state.</p>
-              </section>
-
-              <section id="en-permissions">
-                <h2>5. System permissions</h2>
-                <ul>
-                  <li><strong>Photo selection/read access:</strong> lets you choose one image through the system photo interface. The exact authorization screen and access scope depend on the operating-system version.</li>
-                  <li><strong>Add to Photos/storage:</strong> used only when you choose to save a result. iOS uses add-to-library access; older Android releases may use system storage permission, while newer Android releases use the system media-store interface.</li>
-                </ul>
-                <p>The current core flow does not request camera, microphone, precise location, contacts, calendar, Bluetooth, health, notification, or App Tracking Transparency permission. If you decline photo selection access, you cannot import an image. If you decline save access, you can continue editing but cannot write the result to the system photo library.</p>
-                <p>You may change permissions in system settings at any time. Names and paths vary by iOS, Android, operating-system version, and device manufacturer.</p>
-              </section>
-
-              <section id="en-sharing">
-                <h2>6. Sharing, disclosure, and transfers</h2>
-                <p>The current app has no code path that sends photos, edit settings, language preferences, or generated images to a developer server, and it contains no advertising network or third-party behavioral analytics SDK. The developer therefore does not ordinarily have access to your in-app photos or edits.</p>
-                <p>The following parties may be involved in limited circumstances, which is not the same as selling your personal information:</p>
-                <ul>
-                  <li><strong>Your operating system and photo library:</strong> provide selection, permission management, and result saving.</li>
-                  <li><strong>App stores and distribution platforms:</strong> may independently process download, transaction (if applicable), update, security, or crash-diagnostic information under their policies and your settings.</li>
-                  <li><strong>Website hosting and network services:</strong> infrastructure needed to deliver pages, protect security, and troubleshoot failures may process IP address, request time, browser identifiers, and necessary security logs. This information does not include in-app photos, edit settings, or generated images.</li>
-                  <li><strong>Legal requirements:</strong> we may respond within the scope of a lawful authority request where required to protect users, the public, or legal rights. Because core app content is not uploaded, we ordinarily do not possess your photos or editing projects to disclose.</li>
-                </ul>
-                <p>We do not sell your photos, edit content, or language preference, use them to build advertising profiles, or track you across apps.</p>
-              </section>
-
-              <section id="en-retention">
-                <h2>7. Retention and deletion</h2>
-                <ul>
-                  <li><strong>Current edit:</strong> used for the current session and not retained as a recoverable project library. Unsaved state may be lost when the app exits, a new edit starts, or the operating system reclaims the runtime.</li>
-                  <li><strong>Temporary image files:</strong> may be cached in the app sandbox by the photo picker or operating system and are generally managed by those lifecycles. Clearing app data or uninstalling removes sandbox content but does not delete images already saved to the system photo library.</li>
-                  <li><strong>Language preference:</strong> remains locally until you change it, clear app data, or uninstall the app.</li>
-                  <li><strong>Saved images:</strong> remain in the system photo library until you delete them. System backups and synchronized copies follow your Apple, Google, or device settings.</li>
-                  <li><strong>Website language:</strong> remains in browser localStorage until you clear site data or browser storage.</li>
-                  <li><strong>Website logs:</strong> if the infrastructure needed to operate the website retains access or security logs, its actual configuration and applicable rules determine the retention period.</li>
-                </ul>
-                <div class="policy-callout">Uninstalling Jufu does not automatically delete images you saved to the system photo library or copies already created by an operating-system backup or cloud photo service. Manage those copies in the relevant system service.</div>
-              </section>
-
-              <section id="en-website">
-                <h2>8. This website, language storage, and links</h2>
-                <p>This website is a dependency-light set of static pages. The current page code sets no cookies and loads no third-party advertising, analytics script, social tracking pixel, or embedded form. To remember Chinese or English, it stores “zh” or “en” in browser localStorage. You can remove that value by clearing site data.</p>
-                <p>Servers, CDNs, DNS, or security services needed to operate the site may process standard connection information automatically for page delivery, security, and troubleshooting. This processing does not involve in-app photos, edit settings, or generated images.</p>
-                <p>The app's settings page opens the privacy policy and terms in an external browser. After you tap, you leave the app's local environment and connect to the relevant website. Your browser, network provider, and network services needed to operate the website may process connection information under their rules. Review the privacy terms of any third-party destination before following an external link.</p>
-              </section>
-
-              <section id="en-rights">
-                <h2>9. Your controls and rights</h2>
-                <p>You can:</p>
-                <ul>
-                  <li>decide whether to select a photo, edit it, and save a generated result;</li>
-                  <li>review, restrict, or withdraw photo-related permissions in system settings;</li>
-                  <li>change the app language, or clear app data/uninstall to remove local preferences and sandbox content;</li>
-                  <li>view, edit, share, or delete saved images in the system photo library;</li>
-                  <li>clear browser site data to remove this website's language preference; and</li>
-                  <li>contact us about production website logs or privacy questions through the email listed in this policy.</li>
-                </ul>
-                <p>Because the current version has no account or developer-hosted artwork library, the developer ordinarily cannot search for, export, correct, or delete photos and editing state stored on your device by using your name or email. You exercise most local-data rights directly through the app, system photo library, and device settings.</p>
-              </section>
-
-              <section id="en-security">
-                <h2>10. Security and data boundaries</h2>
-                <p>We reduce risk by minimizing information handling, performing core editing on device, and avoiding an account database. No device, operating system, network, or storage method can be guaranteed absolutely secure. Use a device lock, keep the system updated, maintain trusted backups, and use care with photos containing sensitive people, documents, location clues, or other private content.</p>
-              </section>
-
-              <section id="en-changes">
-                <h2>11. Changes to this policy</h2>
-                <p>If Jufu adds accounts, cloud sync, camera access, sharing, analytics, advertising, subscriptions, online processing, or another feature that changes its data flows, we will reassess and update this policy before the feature is released. Material changes may be communicated through an in-app notice, website notice, store release notes, or another method required by applicable law.</p>
-                <p>The top of this page shows when the draft was last updated. An updated policy applies when it is published unless applicable law requires otherwise.</p>
-              </section>
-
-              <section id="en-contact">
-                <h2>12. Contact us</h2>
-                <p>For questions about this policy, photo processing, system permissions, or production website logs, contact:</p>
-                <div class="policy-contact">
-                  <p><strong>Operator:</strong> <span>Jufu独立开发者</span></p>
-                  <p><strong>Privacy email:</strong> <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a></p>
-                </div>
-                <p class="legal-note">The feature descriptions in this draft reflect code inspected on August 27, 2026; the brand name was updated to Jufu on September 18, 2026. The released binary, store privacy disclosures, permission copy, and this policy should remain aligned.</p>
-              </section>
-            </div>
-          </article>
-        </div>
-      </section>
+        <h2>联系我们</h2>
+        <p>运营主体：Jufu独立开发者<br>隐私与支持邮箱：<a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a><br>产品网站：<a href="https://lunelleglobal.com">lunelleglobal.com</a></p>
+      </article>
     </main>
 
     <footer class="site-footer">
-      <div class="shell footer-grid">
-        <div class="footer-brand">
-          <img src="assets/app-icon.png" alt="" width="46" height="46">
-          <span><strong>Jufu</strong><small data-zh="为每一张照片留下精致余韵" data-en="A refined finish for every photo">为每一张照片留下精致余韵</small></span>
-        </div>
-        <nav aria-label="页脚导航">
-          <a href="index.html" data-language-link data-zh="官网" data-en="Home">官网</a>
-          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy Policy">隐私政策</a>
-          <a href="terms.html" data-language-link data-zh="用户协议" data-en="Terms of Use">用户协议</a>
-        </nav>
-      </div>
       <div class="shell footer-bottom">
+        <span data-lang="en"><a href="index.html" data-local-page>Back to Jufu</a></span>
+        <span data-lang="zh"><a href="index.html" data-local-page>返回 Jufu 官网</a></span>
         <span>© <span data-current-year>2026</span> Jufu.</span>
-        <span data-zh="静态页面 · 不设置追踪 Cookie" data-en="Static pages · No tracking cookies">静态页面 · 不设置追踪 Cookie</span>
       </div>
     </footer>
   </body>

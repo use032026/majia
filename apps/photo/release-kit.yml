@@ -1,0 +1,92 @@
+schema_version: 2
+
+identity:
+  app_name: "Jufu"
+  operator: "Jufu独立开发者"
+  bundle_id: "com.hxw.jufu"
+  android_package: "com.hxw.jufu"
+
+contact:
+  support_email: "djl13333995679@163.com"
+  production_domain: "lunelleglobal.com"
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: "2026-09-18"
+  confirmed:
+    - Jufu独立开发者 is the formal operator name
+    - the privacy policy effective date is 2026-09-18
+    - no account or sign-in flow in the current app
+    - selected photos are edited on device
+    - language and onboarding preferences are stored locally
+    - generated PNG files are saved only after a user action
+    - no advertising or analytics SDK is declared in the current dependencies
+    - privacy and terms links open lunelleglobal.com in an external browser
+  open_questions: []
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: onboarding
+        source: artifacts/app-store-previews/source/01-onboarding-ios.png
+      - id: effects-introduction
+        source: artifacts/app-store-previews/source/02-effects-onboarding-ios.png
+      - id: watermark-introduction
+        source: artifacts/app-store-previews/source/03-watermark-onboarding-ios.png
+      - id: start
+        source: artifacts/app-store-previews/source/04-start-ios.png
+      - id: effects
+        source: artifacts/app-store-previews/source/05-effects-ios.png
+      - id: watermark
+        source: artifacts/app-store-previews/source/06-watermark-ios.png
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: onboarding
+        source_en: artifacts/google-play-listing/source/01-onboarding-android.png
+      - id: effects-introduction
+        source_en: artifacts/google-play-listing/source/02-effects-onboarding-android.png
+      - id: watermark-introduction
+        source_en: artifacts/google-play-listing/source/03-watermark-onboarding-android.png
+      - id: start
+        source_en: artifacts/google-play-listing/source/04-start-android.png
+        source_zh: artifacts/google-play-listing/source/zh-04-start-android.png
+      - id: effects
+        source_en: artifacts/google-play-listing/source/05-effects-android.png
+        source_zh: artifacts/google-play-listing/source/zh-05-effects-android.png
+      - id: watermark
+        source_en: artifacts/google-play-listing/source/06-watermark-android.png
+        source_zh: artifacts/google-play-listing/source/zh-06-watermark-android.png
+      - id: crop
+        source_zh: artifacts/google-play-listing/source/zh-07-crop-android.png
+
+paths:
+  app_root: "apps/photo"

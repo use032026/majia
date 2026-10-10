@@ -1,0 +1,7 @@
+Give each photo a refined finish with Jufu, a focused editor for iPhone, iPad, and Android.
+
+Choose a favorite from your photo library and shape it in one clear workspace. Adjust the crop and zoom, explore ten looks from Original and Lilac to Film, Mist, and Monochrome, then fine-tune effect strength and brightness.
+
+Add a personal text watermark and control its color, size, opacity, and position. Press and hold the preview to compare your edit with the original, reset adjustments whenever you want, and save a generated PNG to your photo library only when you are ready.
+
+Jufu supports English and Simplified Chinese. The current version requires no account, keeps its core photo editing on your device, and does not include advertising or behavioral analytics SDKs.

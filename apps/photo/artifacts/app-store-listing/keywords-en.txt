@@ -1,0 +1,1 @@
+photo editor,watermark,crop,filters,brightness,monochrome,picture,local,bilingual

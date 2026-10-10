@@ -1,0 +1,78 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/photo/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "Jufu",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/photo/android/app/src/main/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.WRITE_EXTERNAL_STORAGE"
+        ]
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/photo/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/photo",
+  "dependency_signals": {
+    "camera_or_photos": [
+      "image_picker"
+    ],
+    "local_storage": [
+      "shared_preferences"
+    ]
+  },
+  "generated_at": "2026-10-09T10:08:12.190255+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.hxw.jufu",
+      "com.hxw.jufu.RunnerTests",
+      "com.lunelle.lite"
+    ],
+    "info_plists": [
+      {
+        "display_name": "Jufu",
+        "path": "/Users/starburst/majia/apps/photo/ios/Runner/Info.plist",
+        "usage_descriptions": {
+          "NSPhotoLibraryAddUsageDescription": "Save edited photos to your Photo Library.",
+          "NSPhotoLibraryUsageDescription": "Choose photos to add watermarks and effects."
+        }
+      }
+    ],
+    "privacy_manifests": [],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [],
+  "network_hosts_observed": [],
+  "pubspec": {
+    "dependencies": [
+      "cupertino_icons",
+      "flutter_localizations",
+      "image_picker",
+      "shared_preferences",
+      "url_launcher"
+    ],
+    "description": "A new Flutter project.",
+    "name": "jufu",
+    "path": "/Users/starburst/majia/apps/photo/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

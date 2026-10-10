@@ -1,354 +1,123 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#725286">
     <meta name="color-scheme" content="light">
-    <meta
-      name="description"
-      content="Jufu 是一款轻量照片编辑工具：调整构图与比例，添加柔和效果和文字水印，再由你决定是否保存到系统相册。"
-    >
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Jufu — 为每一张照片留下精致余韵">
-    <meta
-      property="og:description"
-      content="在设备本地完成构图、效果与文字水印编辑，无需账号。"
-    >
-    <meta name="twitter:card" content="summary">
-    <title>Jufu — 轻量照片编辑工具</title>
+    <meta name="description" content="Refine a crop, add a soft effect and a personal text watermark, then decide whether to save the result to Photos.">
+    <title>Jufu — A Refined Finish for Every Photo</title>
     <link rel="icon" href="assets/app-icon.png">
     <link rel="apple-touch-icon" href="assets/app-icon.png">
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
   </head>
-  <body data-page="home">
-    <a
-      class="skip-link"
-      href="#main"
-      data-zh="跳到主要内容"
-      data-en="Skip to main content"
-    >跳到主要内容</a>
-
-    <header class="site-header" data-header>
+  <body
+    data-page="home"
+    data-title-en="Jufu — A Refined Finish for Every Photo"
+    data-title-zh="Jufu — 为每一张照片留下精致余韵"
+    data-description-en="Refine a crop, add a soft effect and a personal text watermark, then decide whether to save the result to Photos."
+    data-description-zh="选择一张照片，调整构图与比例，添加柔和效果和文字水印，再由你决定是否保存到系统相册。"
+  >
+    <header class="site-header is-scrolled" data-header>
       <div class="shell header-inner">
-        <a class="brand" href="#top" aria-label="Jufu 首页">
+        <a class="brand" href="index.html" data-local-page aria-label="Jufu home">
           <img src="assets/app-icon.png" alt="" width="44" height="44">
           <span>Jufu</span>
         </a>
-
-        <button
-          class="menu-button"
-          type="button"
-          aria-expanded="false"
-          aria-controls="site-nav"
-          data-menu-button
-        >
-          <span class="sr-only" data-zh="打开导航" data-en="Open navigation">打开导航</span>
-          <span></span><span></span><span></span>
-        </button>
-
-        <nav class="site-nav" id="site-nav" aria-label="主要导航" data-nav>
-          <a href="#features" data-zh="功能" data-en="Features">功能</a>
-          <a href="#how-it-works" data-zh="使用方式" data-en="How it works">使用方式</a>
-          <a href="#privacy" data-zh="隐私优先" data-en="Privacy">隐私优先</a>
-          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy">隐私政策</a>
-          <a href="terms.html" data-language-link data-zh="用户协议" data-en="Terms">用户协议</a>
-          <div class="language-switch" role="group" aria-label="语言 / Language">
-            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
-            <span aria-hidden="true"></span>
-            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
-          </div>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a href="#features"><span data-lang="en">Features</span><span data-lang="zh">功能</span></a>
+          <a href="privacy.html" data-local-page><span data-lang="en">Privacy</span><span data-lang="zh">隐私</span></a>
+          <a href="mailto:djl13333995679@163.com"><span data-lang="en">Support</span><span data-lang="zh">支持</span></a>
         </nav>
+        <div class="language-switch" role="group" aria-label="Language / 语言">
+          <button type="button" data-language-option="en">EN</button>
+          <span aria-hidden="true"></span>
+          <button type="button" data-language-option="zh">中文</button>
+        </div>
       </div>
     </header>
 
-    <main id="main">
-      <section class="hero" id="top">
-        <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
-        <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
-        <div class="shell hero-grid">
-          <div class="hero-copy">
-            <div class="eyebrow">
-              <span class="eyebrow-moon" aria-hidden="true"></span>
-              <span
-                data-zh="轻盈、专注、由你掌控"
-                data-en="Lightweight, focused, yours"
-              >轻盈、专注、由你掌控</span>
-            </div>
-            <h1>
-              <span data-zh="为每一张照片，" data-en="Give every photo">为每一张照片，</span>
-              <span
-                class="gradient-text"
-                data-zh="留下一点月光。"
-                data-en="a quiet afterglow."
-              >留下一点月光。</span>
-            </h1>
-            <p
-              class="hero-lede"
-              data-zh="选一张照片，调整比例与构图，叠加柔和效果和一句文字水印。Jufu 在设备本地完成核心编辑，再由你决定是否保存到系统相册。"
-              data-en="Choose a photo, refine the crop, add a soft effect and a personal text watermark. Jufu performs its core editing on your device, and you decide whether to save the result to Photos."
-            >选一张照片，调整比例与构图，叠加柔和效果和一句文字水印。Jufu 在设备本地完成核心编辑，再由你决定是否保存到系统相册。</p>
-
-            <div class="hero-actions">
-              <a class="button button-primary" href="#features">
-                <span data-zh="看看能做什么" data-en="Explore features">看看能做什么</span>
-                <span aria-hidden="true">↘</span>
-              </a>
-              <a class="text-link" href="privacy.html" data-language-link>
-                <span data-zh="了解本地处理方式" data-en="See how local processing works">了解本地处理方式</span>
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-
-            <ul class="trust-list" aria-label="产品特点">
-              <li><span aria-hidden="true">✓</span><span data-zh="无需账号" data-en="No account">无需账号</span></li>
-              <li><span aria-hidden="true">✓</span><span data-zh="核心编辑在设备本地完成" data-en="Core editing stays on device">核心编辑在设备本地完成</span></li>
-              <li><span aria-hidden="true">✓</span><span data-zh="中英文界面" data-en="Chinese &amp; English">中英文界面</span></li>
-            </ul>
+    <main id="main" class="release-site">
+      <section class="release-hero">
+        <div class="release-hero-copy" data-lang="en">
+          <p class="eyebrow">Focused photo finishing</p>
+          <h1>Give every photo a refined finish.</h1>
+          <p class="hero-lede">Choose one photo, refine the crop, add a soft effect and a personal text watermark, then save a new PNG only when it feels right.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#features">Explore the tools</a>
+            <a class="text-link" href="privacy.html" data-local-page>Read the privacy policy →</a>
           </div>
-
-          <div class="hero-product" aria-label="Jufu 应用界面示意">
-            <div class="orbit orbit-one" aria-hidden="true"></div>
-            <div class="orbit orbit-two" aria-hidden="true"></div>
-            <div class="floating-chip floating-chip-top" aria-hidden="true">
-              <span>✦</span>
-              <b data-zh="柔和效果" data-en="Soft effects">柔和效果</b>
-            </div>
-            <div class="phone-frame">
-              <div class="phone-sensor" aria-hidden="true"></div>
-              <div class="phone-screen">
-                <div class="app-topbar">
-                  <div class="app-brandline">
-                    <img src="assets/app-icon.png" alt="" width="34" height="34">
-                    <span>
-                      <strong>Jufu</strong>
-                      <small data-zh="Jufu 照片编辑" data-en="Photo finishing">Jufu 照片编辑</small>
-                    </span>
-                  </div>
-                  <span class="settings-dot" aria-hidden="true">•••</span>
-                </div>
-
-                <div class="photo-stage" aria-hidden="true">
-                  <div class="mock-sky"></div>
-                  <div class="mock-moon"></div>
-                  <div class="mock-hill mock-hill-back"></div>
-                  <div class="mock-hill mock-hill-front"></div>
-                  <div class="mock-watermark">Shine in your own way</div>
-                </div>
-
-                <div class="tool-tabs" aria-hidden="true">
-                  <span class="is-active" data-zh="效果" data-en="Effect">效果</span>
-                  <span data-zh="水印" data-en="Text">水印</span>
-                  <span data-zh="裁剪" data-en="Crop">裁剪</span>
-                </div>
-
-                <div class="effect-panel" aria-hidden="true">
-                  <div class="panel-heading">
-                    <strong data-zh="轻盈效果" data-en="Photo effects">轻盈效果</strong>
-                    <small data-zh="长按对比原图" data-en="Hold to compare">长按对比原图</small>
-                  </div>
-                  <div class="filter-row">
-                    <span data-zh="原图" data-en="Original">原图</span>
-                    <span class="is-active" data-zh="浅紫" data-en="Lilac">浅紫</span>
-                    <span data-zh="暖阳" data-en="Warm">暖阳</span>
-                    <span data-zh="胶片" data-en="Film">胶片</span>
-                  </div>
-                  <div class="slider-row">
-                    <small data-zh="效果强度" data-en="Strength">效果强度</small>
-                    <div><i></i><b></b></div>
-                  </div>
-                </div>
-
-                <div class="mock-save-button" aria-hidden="true">
-                  <span>↓</span>
-                  <strong data-zh="保存到相册" data-en="Save to Photos">保存到相册</strong>
-                </div>
-              </div>
-            </div>
-            <div class="floating-chip floating-chip-bottom" aria-hidden="true">
-              <span>1:1</span><span>4:5</span><span>9:16</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="proof-strip" aria-label="产品原则">
-        <div class="shell proof-grid">
-          <div><strong>10</strong><span data-zh="种照片效果" data-en="photo effects">种照片效果</span></div>
-          <div><strong>4</strong><span data-zh="种构图比例" data-en="crop ratios">种构图比例</span></div>
-          <div><strong>0</strong><span data-zh="账号或登录步骤" data-en="accounts or sign-ins">账号或登录步骤</span></div>
-          <div><strong>100%</strong><span data-zh="核心编辑本地完成" data-en="core editing on device">核心编辑本地完成</span></div>
-        </div>
-      </section>
-
-      <section class="section workflow-section" id="how-it-works">
-        <div class="shell">
-          <div class="section-heading centered">
-            <span class="section-kicker" data-zh="从选择到保存" data-en="From selection to save">从选择到保存</span>
-            <h2 data-zh="三步，完成一张属于你的照片。" data-en="Three steps to make the photo yours.">三步，完成一张属于你的照片。</h2>
-            <p
-              data-zh="不建立素材库，不要求注册。每一次编辑都从你主动选择的照片开始。"
-              data-en="No account and no in-app photo library. Every edit begins with a photo you explicitly choose."
-            >不建立素材库，不要求注册。每一次编辑都从你主动选择的照片开始。</p>
-          </div>
-
-          <div class="workflow-grid">
-            <article class="workflow-card">
-              <div class="step-label"><span>01</span><b data-zh="选择照片" data-en="Choose a photo">选择照片</b></div>
-              <div class="workflow-icon photo-icon" aria-hidden="true"><i></i><b></b></div>
-              <h3 data-zh="只处理你选中的这一张" data-en="Only the photo you select">只处理你选中的这一张</h3>
-              <p
-                data-zh="通过系统照片选择界面选取图片。当前版本不会调用相机，也不会自动扫描你的整个相册。"
-                data-en="Pick an image through the system photo interface. The current version does not open the camera or automatically scan your library."
-              >通过系统照片选择界面选取图片。当前版本不会调用相机，也不会自动扫描你的整个相册。</p>
-            </article>
-
-            <article class="workflow-card featured-card">
-              <div class="step-label"><span>02</span><b data-zh="完成编辑" data-en="Refine it">完成编辑</b></div>
-              <div class="workflow-icon edit-icon" aria-hidden="true"><i></i><b></b><em></em></div>
-              <h3 data-zh="效果、水印与构图都在手边" data-en="Effects, text, and crop at hand">效果、水印与构图都在手边</h3>
-              <p
-                data-zh="调整效果强度与亮度，设置水印文字、颜色、大小、透明度和位置，再选择适合的裁剪比例。"
-                data-en="Tune effect strength and brightness, style and position a text watermark, then choose the crop ratio that fits."
-              >调整效果强度与亮度，设置水印文字、颜色、大小、透明度和位置，再选择适合的裁剪比例。</p>
-            </article>
-
-            <article class="workflow-card">
-              <div class="step-label"><span>03</span><b data-zh="主动保存" data-en="Save when ready">主动保存</b></div>
-              <div class="workflow-icon save-icon" aria-hidden="true"><i>↓</i></div>
-              <h3 data-zh="由你决定何时写入相册" data-en="You choose when to save">由你决定何时写入相册</h3>
-              <p
-                data-zh="只有点击“保存到相册”后，Jufu 才会请求相应系统权限并写入生成的 PNG 图片。"
-                data-en="Only after you tap “Save to Photos” does Jufu request the relevant system permission and write the generated PNG image."
-              >只有点击“保存到相册”后，Jufu 才会请求相应系统权限并写入生成的 PNG 图片。</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section features-section" id="features">
-        <div class="shell">
-          <div class="section-heading split-heading">
-            <div>
-              <span class="section-kicker" data-zh="少一点复杂，多一点专注" data-en="Less complexity, more focus">少一点复杂，多一点专注</span>
-              <h2 data-zh="围绕一张照片，刚刚好的工具。" data-en="Just the right tools for one photo.">围绕一张照片，刚刚好的工具。</h2>
-            </div>
-            <p
-              data-zh="Jufu 保留必要的控制，把每项调整放在清晰的单页流程里。"
-              data-en="Jufu keeps the controls that matter and places every adjustment in one clear, focused flow."
-            >Jufu 保留必要的控制，把每项调整放在清晰的单页流程里。</p>
-          </div>
-
-          <div class="feature-bento">
-            <article class="feature-tile feature-large effect-feature">
-              <div class="feature-copy">
-                <span class="mini-kicker" data-zh="柔和效果" data-en="Soft effects">柔和效果</span>
-                <h3 data-zh="从浅紫到胶片，让情绪轻轻落下。" data-en="From lilac to film, set the mood softly.">从浅紫到胶片，让情绪轻轻落下。</h3>
-                <p
-                  data-zh="十种效果配合强度和亮度控制；长按照片，随时与原图对比。"
-                  data-en="Ten effects with strength and brightness controls. Press and hold the photo to compare with the original."
-                >十种效果配合强度和亮度控制；长按照片，随时与原图对比。</p>
-              </div>
-              <div class="palette-visual" aria-hidden="true">
-                <span class="palette-card palette-one"></span>
-                <span class="palette-card palette-two"></span>
-                <span class="palette-card palette-three"></span>
-                <i></i>
-              </div>
-            </article>
-
-            <article class="feature-tile crop-feature">
-              <span class="mini-kicker" data-zh="灵活构图" data-en="Flexible crop">灵活构图</span>
-              <h3 data-zh="适合头像、动态与故事的比例" data-en="Ratios for posts, portraits, and stories">适合头像、动态与故事的比例</h3>
-              <div class="ratio-visual" aria-hidden="true"><span>1:1</span><span>4:5</span><span>9:16</span></div>
-            </article>
-
-            <article class="feature-tile watermark-feature">
-              <span class="mini-kicker" data-zh="文字水印" data-en="Text watermark">文字水印</span>
-              <h3 data-zh="一句话，也可以有自己的位置。" data-en="Give your words their own place.">一句话，也可以有自己的位置。</h3>
-              <p
-                data-zh="编辑文字、颜色、大小和透明度，并把它拖到合适的位置。"
-                data-en="Edit the words, color, size, and opacity, then drag the watermark into place."
-              >编辑文字、颜色、大小和透明度，并把它拖到合适的位置。</p>
-              <div class="watermark-visual" aria-hidden="true"><span>Shine in your own way</span><i></i></div>
-            </article>
-
-            <article class="feature-tile local-feature">
-              <span class="mini-kicker" data-zh="本地优先" data-en="Local-first">本地优先</span>
-              <h3 data-zh="没有账号，也没有作品上传。" data-en="No account. No artwork upload.">没有账号，也没有作品上传。</h3>
-              <p
-                data-zh="照片和编辑内容用于设备本地生成结果。当前版本未集成广告或分析 SDK。"
-                data-en="Photos and edits are used on device to generate the result. The current version includes no advertising or analytics SDK."
-              >照片和编辑内容用于设备本地生成结果。当前版本未集成广告或分析 SDK。</p>
-              <div class="local-badge" aria-hidden="true"><span>⌁</span><b data-zh="仅此设备" data-en="This device">仅此设备</b></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section privacy-section" id="privacy">
-        <div class="shell privacy-panel">
-          <div class="privacy-mark" aria-hidden="true"><span></span></div>
-          <div class="privacy-copy">
-            <span class="section-kicker" data-zh="你的照片，不必去远方" data-en="Your photos do not need to travel">你的照片，不必去远方</span>
-            <h2 data-zh="核心照片编辑在设备本地完成。" data-en="Core photo editing happens on your device.">核心照片编辑在设备本地完成。</h2>
-            <p
-              data-zh="Jufu 不要求注册，不把选中的照片、文字水印或生成图片上传到开发者服务器。语言偏好保存在本机；只有你主动点击保存时，生成图片才会写入系统相册。"
-              data-en="Jufu requires no registration and does not upload your selected photo, watermark text, or generated image to a developer server. Your language preference stays on device, and the result is written to Photos only when you choose to save it."
-            >Jufu 不要求注册，不把选中的照片、文字水印或生成图片上传到开发者服务器。语言偏好保存在本机；只有你主动点击保存时，生成图片才会写入系统相册。</p>
-            <div class="privacy-actions">
-              <a class="button button-light" href="privacy.html" data-language-link>
-                <span data-zh="阅读隐私政策" data-en="Read privacy policy">阅读隐私政策</span>
-                <span aria-hidden="true">→</span>
-              </a>
-              <a class="button button-ghost" href="terms.html" data-language-link>
-                <span data-zh="阅读用户协议" data-en="Read terms of use">阅读用户协议</span>
-              </a>
-            </div>
-          </div>
-          <ul class="privacy-points">
-            <li><span aria-hidden="true">✓</span><div><strong data-zh="不建立账号" data-en="No account">不建立账号</strong><small data-zh="没有登录、用户档案或云端作品库" data-en="No sign-in, profile, or cloud artwork library">没有登录、用户档案或云端作品库</small></div></li>
-            <li><span aria-hidden="true">✓</span><div><strong data-zh="不集成广告与分析" data-en="No ads or analytics">不集成广告与分析</strong><small data-zh="当前版本未集成广告或行为分析 SDK" data-en="The current version includes no ad or behavior analytics SDK">当前版本未集成广告或行为分析 SDK</small></div></li>
-            <li><span aria-hidden="true">✓</span><div><strong data-zh="保存由你触发" data-en="Saving is user initiated">保存由你触发</strong><small data-zh="不自动覆盖原图，不后台保存" data-en="No automatic overwrite or background saving">不自动覆盖原图，不后台保存</small></div></li>
+          <ul class="trust-list">
+            <li><span>✓</span><span>No account or sign-in</span></li>
+            <li><span>✓</span><span>Core editing on your device</span></li>
+            <li><span>✓</span><span>English and Simplified Chinese</span></li>
           </ul>
         </div>
+        <div class="release-hero-copy" data-lang="zh">
+          <p class="eyebrow">专注的照片润色工具</p>
+          <h1>为每一张照片，留下精致余韵。</h1>
+          <p class="hero-lede">选一张照片，调整构图与比例，叠加柔和效果和一句文字水印；满意之后，再由你决定是否保存一张新的 PNG 图片。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#features">查看编辑工具</a>
+            <a class="text-link" href="privacy.html" data-local-page>阅读隐私政策 →</a>
+          </div>
+          <ul class="trust-list">
+            <li><span>✓</span><span>无需账号或登录</span></li>
+            <li><span>✓</span><span>核心编辑在设备本地完成</span></li>
+            <li><span>✓</span><span>支持英文与简体中文</span></li>
+          </ul>
+        </div>
+        <figure class="release-preview">
+          <img src="assets/app-preview.png" alt="Jufu photo effects editor running on iPhone" width="1206" height="2622">
+        </figure>
       </section>
 
-      <section class="section support-section" id="support">
-        <div class="shell support-card">
-          <div>
-            <span class="section-kicker" data-zh="支持与联系" data-en="Support &amp; contact">支持与联系</span>
-            <h2 data-zh="遇到问题，欢迎告诉我们。" data-en="Questions? We are here to help.">遇到问题，欢迎告诉我们。</h2>
-            <p
-              data-zh="如有使用或隐私方面的问题，请通过下方邮箱联系我们。"
-              data-en="For product support or privacy questions, contact us at the email below."
-            >如有使用或隐私方面的问题，请通过下方邮箱联系我们。</p>
-          </div>
-          <div class="contact-placeholder">
-            <span data-zh="支持邮箱" data-en="Support email">支持邮箱</span>
-            <code><a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a></code>
+      <section id="features" class="release-section">
+        <div data-lang="en">
+          <p class="section-kicker">One clear workspace</p>
+          <h2>Just the controls your photo needs.</h2>
+          <div class="release-feature-grid">
+            <article><h3>Crop with intent</h3><p>Keep the original composition or choose 1:1, 4:5, or 9:16. Drag to reframe and pinch to zoom.</p></article>
+            <article><h3>Shape the mood</h3><p>Explore ten looks, including Original, Lilac, Film, Mist, and Monochrome, with strength and brightness controls.</p></article>
+            <article><h3>Add your words</h3><p>Create a text watermark, choose its color, size, and opacity, then drag it into place.</p></article>
           </div>
         </div>
+        <div data-lang="zh">
+          <p class="section-kicker">一个清晰的编辑空间</p>
+          <h2>只保留一张照片真正需要的控制。</h2>
+          <div class="release-feature-grid">
+            <article><h3>专注构图</h3><p>保留原始比例，或选择 1:1、4:5、9:16；拖动调整画面，双指缩放细化构图。</p></article>
+            <article><h3>调出氛围</h3><p>从原图、浅紫、胶片、雾蓝到灰白共十种效果，并可继续调整强度与亮度。</p></article>
+            <article><h3>留下文字</h3><p>写下一句文字水印，选择颜色、大小和透明度，再把它拖到合适的位置。</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="release-section release-local-panel">
+        <div data-lang="en">
+          <p class="section-kicker">Your photo stays in your flow</p>
+          <h2>Edit locally. Save deliberately.</h2>
+          <p>Jufu starts only after you choose a photo through the system picker. The current app has no account, developer-hosted artwork library, advertising SDK, or behavioral analytics SDK. It writes a generated image to the system photo library only after you tap Save to Photos.</p>
+        </div>
+        <div data-lang="zh">
+          <p class="section-kicker">照片由你掌控</p>
+          <h2>本地编辑，主动保存。</h2>
+          <p>只有当你通过系统照片选择器选中图片后，Jufu 才会开始编辑。当前应用没有账号、开发者云端作品库、广告 SDK 或行为分析 SDK；只有你点击“保存到相册”后，生成图片才会写入系统照片库。</p>
+        </div>
+      </section>
+
+      <section class="release-section release-support">
+        <div data-lang="en"><h2>Questions about Jufu?</h2><p>For product support or privacy questions, email <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a>.</p></div>
+        <div data-lang="zh"><h2>对 Jufu 有疑问？</h2><p>如需产品支持或咨询隐私问题，请发送邮件至 <a href="mailto:djl13333995679@163.com">djl13333995679@163.com</a>。</p></div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="shell footer-grid">
-        <div class="footer-brand">
-          <img src="assets/app-icon.png" alt="" width="46" height="46">
-          <span><strong>Jufu</strong><small data-zh="为每一张照片留下精致余韵" data-en="A refined finish for every photo">为每一张照片留下精致余韵</small></span>
-        </div>
-        <nav aria-label="页脚导航">
-          <a href="#features" data-zh="功能" data-en="Features">功能</a>
-          <a href="#support" data-zh="支持" data-en="Support">支持</a>
-          <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy Policy">隐私政策</a>
-          <a href="terms.html" data-language-link data-zh="用户协议" data-en="Terms of Use">用户协议</a>
-        </nav>
-      </div>
       <div class="shell footer-bottom">
         <span>© <span data-current-year>2026</span> Jufu.</span>
-        <span data-zh="静态页面 · 不设置追踪 Cookie" data-en="Static pages · No tracking cookies">静态页面 · 不设置追踪 Cookie</span>
+        <span data-lang="en"><a href="privacy.html" data-local-page>Privacy Policy</a> · <a href="terms.html" data-local-page>Terms of Use</a></span>
+        <span data-lang="zh"><a href="privacy.html" data-local-page>隐私政策</a> · <a href="terms.html" data-local-page>用户协议</a></span>
       </div>
     </footer>
   </body>
