@@ -4,7 +4,7 @@ identity:
   app_name: "KIFXPRO"
   operator: "Independent developer of KIFXPRO"
   bundle_id: "com.kifxpro.lite"
-  android_package: "com.starburst.moving_box"
+  android_package: "com.kifxpro.lite"
 
 contact:
   support_email: "15211857631@163.com"

@@ -1,4 +1,4 @@
-package com.starburst.moving_box
+package com.kifxpro.lite
 
 import io.flutter.embedding.android.FlutterActivity
 

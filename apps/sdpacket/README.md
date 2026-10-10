@@ -30,9 +30,9 @@ Flutter 实现的本地优先装箱登记与定位应用。产品规格见
 当前平台标识：
 
 - iOS 生产 Bundle ID：`com.kifxpro.lite`
-- Android 开发期 Application ID：`com.starburst.moving_box`
+- Android 生产 Application ID：`com.kifxpro.lite`
 
-iOS 已使用生产标识并通过云构建环境配置独立的 Release 签名；当前 Android Release 配置仍沿用 Flutter 模板的 Debug 签名，不可用于发布。
+iOS 和 Android 已统一使用生产标识。Android 在存在 `android/key.properties` 时使用独立上传密钥签名；缺少该文件时仅回退到 Debug 签名用于非商店验证。正式云构建仍需配置独立的 `SDPACKET_ANDROID_*` Repository Secrets。
 
 设置页会根据当前应用语言在外部浏览器打开公开页面：
 

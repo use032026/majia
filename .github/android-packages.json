@@ -53,7 +53,7 @@
       "display_name": "KIFXPRO",
       "path": "apps/sdpacket",
       "secret_prefix": "SDPACKET",
-      "application_id": "com.starburst.moving_box"
+      "application_id": "com.kifxpro.lite"
     },
     "steady21": {
       "display_name": "Steady21",

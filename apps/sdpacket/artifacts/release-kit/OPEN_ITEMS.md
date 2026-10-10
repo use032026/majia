@@ -6,10 +6,9 @@
 - Confirm the production website hosting provider and its connection/security
   log-retention configuration. The current privacy copy intentionally leaves
   retention dependent on the actual provider configuration.
-- Android still uses the development application ID
-  `com.starburst.moving_box`, and local release builds fall back to debug
-  signing when no release keystore is provided. Confirm the final Play package
-  identity and release signing separately before any upload.
+- Android now uses the production application ID `com.kifxpro.lite` and has a
+  local upload keystore. Configure the four `SDPACKET_ANDROID_*` Repository
+  Secrets and verify the cloud-built AAB fingerprint before any Play upload.
 - The app's English Privacy action currently routes to
   `https://kifxpro.com/index.html?lang=en`, although the published English
   privacy page is `https://kifxpro.com/privacy.html?lang=en`. Confirm and fix
