@@ -1,0 +1,88 @@
+schema_version: 2
+
+identity:
+  app_name: "KIFXPRO"
+  operator: "Independent developer of KIFXPRO"
+  bundle_id: "com.kifxpro.lite"
+  android_package: "com.starburst.moving_box"
+
+contact:
+  support_email: "15211857631@163.com"
+  production_domain: "https://kifxpro.com"
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: "2026-09-22"
+  confirmed:
+    - no account or developer-hosted cloud database in the current implementation
+    - core projects, box records, notes, item lists, and managed photos are stored locally by default
+    - camera, photo selection, microphone, and speech recognition are used only for user-invoked features
+    - no advertising, behavior analytics, cross-app tracking, or third-party AI SDK is present
+    - exports, backups, printing, and sharing are initiated by the user
+  open_questions:
+    - confirm the legal individual or business name if a store or jurisdiction requires more than the published independent-developer label
+    - confirm the production website hosting provider and its log-retention configuration
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: zh-Hans
+    scenes:
+      - id: moving-projects
+        source: existing validated App Store preview set
+      - id: project-progress
+        source: existing validated App Store preview set
+      - id: box-workflow
+        source: existing validated App Store preview set
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: moving-projects
+        source_en: source/01-moving-projects-en-android.png
+        source_zh: source/01-moving-projects-zh-android.png
+        headline_en: Organize Every Move
+        headline_zh: 每次搬家都井井有条
+      - id: project-progress
+        source_en: source/02-project-progress-en-android.png
+        source_zh: source/02-project-progress-zh-android.png
+        headline_en: Track Every Box
+        headline_zh: 每只箱子进度清晰
+      - id: box-details
+        source_en: source/03-box-details-en-android.png
+        source_zh: source/03-box-details-zh-android.png
+        headline_en: Add Details That Matter
+        headline_zh: 记录真正有用的细节
+      - id: global-search
+        source_en: source/04-global-search-en-android.png
+        source_zh: source/04-global-search-zh-android.png
+        headline_en: Find What You Packed
+        headline_zh: 离线也能快速找到
+
+paths:
+  app_root: "apps/sdpacket"

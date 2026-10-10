@@ -22,7 +22,13 @@
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
   </head>
-  <body data-page="home">
+  <body
+    data-page="home"
+    data-title-zh="KIFXPRO — 搬家纸箱登记与定位"
+    data-title-en="KIFXPRO — Moving Box Organizer"
+    data-description-zh="KIFXPRO 帮你快速登记纸箱、离线查找物品、生成标签并追踪搬运状态。无需账号，核心数据默认保存在设备本地。"
+    data-description-en="Register boxes quickly, find packed items offline, create labels, and track every moving stage. No account required."
+  >
     <a class="skip-link" href="#main" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
 
     <header class="site-header" data-header>
@@ -41,9 +47,9 @@
           <a href="#privacy" data-zh="隐私优先" data-en="Privacy">隐私优先</a>
           <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy policy">隐私政策</a>
           <div class="language-switch" role="group" aria-label="语言 / Language">
-            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <button type="button" data-lang-choice="zh" data-language-option="zh" aria-pressed="true">中</button>
             <span aria-hidden="true"></span>
-            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+            <button type="button" data-lang-choice="en" data-language-option="en" aria-pressed="false">EN</button>
           </div>
         </nav>
       </div>
@@ -62,11 +68,8 @@
               <span data-zh="搬家再忙，" data-en="Every box,">搬家再忙，</span>
               <span class="accent-text" data-zh="每只箱子都找得到。" data-en="right where you expect it.">每只箱子都找得到。</span>
             </h1>
-            <p
-              class="hero-lede"
-              data-zh="拍一张照片，或说一句备注，十几秒登记一只纸箱。KIFXPRO 帮你离线查找物品、对应实体标签，并从打包一路追踪到拆箱。"
-              data-en="Take a photo or speak a quick note to register a box in seconds. KIFXPRO keeps items searchable offline, links records to physical labels, and tracks every stage from packed to unpacked."
-            >拍一张照片，或说一句备注，十几秒登记一只纸箱。KIFXPRO 帮你离线查找物品、对应实体标签，并从打包一路追踪到拆箱。</p>
+            <p class="hero-lede" data-lang="zh">拍一张照片，或说一句备注，十几秒登记一只纸箱。KIFXPRO 帮你离线查找箱号、备注、物品、房间与标签，对应实体标签，并从打包、装车、到达到拆箱逐步追踪。无需账号，核心记录默认保存在设备本地。</p>
+            <p class="hero-lede" data-lang="en" hidden>Take a photo or speak a quick note to register a box in seconds. KIFXPRO keeps codes, notes, items, rooms, and tags searchable offline, links records to physical labels, and tracks every stage from packed to loaded, arrived, and unpacked. No account is required, and core records stay on your device by default.</p>
             <div class="hero-actions">
               <a class="button button-primary" href="#workflow">
                 <span data-zh="看看如何使用" data-en="See how it works">看看如何使用</span>

@@ -24,6 +24,7 @@ PAD_HOME_PATH = SOURCES / "ipad-runtime-home.png"
 PAD_DETAIL_PATH = SOURCES / "ipad-runtime-detail.png"
 
 PHONE_SIZE = (1242, 2688)
+PHONE_REQUIRED_SIZE = (1206, 2622)
 PAD_SIZE = (2732, 2048)
 
 INK = "#10201D"
@@ -176,7 +177,7 @@ def scan_callout(width: int, height: int, *, landscape: bool = False) -> Image.I
     return card
 
 
-def build_phone(index: int) -> Path:
+def build_phone(index: int) -> tuple[Path, Path]:
     specs = {
         1: (
             SOURCES / "iphone-01-bg.png",
@@ -218,9 +219,17 @@ def build_phone(index: int) -> Path:
         track.thumbnail((310, 310), Image.Resampling.LANCZOS)
         canvas.alpha_composite(track, (890, 2295))
 
+    rendered = canvas.convert("RGB")
     out = FINAL / f"iphone-6.5-{index:02d}.png"
-    canvas.convert("RGB").save(out, optimize=True)
-    return out
+    rendered.save(out, optimize=True)
+
+    required_out = FINAL / f"iphone-dynamic-island-{index:02d}.png"
+    ImageOps.fit(
+        rendered,
+        PHONE_REQUIRED_SIZE,
+        method=Image.Resampling.LANCZOS,
+    ).save(required_out, optimize=True)
+    return out, required_out
 
 
 def crop_panel(source: Path, crop: tuple[int, int, int, int], size: tuple[int, int]) -> Image.Image:
@@ -330,7 +339,8 @@ def main() -> None:
 
     generated: list[Path] = []
     if args.only in ("iphone", "all"):
-        generated.extend(build_phone(index) for index in range(1, 4))
+        for index in range(1, 4):
+            generated.extend(build_phone(index))
     if args.only in ("ipad", "all"):
         generated.extend(build_pad(index) for index in range(1, 4))
 

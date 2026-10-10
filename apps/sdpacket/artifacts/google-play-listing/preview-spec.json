@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "store": "google_play",
+  "app_name": "KIFXPRO",
+  "font_path": "../../assets/fonts/NotoSansSC-VF.ttf",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#315F52",
+    "background_bottom": "#173F35",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#DFF3EB"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/01-moving-projects-en-android.png",
+      "output": "final/en-US/phone/01-moving-projects.png",
+      "size": [1080, 1920],
+      "headline": "Organize Every Move"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/02-project-progress-en-android.png",
+      "output": "final/en-US/phone/02-project-progress.png",
+      "size": [1080, 1920],
+      "headline": "Track Every Box"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/03-box-details-en-android.png",
+      "output": "final/en-US/phone/03-box-details.png",
+      "size": [1080, 1920],
+      "headline": "Add Details That Matter"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/04-global-search-en-android.png",
+      "output": "final/en-US/phone/04-global-search.png",
+      "size": [1080, 1920],
+      "headline": "Find What You Packed"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/01-moving-projects-zh-android.png",
+      "output": "final/zh-CN/phone/01-moving-projects.png",
+      "size": [1080, 1920],
+      "headline": "每次搬家都井井有条"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/02-project-progress-zh-android.png",
+      "output": "final/zh-CN/phone/02-project-progress.png",
+      "size": [1080, 1920],
+      "headline": "每只箱子进度清晰"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/03-box-details-zh-android.png",
+      "output": "final/zh-CN/phone/03-box-details.png",
+      "size": [1080, 1920],
+      "headline": "记录真正有用的细节"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/04-global-search-zh-android.png",
+      "output": "final/zh-CN/phone/04-global-search.png",
+      "size": [1080, 1920],
+      "headline": "离线也能快速找到"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "en-US",
+      "output": "final/feature-graphic-en.png",
+      "size": [1024, 500],
+      "headline": "Every Box, Easy to Find"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "zh-CN",
+      "output": "final/feature-graphic-zh.png",
+      "size": [1024, 500],
+      "headline": "让每只箱子都找得到"
+    }
+  ]
+}

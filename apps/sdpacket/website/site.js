@@ -3,34 +3,6 @@
 
   const languageKey = "kifxpro-site-language";
   const supportedLanguages = new Set(["zh", "en"]);
-  const page = document.body.dataset.page || "home";
-
-  const pageMetadata = {
-    home: {
-      zh: {
-        title: "KIFXPRO — 搬家纸箱登记与定位",
-        description:
-          "KIFXPRO 帮你快速登记纸箱、离线查找物品、生成标签并追踪搬运状态。无需账号，核心数据默认保存在设备本地。",
-      },
-      en: {
-        title: "KIFXPRO — Moving Box Organizer",
-        description:
-          "Register boxes quickly, find packed items offline, create labels, and track every moving stage. No account required.",
-      },
-    },
-    privacy: {
-      zh: {
-        title: "KIFXPRO 隐私政策",
-        description:
-          "了解 KIFXPRO 如何处理搬家项目、纸箱记录、照片、语音、二维码、导出文件和网站访问数据。",
-      },
-      en: {
-        title: "KIFXPRO Privacy Policy",
-        description:
-          "Learn how KIFXPRO handles moving projects, box records, photos, voice input, QR codes, exports, and website data.",
-      },
-    },
-  };
 
   function resolveInitialLanguage() {
     const queryLanguage = new URLSearchParams(window.location.search).get("lang");
@@ -69,22 +41,26 @@
     document.querySelectorAll("[data-zh][data-en]").forEach((element) => {
       element.textContent = element.dataset[language];
     });
-    document.querySelectorAll("[data-lang-choice]").forEach((button) => {
+    document.querySelectorAll("[data-language-option]").forEach((button) => {
       button.setAttribute(
         "aria-pressed",
-        String(button.dataset.langChoice === language),
+        String(button.dataset.languageOption === language),
       );
+    });
+    document.querySelectorAll("[data-lang]").forEach((block) => {
+      block.hidden = block.dataset.lang !== language;
     });
     document.querySelectorAll("[data-policy-language]").forEach((block) => {
       block.hidden = block.dataset.policyLanguage !== language;
     });
 
-    const metadata = pageMetadata[page]?.[language];
-    if (metadata) {
-      document.title = metadata.title;
-      const description = document.querySelector('meta[name="description"]');
-      if (description) description.content = metadata.description;
-    }
+    const title = document.body.dataset[`title${language === "zh" ? "Zh" : "En"}`];
+    const descriptionValue = document.body.dataset[
+      `description${language === "zh" ? "Zh" : "En"}`
+    ];
+    if (title) document.title = title;
+    const description = document.querySelector('meta[name="description"]');
+    if (description && descriptionValue) description.content = descriptionValue;
 
     updateInternalLinks(language);
     if (persist) {
@@ -98,8 +74,8 @@
 
   setLanguage(resolveInitialLanguage(), false);
 
-  document.querySelectorAll("[data-lang-choice]").forEach((button) => {
-    button.addEventListener("click", () => setLanguage(button.dataset.langChoice));
+  document.querySelectorAll("[data-language-option]").forEach((button) => {
+    button.addEventListener("click", () => setLanguage(button.dataset.languageOption));
   });
 
   const header = document.querySelector("[data-header]");

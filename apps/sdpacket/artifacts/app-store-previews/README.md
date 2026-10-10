@@ -5,11 +5,16 @@
 - `final/iphone-6.5-01.png` — 搬家流程，一目了然
 - `final/iphone-6.5-02.png` — 每个箱子，都有迹可循
 - `final/iphone-6.5-03.png` — 扫码推进，离线也安心
+- `final/iphone-dynamic-island-01.png` — 当前 iPhone 必需槽位兼容版
+- `final/iphone-dynamic-island-02.png` — 当前 iPhone 必需槽位兼容版
+- `final/iphone-dynamic-island-03.png` — 当前 iPhone 必需槽位兼容版
 - `final/ipad-12.9-01.png` — 搬家流程，一目了然
 - `final/ipad-12.9-02.png` — 每个箱子，都有迹可循
 - `final/ipad-12.9-03.png` — 扫码推进，离线也安心
 
-iPhone 成品均为 `1242 × 2688` RGB PNG；iPad 成品均为 `2732 × 2048` RGB PNG，全部不含 Alpha 通道。
+原 iPhone 成品为 `1242 × 2688` RGB PNG；当前 iPhone Dynamic Island
+必需槽位兼容版为 `1206 × 2622` RGB PNG；iPad 成品为
+`2732 × 2048` RGB PNG，全部不含 Alpha 通道。
 
 ## 素材与验证
 
