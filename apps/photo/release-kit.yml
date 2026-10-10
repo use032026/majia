@@ -3,8 +3,8 @@ schema_version: 2
 identity:
   app_name: "Jufu"
   operator: "Jufu独立开发者"
-  bundle_id: "com.hxw.jufu"
-  android_package: "com.hxw.jufu"
+  bundle_id: "com.lunelle.lite"
+  android_package: "com.lunelle.lite"
 
 contact:
   support_email: "djl13333995679@163.com"

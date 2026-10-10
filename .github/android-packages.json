@@ -41,7 +41,7 @@
       "display_name": "Jufu",
       "path": "apps/photo",
       "secret_prefix": "PHOTO",
-      "application_id": "com.hxw.jufu"
+      "application_id": "com.lunelle.lite"
     },
     "plotproof_lab": {
       "display_name": "PlotProof Lab",
