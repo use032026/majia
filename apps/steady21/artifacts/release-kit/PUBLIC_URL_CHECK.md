@@ -1,6 +1,6 @@
 # Public website and privacy URL check
 
-Checked on 2026-10-12 after the operator provided the policy URLs. No website deployment or store upload was performed in this run.
+Checked again on 2026-10-12 after the operator confirmed deployment. The hosted product page, privacy policy, JavaScript, and stylesheet returned HTTPS 200 and matched the corresponding local `website/` files byte for byte. No store upload was performed in this run.
 
 | URL | Reachability | Browser check |
 | --- | --- | --- |
@@ -11,4 +11,4 @@ Checked on 2026-10-12 after the operator provided the policy URLs. No website de
 
 The live site's language switch changed the privacy page between the exact `?lang=zh` and `?lang=en` URLs. Its support email is `postmaster@hndige.com`.
 
-**Content discrepancy:** Both live policy versions still say the production address needs confirmation and describe the page as a draft awaiting publication. The live product page also says the production address is being confirmed. Those statements are inaccurate now that `wowsteady.com` is reachable. The local `website/` files have been corrected, but the correction is not yet reflected online. Hosting provider, request-log retention, email delivery, legal review, and final signed-binary privacy disclosures remain unverified.
+The previously recorded draft and unconfirmed-address wording is no longer present online. The hosted `index.html`, `privacy.html`, `site.js`, and `styles.css` have the same bytes and SHA-256 digests as the local copies. Both language URLs use the same bilingual policy document, with `site.js` selecting the requested language. Hosting provider, request-log retention, email delivery, legal review, and final signed-binary privacy disclosures remain unverified.

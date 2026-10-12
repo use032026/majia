@@ -1,6 +1,6 @@
 # 微成 · Steady21 Privacy Policy Draft
 
-> Historical 2026-09-22 draft. For the current bilingual policy source, use `website/privacy.html`; the public URLs are `https://wowsteady.com/privacy.html?lang=en` and `https://wowsteady.com/privacy.html?lang=zh`. The public copy still needs the wording update recorded in `artifacts/release-kit/PUBLIC_URL_CHECK.md`.
+> Historical 2026-09-22 draft. For the current bilingual policy source, use `website/privacy.html`; the public URLs are `https://wowsteady.com/privacy.html?lang=en` and `https://wowsteady.com/privacy.html?lang=zh`. The hosted copy now matches that current source, as recorded in `artifacts/release-kit/PUBLIC_URL_CHECK.md`.
 
 Status: local draft only. Before publication it must be reviewed against the final build, launch regions, applicable law, responsible legal entity, public contact, and stable HTTPS URL.
 

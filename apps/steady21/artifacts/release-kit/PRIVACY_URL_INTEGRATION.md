@@ -6,4 +6,4 @@ Checked on 2026-10-12 after the operator supplied the public policy URLs.
 - Android's main manifest now declares `android.permission.INTERNET`. The merged **release manifest** from `:app:processReleaseMainManifest` contains package `com.steady.lite`, that permission, and launch activity `com.steady.lite.MainActivity`. This Gradle task did not create or sign a release APK/AAB.
 - `flutter analyze --no-pub` passed with no issues; `flutter test --no-pub --reporter expanded` passed 33 tests. Android debug APK and iOS Simulator debug builds passed after the URL integration.
 
-The in-app WebView's online rendering and offline fallback have not been exercised on a physical device. The public site still serves older draft wording; see `PUBLIC_URL_CHECK.md`.
+The in-app WebView's online rendering and offline fallback have not been exercised on a physical device. The hosted site now matches the corrected local wording; see `PUBLIC_URL_CHECK.md`.
