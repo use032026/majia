@@ -163,7 +163,11 @@ void main() {
     );
     final restored = AppSnapshot.fromJson(snapshot.toJson());
     expect(restored.localeCode, 'en');
+    expect(restored.onboardingComplete, isFalse);
     expect(restored.active?.minimumAction, 'Read 1 page');
+
+    final legacy = snapshot.toJson()..remove('onboardingComplete');
+    expect(AppSnapshot.fromJson(legacy).onboardingComplete, isTrue);
 
     final duplicate = snapshot.toJson();
     duplicate['experiments'] = [_experiment().toJson(), _experiment().toJson()];

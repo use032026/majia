@@ -1,5 +1,7 @@
 # 微成 · Steady21 App Store 预检报告
 
+> 此报告记录 2026-09-22 的发布预检。2026-10-12 已在本地替换应用图标、启动资产并加入首次引导；尚未重新执行签名 Archive 与 App Store Connect 预检，以下历史结论不能视为当前资产状态。
+
 审核日期：2026-09-22
 范围：最终本地源码、24 项测试、iOS 18.3 模拟器运行证据、Android Debug APK、iOS 26.5 SDK 无签名 Release Archive、依赖/隐私清单和当前 Apple 官方规则；未登录 App Store Connect、未签名、未上传、未提交。
 

@@ -8,7 +8,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `com.example.steady21` 占位 Bundle ID，无签名/profile | 无法形成可上传构建 | 确认生产身份、Team/App ID、Bundle ID，生成分发签名 Archive | Archive 签名有效、profile 匹配、身份与 ASC 一致 | codesign、Archive、ASC 记录 | Apple Developer 账号与最终身份 | open |
 | 无公开隐私政策和支持 URL | 5.1 与 ASC 元数据阻断 | 法务/责任主体复核草案并发布稳定 HTTPS 页面 | 两个 URL 公网可访问，内容与最终 SDK/行为一致 | URL 实访、最终政策、联系渠道 | 责任主体/域名/联系人 | open |
-| 默认 Flutter 图标/启动资产 | 2.1/4.1/4.2 品牌与完整性风险 | 完成原创图标和启动资产，检查许可 | Archive 不再提示 placeholder；1024 图标无 alpha；各尺寸正确 | Asset Catalog、Archive 日志、授权记录 | 品牌名称与视觉确认 | open |
+| 默认 Flutter 图标/启动资产 | 2.1/4.1/4.2 品牌与完整性风险 | 完成原创图标和启动资产，检查许可 | Archive 不再提示 placeholder；1024 图标无 alpha；各尺寸正确 | Asset Catalog、Archive 日志、授权记录 | 品牌名称与视觉确认 | 2026-10-12 已替换本地资产；Archive 与权属核查待完成 |
 | 未建 ASC 元数据和隐私回答 | 无法提交 | 建 App/版本，补定价地区、分类、年龄分级、隐私、审核联系人、Review Notes | 所有必填项完成且与构建一致 | ASC 截图/导出 | 开发者账号和上架地区决定 | open |
 | 未签名 Archive，未上传 | 未证明 Apple 接受 | 在上述阻断闭合后构建并上传；本轮禁止执行 | ASC 处理成功后再区分 TestFlight/App Review | 上传日志和 ASC 状态 | 需用户另行明确授权 | open |
 

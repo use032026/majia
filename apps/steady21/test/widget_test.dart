@@ -6,9 +6,12 @@ import 'package:steady21/domain.dart';
 import 'package:steady21/main.dart';
 import 'package:steady21/repository.dart';
 
-AppController _controller({AppSnapshot snapshot = const AppSnapshot()}) {
+AppController _controller({
+  AppSnapshot snapshot = const AppSnapshot(),
+  bool showOnboarding = false,
+}) {
   return AppController(
-    MemoryRepository(snapshot),
+    MemoryRepository(snapshot.copyWith(onboardingComplete: !showOnboarding)),
     now: () => DateTime(2026, 9, 22, 12),
     idFactory: () => 'widget-experiment',
   );
@@ -31,6 +34,43 @@ Future<void> _createExperiment(WidgetTester tester) async {
 }
 
 void main() {
+  testWidgets(
+    'first launch advances through onboarding and persists completion',
+    (tester) async {
+      final repository = MemoryRepository();
+      final controller = AppController(repository);
+      await _pump(tester, controller);
+      expect(find.text('从一个小实验开始'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('onboardingNext')));
+      await tester.pumpAndSettle();
+      expect(find.text('记录真实发生的事'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('onboardingNext')));
+      await tester.pumpAndSettle();
+      expect(find.text('按自己的节奏继续'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('onboardingStart')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('createExperimentButton')), findsOneWidget);
+      expect(repository.snapshot.onboardingComplete, isTrue);
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await _pump(tester, AppController(repository));
+      expect(find.byKey(const Key('onboardingSkip')), findsNothing);
+    },
+  );
+
+  testWidgets('onboarding stays open when saving completion fails', (
+    tester,
+  ) async {
+    final repository = MemoryRepository()..saveFailure = StateError('disk');
+    await _pump(tester, AppController(repository));
+    await tester.tap(find.byKey(const Key('onboardingSkip')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('onboardingSkip')), findsOneWidget);
+    expect(find.textContaining('保存失败'), findsOneWidget);
+    expect(repository.snapshot.onboardingComplete, isFalse);
+  });
+
   testWidgets('create route cancels, reopens, and saves a real experiment', (
     tester,
   ) async {

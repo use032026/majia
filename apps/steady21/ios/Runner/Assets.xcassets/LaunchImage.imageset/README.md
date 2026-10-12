@@ -1,5 +1,5 @@
 # Launch Screen Assets
 
-You can customize the launch screen with your own desired assets by replacing the image files in this directory.
-
-You can also do it by opening your Flutter project's Xcode project with `open ios/Runner.xcworkspace`, selecting `Runner/Assets.xcassets` in the Project Navigator and dropping in the desired images.
+The Steady21 launch mark is generated from `assets/onboarding/seed.png` by
+`tool/generate_brand_assets.py`. Regenerate after changing the source art; the
+script requires Pillow in the local Python environment.

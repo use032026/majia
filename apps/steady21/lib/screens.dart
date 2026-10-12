@@ -9,6 +9,7 @@ import 'controller.dart';
 import 'copy.dart';
 import 'domain.dart';
 import 'privacy_web_page.dart';
+import 'onboarding.dart';
 
 class BootstrapView extends StatelessWidget {
   const BootstrapView({
@@ -57,10 +58,31 @@ class BootstrapView extends StatelessWidget {
         body: Center(
           child: Semantics(
             label: copy.loading,
-            child: const CircularProgressIndicator(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/onboarding/seed.png',
+                  width: 168,
+                  height: 168,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  copy.appName,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const CircularProgressIndicator(),
+              ],
+            ),
           ),
         ),
       );
+    }
+    if (!controller.snapshot.onboardingComplete) {
+      return OnboardingView(controller: controller, copy: copy);
     }
     return HomeShell(controller: controller, copy: copy);
   }

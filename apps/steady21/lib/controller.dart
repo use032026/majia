@@ -211,8 +211,15 @@ class AppController extends ChangeNotifier {
   }
 
   Future<bool> deleteAll() => _commit(
-    AppSnapshot(localeCode: snapshot.localeCode, experiments: const []),
+    AppSnapshot(
+      localeCode: snapshot.localeCode,
+      onboardingComplete: snapshot.onboardingComplete,
+      experiments: const [],
+    ),
   );
+
+  Future<bool> completeOnboarding() =>
+      _commit(snapshot.copyWith(onboardingComplete: true));
 
   Future<bool> setLocale(String localeCode) async {
     if (localeCode != 'zh' && localeCode != 'en') {

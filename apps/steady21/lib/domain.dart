@@ -276,11 +276,13 @@ class AppSnapshot {
   const AppSnapshot({
     this.schemaVersion = 1,
     this.localeCode = 'zh',
+    this.onboardingComplete = false,
     this.experiments = const [],
   });
 
   final int schemaVersion;
   final String localeCode;
+  final bool onboardingComplete;
   final List<Experiment> experiments;
 
   Experiment? get active {
@@ -296,10 +298,15 @@ class AppSnapshot {
       .reversed
       .toList();
 
-  AppSnapshot copyWith({String? localeCode, List<Experiment>? experiments}) {
+  AppSnapshot copyWith({
+    String? localeCode,
+    bool? onboardingComplete,
+    List<Experiment>? experiments,
+  }) {
     return AppSnapshot(
       schemaVersion: schemaVersion,
       localeCode: localeCode ?? this.localeCode,
+      onboardingComplete: onboardingComplete ?? this.onboardingComplete,
       experiments: experiments ?? this.experiments,
     );
   }
@@ -307,16 +314,19 @@ class AppSnapshot {
   Map<String, Object?> toJson() => {
     'schemaVersion': schemaVersion,
     'localeCode': localeCode,
+    'onboardingComplete': onboardingComplete,
     'experiments': experiments.map((item) => item.toJson()).toList(),
   };
 
   factory AppSnapshot.fromJson(Map<String, Object?> json) {
     final schema = json['schemaVersion'];
     final locale = json['localeCode'];
+    final onboarding = json['onboardingComplete'];
     final rawExperiments = json['experiments'];
     if (schema is! int ||
         schema != 1 ||
         (locale != 'zh' && locale != 'en') ||
+        (onboarding != null && onboarding is! bool) ||
         rawExperiments is! List) {
       throw const FormatException('Unsupported snapshot');
     }
@@ -330,6 +340,8 @@ class AppSnapshot {
     return AppSnapshot(
       schemaVersion: schema,
       localeCode: locale as String,
+      // Existing installs already know the app; show onboarding only to new installs.
+      onboardingComplete: onboarding is bool ? onboarding : true,
       experiments: List.unmodifiable(experiments),
     );
   }
