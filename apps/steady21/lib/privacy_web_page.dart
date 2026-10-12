@@ -16,55 +16,98 @@ class PrivacyWebPage extends StatefulWidget {
   State<PrivacyWebPage> createState() => _PrivacyWebPageState();
 }
 
-class _PrivacyWebPageState extends State<PrivacyWebPage> {
+class _PrivacyWebPageState extends State<PrivacyWebPage>
+    with WidgetsBindingObserver {
   static const String _privacyUrlEn =
       'https://wowsteady.com/privacy.html?lang=en';
   static const String _privacyUrlZh =
       'https://wowsteady.com/privacy.html?lang=zh';
 
-  late final WebViewController _webViewController;
+  late WebViewController _webViewController;
   bool _showingLocalSummary = false;
+  bool _loadingRemote = true;
+  int _loadId = 0;
 
   @override
   void initState() {
     super.initState();
     _webViewController = WebViewController();
-    unawaited(_loadPrivacyPage());
+    WidgetsBinding.instance.addObserver(this);
+    unawaited(_loadPrivacyPage(_webViewController, ++_loadId));
   }
 
-  Future<void> _loadPrivacyPage() async {
-    final officialUrl = Uri.parse(
-      widget.copy.isZh ? _privacyUrlZh : _privacyUrlEn,
-    );
-    await _webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
-    await _webViewController.setNavigationDelegate(
-      NavigationDelegate(
-        onWebResourceError: (error) {
-          if (error.isForMainFrame == true &&
-              (error.url == null || error.url == officialUrl.toString())) {
-            unawaited(_loadLocalSummary());
-          }
-        },
-        onHttpError: (error) {
-          if (error.request?.uri == officialUrl &&
-              (error.response?.statusCode ?? 0) >= 400) {
-            unawaited(_loadLocalSummary());
-          }
-        },
-      ),
-    );
-    try {
-      await _webViewController.loadRequest(officialUrl);
-    } catch (_) {
-      await _loadLocalSummary();
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _showingLocalSummary) {
+      _retryOnline();
     }
   }
 
-  Future<void> _loadLocalSummary() async {
-    if (!mounted || _showingLocalSummary) return;
-    _showingLocalSummary = true;
-    await _webViewController.setJavaScriptMode(JavaScriptMode.disabled);
-    await _webViewController.loadHtmlString(_localPrivacyHtml(widget.copy));
+  void _retryOnline() {
+    if (_loadingRemote || !_showingLocalSummary) return;
+    final controller = WebViewController();
+    final loadId = ++_loadId;
+    setState(() {
+      _webViewController = controller;
+      _showingLocalSummary = false;
+      _loadingRemote = true;
+    });
+    unawaited(_loadPrivacyPage(controller, loadId));
+  }
+
+  Future<void> _loadPrivacyPage(
+    WebViewController controller,
+    int loadId,
+  ) async {
+    final officialUrl = Uri.parse(
+      widget.copy.isZh ? _privacyUrlZh : _privacyUrlEn,
+    );
+    try {
+      await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+      await controller.setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (_) {
+            if (mounted && loadId == _loadId && !_showingLocalSummary) {
+              setState(() => _loadingRemote = false);
+            }
+          },
+          onWebResourceError: (error) {
+            if (error.isForMainFrame == true &&
+                (error.url == null || error.url == officialUrl.toString())) {
+              unawaited(_loadLocalSummary(controller, loadId));
+            }
+          },
+          onHttpError: (error) {
+            if (error.request?.uri == officialUrl &&
+                (error.response?.statusCode ?? 0) >= 400) {
+              unawaited(_loadLocalSummary(controller, loadId));
+            }
+          },
+        ),
+      );
+      await controller.loadRequest(officialUrl);
+    } catch (_) {
+      await _loadLocalSummary(controller, loadId);
+    }
+  }
+
+  Future<void> _loadLocalSummary(
+    WebViewController controller,
+    int loadId,
+  ) async {
+    if (!mounted || loadId != _loadId || _showingLocalSummary) return;
+    setState(() {
+      _showingLocalSummary = true;
+      _loadingRemote = false;
+    });
+    await controller.setJavaScriptMode(JavaScriptMode.disabled);
+    await controller.loadHtmlString(_localPrivacyHtml(widget.copy));
   }
 
   @override
@@ -79,9 +122,45 @@ class _PrivacyWebPageState extends State<PrivacyWebPage> {
         ),
         title: Text(widget.copy.privacy),
       ),
-      body: WebViewWidget(
-        key: const Key('privacyWebView'),
-        controller: _webViewController,
+      body: Column(
+        children: [
+          if (_showingLocalSummary)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    widget.copy.t(
+                      '在线隐私协议暂时无法加载，以下仅为本地摘要。',
+                      'The online privacy policy is unavailable. This is a local summary only.',
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      key: const Key('privacyRetryOnline'),
+                      onPressed: _retryOnline,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(
+                        widget.copy.t('重新加载在线协议', 'Retry online policy'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          if (_loadingRemote) const LinearProgressIndicator(),
+          Expanded(
+            child: KeyedSubtree(
+              key: ValueKey(_loadId),
+              child: WebViewWidget(
+                key: const Key('privacyWebView'),
+                controller: _webViewController,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

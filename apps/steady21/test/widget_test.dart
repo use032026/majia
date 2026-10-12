@@ -91,6 +91,30 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('experiment form stops scrolling at its content with keyboard', (
+    tester,
+  ) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    await _pump(tester, _controller());
+    await tester.tap(find.byKey(const Key('createExperimentButton')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('titleField')));
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    await tester.pumpAndSettle();
+
+    final formList = find.byType(ListView).last;
+    await tester.drag(formList, const Offset(0, -1200));
+    await tester.pumpAndSettle();
+    final trailingSpace =
+        tester.getRect(formList).bottom -
+        tester.getRect(find.byKey(const Key('saveExperimentButton'))).bottom;
+    expect(trailingSpace, greaterThanOrEqualTo(0));
+    expect(trailingSpace, lessThan(80));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('check-in sheet dismisses, reopens, and commits only on save', (
     tester,
   ) async {

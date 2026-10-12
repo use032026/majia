@@ -2802,12 +2802,7 @@ class _ExperimentFormPageState extends State<ExperimentFormPage> {
       ),
       body: ContentFrame(
         child: ListView(
-          padding: EdgeInsets.fromLTRB(
-            20,
-            16,
-            20,
-            24 + MediaQuery.viewInsetsOf(context).bottom,
-          ),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           children: [
             TextField(
               key: const Key('titleField'),
