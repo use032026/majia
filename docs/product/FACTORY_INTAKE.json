@@ -1,0 +1,41 @@
+{
+  "app_name": "FilePeek",
+  "working_name": "filepeek",
+  "target_user": "需要在手机上快速检查收到的 JSON、CSV、TXT 或 LOG 文件的开发、测试和支持人员",
+  "problem": "临时离开电脑时，用户难以判断一个文件是否有效、找到关键行或字段、比较两版 JSON，并安全地交付检查结果",
+  "product_promise": "从系统文件入口导入小文件，在设备上完成识别、定位、校验、轻量修正与结果导出",
+  "core_loop": "导入文件 -> 自动识别并预览 -> 搜索或定位问题 -> 按格式校验、筛选、修正或比较 -> 导出处理副本或检查摘要",
+  "durable_output": "用户主动导出的处理后文件或检查摘要；未导出的临时会话不会上传到开发者服务",
+  "scope": "release_candidate",
+  "platform": "Flutter，iOS 与 Android；iOS 15+ 产品基线，Android minSdk 24，targetSdk 按当前 Google Play 要求设置；App Store 单独评估 iOS",
+  "launch_regions": [
+    "中国大陆（研究假设）",
+    "英语地区（研究假设）"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "纯本地处理，无应用自有后台、分析服务或广告 SDK",
+  "data_handling": "用户通过系统文件入口选择本地或文件提供方的文件；内容在本机工作内存处理，临时导出副本写入应用缓存；仅在用户主动调用系统分享或保存时离开应用；无自动上传；系统备份、文件提供方和用户主动分享不由应用控制",
+  "sensitive_data": "导入文件可能含用户或第三方敏感内容；产品不收集或传输文件，仅在本机读取，并限制单文件尺寸以降低资源风险",
+  "permissions": [
+    "系统文件选择器按需打开；不申请广泛存储权限"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS 15.0+ 是产品选择，不等于 App Store 上传 SDK 门槛；最终以当前 Apple 要求和实测构建为准",
+  "visual_direction": "原创的紧凑检查台：文件概览与下一步操作优先、单一内容阅读区、清晰行号与状态提示；深浅色高对比，避免复制参考产品布局或资产",
+  "reference_products": [
+    "https://apps.apple.com/cn/app/jayson/id1447750768",
+    "https://apps.apple.com/cn/app/logshow-log-viewer-parser/id6742788999"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核",
+    "不创建商店定价、IAP 或公开生产服务"
+  ]
+}
