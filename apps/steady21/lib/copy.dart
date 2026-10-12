@@ -93,12 +93,17 @@ class AppCopy {
   String days(int value) => t('$value 天', '$value days');
   String dayNumber(int value) => t('第 $value 天', 'Day $value');
   String get practiceDays => t('累计练习', 'Practice days');
+  String get stagePath => t('阶段路径', 'Stage path');
+  String get shareBadge => t('分享徽章', 'Share badge');
+  String get badgeLocked => t('尚未达成', 'Not yet earned');
+  String get achievementDate => t('达成日期', 'Achievement date');
+  String get shareFailed => t('分享失败，请重试。', 'Could not share. Try again.');
   String get currentStreak => t('当前连续', 'Current streak');
   String get bestStreak => t('最佳连续', 'Best streak');
   String get recoveries => t('恢复调整', 'Recoveries');
   String get calendarRate => t('日历完成率', 'Calendar practice rate');
   String get commonObstacle => t('常见阻碍', 'Common obstacle');
-  String get noObstacle => t('还没有阻碍记录', 'No obstacle recorded yet');
+  String get noObstacle => t('暂无记录', 'None recorded');
   String get milestoneReview => t('阶段复盘', 'Milestone review');
   String reviewMilestone(int value) =>
       t('复盘第 $value 个练习日', 'Review practice day $value');

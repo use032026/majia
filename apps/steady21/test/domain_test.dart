@@ -71,6 +71,61 @@ void main() {
     expect(stats.elapsedDays, 22);
   });
 
+  test(
+    'journey totals include archived and active experiments once per date',
+    () {
+      final archived = Experiment(
+        id: 'archived',
+        title: 'Old plan',
+        cue: 'Morning',
+        fullAction: 'Walk',
+        minimumAction: 'Step outside',
+        targetDays: 21,
+        startedAt: DateTime(2026, 9, 16),
+        archivedAt: DateTime(2026, 9, 21),
+        entries: [
+          for (var day = 16; day <= 21; day++)
+            DailyEntry(date: '2026-09-$day', kind: EntryKind.full),
+        ],
+      );
+      final active = Experiment(
+        id: 'active',
+        title: 'New plan',
+        cue: 'Evening',
+        fullAction: 'Read',
+        minimumAction: 'One page',
+        targetDays: 21,
+        startedAt: DateTime(2026, 9, 21),
+        entries: const [
+          DailyEntry(date: '2026-09-21', kind: EntryKind.minimum),
+          DailyEntry(date: '2026-09-22', kind: EntryKind.minimum),
+          DailyEntry(date: '2026-09-23', kind: EntryKind.skipped),
+        ],
+      );
+      final totals = JourneyTotals(
+        AppSnapshot(experiments: [archived, active]),
+      );
+
+      expect(totals.practiceDays, 7);
+      expect(totals.practiceEntries, 8);
+      expect(totals.fullEntries, 6);
+      expect(totals.minimumEntries, 2);
+      expect(totals.tier.zh, '渐入佳境');
+      expect(totals.earnedDateKey(progressTiers[0]), '2026-09-16');
+      expect(totals.earnedDateKey(progressTiers[1]), '2026-09-16');
+      expect(totals.earnedDateKey(progressTiers[2]), '2026-09-22');
+      expect(totals.earnedDateKey(progressTiers[3]), isNull);
+      expect(
+        JourneyTotals(const AppSnapshot()).earnedDateKey(progressTiers[0]),
+        isNull,
+      );
+      expect(
+        JourneyTotals(AppSnapshot(experiments: [archived])).practiceDays,
+        6,
+      );
+    },
+  );
+
   test('milestone becomes due once and disappears after review', () {
     final entries = List.generate(
       7,

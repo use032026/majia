@@ -360,6 +360,49 @@ const progressTiers = [
 ProgressTier tierForDays(int days) =>
     progressTiers.firstWhere((tier) => tier.contains(days));
 
+class JourneyTotals {
+  JourneyTotals(AppSnapshot snapshot) {
+    final practiceDates = <String>{};
+    final startedDates =
+        snapshot.experiments
+            .map((experiment) => localDateKey(experiment.startedAt))
+            .toList()
+          ..sort();
+    var full = 0;
+    var minimum = 0;
+    for (final experiment in snapshot.experiments) {
+      for (final entry in experiment.entries) {
+        if (entry.kind == EntryKind.full) {
+          full += 1;
+          practiceDates.add(entry.date);
+        } else if (entry.kind == EntryKind.minimum) {
+          minimum += 1;
+          practiceDates.add(entry.date);
+        }
+      }
+    }
+    _firstStartedDateKey = startedDates.isEmpty ? null : startedDates.first;
+    _practiceDateKeys = List.unmodifiable(practiceDates.toList()..sort());
+    practiceDays = _practiceDateKeys.length;
+    fullEntries = full;
+    minimumEntries = minimum;
+  }
+
+  late final int practiceDays;
+  late final int fullEntries;
+  late final int minimumEntries;
+  late final String? _firstStartedDateKey;
+  late final List<String> _practiceDateKeys;
+  int get practiceEntries => fullEntries + minimumEntries;
+  ProgressTier get tier => tierForDays(practiceDays);
+
+  String? earnedDateKey(ProgressTier tier) {
+    if (tier.minimum == 0) return _firstStartedDateKey;
+    if (_practiceDateKeys.length < tier.minimum) return null;
+    return _practiceDateKeys[tier.minimum - 1];
+  }
+}
+
 class ExperimentStats {
   ExperimentStats(this.experiment, this.today) {
     final sorted = [...experiment.entries]
