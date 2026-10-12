@@ -1,0 +1,99 @@
+{
+  "schema_version": 2,
+  "app_name": "Steady21",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "defaults": {
+    "background_top": "#184C40",
+    "background_bottom": "#111A18",
+    "text_color": "#FFFBF4",
+    "muted_text_color": "#DCE9DF"
+  },
+  "store": "app_store",
+  "qa_dir": "qa",
+  "items": [
+    {
+      "kind": "screenshot",
+      "source": "source/iphone-01-onboarding-ios.png",
+      "output": "final/en-US/iphone/01-onboarding.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Start with one small experiment",
+      "subheadline": "Define a cue and a minimum action.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/iphone-02-today-ios.png",
+      "output": "final/en-US/iphone/02-today.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Keep today's action visible",
+      "subheadline": "Standard, minimum, or pause.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/iphone-03-journey-ios.png",
+      "output": "final/en-US/iphone/03-journey.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "See the journey take shape",
+      "subheadline": "Review practice days and recovery choices.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/iphone-04-settings-ios.png",
+      "output": "final/en-US/iphone/04-settings.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Your records, your language",
+      "subheadline": "Manage local data in Settings.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/ipad-01-today-ios.png",
+      "output": "final/en-US/ipad/01-today.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "One experiment in view",
+      "subheadline": "Keep the cue and daily result together.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/ipad-02-journey-ios.png",
+      "output": "final/en-US/ipad/02-journey.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Review the full picture",
+      "subheadline": "Practice, pauses, and milestones.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/ipad-03-review-ios.png",
+      "output": "final/en-US/ipad/03-review.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Decide what to adjust next",
+      "subheadline": "Reflect at practice day milestones.",
+      "icon": "../../assets/brand/app_icon.png"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-package com.example.steady21
+package com.steady.lite
 
 import io.flutter.embedding.android.FlutterActivity
 

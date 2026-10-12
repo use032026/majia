@@ -17,10 +17,13 @@ class PrivacyWebPage extends StatefulWidget {
 }
 
 class _PrivacyWebPageState extends State<PrivacyWebPage> {
-  // Replace this with the official HTTPS privacy-policy URL when supplied.
-  static const String? _officialPrivacyUrl = null;
+  static const String _privacyUrlEn =
+      'https://wowsteady.com/privacy.html?lang=en';
+  static const String _privacyUrlZh =
+      'https://wowsteady.com/privacy.html?lang=zh';
 
   late final WebViewController _webViewController;
+  bool _showingLocalSummary = false;
 
   @override
   void initState() {
@@ -30,13 +33,38 @@ class _PrivacyWebPageState extends State<PrivacyWebPage> {
   }
 
   Future<void> _loadPrivacyPage() async {
-    await _webViewController.setJavaScriptMode(JavaScriptMode.disabled);
-    final officialUrl = _officialPrivacyUrl;
-    if (officialUrl == null) {
-      await _webViewController.loadHtmlString(_localPrivacyHtml(widget.copy));
-    } else {
-      await _webViewController.loadRequest(Uri.parse(officialUrl));
+    final officialUrl = Uri.parse(
+      widget.copy.isZh ? _privacyUrlZh : _privacyUrlEn,
+    );
+    await _webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
+    await _webViewController.setNavigationDelegate(
+      NavigationDelegate(
+        onWebResourceError: (error) {
+          if (error.isForMainFrame == true &&
+              (error.url == null || error.url == officialUrl.toString())) {
+            unawaited(_loadLocalSummary());
+          }
+        },
+        onHttpError: (error) {
+          if (error.request?.uri == officialUrl &&
+              (error.response?.statusCode ?? 0) >= 400) {
+            unawaited(_loadLocalSummary());
+          }
+        },
+      ),
+    );
+    try {
+      await _webViewController.loadRequest(officialUrl);
+    } catch (_) {
+      await _loadLocalSummary();
     }
+  }
+
+  Future<void> _loadLocalSummary() async {
+    if (!mounted || _showingLocalSummary) return;
+    _showingLocalSummary = true;
+    await _webViewController.setJavaScriptMode(JavaScriptMode.disabled);
+    await _webViewController.loadHtmlString(_localPrivacyHtml(widget.copy));
   }
 
   @override

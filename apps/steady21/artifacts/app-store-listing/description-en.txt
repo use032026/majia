@@ -1,0 +1,9 @@
+Steady21 is a personal journal for small behavior experiments. Pick one action you want to try, decide when you will do it, and give yourself a smaller option for days when energy is low.
+
+Create an experiment with a cue, a standard action, a minimum action, and a practice-day goal. Each day, record whether you did the standard action, did the minimum, or paused to observe. When you pause, note the main obstacle and choose a practical way to restart. You can correct or undo today's entry.
+
+Journey brings your practice days, pauses, recovery adjustments, and daily observations together. At 7, 14, and 21 practice days, reflect on what happened and decide whether to keep the plan, make the action smaller, or change its timing or cue. A report summarizes the experiment; you can continue beyond your goal or archive it and keep the record.
+
+Steady21 supports English and Simplified Chinese. Your experiment records are saved in the app's local storage. The current app has no account or app-operated sync. You can delete an experiment or all local records in Settings. There is no independent export or backup of the journal, so deleting the app or changing devices may mean losing records.
+
+Twenty-one days is a reflection milestone in Steady21, not a promise that a habit will form in that time.

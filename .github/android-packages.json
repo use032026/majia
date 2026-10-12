@@ -59,7 +59,7 @@
       "display_name": "Steady21",
       "path": "apps/steady21",
       "secret_prefix": "STEADY21",
-      "application_id": "com.example.steady21"
+      "application_id": "com.steady.lite"
     },
     "tripcost": {
       "display_name": "RoamSum (TripCost)",

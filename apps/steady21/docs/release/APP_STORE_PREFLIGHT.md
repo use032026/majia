@@ -1,6 +1,6 @@
 # 微成 · Steady21 App Store 预检报告
 
-> 此报告记录 2026-09-22 的发布预检。2026-10-12 已在本地替换应用图标、启动资产并加入首次引导；尚未重新执行签名 Archive 与 App Store Connect 预检，以下历史结论不能视为当前资产状态。
+> 此报告记录 2026-09-22 的发布预检。2026-10-12 已在本地替换应用图标、启动资产并加入首次引导，生成商店素材，把当前源码的 iOS/Android 标识设为 `com.steady.lite`，并确认支持邮箱与 `https://wowsteady.com/privacy.html?lang=en`、`https://wowsteady.com/privacy.html?lang=zh`。下方 Bundle ID、截图和联系方式结论属于历史快照；线上页面仍有过时的“草稿/域名待定”措辞，且尚未重新执行签名 Archive 与 App Store Connect 预检，不能视为当前构建或商店状态。
 
 审核日期：2026-09-22
 范围：最终本地源码、24 项测试、iOS 18.3 模拟器运行证据、Android Debug APK、iOS 26.5 SDK 无签名 Release Archive、依赖/隐私清单和当前 Apple 官方规则；未登录 App Store Connect、未签名、未上传、未提交。

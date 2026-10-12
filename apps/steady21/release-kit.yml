@@ -1,0 +1,112 @@
+schema_version: 2
+
+identity:
+  app_name: "Steady21"
+  operator: "独立开发者"
+  bundle_id: "com.steady.lite"
+  android_package: "com.steady.lite"
+
+contact:
+  support_email: "postmaster@hndige.com"
+  production_domain: "https://wowsteady.com"
+  support_urls:
+    en: "https://wowsteady.com/index.html?lang=en#contact"
+    zh: "https://wowsteady.com/index.html?lang=zh#contact"
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: "2026-10-12"
+  policy_urls:
+    en: "https://wowsteady.com/privacy.html?lang=en"
+    zh: "https://wowsteady.com/privacy.html?lang=zh"
+  confirmed:
+    - "Current source stores experiment records as local JSON in the app sandbox."
+    - "Current source has no app-operated journal backend, analytics SDK, or ads SDK."
+    - "Earned badge images can be shared only through an explicit user action and the OS share sheet."
+    - "Deleting all local data removes experiments and entries but preserves the language choice."
+    - "Opening the in-app privacy page requests the selected wowsteady.com policy URL and falls back to a local summary on main-page failure."
+  open_questions:
+    - "Hosting provider and request-log retention details are not confirmed."
+    - "Final signed-build dependency and privacy disclosure review remains pending."
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+  production_urls:
+    en: "https://wowsteady.com/index.html?lang=en"
+    zh: "https://wowsteady.com/index.html?lang=zh"
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: iphone-onboarding
+        source: artifacts/app-store-previews/source/iphone-01-onboarding-ios.png
+        headline: Start with one small experiment
+      - id: iphone-today
+        source: artifacts/app-store-previews/source/iphone-02-today-ios.png
+        headline: Keep today's action visible
+      - id: iphone-journey
+        source: artifacts/app-store-previews/source/iphone-03-journey-ios.png
+        headline: See the journey take shape
+      - id: iphone-settings
+        source: artifacts/app-store-previews/source/iphone-04-settings-ios.png
+        headline: Your records, your language
+      - id: ipad-today
+        source: artifacts/app-store-previews/source/ipad-01-today-ios.png
+        headline: One experiment in view
+      - id: ipad-journey
+        source: artifacts/app-store-previews/source/ipad-02-journey-ios.png
+        headline: Review the full picture
+      - id: ipad-review
+        source: artifacts/app-store-previews/source/ipad-03-review-ios.png
+        headline: Decide what to adjust next
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: onboarding
+        source_en: artifacts/google-play-listing/source/android-01-onboarding.png
+        source_zh: artifacts/google-play-listing/source/android-01-onboarding-zh.png
+        headline_en: Start with one small action
+        headline_zh: 从一个小实验开始
+      - id: today
+        source_en: artifacts/google-play-listing/source/android-02-today.png
+        source_zh: artifacts/google-play-listing/source/android-02-today-zh.png
+        headline_en: Record today your way
+        headline_zh: 记录今天的真实行动
+      - id: journey
+        source_en: artifacts/google-play-listing/source/android-03-journey-en.png
+        source_zh: artifacts/google-play-listing/source/android-03-journey-zh.png
+        headline_en: See practice and recovery
+        headline_zh: 回看练习与恢复
+      - id: settings
+        source_en: artifacts/google-play-listing/source/android-04-settings-en.png
+        source_zh: artifacts/google-play-listing/source/android-04-settings-zh.png
+        headline_en: Manage local records
+        headline_zh: 管理本地记录
+
+paths:
+  app_root: "apps/steady21"

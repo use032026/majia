@@ -1,13 +1,13 @@
 # 微成 · Steady21 差距与发布待办
 
-生成日期：2026-09-22。功能 MVP 已通过独立审核；以下均为进入真实发布候选或提升验证深度的缺口，本轮不上传。
+生成日期：2026-09-22；2026-10-12 更新来源身份和本地素材状态。功能 MVP 已通过独立审核；以下均为进入真实发布候选或提升验证深度的缺口，本轮不上传。
 
 ## P0 — App Store 发布阻断
 
 | 来源发现 | 用户/政策影响 | 工作范围 | 验收标准 | 所需证据 | 外部输入 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `com.example.steady21` 占位 Bundle ID，无签名/profile | 无法形成可上传构建 | 确认生产身份、Team/App ID、Bundle ID，生成分发签名 Archive | Archive 签名有效、profile 匹配、身份与 ASC 一致 | codesign、Archive、ASC 记录 | Apple Developer 账号与最终身份 | open |
-| 无公开隐私政策和支持 URL | 5.1 与 ASC 元数据阻断 | 法务/责任主体复核草案并发布稳定 HTTPS 页面 | 两个 URL 公网可访问，内容与最终 SDK/行为一致 | URL 实访、最终政策、联系渠道 | 责任主体/域名/联系人 | open |
+| 源码已设 `com.steady.lite`，但无签名/profile 与商店登记证据 | 无法形成可上传构建 | 在开发者账号登记并确认 App ID、Team 和 Bundle ID，生成分发签名 Archive | Archive 签名有效、profile 匹配、身份与 ASC 一致 | codesign、Archive、ASC 记录 | Apple Developer 账号与签名资料 | 源码标识已更新；外部验证 open |
+| 隐私政策和支持页已上线，但线上仍有“草稿/域名待定”措辞 | 5.1 与 ASC 元数据一致性风险 | 部署本地修正文案，核对托管日志和最终 SDK/行为 | 中英文 URL 公网可访问且内容准确 | `artifacts/release-kit/PUBLIC_URL_CHECK.md`、最终政策、联系渠道 | 托管日志与法务复核 | URL 可访问；文案同步 open |
 | 默认 Flutter 图标/启动资产 | 2.1/4.1/4.2 品牌与完整性风险 | 完成原创图标和启动资产，检查许可 | Archive 不再提示 placeholder；1024 图标无 alpha；各尺寸正确 | Asset Catalog、Archive 日志、授权记录 | 品牌名称与视觉确认 | 2026-10-12 已替换本地资产；Archive 与权属核查待完成 |
 | 未建 ASC 元数据和隐私回答 | 无法提交 | 建 App/版本，补定价地区、分类、年龄分级、隐私、审核联系人、Review Notes | 所有必填项完成且与构建一致 | ASC 截图/导出 | 开发者账号和上架地区决定 | open |
 | 未签名 Archive，未上传 | 未证明 Apple 接受 | 在上述阻断闭合后构建并上传；本轮禁止执行 | ASC 处理成功后再区分 TestFlight/App Review | 上传日志和 ASC 状态 | 需用户另行明确授权 | open |
@@ -17,7 +17,7 @@
 | 来源发现 | 用户价值/差异化 | 工作范围 | 验收标准 | 所需证据 | 成本 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
 | 工作名/商标未清查 | 避免重名、4.1/5.2 风险 | 商店与商标检索、确定中文/英文最终名 | 记录检索范围和最终名称决策 | 清查记录 | M | open |
-| 商店截图不合规 | 当前 PNG 有 alpha，尺寸也不是 Apple 接受规格 | 从最终签名 UI 生成中英截图；iPhone 6.9 与 iPad 13-inch（若保留 iPad 支持） | 1–10 张/设备，无 alpha，尺寸与内容准确 | 最终 PNG/JPG + 规格检查 | M | open |
+| 历史运行 PNG 不合规；本地商店截图已生成 | 尚未证明最终签名 UI 与设备效果 | 当前 iOS 模拟器截图已生成 iPhone 1206×2622 与 iPad 2064×2752 无 alpha 素材；发布前复核最终构建 | 素材与最终 UI 一致、尺寸与内容准确 | `artifacts/release-kit/QA_REPORT.md`、最终构建检查 | M | 本地素材已生成；最终构建复核 open |
 | 无实体设备与最低系统验证 | 模拟器不证明输入法、生命周期、性能和 iOS 15 | 至少一台真机执行创建/记录/重启/语言/删除/长报告；补 iOS 15 兼容运行或调整基线 | 无阻断缺陷，有设备/系统/构建记录 | 测试记录、日志、截图 | M | open |
 | Xcode Privacy Report 未生成 | 现有 manifests 已解析但不等于完整归档审计 | 对最终签名 Archive 生成报告并核对 Flutter/path_provider 与 App 自身行为 | required-reason API、SDK manifest、ASC Privacy 回答一致 | Privacy Report、依赖清单 | S | open |
 | App 内仍写“本地 MVP 候选” | 最终用户不应看到内部候选标签 | 发布构建替换为正常版本说明 | 预检不再命中 preview/demo 文案 | 源码与最终截图 | S | open |
@@ -32,7 +32,7 @@
 
 ## 下一迭代切片
 
-- 选择：发布身份与原创品牌资产闭环。
-- 原因：它同时关闭占位 Bundle ID、默认图标、名称/知识产权和签名 Archive 的最前置阻断。
+- 选择：开发者账号登记、签名与原创品牌资产验证闭环。
+- 原因：源码标识与本地图标已更新，但商店登记、名称/知识产权及签名 Archive 仍是最前置阻断。
 - 不包含：账号、订阅、广告、社区、AI、通知或新业务功能。
-- 完成条件：最终名称完成清查；生产 Bundle ID/Team 明确；原创图标/启动资产进入工程；签名 Archive 通过机械预检；仍不自动上传，上传需另行确认。
+- 完成条件：最终名称完成清查；`com.steady.lite` 与 Team、App ID 和 profile 匹配；原创图标/启动资产通过最终 Archive 检查；签名 Archive 通过机械预检；仍不自动上传，上传需另行确认。

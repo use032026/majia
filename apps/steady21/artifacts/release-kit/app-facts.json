@@ -1,0 +1,74 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/steady21/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "Steady21",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/steady21/android/app/src/main/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/steady21/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/steady21",
+  "dependency_signals": {},
+  "generated_at": "2026-10-12T06:51:26.927199+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.steady.lite",
+      "com.steady.lite.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "Steady21",
+        "path": "/Users/starburst/majia/apps/steady21/ios/Runner/Info.plist",
+        "usage_descriptions": {}
+      }
+    ],
+    "privacy_manifests": [],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [
+    {
+      "host": "wowsteady.com",
+      "path": "lib/privacy_web_page.dart"
+    }
+  ],
+  "network_hosts_observed": [
+    "wowsteady.com"
+  ],
+  "pubspec": {
+    "dependencies": [
+      "cupertino_icons",
+      "flutter_localizations",
+      "path_provider",
+      "share_plus",
+      "webview_flutter"
+    ],
+    "description": "An offline-first 21-day behavior experiment journal.",
+    "name": "steady21",
+    "path": "/Users/starburst/majia/apps/steady21/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

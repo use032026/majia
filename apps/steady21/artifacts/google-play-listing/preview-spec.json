@@ -1,0 +1,124 @@
+{
+  "schema_version": 2,
+  "app_name": "Steady21",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "defaults": {
+    "background_top": "#184C40",
+    "background_bottom": "#111A18",
+    "text_color": "#FFFBF4",
+    "muted_text_color": "#DCE9DF"
+  },
+  "store": "google_play",
+  "qa_dir": "qa",
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/android-01-onboarding.png",
+      "output": "final/en-US/phone/01-onboarding.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Start with one small action"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/android-02-today.png",
+      "output": "final/en-US/phone/02-today.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Record today your way"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/android-03-journey-en.png",
+      "output": "final/en-US/phone/03-journey.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "See practice and recovery"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/android-04-settings-en.png",
+      "output": "final/en-US/phone/04-settings.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Manage local records"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/android-01-onboarding-zh.png",
+      "output": "final/zh-CN/phone/01-onboarding.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "从一个小实验开始"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/android-02-today-zh.png",
+      "output": "final/zh-CN/phone/02-today.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "记录今天的真实行动"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/android-03-journey-zh.png",
+      "output": "final/zh-CN/phone/03-journey.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "回看练习与恢复"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/android-04-settings-zh.png",
+      "output": "final/zh-CN/phone/04-settings.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "管理本地记录"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "en-US",
+      "output": "final/feature-graphic-en.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "Small actions. Room to adjust."
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "zh-CN",
+      "output": "final/feature-graphic-zh.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "从小行动开始 允许调整",
+      "app_name": "微成 Steady21"
+    }
+  ]
+}
