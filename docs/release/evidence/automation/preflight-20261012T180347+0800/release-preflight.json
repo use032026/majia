@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-12T18:03:47+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/filepeek",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": true,
+    "root": "/Users/starburst/Downloads/app-ui-atlas/filepeek",
+    "branch": "main",
+    "sha": null,
+    "dirty": true,
+    "status_short": "?? .gitignore\n?? .metadata\n?? README.md\n?? analysis_options.yaml\n?? android/\n?? docs/\n?? ios/\n?? lib/\n?? pubspec.lock\n?? pubspec.yaml\n?? test/"
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.filepeek",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "DKImagePickerController.framework",
+      "DKPhotoGallery.framework",
+      "Flutter.framework",
+      "SDWebImage.framework",
+      "SwiftyGif.framework",
+      "file_picker.framework",
+      "path_provider_foundation.framework",
+      "receive_sharing_intent.framework",
+      "share_plus.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": true,
+        "root": "/Users/starburst/Downloads/app-ui-atlas/filepeek",
+        "branch": "main",
+        "sha": null,
+        "dirty": true,
+        "status_short": "?? .gitignore\n?? .metadata\n?? README.md\n?? analysis_options.yaml\n?? android/\n?? docs/\n?? ios/\n?? lib/\n?? pubspec.lock\n?? pubspec.yaml\n?? test/"
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Multiple production Bundle IDs found; pass --expected-bundle-id for the intended flavor.",
+      "evidence": {
+        "identifiers": [
+          "com.example.filepeek",
+          "com.example.filepeek.FilePeekShareExtension",
+          "com.example.filepeek.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.filepeek",
+          "com.example.filepeek.FilePeekShareExtension"
+        ],
+        "expected_bundle_id": null
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/filepeek/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.filepeek",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/DKImagePickerController.framework/DKImagePickerController.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/DKPhotoGallery.framework/DKPhotoGallery.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/SDWebImage.framework/SDWebImage.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/SwiftyGif.framework/SwiftyGif.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/file_picker.framework/file_picker_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/share_plus.framework/share_plus_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "DKImagePickerController.framework",
+        "DKPhotoGallery.framework",
+        "Flutter.framework",
+        "SDWebImage.framework",
+        "SwiftyGif.framework",
+        "file_picker.framework",
+        "path_provider_foundation.framework",
+        "receive_sharing_intent.framework",
+        "share_plus.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "blocker",
+      "summary": "Archive Bundle ID cannot be tied to the selected source configuration.",
+      "evidence": {
+        "expected": null,
+        "archive": "com.example.filepeek"
+      },
+      "limitation": null
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "blocker",
+      "summary": "No PNG runtime/store screenshot evidence was found.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/app/outputs/flutter-apk/app-debug.apk",
+          "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 170871150,
+      "modified_at": "2026-10-12T18:02:54.660859+08:00",
+      "sha256": "aab17db8a03662b28727cabd5e0b66caa9804276ab78905cabe8527ec20d8e1a"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive",
+      "size_bytes": 160,
+      "modified_at": "2026-10-12T18:03:31.666752+08:00",
+      "note": "directory contents were not hashed"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/filepeek/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 75120,
+      "modified_at": "2026-10-12T18:03:31.553556+08:00",
+      "sha256": "ee7381aafe65939db45fed4cdf7ec703ac2c35f057a9eed681c02261addb344a"
+    }
+  ]
+}

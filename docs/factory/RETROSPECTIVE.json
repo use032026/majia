@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "filepeek-20261012-01",
+    "project_ref": "filepeek",
+    "scope": "release_candidate",
+    "skill_revision": "sha256:9d8212c51331f3fc2167f438e8673eefcb29585d9996ebfdc1c3f62f14cd133b",
+    "project_revision": "e728d35f6a17fe59a71d070809427f502f60ed4b",
+    "finished_at": "2026-10-12T18:50:07+08:00",
+    "product_verdict": "passed"
+  },
+  "summary": {
+    "worked": [
+      "35 tests, format, analyzer, Android debug build and unsigned iOS archive passed: docs/release/evidence/automation/20261012T184622+0800/QUALITY_GATE.md",
+      "iOS Files sharing passed background return and cold start on iOS 18.3 simulator, including pending-file cleanup: docs/release/evidence/runtime/ios-share-validation.md",
+      "Android API 35 Files picker and JSON/CSV/TXT ACTION_SEND import passed; local store preflight honestly remained blocked: docs/release/FUNCTIONAL_REVIEW.md and docs/release/APP_STORE_PREFLIGHT.md"
+    ],
+    "failed": [
+      "Initial Android debug build exposed a Java 1.8 versus Kotlin 21 target mismatch in receive_sharing_intent; Gradle target alignment preceded the passing build: docs/release/evidence/automation/20261012T175616+0800/android-debug-build.log",
+      "Initial iOS share handoff did not import a real Files attachment; simulator Files-to-extension-to-app validation exposed this before the App Group handoff was repaired: docs/release/evidence/runtime/ios-share-validation.md"
+    ],
+    "untested": [
+      "Production signing and distributable IPA/AAB, physical devices, minimum OS and Android API 36 runtime, full accessibility matrix, final SDK privacy and 16 KB checks, public policy/support pages, store processing and review"
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "flutter.share-extension.real-file-handoff",
+      "severity": "P1",
+      "symptom": "An early iOS share implementation built but did not import a real file shared from Files.",
+      "phase": "iOS simulator runtime review",
+      "cause_confidence": "hypothesis",
+      "cause": "The earlier gate had no end-to-end App Group and file-provider handoff check; the exact contribution of the initial plugin configuration and simulator entitlements was not isolated in a saved reproduction.",
+      "evidence": [
+        "docs/release/evidence/runtime/ios-share-validation.md",
+        "docs/release/evidence/runtime/ios-share-resume-import-space-name.png",
+        "docs/release/evidence/runtime/ios-share-cold-start-import.png"
+      ],
+      "proposed_change": "Add a real Files share smoke-check to the Flutter delivery checklist for apps with an iOS share extension: test both a suspended app and cold start, check content and cleanup.",
+      "regression_check": "On an entitled iOS simulator, share two differently named documents, resume and cold-launch the app, verify new contents and an empty pending inbox."
+    },
+    {
+      "pattern_key": "flutter.android.plugin-jvm-target-mismatch",
+      "severity": "P1",
+      "symptom": "Android debug build failed when receive_sharing_intent compiled Kotlin for JVM 21 while Java used 1.8.",
+      "phase": "initial Android build gate",
+      "cause_confidence": "confirmed",
+      "cause": "The plugin module's Java and Kotlin compile tasks had inconsistent JVM targets.",
+      "evidence": [
+        "docs/release/evidence/automation/20261012T175616+0800/android-debug-build.log",
+        "docs/release/evidence/automation/20261012T184622+0800/QUALITY_GATE.md",
+        "android/build.gradle.kts"
+      ],
+      "proposed_change": "In the Flutter delivery reference, require an early Android debug build after adding a native plugin and inspect task-level JVM targets when Gradle reports compatibility failure.",
+      "regression_check": "A build with mismatched Java/Kotlin targets fails, then passes after aligned targets without disabling target validation."
+    }
+  ]
+}
