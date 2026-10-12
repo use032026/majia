@@ -1,0 +1,20 @@
+Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+Archiving com.example.filepeek...
+Running Xcode build...                                          
+Xcode archive done.                                         25.9s
+✓ Built build/ios/archive/Runner.xcarchive (177.9MB)
+
+[!] App Settings Validation
+    • Version Number: 1.0.0
+    • Build Number: 1
+    • Display Name: FilePeek
+    • Deployment Target: 15.0
+    • Bundle Identifier: com.example.filepeek
+    ! Your application still contains the default "com.example" bundle identifier.
+
+[!] App Icon and Launch Image Assets Validation
+    ! Launch image is set to the default placeholder icon. Replace with unique launch image.
+
+To update the settings, please refer to https://flutter.dev/to/ios-deploy
+
+Codesigning disabled with --no-codesign, skipping IPA.

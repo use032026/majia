@@ -1,0 +1,37 @@
+00:00 +0: loading /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart
+00:00 +0: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/domain/filepeek_document_test.dart: import boundaries detects supported types and accepts UTF-8 BOM without losing content
+00:00 +1: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/domain/filepeek_document_test.dart: import boundaries rejects oversized, malformed UTF-8, binary and unsupported files
+00:00 +2: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/domain/filepeek_document_test.dart: import boundaries accepts 10,000 physical lines with and without final newline
+00:00 +3: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +4: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +5: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +6: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +7: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +8: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +9: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +10: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +11: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +12: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +13: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +14: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +15: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +16: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +17: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +18: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +19: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +20: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +21: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: JSON format, undo and export keep source intact
+00:00 +22: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: CSV cell cancel and reopen edits only the copy
+00:00 +23: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: invalid replacement leaves current file and displays error
+00:01 +24: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: language switch shows Chinese actions and report is Chinese
+00:01 +25: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: modified copy needs confirmation before close or replacement
+00:01 +26: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: incoming share cannot attach a stale JSON comparison
+00:01 +27: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: incoming share cannot redirect a pending CSV cell edit
+00:01 +28: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: late initial share cannot replace a user-selected file
+00:01 +29: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: raw repair revalidates invalid JSON
+00:01 +30: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: incoming share preserves an unapplied raw editing draft
+00:01 +31: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: confirmed incoming share closes an unapplied raw draft
+00:01 +32: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: raw draft cancellation needs confirmation
+00:02 +33: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: raw editor rejects UTF-8 content over 128 KiB
+00:02 +34: /Users/starburst/Downloads/app-ui-atlas/filepeek/test/widget_test.dart: last supported text and CSV rows are reachable
+00:02 +35: All tests passed!
