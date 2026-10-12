@@ -28,7 +28,6 @@ class ShareViewController: SLComposeServiceViewController {
       guard let type = UTType(identifier) else { return false }
       return type.conforms(to: .data) || type.conforms(to: .item)
     }
-    NSLog("[FilePeekShare] types=%@ suggestedName=%@", types, provider.suggestedName ?? "<none>")
     loadFileRepresentation(from: provider, types: types, index: 0)
   }
 
@@ -47,7 +46,7 @@ class ShareViewController: SLComposeServiceViewController {
       return
     }
     let identifier = types[index]
-    provider.loadFileRepresentation(forTypeIdentifier: identifier) { [weak self] url, error in
+    provider.loadFileRepresentation(forTypeIdentifier: identifier) { [weak self] url, _ in
       guard let self else { return }
       if let url {
         // This system-owned URL expires when the callback returns.
@@ -55,11 +54,8 @@ class ShareViewController: SLComposeServiceViewController {
           try self.importFile(at: url, provider: provider, typeIdentifier: identifier)
           return
         } catch {
-          NSLog("[FilePeekShare] copy failed for %@: %@", identifier, String(describing: error))
           // Another representation may still provide a readable file.
         }
-      } else if let error {
-        NSLog("[FilePeekShare] representation %@ failed: %@", identifier, String(describing: error))
       }
       self.loadFileRepresentation(from: provider, types: types, index: index + 1)
     }
@@ -71,10 +67,9 @@ class ShareViewController: SLComposeServiceViewController {
       return
     }
     provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) {
-      [weak self] item, error in
+      [weak self] item, _ in
       guard let self else { return }
       guard let url = (item as? URL) ?? (item as? NSURL).map({ $0 as URL }), url.isFileURL else {
-        NSLog("[FilePeekShare] fileURL missing: %@", String(describing: error))
         self.showFailure(self.localized("无法读取分享的文件。", "The shared file could not be read."))
         return
       }
@@ -87,7 +82,6 @@ class ShareViewController: SLComposeServiceViewController {
           "仅支持 JSON、CSV、TXT 和 LOG 文件。", "Only JSON, CSV, TXT and LOG files are supported."
         ))
       } catch {
-        NSLog("[FilePeekShare] fileURL copy failed: %@", String(describing: error))
         self.showFailure(self.localized("无法读取分享的文件。", "The shared file could not be read."))
       }
     }
