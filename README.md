@@ -20,6 +20,7 @@
 | ReaderEdit | [`apps/ReaderEdit/`](apps/ReaderEdit/) | [`CherryIce/ReaderEdit`](https://github.com/CherryIce/ReaderEdit)，迁移基点 `9863eac49e4e76c3e7dd5fac986204e0c727f7a8` |
 | Somniloquy（夜间声音笔记） | [`apps/Somniloquy/`](apps/Somniloquy/) | 独立 Flutter MVP，迁移基点 `e443a5cb66e591212e5bd6a74d82cda79038840a` |
 | Almanac（每日反思笺） | [`apps/almanac/`](apps/almanac/) | [`CherryIce/Almanac`](https://github.com/CherryIce/Almanac)，迁移基点 `4021e797b080f81a9c5ac3ecb82eeb06d542ea76` |
+| FilePeek（本地文件检查） | [`apps/filepeek/`](apps/filepeek/) | [`CherryIce/FilePeek`](https://github.com/CherryIce/FilePeek)，迁移基点 `371747c02780c016a8258e9425f7ed6e1ed185ae` |
 
 具体功能、平台限制、本地命令和发布缺口以各 Flutter 工程内的 `README.md` 与 `docs/` 为准。
 
@@ -35,7 +36,7 @@
 | KIFXPRO | [`KIFXPRO iOS Release`](.github/workflows/sdpacket-ios-release.yml) | `sdpacket-production` | `Runner` | 支持 |
 | PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
 
-`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar`、`Trip Delta`、`Diary`、`ReaderEdit`、`Somniloquy` 和 `Almanac` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
+`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar`、`Trip Delta`、`Diary`、`ReaderEdit`、`Somniloquy`、`Almanac` 和 `FilePeek` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
 
 ### 发布开关
 
@@ -92,7 +93,7 @@
 
 ## 其他自动化
 
-- [`Android Package`](.github/workflows/android-package.yml) 是 11 个已有 Android Flutter 工程共用的手动打包入口；不使用 GitHub Environment，按应用前缀读取 Repository Secrets 中的独立签名凭据，并保留 APK/AAB Artifact。打包入口见 [`docs/android-packaging.md`](docs/android-packaging.md)，已有/新建马甲的完整接入指南见 [`docs/android-majia-configuration.md`](docs/android-majia-configuration.md)。
+- [`Android Package`](.github/workflows/android-package.yml) 是 11 个已接入 Android Flutter 工程共用的手动打包入口；FilePeek 尚未接入。该工作流不使用 GitHub Environment，按应用前缀读取 Repository Secrets 中的独立签名凭据，并保留 APK/AAB Artifact。打包入口见 [`docs/android-packaging.md`](docs/android-packaging.md)，已有/新建马甲的完整接入指南见 [`docs/android-majia-configuration.md`](docs/android-majia-configuration.md)。
 - [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 使用与构建发布流程相同的仓库内提交脚本，可独立提交现有版本；结果会写入 Job Summary 并保留 30 天 JSON 证据。已提交版本会作为幂等 no-op 返回。
 - [`ASC Existing Build Release`](.github/workflows/asc-existing-build-release.yml) 为五个生产 Environment 创建或复用商店版本并关联已处理构建，可选更新说明和提交审核，不重新打包或上传 IPA。
 - [`ASC Review Status`](.github/workflows/asc-review-status.yml) 是只读查询，可按版本获取五个生产 Environment 对应应用的 ASC 处理、TestFlight 与审核状态，并保留 30 天 JSON 快照。
