@@ -1,0 +1,7 @@
+Almanac is a daily reflection space inspired by the simple “try and skip” form of traditional almanacs. Each day, it composes an original prompt and short verse on your device. Choose one small thing to try and one thing to leave aside, then make the day your own.
+
+Write an optional intention and seal your daily leaf. Later, reflect on what happened by choosing Practiced, Reframed, or Released. Your sealed leaves remain in a local Folio, where you can revisit the verse, your choices, and your reflection.
+
+Almanac works without an account or a developer-operated backend. It supports English and Simplified Chinese, with system, light, and dark appearance options. You can copy your Folio as readable Markdown or clear your daily records from Settings.
+
+The prompts are for cultural reflection and personal choice. Almanac does not offer fortune telling, auspicious-date advice, predictions, or a complete calendar.

@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "app_name": "Almanac",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#315E54",
+    "background_bottom": "#1F2926",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#E5EBDD"
+  },
+  "store": "google_play",
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/02-today-android.png",
+      "output": "final/en-US/phone/01-today.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "A new daily leaf"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/03-choices-android.png",
+      "output": "final/en-US/phone/02-choices.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Choose one Try and one Skip"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/05-reflect-android.png",
+      "output": "final/en-US/phone/03-reflect.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Reflect on the day"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/06-folio-android.png",
+      "output": "final/en-US/phone/04-folio.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Keep a local folio"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "en-US",
+      "output": "final/feature-graphic-en.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "One leaf a day. One clear intention."
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "zh-CN",
+      "output": "final/feature-graphic-zh.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "一日一笺，留一寸清明"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/02-today-zh-android.png",
+      "output": "final/zh-CN/phone/01-today.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "每日一笺"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/03-choices-zh-android.png",
+      "output": "final/zh-CN/phone/02-choices.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "选一项宜与一项忌"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/04-sealed-zh-android.png",
+      "output": "final/zh-CN/phone/03-sealed.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "收下今日笺"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/06-folio-zh-android.png",
+      "output": "final/zh-CN/phone/04-folio.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "在本地笺册回看"
+    }
+  ]
+}

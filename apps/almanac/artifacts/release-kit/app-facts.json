@@ -1,0 +1,78 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/almanac/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "Almanac",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/almanac/android/app/src/main/AndroidManifest.xml",
+        "permissions": []
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/almanac/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/almanac",
+  "dependency_signals": {
+    "local_storage": [
+      "shared_preferences"
+    ]
+  },
+  "generated_at": "2026-10-13T09:56:37.675573+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.example.almanac",
+      "com.example.almanac.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "Almanac",
+        "path": "/Users/starburst/majia/apps/almanac/ios/Runner/Info.plist",
+        "usage_descriptions": {}
+      }
+    ],
+    "privacy_manifests": [
+      {
+        "path": "/Users/starburst/majia/apps/almanac/ios/Runner/PrivacyInfo.xcprivacy",
+        "payload": {
+          "NSPrivacyAccessedAPITypes": [],
+          "NSPrivacyCollectedDataTypes": [],
+          "NSPrivacyTracking": false,
+          "NSPrivacyTrackingDomains": []
+        }
+      }
+    ],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [],
+  "network_hosts_observed": [],
+  "pubspec": {
+    "dependencies": [
+      "characters",
+      "cupertino_icons",
+      "flutter_localizations",
+      "shared_preferences"
+    ],
+    "description": "A private daily reflection inspired by almanac forms.",
+    "name": "almanac",
+    "path": "/Users/starburst/majia/apps/almanac/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

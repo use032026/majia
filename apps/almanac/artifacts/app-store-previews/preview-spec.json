@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "app_name": "Almanac",
+  "font_path": "/System/Library/Fonts/PingFang.ttc",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#315E54",
+    "background_bottom": "#1F2926",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#E5EBDD"
+  },
+  "store": "app_store",
+  "items": [
+    {
+      "kind": "screenshot",
+      "source": "source/01-sealed-ios.png",
+      "output": "final/en-US/iphone/01-seal.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Make a small choice",
+      "subheadline": "Choose one Try and one Skip for the day.",
+      "icon": "../../website/assets/almanac-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/02-reflection-ios.png",
+      "output": "final/en-US/iphone/02-reflect.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Return to your day",
+      "subheadline": "Reflect as Practiced, Reframed, or Released.",
+      "icon": "../../website/assets/almanac-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/03-folio-ios.png",
+      "output": "final/en-US/iphone/03-folio.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Keep a local folio",
+      "subheadline": "Revisit the verse, choices, and reflection.",
+      "icon": "../../website/assets/almanac-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/01-welcome-ipad-ios.png",
+      "output": "final/en-US/ipad/01-welcome.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "One leaf a day",
+      "subheadline": "A simple space for cultural reflection.",
+      "icon": "../../website/assets/almanac-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/02-today-ipad-ios.png",
+      "output": "final/en-US/ipad/02-today.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "A daily prompt, made locally",
+      "subheadline": "Read original verse and choose your own direction.",
+      "icon": "../../website/assets/almanac-icon.png"
+    }
+  ]
+}

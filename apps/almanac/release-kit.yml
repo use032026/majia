@@ -1,0 +1,87 @@
+schema_version: 2
+
+identity:
+  app_name: "Almanac"
+  operator: ""
+  bundle_id: "com.example.almanac"
+  android_package: "com.example.almanac"
+
+contact:
+  support_email: ""
+  production_domain: ""
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: ""
+  confirmed:
+    - "Current source stores the installation seed, leaves, choices, optional intentions, reflections, and preferences with shared_preferences."
+    - "Current source has no account, developer backend, advertising, analytics, or runtime permission request."
+    - "Folio Markdown is copied to the system clipboard only after a user action."
+    - "Clear all daily leaves removes app-managed leaf records but keeps preferences and the installation seed."
+  open_questions:
+    - "Operator, monitored support email, production HTTPS domain, and effective date: user confirmed all pending."
+    - "Audit the exact signed iOS and Android builds and final store privacy disclosures before publication."
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: sealed
+        source: source/01-sealed-ios.png
+      - id: reflection
+        source: source/02-reflection-ios.png
+      - id: folio
+        source: source/03-folio-ios.png
+      - id: ipad-welcome
+        source: source/01-welcome-ipad-ios.png
+      - id: ipad-today
+        source: source/02-today-ipad-ios.png
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: today-en
+        source: source/02-today-android.png
+      - id: choices-en
+        source: source/03-choices-android.png
+      - id: reflection-en
+        source: source/05-reflect-android.png
+      - id: folio-en
+        source: source/06-folio-android.png
+      - id: today-zh
+        source: source/02-today-zh-android.png
+      - id: choices-zh
+        source: source/03-choices-zh-android.png
+      - id: sealed-zh
+        source: source/04-sealed-zh-android.png
+      - id: folio-zh
+        source: source/06-folio-zh-android.png
+
+paths:
+  app_root: "apps/almanac"
