@@ -5,6 +5,7 @@ import 'app_controller.dart';
 import 'app_strings.dart';
 import 'app_theme.dart';
 import 'screens/almanac_screens.dart';
+import 'screens/onboarding_screen.dart';
 
 class AlmanacApp extends StatelessWidget {
   const AlmanacApp({super.key, required this.controller});
@@ -16,13 +17,11 @@ class AlmanacApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
-        final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
-        final locale = controller.resolveLocale(systemLocale);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Almanac',
-          locale: locale,
-          supportedLocales: const <Locale>[Locale('zh', 'CN'), Locale('en')],
+          locale: controller.flutterLocale,
+          supportedLocales: const <Locale>[Locale('en'), Locale('zh', 'CN')],
           localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -31,7 +30,9 @@ class AlmanacApp extends StatelessWidget {
           theme: buildLightTheme(),
           darkTheme: buildDarkTheme(),
           themeMode: controller.flutterThemeMode,
-          home: _homeFor(locale),
+          home: Builder(
+            builder: (context) => _homeFor(Localizations.localeOf(context)),
+          ),
         );
       },
     );

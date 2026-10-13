@@ -8,130 +8,6 @@ import '../app_strings.dart';
 import '../domain/almanac_content.dart';
 import '../domain/almanac_models.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({
-    super.key,
-    required this.controller,
-    required this.strings,
-  });
-
-  final AppController controller;
-  final AppStrings strings;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: SafeArea(
-        child: _CenteredScroll(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  ExcludeSemantics(
-                    child: Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        color: colors.secondary,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '宜',
-                        style: TextStyle(
-                          color: colors.onSecondary,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Text(
-                      strings.text('appName'),
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 54),
-              Text(
-                strings.text('introEyebrow'),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: colors.primary,
-                  letterSpacing: 1.1,
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                strings.text('introTitle'),
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 18),
-              Text(
-                strings.text('introBody'),
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: colors.onSurfaceVariant),
-              ),
-              const SizedBox(height: 30),
-              _PrincipleRow(
-                icon: Icons.explore_outlined,
-                text: strings.text('notDivination'),
-              ),
-              const SizedBox(height: 14),
-              _PrincipleRow(
-                icon: Icons.shield_outlined,
-                text: strings.text('privateByDesign'),
-              ),
-              const SizedBox(height: 44),
-              if (controller.hasSaveFailure)
-                _ErrorBanner(text: strings.text('saveError')),
-              FilledButton.icon(
-                key: const Key('open_today_button'),
-                onPressed: controller.isBusy
-                    ? null
-                    : () => controller.completeOnboarding(),
-                icon: const Icon(Icons.arrow_forward_rounded),
-                label: Text(
-                  controller.isBusy
-                      ? strings.text('saving')
-                      : strings.text('openToday'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PrincipleRow extends StatelessWidget {
-  const _PrincipleRow({required this.icon, required this.text});
-
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Icon(icon, size: 23, color: Theme.of(context).colorScheme.primary),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(text, style: Theme.of(context).textTheme.bodyLarge),
-        ),
-      ],
-    );
-  }
-}
-
 class RecoveryScreen extends StatelessWidget {
   const RecoveryScreen({
     super.key,
@@ -146,6 +22,7 @@ class RecoveryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: _CenteredScroll(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -259,8 +136,11 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final strings = widget.strings;
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        toolbarHeight: 56 + (textScale - 1).clamp(0.0, 2.0) * 28,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -374,6 +254,8 @@ class _DailyLeafScreenState extends State<DailyLeafScreen> {
   Widget build(BuildContext context) {
     final leaf = widget.leaf;
     final strings = widget.strings;
+    final date = strings.formatDate(leaf.createdAt);
+    final dateParts = strings.useChinese ? date.split(' · ') : const <String>[];
     return _CenteredScroll(
       key: const Key('daily_leaf_scroll'),
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
@@ -382,9 +264,40 @@ class _DailyLeafScreenState extends State<DailyLeafScreen> {
         children: <Widget>[
           Semantics(
             header: true,
-            child: Text(
-              strings.formatDate(leaf.createdAt),
-              style: Theme.of(context).textTheme.titleLarge,
+            label: date,
+            child: ExcludeSemantics(
+              child: dateParts.length == 2
+                  ? Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          dateParts.first,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            dateParts.last,
+                            style: Theme.of(context).textTheme.labelLarge
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(date, style: Theme.of(context).textTheme.titleLarge),
             ),
           ),
           const SizedBox(height: 8),
@@ -488,36 +401,82 @@ class _VersePanel extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final lines = strings.useChinese ? leaf.verseZh : leaf.verseEn;
     return Container(
+      key: const Key('verse_card'),
       decoration: BoxDecoration(
-        color: colors.primaryContainer.withValues(alpha: 0.52),
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: colors.primary.withValues(alpha: 0.25)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: colors.brightness == Brightness.light
+              ? const <Color>[Color(0xFFF5F6ED), Color(0xFFE8F0E7)]
+              : const <Color>[Color(0xFF294137), Color(0xFF203129)],
+        ),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.24)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: colors.shadow.withValues(alpha: 0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            strings.text('verseLabel'),
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: colors.primary,
-              letterSpacing: 0.8,
-            ),
+          Row(
+            children: <Widget>[
+              Container(
+                width: 4,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: colors.secondary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  strings.text('verseLabel'),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: colors.primary,
+                    letterSpacing: strings.useChinese ? 1.2 : 0.2,
+                  ),
+                ),
+              ),
+              ExcludeSemantics(
+                child: Icon(
+                  Icons.auto_stories_outlined,
+                  size: 20,
+                  color: colors.primary.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          for (final line in lines)
+          const SizedBox(height: 14),
+          Divider(height: 1, color: colors.primary.withValues(alpha: 0.18)),
+          const SizedBox(height: 18),
+          for (var index = 0; index < lines.length; index++)
             Padding(
-              padding: const EdgeInsets.only(bottom: 5),
+              padding: EdgeInsets.only(
+                bottom: index == lines.length - 1 ? 0 : 8,
+              ),
               child: Text(
-                line,
+                lines[index],
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontSize: strings.useChinese ? 26 : 23,
-                  height: 1.45,
-                  fontWeight: FontWeight.w600,
+                  fontSize: strings.useChinese ? 24 : 22,
+                  height: 1.35,
+                  letterSpacing: strings.useChinese ? -0.5 : -0.3,
+                  fontWeight: FontWeight.w700,
+                  color: index == lines.length - 1
+                      ? colors.primary
+                      : colors.onSurface,
                 ),
               ),
             ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 22),
+          Divider(height: 1, color: colors.primary.withValues(alpha: 0.18)),
+          const SizedBox(height: 10),
           Text(
             strings.text('composedLocally'),
             style: Theme.of(
@@ -657,74 +616,135 @@ class _SealedLeaf extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(20),
+      key: const Key('sealed_card'),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: colors.surfaceContainerLow,
+        color: colors.brightness == Brightness.light
+            ? colors.surfaceContainerLow
+            : const Color(0xFF222D28),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: colors.outlineVariant),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.2)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: colors.shadow.withValues(alpha: 0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
             children: <Widget>[
-              ExcludeSemantics(
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: colors.secondary, width: 2),
-                  ),
-                  child: Text(
-                    strings.useChinese ? '收' : '✓',
-                    style: TextStyle(
-                      color: colors.secondary,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
               Expanded(
                 child: Text(
                   strings.text('sealed'),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
+              const SizedBox(width: 12),
+              ExcludeSemantics(
+                child: Transform.rotate(
+                  angle: -0.08,
+                  child: Container(
+                    width: 46,
+                    height: 46,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(color: colors.secondary, width: 2),
+                    ),
+                    child: Text(
+                      strings.useChinese ? '收' : '✓',
+                      style: TextStyle(
+                        color: colors.secondary,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 21,
+                        height: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 22),
-          _ChoiceSummary(
-            label: strings.text('suitable'),
-            value: promptById(
-              leaf.selectedSuitableId!,
-            ).text(useChinese: strings.useChinese),
-          ),
-          const SizedBox(height: 10),
-          _ChoiceSummary(
-            label: strings.text('avoid'),
-            value: promptById(
-              leaf.selectedAvoidId!,
-            ).text(useChinese: strings.useChinese),
-          ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 15),
+          Divider(height: 1, color: colors.outlineVariant),
+          const SizedBox(height: 16),
           Text(
-            (leaf.intention ?? '').isEmpty
-                ? strings.text('noIntention')
-                : leaf.intention!,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontStyle: (leaf.intention ?? '').isEmpty
-                  ? FontStyle.italic
-                  : FontStyle.normal,
-              color: (leaf.intention ?? '').isEmpty
-                  ? colors.onSurfaceVariant
-                  : colors.onSurface,
+            strings.text('yourChoice'),
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: colors.primary,
+              letterSpacing: strings.useChinese ? 0.8 : 0,
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 11),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+            decoration: BoxDecoration(
+              color: colors.primary.withValues(alpha: 0.045),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colors.outlineVariant.withValues(alpha: 0.65),
+              ),
+            ),
+            child: Column(
+              children: <Widget>[
+                _ChoiceSummary(
+                  side: PromptSide.suitable,
+                  label: strings.text('suitable'),
+                  value: promptById(
+                    leaf.selectedSuitableId!,
+                  ).text(useChinese: strings.useChinese),
+                ),
+                const SizedBox(height: 9),
+                Divider(height: 1, color: colors.outlineVariant),
+                const SizedBox(height: 9),
+                _ChoiceSummary(
+                  side: PromptSide.avoid,
+                  label: strings.text('avoid'),
+                  value: promptById(
+                    leaf.selectedAvoidId!,
+                  ).text(useChinese: strings.useChinese),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.fromLTRB(15, 12, 15, 14),
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerHighest.withValues(alpha: 0.4),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  strings.text('todayIntention'),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(color: colors.primary),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  (leaf.intention ?? '').isEmpty
+                      ? strings.text('noIntention')
+                      : leaf.intention!,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontStyle: (leaf.intention ?? '').isEmpty
+                        ? FontStyle.italic
+                        : FontStyle.normal,
+                    color: (leaf.intention ?? '').isEmpty
+                        ? colors.onSurfaceVariant
+                        : colors.onSurface,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
           if (controller.hasSaveFailure)
             _ErrorBanner(text: strings.text('saveError')),
           if (leaf.outcome == null)
@@ -735,6 +755,11 @@ class _SealedLeaf extends StatelessWidget {
                   : () => _showReflection(context),
               icon: const Icon(Icons.replay_circle_filled_outlined),
               label: Text(strings.text('reflect')),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(46),
+                backgroundColor: colors.primary.withValues(alpha: 0.06),
+                side: BorderSide(color: colors.primary.withValues(alpha: 0.35)),
+              ),
             )
           else
             _QuietLabel(
@@ -752,8 +777,12 @@ class _SealedLeaf extends StatelessWidget {
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) => SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          padding: _scrollPadding(
+            context,
+            const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -792,34 +821,48 @@ class _SealedLeaf extends StatelessWidget {
 }
 
 class _ChoiceSummary extends StatelessWidget {
-  const _ChoiceSummary({required this.label, required this.value});
+  const _ChoiceSummary({
+    required this.side,
+    required this.label,
+    required this.value,
+  });
 
+  final PromptSide side;
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final accent = side == PromptSide.suitable
+        ? colors.primary
+        : colors.secondary;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Container(
-          constraints: const BoxConstraints(minWidth: 42, minHeight: 42),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          constraints: const BoxConstraints(minWidth: 38, minHeight: 38),
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
+            color: accent.withValues(alpha: 0.13),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
             label,
-            style: const TextStyle(fontWeight: FontWeight.w800),
+            style: TextStyle(color: accent, fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: Text(value, style: Theme.of(context).textTheme.bodyLarge),
+            padding: const EdgeInsets.only(top: 3),
+            child: Text(
+              value,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+            ),
           ),
         ),
       ],
@@ -950,14 +993,17 @@ class _FolioCard extends StatelessWidget {
   }
 
   Future<void> _showDetail(BuildContext context) {
-    final verse = strings.useChinese ? leaf.verseZh : leaf.verseEn;
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) => SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(22, 6, 22, 28),
+          padding: _scrollPadding(
+            context,
+            const EdgeInsets.fromLTRB(22, 6, 22, 28),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -968,12 +1014,10 @@ class _FolioCard extends StatelessWidget {
               const SizedBox(height: 6),
               Text(leaf.dateKey, style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 24),
-              Text(
-                verse.join('\n'),
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              _VersePanel(leaf: leaf, strings: strings),
               const SizedBox(height: 24),
               _ChoiceSummary(
+                side: PromptSide.suitable,
                 label: strings.text('suitable'),
                 value: promptById(
                   leaf.selectedSuitableId!,
@@ -981,6 +1025,7 @@ class _FolioCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               _ChoiceSummary(
+                side: PromptSide.avoid,
                 label: strings.text('avoid'),
                 value: promptById(
                   leaf.selectedAvoidId!,
@@ -1017,7 +1062,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(strings.text('settings'))),
       body: _CenteredScroll(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
         child: AnimatedBuilder(
           animation: controller,
           builder: (context, _) {
@@ -1025,75 +1070,114 @@ class SettingsScreen extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                _SettingsIntro(strings: strings),
+                const SizedBox(height: 24),
                 if (controller.hasSaveFailure)
                   _ErrorBanner(text: strings.text('saveError')),
-                _SettingsHeading(strings.text('language')),
-                for (final mode in AppLocaleMode.values)
-                  _SettingChoice(
-                    key: Key('locale_${mode.name}'),
-                    selected: data.localeMode == mode,
-                    onTap: controller.isBusy
-                        ? null
-                        : () => controller.setLocaleMode(mode),
-                    label: _localeLabel(strings, mode),
-                  ),
-                const SizedBox(height: 18),
-                _SettingsHeading(strings.text('appearance')),
-                for (final mode in AppThemeMode.values)
-                  _SettingChoice(
-                    key: Key('theme_${mode.name}'),
-                    selected: data.themeMode == mode,
-                    onTap: controller.isBusy
-                        ? null
-                        : () => controller.setThemeMode(mode),
-                    label: strings.text(mode.name),
-                  ),
-                const SizedBox(height: 18),
-                _SettingsHeading(strings.text('dataAndPrivacy')),
-                ListTile(
-                  key: const Key('copy_archive_button'),
-                  minTileHeight: 56,
-                  leading: const Icon(Icons.copy_all_outlined),
-                  title: Text(strings.text('copyArchive')),
-                  onTap: () async {
-                    await Clipboard.setData(
-                      ClipboardData(
-                        text: controller.exportMarkdown(
-                          useChinese: strings.useChinese,
+                _SettingsHeading(
+                  icon: Icons.translate_rounded,
+                  title: strings.text('language'),
+                  subtitle: strings.text('languageHint'),
+                ),
+                const SizedBox(height: 10),
+                _SettingsGroup(
+                  children: <Widget>[
+                    for (final mode in AppLocaleMode.values) ...<Widget>[
+                      if (mode != AppLocaleMode.values.first)
+                        const _SettingsDivider(),
+                      _SettingChoice(
+                        key: Key('locale_${mode.name}'),
+                        selected: data.localeMode == mode,
+                        onTap: controller.isBusy
+                            ? null
+                            : () => controller.setLocaleMode(mode),
+                        label: _localeLabel(strings, mode),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _SettingsHeading(
+                  icon: Icons.palette_outlined,
+                  title: strings.text('appearance'),
+                  subtitle: strings.text('appearanceHint'),
+                ),
+                const SizedBox(height: 10),
+                _SettingsGroup(
+                  children: <Widget>[
+                    for (final mode in AppThemeMode.values) ...<Widget>[
+                      if (mode != AppThemeMode.values.first)
+                        const _SettingsDivider(),
+                      _SettingChoice(
+                        key: Key('theme_${mode.name}'),
+                        selected: data.themeMode == mode,
+                        onTap: controller.isBusy
+                            ? null
+                            : () => controller.setThemeMode(mode),
+                        label: strings.text(mode.name),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _SettingsHeading(
+                  icon: Icons.shield_outlined,
+                  title: strings.text('dataAndPrivacy'),
+                ),
+                const SizedBox(height: 10),
+                _SettingsGroup(
+                  children: <Widget>[
+                    _SettingsAction(
+                      key: const Key('copy_archive_button'),
+                      icon: Icons.copy_all_outlined,
+                      title: strings.text('copyArchive'),
+                      subtitle: strings.text('copyArchiveHint'),
+                      onTap: () async {
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text: controller.exportMarkdown(
+                              useChinese: strings.useChinese,
+                            ),
+                          ),
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(strings.text('copied'))),
+                          );
+                        }
+                      },
+                    ),
+                    const _SettingsDivider(),
+                    _SettingsAction(
+                      key: const Key('privacy_button'),
+                      icon: Icons.privacy_tip_outlined,
+                      title: strings.text('privacyTitle'),
+                      subtitle: strings.text('privacyHint'),
+                      showChevron: true,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const PrivacyScreen(),
                         ),
                       ),
-                    );
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(strings.text('copied'))),
-                      );
-                    }
-                  },
-                ),
-                ListTile(
-                  key: const Key('clear_records_button'),
-                  minTileHeight: 56,
-                  leading: Icon(
-                    Icons.delete_outline_rounded,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  title: Text(
-                    strings.text('clearRecords'),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
                     ),
-                  ),
-                  onTap: controller.isBusy
-                      ? null
-                      : () => _confirmClear(context, strings),
+                  ],
                 ),
-                const SizedBox(height: 18),
-                _InfoPanel(
-                  title: strings.text('privacyTitle'),
-                  body: strings.text('privacyBody'),
-                  icon: Icons.shield_outlined,
+                const SizedBox(height: 10),
+                _SettingsGroup(
+                  children: <Widget>[
+                    _SettingsAction(
+                      key: const Key('clear_records_button'),
+                      icon: Icons.delete_outline_rounded,
+                      title: strings.text('clearRecords'),
+                      subtitle: strings.text('clearRecordsHint'),
+                      destructive: true,
+                      onTap: controller.isBusy
+                          ? null
+                          : () => _confirmClear(context, strings),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 24),
                 _InfoPanel(
                   title: strings.text('methodTitle'),
                   body: strings.text('methodBody'),
@@ -1141,23 +1225,184 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-class _SettingsHeading extends StatelessWidget {
-  const _SettingsHeading(this.text);
-
-  final String text;
+class PrivacyScreen extends StatelessWidget {
+  const PrivacyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
+    final strings = AppStrings(Localizations.localeOf(context));
+    final colors = Theme.of(context).colorScheme;
+    return Scaffold(
+      key: const Key('privacy_screen'),
+      appBar: AppBar(title: Text(strings.text('privacyTitle'))),
+      body: _CenteredScroll(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: colors.primaryContainer,
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(
+                    Icons.shield_outlined,
+                    size: 30,
+                    color: colors.onPrimaryContainer,
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      strings.text('privacyIntro'),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: colors.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            _InfoPanel(
+              title: strings.text('privacyStorageTitle'),
+              body: strings.text('privacyStorageBody'),
+              icon: Icons.storage_outlined,
+            ),
+            const SizedBox(height: 12),
+            _InfoPanel(
+              title: strings.text('privacyBackupTitle'),
+              body: strings.text('privacyBackupBody'),
+              icon: Icons.backup_outlined,
+            ),
+            const SizedBox(height: 12),
+            _InfoPanel(
+              title: strings.text('privacyDeleteTitle'),
+              body: strings.text('privacyDeleteBody'),
+              icon: Icons.delete_outline_rounded,
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class _SettingsIntro extends StatelessWidget {
+  const _SettingsIntro({required this.strings});
+
+  final AppStrings strings;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colors.primaryContainer,
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.tune_rounded, color: colors.onPrimaryContainer, size: 28),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  strings.text('settingsIntroTitle'),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: colors.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  strings.text('settingsIntroBody'),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colors.onPrimaryContainer,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsHeading extends StatelessWidget {
+  const _SettingsHeading({
+    required this.icon,
+    required this.title,
+    this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Icon(icon, size: 21, color: colors.primary),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
+              if (subtitle != null) ...<Widget>[
+                const SizedBox(height: 2),
+                Text(
+                  subtitle!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Material(
+      color: colors.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: colors.outlineVariant.withValues(alpha: 0.55)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(children: children),
+    );
+  }
+}
+
+class _SettingsDivider extends StatelessWidget {
+  const _SettingsDivider();
+
+  @override
+  Widget build(BuildContext context) =>
+      const Divider(height: 1, indent: 16, endIndent: 16);
 }
 
 class _SettingChoice extends StatelessWidget {
@@ -1181,14 +1426,74 @@ class _SettingChoice extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       child: ListTile(
-        minTileHeight: 52,
+        minTileHeight: 58,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        selected: selected,
+        selectedTileColor: colors.primaryContainer.withValues(alpha: 0.4),
         onTap: onTap,
         leading: Icon(
           selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
           color: selected ? colors.primary : colors.onSurfaceVariant,
         ),
-        title: ExcludeSemantics(child: Text(label)),
+        title: ExcludeSemantics(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
       ),
+    );
+  }
+}
+
+class _SettingsAction extends StatelessWidget {
+  const _SettingsAction({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.showChevron = false,
+    this.destructive = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+  final bool showChevron;
+  final bool destructive;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final accent = destructive ? colors.error : colors.primary;
+    return ListTile(
+      minTileHeight: 72,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      onTap: onTap,
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: accent.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: accent, size: 22),
+      ),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          color: destructive ? colors.error : colors.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(subtitle),
+      trailing: showChevron
+          ? Icon(Icons.chevron_right_rounded, color: colors.onSurfaceVariant)
+          : null,
     );
   }
 }
@@ -1344,7 +1649,7 @@ class _CenteredScroll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: padding,
+      padding: _scrollPadding(context, padding),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
@@ -1354,3 +1659,6 @@ class _CenteredScroll extends StatelessWidget {
     );
   }
 }
+
+EdgeInsets _scrollPadding(BuildContext context, EdgeInsets padding) => padding
+    .copyWith(bottom: padding.bottom + MediaQuery.paddingOf(context).bottom);

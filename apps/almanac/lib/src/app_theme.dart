@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const Color ink = Color(0xFF1F2926);
 const Color mineral = Color(0xFF315E54);
@@ -42,6 +43,9 @@ ThemeData _baseTheme(ColorScheme scheme) {
       scrolledUnderElevation: 0,
       backgroundColor: Colors.transparent,
       foregroundColor: scheme.onSurface,
+      systemOverlayStyle: scheme.brightness == Brightness.light
+          ? SystemUiOverlayStyle.dark
+          : SystemUiOverlayStyle.light,
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: scheme.surface,

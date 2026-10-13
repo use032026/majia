@@ -52,12 +52,10 @@ class AppController extends ChangeNotifier {
     return result;
   }
 
-  Locale resolveLocale(Locale systemLocale) {
+  Locale? get flutterLocale {
     switch (_data?.localeMode ?? AppLocaleMode.system) {
       case AppLocaleMode.system:
-        return systemLocale.languageCode == 'zh'
-            ? const Locale('zh', 'CN')
-            : const Locale('en');
+        return null;
       case AppLocaleMode.zhHans:
         return const Locale('zh', 'CN');
       case AppLocaleMode.en:

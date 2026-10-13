@@ -119,6 +119,43 @@ void main() {
     expect(controller.todayLeaf.toJson(), before);
   });
 
+  test('only explicit language and appearance choices are saved', () async {
+    final store = MemoryStateStore();
+    final controller = AppController(
+      store: store,
+      seedFactory: () => 'preference-seed',
+      clock: () => now,
+    );
+    await controller.load();
+
+    expect(controller.data!.localeMode, AppLocaleMode.system);
+    expect(controller.data!.themeMode, AppThemeMode.system);
+    var saved = jsonDecode(store.value!) as Map<String, dynamic>;
+    expect(saved.containsKey('localeMode'), isFalse);
+    expect(saved.containsKey('themeMode'), isFalse);
+
+    expect(await controller.setLocaleMode(AppLocaleMode.en), isTrue);
+    expect(await controller.setThemeMode(AppThemeMode.dark), isTrue);
+    saved = jsonDecode(store.value!) as Map<String, dynamic>;
+    expect(saved['localeMode'], 'en');
+    expect(saved['themeMode'], 'dark');
+
+    final relaunched = AppController(
+      store: store,
+      seedFactory: () => 'unused',
+      clock: () => now,
+    );
+    await relaunched.load();
+    expect(relaunched.data!.localeMode, AppLocaleMode.en);
+    expect(relaunched.data!.themeMode, AppThemeMode.dark);
+
+    expect(await relaunched.setLocaleMode(AppLocaleMode.system), isTrue);
+    expect(await relaunched.setThemeMode(AppThemeMode.system), isTrue);
+    saved = jsonDecode(store.value!) as Map<String, dynamic>;
+    expect(saved.containsKey('localeMode'), isFalse);
+    expect(saved.containsKey('themeMode'), isFalse);
+  });
+
   test('crossing midnight creates exactly one deterministic leaf', () async {
     final store = MemoryStateStore();
     var current = DateTime(2026, 10, 10, 23, 59);

@@ -192,8 +192,8 @@ class AlmanacData {
     'schemaVersion': schemaVersion,
     'installationSeed': installationSeed,
     'onboardingSeen': onboardingSeen,
-    'localeMode': localeMode.name,
-    'themeMode': themeMode.name,
+    if (localeMode != AppLocaleMode.system) 'localeMode': localeMode.name,
+    if (themeMode != AppThemeMode.system) 'themeMode': themeMode.name,
     'leaves': leaves.map(
       (key, value) => MapEntry<String, Object?>(key, value.toJson()),
     ),
