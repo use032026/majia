@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "store": "app_store",
+  "app_name": "FileRecheck",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#0D3F43",
+    "background_bottom": "#006B6B",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#D8F2EE"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "source": "source/01-home-ios.png",
+      "output": "final/iphone/01-home.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Inspect Files On Device",
+      "subheadline": "Open JSON, CSV, TXT and LOG from Files.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/02-json-ios.png",
+      "output": "final/iphone/02-json.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Understand JSON Quickly",
+      "subheadline": "See diagnostics and search content.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/05-csv-ios.png",
+      "output": "final/iphone/03-csv.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Review CSV In Rows",
+      "subheadline": "Filter and edit a working copy.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/03-compare-ios.png",
+      "output": "final/iphone/04-compare.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Compare JSON Structure",
+      "subheadline": "See added, removed and changed paths.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/04-report-ios.png",
+      "output": "final/iphone/05-report.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Preview Before Export",
+      "subheadline": "Review the inspection report first.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/ipad-02-json-ios.png",
+      "output": "final/ipad/01-json.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Inspect JSON On iPad",
+      "subheadline": "Check a selected file without changing the original.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/ipad-03-csv-ios.png",
+      "output": "final/ipad/02-csv.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Review CSV On iPad",
+      "subheadline": "Browse rows and filter a working copy.",
+      "icon": "../../assets/branding/filerecheck_icon_1024.png"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Inspect JSON, CSV, text and logs; preview reports and export working copies

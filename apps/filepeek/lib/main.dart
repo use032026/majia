@@ -338,37 +338,18 @@ class _FileRecheckAppState extends State<FileRecheckApp> {
   Future<void> _editCsv(int row, int column, String currentValue) async {
     final current = document;
     final startedAt = _epoch;
-    final controller = TextEditingController(text: currentValue);
-    final submitted = await showCupertinoDialog<bool>(
+    final table = current?.csvTable;
+    final value = await showDialog<String>(
       context: uiContext,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(t('编辑工作副本', 'Edit working copy')),
-        content: Padding(
-          padding: const EdgeInsets.only(top: 12),
-          child: CupertinoTextField(
-            controller: controller,
-            maxLines: 4,
-            maxLength: 4000,
-            autofocus: true,
-            placeholder: t('单元格内容', 'Cell value'),
-          ),
-        ),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(t('取消', 'Cancel')),
-          ),
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(t('应用修改', 'Apply edit')),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (context) => _CsvCellEditorDialog(
+        initialValue: currentValue,
+        columnName: table?.headers[column] ?? '',
+        sourceLine: table?.rows[row].sourceLine ?? row + 1,
+        zh: zh,
       ),
     );
-    final value = controller.text;
-    controller.dispose();
-    if (submitted != true ||
+    if (value == null ||
         !mounted ||
         _epoch != startedAt ||
         !identical(document, current)) {
@@ -1344,6 +1325,98 @@ class _FileRecheckAppState extends State<FileRecheckApp> {
       ],
     );
   }
+}
+
+class _CsvCellEditorDialog extends StatefulWidget {
+  const _CsvCellEditorDialog({
+    required this.initialValue,
+    required this.columnName,
+    required this.sourceLine,
+    required this.zh,
+  });
+
+  final String initialValue;
+  final String columnName;
+  final int sourceLine;
+  final bool zh;
+
+  @override
+  State<_CsvCellEditorDialog> createState() => _CsvCellEditorDialogState();
+}
+
+class _CsvCellEditorDialogState extends State<_CsvCellEditorDialog> {
+  late final TextEditingController controller = TextEditingController(
+    text: widget.initialValue,
+  );
+
+  String t(String cn, String en) => widget.zh ? cn : en;
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+    constraints: const BoxConstraints(maxWidth: 560),
+    scrollable: true,
+    title: Text(t('编辑工作副本', 'Edit working copy')),
+    content: SizedBox(
+      width: double.maxFinite,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            t(
+              '第 ${widget.sourceLine} 行 · ${widget.columnName} 列',
+              'Row ${widget.sourceLine} · ${widget.columnName}',
+            ),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: controller,
+            autofocus: true,
+            minLines: 4,
+            maxLines: 8,
+            maxLength: 4000,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
+            autocorrect: false,
+            enableSuggestions: false,
+            smartQuotesType: SmartQuotesType.disabled,
+            smartDashesType: SmartDashesType.disabled,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: t('单元格内容', 'Cell value'),
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            t(
+              '只修改工作副本，原文件保持不变。',
+              'Only the working copy changes. The original file stays intact.',
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: Text(t('取消', 'Cancel')),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.pop(context, controller.text),
+        child: Text(t('应用修改', 'Apply edit')),
+      ),
+    ],
+  );
 }
 
 class _ReportPreviewPage extends StatefulWidget {

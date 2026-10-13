@@ -151,6 +151,8 @@ void main() {
   });
 
   testWidgets('CSV cell cancel and reopen edits only the copy', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(393, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
     final document = file('rows.csv', 'name,value\nAlice,1\nBob,2');
     await tester.pumpWidget(
       readyApp(gateway: FakeGateway(), initialDocument: document),
@@ -159,18 +161,48 @@ void main() {
 
     await tester.tap(find.text('Alice'));
     await tester.pumpAndSettle();
-    expect(find.byType(CupertinoAlertDialog), findsOneWidget);
+    final editor = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.byType(TextField),
+    );
+    expect(find.byType(AlertDialog), findsOneWidget);
+    expect(find.text('Row 2 · name'), findsOneWidget);
+    expect(tester.getSize(find.byType(AlertDialog)).width, greaterThan(320));
+    expect(tester.getSize(editor).height, greaterThan(120));
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
     expect(document.isModified, isFalse);
 
     await tester.tap(find.text('Alice'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(CupertinoTextField), 'Carol');
+    await tester.enterText(editor, 'Carol');
     await tester.tap(find.text('Apply edit'));
     await tester.pumpAndSettle();
     expect(document.workingText, contains('Carol'));
     expect(document.sourceText, contains('Alice'));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('CSV editor provides a wide input on iPad', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1024, 768));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      readyApp(
+        gateway: FakeGateway(),
+        initialDocument: file('rows.csv', 'name,value\nAlice,1'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Alice'));
+    await tester.pumpAndSettle();
+    final editor = find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.byType(TextField),
+    );
+    expect(tester.getSize(find.byType(AlertDialog)).width, greaterThan(500));
+    expect(tester.getSize(editor).height, greaterThan(120));
+    expect(find.text('Apply edit'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -476,7 +508,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('row101'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(CupertinoTextField), 'last edited');
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.byType(TextField),
+      ),
+      'last edited',
+    );
     await tester.tap(find.text('Apply edit'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Export copy'));

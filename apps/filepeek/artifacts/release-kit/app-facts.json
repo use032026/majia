@@ -1,0 +1,65 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/filepeek/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "FileRecheck",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/filepeek/android/app/src/main/AndroidManifest.xml",
+        "permissions": []
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/filepeek/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/filepeek",
+  "dependency_signals": {},
+  "generated_at": "2026-10-13T03:12:38.687419+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.example.filerecheck",
+      "com.example.filerecheck.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "FileRecheck",
+        "path": "/Users/starburst/majia/apps/filepeek/ios/Runner/Info.plist",
+        "usage_descriptions": {}
+      }
+    ],
+    "privacy_manifests": [],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [],
+  "network_hosts_observed": [],
+  "pubspec": {
+    "dependencies": [
+      "cupertino_icons",
+      "file_picker",
+      "flutter_localizations",
+      "path_provider",
+      "share_plus"
+    ],
+    "description": "Offline file inspection for JSON, CSV, text and logs.",
+    "name": "filerecheck",
+    "path": "/Users/starburst/majia/apps/filepeek/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

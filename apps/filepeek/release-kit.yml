@@ -1,0 +1,84 @@
+schema_version: 2
+
+identity:
+  app_name: "FileRecheck"
+  operator: ""
+  bundle_id: "com.example.filerecheck" # Development placeholder; not a release identity.
+  android_package: "com.example.filerecheck" # Development placeholder; not a release identity.
+
+contact:
+  support_email: ""
+  production_domain: ""
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: ""
+  confirmed:
+    - "Selected JSON, CSV, TXT and LOG files are processed in an in-memory session."
+    - "The original selected file is not overwritten; exports use a temporary app cache and the system share sheet."
+    - "Old app-generated export files are deleted on the next app launch when deletion succeeds."
+    - "Onboarding completion is stored in the app support directory."
+    - "Current source has no account, analytics, advertising, or developer-operated file upload flow."
+  open_questions:
+    - "Confirm the legal operator, support email, production HTTPS domain, and privacy effective date."
+    - "Review final signed package dependencies, privacy manifests, platform privacy declarations, file-provider copies, and backup behavior."
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: home
+        source: artifacts/app-store-previews/source/01-home-ios.png
+      - id: json
+        source: artifacts/app-store-previews/source/02-json-ios.png
+      - id: compare
+        source: artifacts/app-store-previews/source/03-compare-ios.png
+      - id: report
+        source: artifacts/app-store-previews/source/04-report-ios.png
+      - id: csv
+        source: artifacts/app-store-previews/source/05-csv-ios.png
+      - id: ipad-json
+        source: artifacts/app-store-previews/source/ipad-02-json-ios.png
+      - id: ipad-csv
+        source: artifacts/app-store-previews/source/ipad-03-csv-ios.png
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: home
+        source: artifacts/google-play-listing/source/01-home-android.png
+      - id: json
+        source: artifacts/google-play-listing/source/02-json-android.png
+      - id: csv
+        source: artifacts/google-play-listing/source/03-csv-android.png
+      - id: report
+        source: artifacts/google-play-listing/source/04-report-android.png
+
+paths:
+  app_root: "apps/filepeek"

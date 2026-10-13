@@ -1,0 +1,11 @@
+FileRecheck helps you inspect JSON, CSV, TXT and LOG files on your device. Open a file with the system picker, check its format, search its contents and decide what to do next while keeping the original file intact.
+
+See clear diagnostics for JSON and CSV. Browse CSV data in a table, filter rows and edit a cell in a working copy. Read text and log files by line, with search and log-level highlighting. Long content is shown in pages instead of being silently cut off.
+
+For JSON, format a working copy or compare two files to find added, removed and changed paths. You can also edit a small raw text copy, undo changes and inspect the updated result.
+
+Preview an inspection report before exporting it. When you choose to export, FileRecheck passes the report or working copy to the system share sheet. The app does not overwrite your source file.
+
+FileRecheck does not require an account. The current app has no developer-operated file upload, analytics or advertising flow. A file provider or a sharing destination you choose may handle files under its own rules.
+
+Supported text encoding: UTF-8, including UTF-8 BOM. Files are limited to 5 MiB, with up to 10,000 lines; CSV files support up to 200 columns. Raw copy editing is limited to 128 KiB.
