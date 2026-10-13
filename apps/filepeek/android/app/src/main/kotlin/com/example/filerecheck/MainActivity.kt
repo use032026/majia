@@ -1,4 +1,4 @@
-package com.example.filepeek
+package com.example.filerecheck
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ImportedFile {
@@ -15,15 +14,12 @@ class ImportedFile {
 
 abstract class FileGateway {
   Future<ImportedFile?> pickFile();
-  Future<ImportedFile?> initialSharedFile();
-  Stream<ImportedFile> get sharedFiles;
   Future<void> shareFile(String fileName, Uint8List bytes, Rect anchor);
   Future<void> clearOldExports();
 }
 
 class SystemFileGateway implements FileGateway {
   static const maxBytes = 5 * 1024 * 1024;
-  static const _sharedImportChannel = MethodChannel('filepeek/share_import');
 
   @override
   Future<ImportedFile?> pickFile() async {
@@ -55,76 +51,9 @@ class SystemFileGateway implements FileGateway {
     return ImportedFile(name, await file.readAsBytes());
   }
 
-  Future<ImportedFile?> _fromShared(List<SharedMediaFile> items) async {
-    for (final item in items) {
-      // Android marks shared CSV/TXT attachments as text because of their MIME
-      // type. A literal shared string must never be treated as a file path.
-      if (item.type != SharedMediaType.file &&
-          item.type != SharedMediaType.text) {
-        continue;
-      }
-      final path = item.path;
-      if (!path.startsWith('/') || !await File(path).exists()) continue;
-      final name = Uri.file(path).pathSegments.last;
-      if (!RegExp(
-        r'\.(json|csv|txt|log)$',
-        caseSensitive: false,
-      ).hasMatch(name)) {
-        continue;
-      }
-      try {
-        return await _readPath(path, name);
-      } finally {
-        if (Platform.isIOS) {
-          try {
-            await _sharedImportChannel.invokeMethod<void>('consumeSharedFile', {
-              'path': path,
-            });
-          } on PlatformException {
-            // Reading the copied bytes already completed.
-          } on MissingPluginException {
-            // A previous app build may not have the cleanup channel yet.
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  @override
-  Future<ImportedFile?> initialSharedFile() async {
-    if (Platform.isIOS) {
-      final path = await _sharedImportChannel.invokeMethod<String>(
-        'pendingSharedFile',
-      );
-      if (path != null) {
-        try {
-          return await _fromShared([
-            SharedMediaFile(path: path, type: SharedMediaType.file),
-          ]);
-        } finally {
-          await ReceiveSharingIntent.instance.reset();
-        }
-      }
-    }
-    final items = await ReceiveSharingIntent.instance.getInitialMedia();
-    try {
-      return await _fromShared(items);
-    } finally {
-      await ReceiveSharingIntent.instance.reset();
-    }
-  }
-
-  @override
-  Stream<ImportedFile> get sharedFiles => ReceiveSharingIntent.instance
-      .getMediaStream()
-      .asyncMap(_fromShared)
-      .where((file) => file != null)
-      .cast<ImportedFile>();
-
   Future<Directory> _exportsDir() async {
     final root = await getTemporaryDirectory();
-    final dir = Directory('${root.path}/filepeek_exports');
+    final dir = Directory('${root.path}/filerecheck_exports');
     await dir.create(recursive: true);
     return dir;
   }

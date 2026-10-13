@@ -1,4 +1,0 @@
-#include? "Pods/Target Support Files/Pods-FilePeekShareExtension/Pods-FilePeekShareExtension.release.xcconfig"
-#include "Generated.xcconfig"
-FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) "$(FLUTTER_ROOT)/bin/cache/artifacts/engine/ios-release/extension_safe/Flutter.xcframework/ios-arm64_x86_64-simulator"
-FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*] = $(inherited) "$(FLUTTER_ROOT)/bin/cache/artifacts/engine/ios-release/extension_safe/Flutter.xcframework/ios-arm64"

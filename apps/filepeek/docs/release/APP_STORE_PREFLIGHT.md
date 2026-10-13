@@ -1,5 +1,7 @@
 # FilePeek App Store / Google Play 预检
 
+> 2026-10-12 历史预检快照，记录更名前的 FilePeek 构建与身份；2026-10-13 已更名为 FileRecheck。此页的旧名称和占位 ID 发现不代表当前源码状态，当前验证见 `RENAME_VALIDATION_2026-10-13.md`。
+
 审核日期：2026-10-12。Store Reviewer 结论：**`blocked`（仅针对上架提交）**。本地功能审核和构建门禁的结论见 `FUNCTIONAL_REVIEW.md` 与自动化报告。本次没有登录、上传、提交或修改任何商店记录。
 
 ## 发布阻断与风险

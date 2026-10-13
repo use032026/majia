@@ -1,4 +1,4 @@
-"""Generate the original FilePeek icon and platform raster sizes.
+"""Generate the original FileRecheck icon and platform raster sizes.
 
 Requires Pillow. The source geometry and colors live here so the asset can be
 regenerated without using a store screenshot or competitor artwork.
@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 SIZE = 2048
-OUT = ROOT / "assets" / "branding" / "filepeek_icon_1024.png"
+OUT = ROOT / "assets" / "branding" / "filerecheck_icon_1024.png"
 
 canvas = Image.new("RGB", (SIZE, SIZE))
 pixels = canvas.load()
@@ -69,5 +69,19 @@ for item in contents["images"]:
 for density, side in {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}.items():
     target = ROOT / "android" / "app" / "src" / "main" / "res" / f"mipmap-{density}" / "ic_launcher.png"
     master.resize((side, side), Image.Resampling.LANCZOS).save(target, optimize=True)
+
+launch_catalog = ROOT / "ios" / "Runner" / "Assets.xcassets" / "LaunchImage.imageset"
+for scale in (1, 2, 3):
+    suffix = "" if scale == 1 else f"@{scale}x"
+    master.resize((152 * scale, 152 * scale), Image.Resampling.LANCZOS).save(
+        launch_catalog / f"LaunchImage{suffix}.png", optimize=True
+    )
+
+for density, scale in {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}.items():
+    target_dir = ROOT / "android" / "app" / "src" / "main" / "res" / f"drawable-{density}"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    master.resize((round(152 * scale), round(152 * scale)), Image.Resampling.LANCZOS).save(
+        target_dir / "launch_mark.png", optimize=True
+    )
 
 print(OUT)

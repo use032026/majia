@@ -17,7 +17,7 @@ enum DiagnosticCode {
   csvColumnMismatch,
 }
 
-enum FilePeekErrorCode {
+enum FileRecheckErrorCode {
   tooLarge,
   invalidUtf8,
   binaryContent,
@@ -29,14 +29,14 @@ enum FilePeekErrorCode {
   diffLimit,
 }
 
-class FilePeekException implements Exception {
-  const FilePeekException(this.code, this.message);
+class FileRecheckException implements Exception {
+  const FileRecheckException(this.code, this.message);
 
-  final FilePeekErrorCode code;
+  final FileRecheckErrorCode code;
   final String message;
 
   @override
-  String toString() => 'FilePeekException(${code.name}): $message';
+  String toString() => 'FileRecheckException(${code.name}): $message';
 }
 
 class Diagnostic {
@@ -105,8 +105,8 @@ class JsonDifference {
   final String? after;
 }
 
-class FilePeekDocument {
-  FilePeekDocument._(
+class FileRecheckDocument {
+  FileRecheckDocument._(
     this.fileName,
     this.kind,
     this.byteSize,
@@ -143,13 +143,13 @@ class FilePeekDocument {
   bool get isValid =>
       !_diagnostics.any((item) => item.severity == DiagnosticSeverity.error);
 
-  static FilePeekDocument inspect({
+  static FileRecheckDocument inspect({
     required String fileName,
     required Uint8List bytes,
   }) {
     final decoded = _decode(bytes);
     final kind = _detectKind(fileName, decoded.text);
-    return FilePeekDocument._(
+    return FileRecheckDocument._(
       fileName,
       kind,
       bytes.length,
@@ -168,16 +168,16 @@ class FilePeekDocument {
     if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
       return FileKind.json;
     }
-    throw const FilePeekException(
-      FilePeekErrorCode.unsupportedType,
+    throw const FileRecheckException(
+      FileRecheckErrorCode.unsupportedType,
       'Only JSON, CSV, TXT and LOG files are supported.',
     );
   }
 
   static _DecodedText _decode(Uint8List bytes) {
     if (bytes.length > maxBytes) {
-      throw const FilePeekException(
-        FilePeekErrorCode.tooLarge,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.tooLarge,
         'The file exceeds the 5 MiB limit.',
       );
     }
@@ -190,8 +190,8 @@ class FilePeekDocument {
     try {
       text = utf8.decode(bytes, allowMalformed: false);
     } on FormatException {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidUtf8,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidUtf8,
         'The file is not valid UTF-8.',
       );
     }
@@ -202,8 +202,8 @@ class FilePeekDocument {
           rune == 0 ||
           (rune < 0x20 && rune != 0x09 && rune != 0x0a && rune != 0x0d),
     )) {
-      throw const FilePeekException(
-        FilePeekErrorCode.binaryContent,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.binaryContent,
         'The file contains binary or unsupported control characters.',
       );
     }
@@ -214,8 +214,8 @@ class FilePeekDocument {
   static void _checkLines(String text) {
     final count = const LineSplitter().convert(text).length;
     if (count > maxLines) {
-      throw const FilePeekException(
-        FilePeekErrorCode.tooManyLines,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.tooManyLines,
         'The file exceeds the 10,000-line limit.',
       );
     }
@@ -268,8 +268,8 @@ class FilePeekDocument {
     if (query.isEmpty) return const [];
     final needle = query.toLowerCase();
     if (needle.length > 200) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidOperation,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidOperation,
         'Search terms are limited to 200 characters.',
       );
     }
@@ -289,8 +289,8 @@ class FilePeekDocument {
     if (query.isEmpty) return table.rows;
     final needle = query.toLowerCase();
     if (needle.length > 200) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidOperation,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidOperation,
         'Filters are limited to 200 characters.',
       );
     }
@@ -303,8 +303,8 @@ class FilePeekDocument {
 
   void formatJson() {
     if (kind != FileKind.json || !isValid) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidOperation,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidOperation,
         'A valid JSON file is required for formatting.',
       );
     }
@@ -319,8 +319,8 @@ class FilePeekDocument {
         rowIndex >= table.rows.length ||
         columnIndex < 0 ||
         columnIndex >= table.headers.length) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidOperation,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidOperation,
         'The selected CSV cell does not exist.',
       );
     }
@@ -329,8 +329,8 @@ class FilePeekDocument {
           rune == 0 ||
           (rune < 0x20 && rune != 0x09 && rune != 0x0a && rune != 0x0d),
     )) {
-      throw const FilePeekException(
-        FilePeekErrorCode.binaryContent,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.binaryContent,
         'The cell contains unsupported control characters.',
       );
     }
@@ -345,8 +345,8 @@ class FilePeekDocument {
   CsvTable _requireCsvTable() {
     final table = _csvTable;
     if (kind != FileKind.csv || table == null || !isValid) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidOperation,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidOperation,
         'A valid CSV table is required.',
       );
     }
@@ -371,14 +371,14 @@ class FilePeekDocument {
   void _apply(String updated) {
     final bytes = utf8.encode(updated);
     if (utf8.decode(bytes) != updated) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidUtf8,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidUtf8,
         'The edited text contains an invalid Unicode sequence.',
       );
     }
     if (bytes.length + (hasUtf8Bom ? 3 : 0) > maxBytes) {
-      throw const FilePeekException(
-        FilePeekErrorCode.tooLarge,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.tooLarge,
         'The edited file would exceed the 5 MiB limit.',
       );
     }
@@ -388,8 +388,8 @@ class FilePeekDocument {
           rune == 0 ||
           (rune < 0x20 && rune != 0x09 && rune != 0x0a && rune != 0x0d),
     )) {
-      throw const FilePeekException(
-        FilePeekErrorCode.binaryContent,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.binaryContent,
         'The edited text contains unsupported control characters.',
       );
     }
@@ -423,15 +423,15 @@ class FilePeekDocument {
 
   List<JsonDifference> compareJson(Uint8List otherBytes) {
     if (kind != FileKind.json || !isValid) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidComparison,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidComparison,
         'A valid JSON document is required for comparison.',
       );
     }
     final other = _decode(otherBytes).text;
     if (_jsonDiagnostics(other).isNotEmpty) {
-      throw const FilePeekException(
-        FilePeekErrorCode.invalidComparison,
+      throw const FileRecheckException(
+        FileRecheckErrorCode.invalidComparison,
         'The comparison file is not valid JSON.',
       );
     }
@@ -444,8 +444,8 @@ class FilePeekDocument {
       Object? after,
     ) {
       if (differences.length >= maxDifferences || path.length > 512) {
-        throw const FilePeekException(
-          FilePeekErrorCode.diffLimit,
+        throw const FileRecheckException(
+          FileRecheckErrorCode.diffLimit,
           'The JSON comparison exceeds the output limit.',
         );
       }
@@ -462,8 +462,8 @@ class FilePeekDocument {
     void walk(Object? left, Object? right, String path, int depth) {
       visited++;
       if (depth > 64 || visited > 20000) {
-        throw const FilePeekException(
-          FilePeekErrorCode.diffLimit,
+        throw const FileRecheckException(
+          FileRecheckErrorCode.diffLimit,
           'The JSON comparison exceeds the depth or node limit.',
         );
       }
@@ -513,7 +513,7 @@ class FilePeekDocument {
   }) {
     final zh = languageCode.toLowerCase().startsWith('zh');
     final buffer = StringBuffer()
-      ..writeln(zh ? 'FilePeek 文件检查报告' : 'FilePeek inspection report')
+      ..writeln(zh ? 'FileRecheck 文件检查报告' : 'FileRecheck inspection report')
       ..writeln(zh ? '文件：$fileName' : 'File: $fileName')
       ..writeln(
         zh
@@ -668,8 +668,8 @@ class FilePeekDocument {
       atCellStart = true;
       justClosedQuote = false;
       if (cells.length > maxColumns) {
-        throw const FilePeekException(
-          FilePeekErrorCode.tooManyColumns,
+        throw const FileRecheckException(
+          FileRecheckErrorCode.tooManyColumns,
           'The CSV file exceeds the 200-column limit.',
         );
       }
@@ -687,8 +687,8 @@ class FilePeekDocument {
       cells.clear();
       recordLine = line + 1;
       if (records.length > maxLines) {
-        throw const FilePeekException(
-          FilePeekErrorCode.tooManyLines,
+        throw const FileRecheckException(
+          FileRecheckErrorCode.tooManyLines,
           'The CSV file exceeds the 10,000-row limit.',
         );
       }

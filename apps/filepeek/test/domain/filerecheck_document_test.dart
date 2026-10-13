@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:filepeek/src/domain/filepeek_document.dart';
+import 'package:filerecheck/src/domain/filerecheck_document.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Uint8List bytes(String text) => Uint8List.fromList(utf8.encode(text));
 
-FilePeekDocument inspect(String name, String text) =>
-    FilePeekDocument.inspect(fileName: name, bytes: bytes(text));
+FileRecheckDocument inspect(String name, String text) =>
+    FileRecheckDocument.inspect(fileName: name, bytes: bytes(text));
 
 void main() {
   group('import boundaries', () {
@@ -18,7 +18,7 @@ void main() {
         expect(inspect('a.csv', 'a\n1').kind, FileKind.csv);
         expect(inspect('a.txt', 'note').kind, FileKind.txt);
         expect(inspect('a.log', 'INFO ready').kind, FileKind.log);
-        final document = FilePeekDocument.inspect(
+        final document = FileRecheckDocument.inspect(
           fileName: 'a.txt',
           bytes: Uint8List.fromList([
             0xef,
@@ -42,48 +42,48 @@ void main() {
       'rejects oversized, malformed UTF-8, binary and unsupported files',
       () {
         expect(
-          () => FilePeekDocument.inspect(
+          () => FileRecheckDocument.inspect(
             fileName: 'a.txt',
-            bytes: Uint8List(FilePeekDocument.maxBytes + 1),
+            bytes: Uint8List(FileRecheckDocument.maxBytes + 1),
           ),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.tooLarge,
+              FileRecheckErrorCode.tooLarge,
             ),
           ),
         );
         expect(
-          () => FilePeekDocument.inspect(
+          () => FileRecheckDocument.inspect(
             fileName: 'a.txt',
             bytes: Uint8List.fromList([0xc3, 0x28]),
           ),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.invalidUtf8,
+              FileRecheckErrorCode.invalidUtf8,
             ),
           ),
         );
         expect(
           () => inspect('a.txt', 'hello\u0000world'),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.binaryContent,
+              FileRecheckErrorCode.binaryContent,
             ),
           ),
         );
         expect(
           () => inspect('a.bin', 'hello'),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.unsupportedType,
+              FileRecheckErrorCode.unsupportedType,
             ),
           ),
         );
@@ -91,15 +91,18 @@ void main() {
     );
 
     test('accepts 10,000 physical lines with and without final newline', () {
-      final lines = List.filled(FilePeekDocument.maxLines, 'x').join('\n');
-      expect(inspect('a.txt', lines).lines.length, FilePeekDocument.maxLines);
+      final lines = List.filled(FileRecheckDocument.maxLines, 'x').join('\n');
       expect(
-        inspect('a.txt', '$lines\n').lines.length,
-        FilePeekDocument.maxLines,
+        inspect('a.txt', lines).lines.length,
+        FileRecheckDocument.maxLines,
       );
       expect(
-        inspect('a.txt', 'x\r' * FilePeekDocument.maxLines).lines.length,
-        FilePeekDocument.maxLines,
+        inspect('a.txt', '$lines\n').lines.length,
+        FileRecheckDocument.maxLines,
+      );
+      expect(
+        inspect('a.txt', 'x\r' * FileRecheckDocument.maxLines).lines.length,
+        FileRecheckDocument.maxLines,
       );
     });
 
@@ -107,10 +110,10 @@ void main() {
       expect(
         () => inspect('a.txt', List.filled(10001, 'x').join('\n')),
         throwsA(
-          isA<FilePeekException>().having(
+          isA<FileRecheckException>().having(
             (error) => error.code,
             'code',
-            FilePeekErrorCode.tooManyLines,
+            FileRecheckErrorCode.tooManyLines,
           ),
         ),
       );
@@ -124,7 +127,7 @@ void main() {
       expect(document.diagnostics.single.severity, DiagnosticSeverity.error);
       expect(document.diagnostics.single.code, DiagnosticCode.invalidJson);
       expect(document.diagnostics.single.line, 3);
-      expect(() => document.formatJson(), throwsA(isA<FilePeekException>()));
+      expect(() => document.formatJson(), throwsA(isA<FileRecheckException>()));
       expect(document.workingText, document.sourceText);
     });
 
@@ -198,10 +201,10 @@ void main() {
       expect(
         () => document.compareJson(bytes('{invalid')),
         throwsA(
-          isA<FilePeekException>().having(
+          isA<FileRecheckException>().having(
             (error) => error.code,
             'code',
-            FilePeekErrorCode.invalidComparison,
+            FileRecheckErrorCode.invalidComparison,
           ),
         ),
       );
@@ -214,15 +217,16 @@ void main() {
       () {
         final document = inspect('a.json', '{}');
         final other = {
-          for (var i = 0; i <= FilePeekDocument.maxDifferences; i++) 'k$i': i,
+          for (var i = 0; i <= FileRecheckDocument.maxDifferences; i++)
+            'k$i': i,
         };
         expect(
           () => document.compareJson(bytes(jsonEncode(other))),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.diffLimit,
+              FileRecheckErrorCode.diffLimit,
             ),
           ),
         );
@@ -282,7 +286,7 @@ void main() {
       expect(badQuote.csvTable, isNull);
       expect(
         () => badQuote.editCsvCell(0, 0, 'x'),
-        throwsA(isA<FilePeekException>()),
+        throwsA(isA<FileRecheckException>()),
       );
       final ragged = inspect('a.csv', 'a,b\n1\n');
       expect(ragged.isValid, isFalse);
@@ -314,28 +318,28 @@ void main() {
         final priorUndoDepth = document.undoDepth;
         expect(
           () => document.replaceWorkingText(
-            'x' * (FilePeekDocument.maxBytes + 1),
+            'x' * (FileRecheckDocument.maxBytes + 1),
           ),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.tooLarge,
+              FileRecheckErrorCode.tooLarge,
             ),
           ),
         );
         expect(
           () => document.replaceWorkingText(
             List.generate(
-              FilePeekDocument.maxColumns + 1,
+              FileRecheckDocument.maxColumns + 1,
               (i) => 'c$i',
             ).join(','),
           ),
           throwsA(
-            isA<FilePeekException>().having(
+            isA<FileRecheckException>().having(
               (error) => error.code,
               'code',
-              FilePeekErrorCode.tooManyColumns,
+              FileRecheckErrorCode.tooManyColumns,
             ),
           ),
         );
@@ -363,16 +367,16 @@ void main() {
 
     test('enforces 200-column limit', () {
       final headers = List.generate(
-        FilePeekDocument.maxColumns + 1,
+        FileRecheckDocument.maxColumns + 1,
         (i) => 'c$i',
       );
       expect(
         () => inspect('a.csv', headers.join(',')),
         throwsA(
-          isA<FilePeekException>().having(
+          isA<FileRecheckException>().having(
             (error) => error.code,
             'code',
-            FilePeekErrorCode.tooManyColumns,
+            FileRecheckErrorCode.tooManyColumns,
           ),
         ),
       );

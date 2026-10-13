@@ -2,31 +2,42 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'src/data/file_gateway.dart';
-import 'src/domain/filepeek_document.dart';
+import 'src/domain/filerecheck_document.dart';
+import 'src/presentation/intro.dart';
 
-void main() => runApp(const FilePeekApp());
+void main() => runApp(const FileRecheckApp());
 
-class FilePeekApp extends StatefulWidget {
-  const FilePeekApp({super.key, this.gateway, this.initialDocument});
+enum _IntroPhase { loading, onboarding, ready }
+
+class FileRecheckApp extends StatefulWidget {
+  const FileRecheckApp({
+    super.key,
+    this.gateway,
+    this.initialDocument,
+    this.introStore,
+  });
 
   final FileGateway? gateway;
-  final FilePeekDocument? initialDocument;
+  final FileRecheckDocument? initialDocument;
+  final IntroStore? introStore;
 
   @override
-  State<FilePeekApp> createState() => _FilePeekAppState();
+  State<FileRecheckApp> createState() => _FileRecheckAppState();
 }
 
-class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
+class _FileRecheckAppState extends State<FileRecheckApp> {
   late BuildContext uiContext;
   late final FileGateway gateway = widget.gateway ?? SystemFileGateway();
+  late final IntroStore introStore = widget.introStore ?? LocalIntroStore();
   late bool zh =
       WidgetsBinding.instance.platformDispatcher.locale.languageCode == 'zh';
   ThemeMode themeMode = ThemeMode.system;
-  FilePeekDocument? document;
+  FileRecheckDocument? document;
   List<JsonDifference>? differences;
   String? comparisonName;
   String? error;
@@ -34,80 +45,69 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
   int _epoch = 0;
   int _linePage = 0;
   int _csvPage = 0;
-  bool _rawEditorOpen = false;
-  bool _rawEditorDraftDirty = false;
+  _IntroPhase _introPhase = _IntroPhase.loading;
   final searchController = TextEditingController();
-  StreamSubscription<ImportedFile>? sharedSubscription;
-  bool _checkingSharedFile = false;
 
   String t(String cn, String en) => zh ? cn : en;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     document = widget.initialDocument;
-    sharedSubscription = gateway.sharedFiles.listen(
-      _loadShared,
-      onError: (Object e) => _showError(e),
-    );
-    unawaited(_loadInitialShared());
     unawaited(gateway.clearOldExports().catchError((Object _) {}));
+    unawaited(_loadIntroStatus());
   }
 
-  Future<void> _loadInitialShared() async {
-    if (_checkingSharedFile) return;
-    _checkingSharedFile = true;
-    final startedAt = _epoch;
+  Future<void> _loadIntroStatus() async {
+    bool complete;
     try {
-      final file = await gateway.initialSharedFile();
-      if (file != null) await _load(file, expectedEpoch: startedAt);
-    } catch (e) {
-      _showError(e);
-    } finally {
-      _checkingSharedFile = false;
+      complete = await introStore.isComplete();
+    } catch (_) {
+      complete = false;
     }
+    if (!mounted) return;
+    setState(() {
+      _introPhase = complete ? _IntroPhase.ready : _IntroPhase.onboarding;
+    });
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) unawaited(_loadInitialShared());
+  Future<void> _completeIntro() async {
+    await introStore.complete();
+    if (mounted) setState(() => _introPhase = _IntroPhase.ready);
   }
-
-  void _loadShared(ImportedFile file) => unawaited(_load(file));
 
   String _errorText(Object e) {
-    if (e is FilePeekException) {
+    if (e is FileRecheckException) {
       switch (e.code) {
-        case FilePeekErrorCode.tooLarge:
+        case FileRecheckErrorCode.tooLarge:
           return t('文件超过 5 MiB 上限。', 'The file exceeds the 5 MiB limit.');
-        case FilePeekErrorCode.invalidUtf8:
+        case FileRecheckErrorCode.invalidUtf8:
           return t('文件不是有效的 UTF-8 文本。', 'The file is not valid UTF-8 text.');
-        case FilePeekErrorCode.binaryContent:
+        case FileRecheckErrorCode.binaryContent:
           return t(
             '文件包含不支持的二进制或控制字符。',
             'The file contains unsupported binary or control characters.',
           );
-        case FilePeekErrorCode.tooManyLines:
+        case FileRecheckErrorCode.tooManyLines:
           return t(
             '文件超过 10,000 行上限。',
             'The file exceeds the 10,000-line limit.',
           );
-        case FilePeekErrorCode.tooManyColumns:
+        case FileRecheckErrorCode.tooManyColumns:
           return t('CSV 超过 200 列上限。', 'The CSV exceeds the 200-column limit.');
-        case FilePeekErrorCode.unsupportedType:
+        case FileRecheckErrorCode.unsupportedType:
           return t(
             '仅支持 JSON、CSV、TXT 和 LOG 文件。',
             'Only JSON, CSV, TXT and LOG files are supported.',
           );
-        case FilePeekErrorCode.invalidOperation:
+        case FileRecheckErrorCode.invalidOperation:
           return t(
             '当前文件状态不允许此操作。',
             'This action is unavailable for the current file.',
           );
-        case FilePeekErrorCode.invalidComparison:
+        case FileRecheckErrorCode.invalidComparison:
           return t('两份文件都必须是有效 JSON。', 'Both files must be valid JSON.');
-        case FilePeekErrorCode.diffLimit:
+        case FileRecheckErrorCode.diffLimit:
           return t(
             '差异过多，超出本机比较上限。',
             'The comparison exceeds the local difference limit.',
@@ -125,13 +125,13 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     setState(() => error = _errorText(e));
   }
 
-  Future<bool> _allowDiscard(FilePeekDocument? current) async {
-    if (current == null || (!current.isModified && !_rawEditorDraftDirty)) {
+  Future<bool> _allowDiscard(FileRecheckDocument? current) async {
+    if (current == null || !current.isModified) {
       return true;
     }
-    final choice = await showDialog<bool>(
+    final choice = await showCupertinoDialog<bool>(
       context: uiContext,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(t('丢弃工作副本修改？', 'Discard working-copy changes?')),
         content: Text(
           t(
@@ -140,11 +140,12 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(t('保留文件', 'Keep file')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(t('丢弃修改', 'Discard changes')),
           ),
@@ -159,16 +160,13 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     final startedAt = _epoch;
     final current = document;
     try {
-      final next = FilePeekDocument.inspect(
+      final next = FileRecheckDocument.inspect(
         fileName: file.name,
         bytes: file.bytes,
       );
       if (!await _allowDiscard(current)) return;
       if (!mounted || _epoch != startedAt || !identical(document, current)) {
         return;
-      }
-      if (_rawEditorOpen) {
-        Navigator.of(uiContext).popUntil((route) => route.isFirst);
       }
       setState(() {
         _epoch++;
@@ -217,8 +215,8 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
         return;
       }
       if (!file.name.toLowerCase().endsWith('.json')) {
-        throw const FilePeekException(
-          FilePeekErrorCode.invalidComparison,
+        throw const FileRecheckException(
+          FileRecheckErrorCode.invalidComparison,
           'Expected a JSON file.',
         );
       }
@@ -272,23 +270,12 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
       );
       return;
     }
-    _rawEditorOpen = true;
-    _rawEditorDraftDirty = false;
-    final String? updated;
-    try {
-      updated = await Navigator.of(uiContext).push<String>(
-        MaterialPageRoute(
-          builder: (context) => _RawEditorPage(
-            initialText: current.workingText,
-            zh: zh,
-            onDraftChanged: (dirty) => _rawEditorDraftDirty = dirty,
-          ),
-        ),
-      );
-    } finally {
-      _rawEditorOpen = false;
-      _rawEditorDraftDirty = false;
-    }
+    final updated = await Navigator.of(uiContext).push<String>(
+      MaterialPageRoute(
+        builder: (context) =>
+            _RawEditorPage(initialText: current.workingText, zh: zh),
+      ),
+    );
     if (updated == null ||
         !mounted ||
         _epoch != startedAt ||
@@ -297,7 +284,7 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     }
     try {
       setState(() {
-        current.replaceWorkingText(updated!);
+        current.replaceWorkingText(updated);
         differences = null;
         comparisonName = null;
         error = null;
@@ -312,9 +299,9 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
   Future<void> _confirmReset() async {
     final current = document;
     final startedAt = _epoch;
-    final yes = await showDialog<bool>(
+    final yes = await showCupertinoDialog<bool>(
       context: uiContext,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(t('恢复原件', 'Restore original')),
         content: Text(
           t(
@@ -323,11 +310,12 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context, false),
             child: Text(t('取消', 'Cancel')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(context, true),
             child: Text(t('恢复', 'Restore')),
           ),
@@ -350,31 +338,36 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
   Future<void> _editCsv(int row, int column, String currentValue) async {
     final current = document;
     final startedAt = _epoch;
-    String value = currentValue;
-    final submitted = await showDialog<bool>(
+    final controller = TextEditingController(text: currentValue);
+    final submitted = await showCupertinoDialog<bool>(
       context: uiContext,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(t('编辑工作副本', 'Edit working copy')),
-        content: TextFormField(
-          initialValue: currentValue,
-          maxLines: 4,
-          maxLength: 4000,
-          autofocus: true,
-          decoration: InputDecoration(labelText: t('单元格内容', 'Cell value')),
-          onChanged: (next) => value = next,
+        content: Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: CupertinoTextField(
+            controller: controller,
+            maxLines: 4,
+            maxLength: 4000,
+            autofocus: true,
+            placeholder: t('单元格内容', 'Cell value'),
+          ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context, false),
             child: Text(t('取消', 'Cancel')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDefaultAction: true,
             onPressed: () => Navigator.pop(context, true),
             child: Text(t('应用修改', 'Apply edit')),
           ),
         ],
       ),
     );
+    final value = controller.text;
+    controller.dispose();
     if (submitted != true ||
         !mounted ||
         _epoch != startedAt ||
@@ -444,37 +437,78 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _exportReport(BuildContext context) async {
+  Future<void> _previewReport() async {
     final current = document;
     if (current == null || busy) return;
-    setState(() {
-      busy = true;
-      error = null;
-    });
     try {
       final report = current.buildReport(
         languageCode: zh ? 'zh' : 'en',
         filter: searchController.text,
         differences: differences,
       );
-      await gateway.shareFile(
-        'filepeek_report.txt',
-        Uint8List.fromList(utf8.encode(report)),
-        _shareAnchor(context),
+      if (!mounted) return;
+      final bytes = Uint8List.fromList(utf8.encode(report));
+      await Navigator.of(uiContext).push<void>(
+        MaterialPageRoute(
+          builder: (context) => _ReportPreviewPage(
+            report: report,
+            zh: zh,
+            onExport: (buttonContext) => gateway.shareFile(
+              'filerecheck_report.txt',
+              bytes,
+              _shareAnchor(buttonContext),
+            ),
+          ),
+        ),
       );
     } catch (e) {
       _showError(e);
-    } finally {
-      if (mounted) setState(() => busy = false);
     }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    sharedSubscription?.cancel();
     searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _showMore() async {
+    final selected = await showCupertinoModalPopup<String>(
+      context: uiContext,
+      builder: (sheetContext) => CupertinoActionSheet(
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(sheetContext, 'language'),
+            child: Text(t('切换到英文', 'Switch to Chinese')),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(sheetContext, 'theme'),
+            child: Text(t('切换明暗模式', 'Switch appearance')),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(sheetContext, 'privacy'),
+            child: Text(t('隐私说明', 'Privacy note')),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(sheetContext),
+          child: Text(t('取消', 'Cancel')),
+        ),
+      ),
+    );
+    if (!mounted) return;
+    switch (selected) {
+      case 'language':
+        setState(() => zh = !zh);
+      case 'theme':
+        setState(
+          () => themeMode = themeMode == ThemeMode.dark
+              ? ThemeMode.light
+              : ThemeMode.dark,
+        );
+      case 'privacy':
+        _showPrivacy();
+    }
   }
 
   @override
@@ -495,7 +529,7 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
       ),
     );
     return MaterialApp(
-      title: 'FilePeek',
+      title: 'FileRecheck',
       debugShowCheckedModeBanner: false,
       theme: light,
       darkTheme: dark,
@@ -503,103 +537,98 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
       locale: Locale(zh ? 'zh' : 'en'),
       supportedLocales: const [Locale('zh'), Locale('en')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: Builder(
-        builder: (pageContext) {
-          uiContext = pageContext;
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('FilePeek'),
-              actions: [
-                IconButton(
-                  tooltip: t('切换语言', 'Switch language'),
-                  onPressed: () => setState(() => zh = !zh),
-                  icon: const Icon(Icons.translate),
-                ),
-                PopupMenuButton<String>(
-                  tooltip: t('更多', 'More'),
-                  onSelected: (value) {
-                    if (value == 'theme') {
-                      setState(
-                        () => themeMode = themeMode == ThemeMode.dark
-                            ? ThemeMode.light
-                            : ThemeMode.dark,
-                      );
-                    }
-                    if (value == 'reset') unawaited(_confirmReset());
-                    if (value == 'clear') unawaited(_closeFile());
-                    if (value == 'privacy') _showPrivacy();
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'theme',
-                      child: Text(t('切换明暗模式', 'Switch appearance')),
-                    ),
-                    if (document != null)
-                      PopupMenuItem(
-                        value: 'reset',
-                        child: Text(t('恢复原件', 'Restore original')),
+      home: _introPhase == _IntroPhase.loading
+          ? LaunchView(zh: zh)
+          : _introPhase == _IntroPhase.onboarding
+          ? OnboardingView(
+              zh: zh,
+              onLanguageChange: () => setState(() => zh = !zh),
+              onComplete: _completeIntro,
+            )
+          : Builder(
+              builder: (pageContext) {
+                uiContext = pageContext;
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text('FileRecheck'),
+                    actions: [
+                      if (document != null) ...[
+                        IconButton(
+                          tooltip: t('恢复原件', 'Restore original'),
+                          onPressed: document!.isModified
+                              ? () => unawaited(_confirmReset())
+                              : null,
+                          icon: const Icon(Icons.restore),
+                        ),
+                        IconButton(
+                          tooltip: t('关闭文件', 'Close file'),
+                          onPressed: () => unawaited(_closeFile()),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                      IconButton(
+                        tooltip: t('设置与隐私', 'Settings and privacy'),
+                        onPressed: () => unawaited(_showMore()),
+                        icon: const Icon(Icons.more_horiz),
                       ),
-                    if (document != null)
-                      PopupMenuItem(
-                        value: 'clear',
-                        child: Text(t('关闭文件', 'Close file')),
-                      ),
-                    PopupMenuItem(
-                      value: 'privacy',
-                      child: Text(t('隐私说明', 'Privacy note')),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            body: SafeArea(
-              child: document == null ? _emptyScreen() : _workspace(),
-            ),
-            bottomNavigationBar: document == null
-                ? null
-                : SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Builder(
-                              builder: (buttonContext) => FilledButton.icon(
-                                onPressed: busy
-                                    ? null
-                                    : () => _exportCopy(buttonContext),
-                                icon: const Icon(Icons.ios_share),
-                                label: Text(t('导出副本', 'Export copy')),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Builder(
-                              builder: (buttonContext) => OutlinedButton.icon(
-                                onPressed: busy
-                                    ? null
-                                    : () => _exportReport(buttonContext),
-                                icon: const Icon(Icons.description_outlined),
-                                label: Text(t('检查报告', 'Report')),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
-          );
-        },
-      ),
+                  body: SafeArea(
+                    child: document == null ? _emptyScreen() : _workspace(),
+                  ),
+                  bottomNavigationBar: document == null
+                      ? null
+                      : SafeArea(
+                          top: false,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Builder(
+                                    builder: (buttonContext) => FilledButton(
+                                      onPressed: busy
+                                          ? null
+                                          : () => _exportCopy(buttonContext),
+                                      style: FilledButton.styleFrom(
+                                        minimumSize: const Size.fromHeight(48),
+                                      ),
+                                      child: Text(
+                                        t('导出副本', 'Export copy'),
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: busy
+                                        ? null
+                                        : () => unawaited(_previewReport()),
+                                    style: OutlinedButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(48),
+                                    ),
+                                    child: Text(
+                                      t('检查报告', 'Report'),
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                );
+              },
+            ),
     );
   }
 
   void _showPrivacy() {
-    showDialog<void>(
+    showCupertinoDialog<void>(
       context: uiContext,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(t('隐私说明', 'Privacy note')),
         content: SingleChildScrollView(
           child: Text(
@@ -610,7 +639,7 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context),
             child: Text(t('关闭', 'Close')),
           ),
@@ -720,179 +749,259 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
 
   Widget _workspace() {
     final doc = document!;
+    final theme = Theme.of(uiContext);
+    final actions = <Widget>[
+      if (doc.kind == FileKind.json) ...[
+        _workspaceAction(
+          Icons.format_align_left,
+          t('格式化', 'Format'),
+          doc.isValid && !busy ? _format : null,
+        ),
+        _workspaceAction(
+          Icons.compare_arrows,
+          t('比较', 'Compare'),
+          doc.isValid && !busy ? _compare : null,
+        ),
+      ],
+      if (doc.kind == FileKind.json || doc.kind == FileKind.csv)
+        _workspaceAction(
+          Icons.edit_note,
+          t('编辑原文', 'Edit text'),
+          busy ? null : _editRaw,
+        ),
+      if (doc.canUndo) _workspaceAction(Icons.undo, t('撤销', 'Undo'), _undo),
+    ];
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (error != null) _errorCard(),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      doc.fileName,
-                      maxLines: 3,
-                      overflow: TextOverflow.visible,
-                      style: Theme.of(uiContext).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    tooltip: t('打开其他文件', 'Open another file'),
-                    onPressed: busy ? null : _pickFile,
-                    icon: const Icon(Icons.drive_folder_upload_outlined),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: [
-                  _tag(doc.kind.name.toUpperCase()),
-                  _tag('UTF-8${doc.hasUtf8Bom ? ' BOM' : ''}'),
-                  _tag('${doc.byteSize} B'),
-                  _tag(
-                    doc.isModified
-                        ? t('副本已修改', 'Copy modified')
-                        : t('原始状态', 'Original state'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        doc.isValid
-                            ? Icons.check_circle_outline
-                            : Icons.error_outline,
-                        color: doc.isValid
-                            ? Colors.teal
-                            : Theme.of(uiContext).colorScheme.error,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (error != null) _errorCard(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            doc.fileName,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${doc.kind.name.toUpperCase()}  ·  UTF-8${doc.hasUtf8Bom ? ' BOM' : ''}  ·  ${doc.byteSize} B',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          if (doc.isModified) ...[
+                            const SizedBox(height: 4),
                             Text(
-                              doc.isValid
-                                  ? t('检查通过', 'Inspection passed')
-                                  : t('发现格式问题', 'Format issue found'),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
+                              t('副本已修改', 'Working copy edited'),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            for (final issue in doc.diagnostics.take(3))
-                              Text(_diagnosticText(issue)),
-                            if (doc.diagnostics.length > 3)
-                              TextButton(
-                                onPressed: () => _showAllDiagnostics(doc),
-                                child: Text(
-                                  t(
-                                    '查看全部 ${doc.diagnostics.length} 项',
-                                    'View all ${doc.diagnostics.length} issues',
-                                  ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton.outlined(
+                      tooltip: t('打开其他文件', 'Open another file'),
+                      onPressed: busy ? null : _pickFile,
+                      icon: const Icon(Icons.drive_folder_upload_outlined),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLow,
+                    border: Border.all(color: theme.colorScheme.outlineVariant),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          doc.isValid
+                              ? Icons.check_circle_outline
+                              : Icons.error_outline,
+                          color: doc.isValid
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.error,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                doc.isValid
+                                    ? t('检查通过', 'Inspection passed')
+                                    : t('发现格式问题', 'Format issue found'),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                          ],
+                              for (final issue in doc.diagnostics.take(3))
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: Text(
+                                    _diagnosticText(issue),
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                ),
+                              if (doc.diagnostics.length > 3)
+                                TextButton(
+                                  onPressed: () => _showAllDiagnostics(doc),
+                                  style: TextButton.styleFrom(
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                  child: Text(
+                                    t(
+                                      '查看全部 ${doc.diagnostics.length} 项',
+                                      'View all ${doc.diagnostics.length} issues',
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: searchController,
-                onChanged: (_) => setState(() {
-                  _linePage = 0;
-                  _csvPage = 0;
-                }),
-                maxLength: 200,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  prefixIcon: const Icon(Icons.search),
-                  labelText: doc.kind == FileKind.csv
-                      ? t('筛选表格', 'Filter table')
-                      : t('搜索内容', 'Search content'),
-                  suffixIcon: searchController.text.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: t('清除搜索', 'Clear search'),
-                          onPressed: () => setState(() {
-                            searchController.clear();
-                            _linePage = 0;
-                            _csvPage = 0;
-                          }),
-                          icon: const Icon(Icons.clear),
-                        ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: searchController,
+                  onChanged: (_) => setState(() {
+                    _linePage = 0;
+                    _csvPage = 0;
+                  }),
+                  maxLength: 200,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    filled: true,
+                    fillColor: theme.colorScheme.surfaceContainerLow,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: doc.kind == FileKind.csv
+                        ? t('筛选表格', 'Filter table')
+                        : t('搜索内容', 'Search content'),
+                    counterText: '',
+                    suffixIcon: searchController.text.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: t('清除搜索', 'Clear search'),
+                            onPressed: () => setState(() {
+                              searchController.clear();
+                              _linePage = 0;
+                              _csvPage = 0;
+                            }),
+                            icon: const Icon(Icons.clear),
+                          ),
+                  ),
                 ),
-              ),
-              Wrap(
-                spacing: 8,
-                runSpacing: 6,
-                children: [
-                  if (doc.kind == FileKind.json)
-                    ActionChip(
-                      avatar: const Icon(Icons.format_align_left, size: 18),
-                      label: Text(t('格式化 JSON', 'Format JSON')),
-                      onPressed: doc.isValid && !busy ? _format : null,
+                if (actions.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  Text(
+                    t('操作', 'Actions'),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
-                  if (doc.kind == FileKind.json)
-                    ActionChip(
-                      avatar: const Icon(Icons.compare_arrows, size: 18),
-                      label: Text(t('比较 JSON', 'Compare JSON')),
-                      onPressed: doc.isValid && !busy ? _compare : null,
-                    ),
-                  if (doc.kind == FileKind.json || doc.kind == FileKind.csv)
-                    ActionChip(
-                      avatar: const Icon(Icons.edit_note, size: 18),
-                      label: Text(t('编辑原文副本', 'Edit raw copy')),
-                      onPressed: busy ? null : _editRaw,
-                    ),
-                  if (doc.canUndo)
-                    ActionChip(
-                      avatar: const Icon(Icons.undo, size: 18),
-                      label: Text(t('撤销', 'Undo')),
-                      onPressed: _undo,
-                    ),
-                  if (doc.isModified)
-                    ActionChip(
-                      avatar: const Icon(Icons.restore, size: 18),
-                      label: Text(t('恢复原件', 'Restore original')),
-                      onPressed: _confirmReset,
-                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _actionGrid(actions),
                 ],
-              ),
-              if (differences != null) _differenceCard(),
-              const SizedBox(height: 12),
-              Text(
-                t('内容', 'Content'),
-                style: Theme.of(
-                  uiContext,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                _contentCaption(doc),
-                style: Theme.of(uiContext).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 8),
-              _contentView(doc),
-            ],
+                if (differences != null) ...[
+                  const SizedBox(height: 16),
+                  _differenceCard(),
+                ],
+                const SizedBox(height: 22),
+                Text(
+                  t('文件内容', 'File contents'),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _contentCaption(doc),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _contentView(doc),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _workspaceAction(
+    IconData icon,
+    String label,
+    VoidCallback? onPressed,
+  ) {
+    return SizedBox(
+      height: 48,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        icon: Icon(icon, size: 18),
+        label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+      ),
+    );
+  }
+
+  Widget _actionGrid(List<Widget> actions) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final singleColumn = constraints.maxWidth < 350;
+        final halfWidth = (constraints.maxWidth - 8) / 2;
+        return Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (var index = 0; index < actions.length; index++)
+              SizedBox(
+                width:
+                    singleColumn ||
+                        (actions.length.isOdd && index == actions.length - 1)
+                    ? constraints.maxWidth
+                    : halfWidth,
+                child: actions[index],
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -915,24 +1024,28 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     return '$message$location';
   }
 
-  void _showAllDiagnostics(FilePeekDocument doc) {
-    showDialog<void>(
+  void _showAllDiagnostics(FileRecheckDocument doc) {
+    showCupertinoDialog<void>(
       context: uiContext,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(t('全部诊断', 'All diagnostics')),
         content: SizedBox(
-          width: 500,
-          child: ListView.builder(
-            shrinkWrap: true,
+          height: (doc.diagnostics.length * 56.0).clamp(72.0, 320.0),
+          child: ListView.separated(
             itemCount: doc.diagnostics.length,
-            itemBuilder: (context, index) => ListTile(
-              leading: const Icon(Icons.report_outlined),
-              title: Text(_diagnosticText(doc.diagnostics[index])),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
+            itemBuilder: (context, index) => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(CupertinoIcons.exclamationmark_circle, size: 18),
+                const SizedBox(width: 8),
+                Expanded(child: Text(_diagnosticText(doc.diagnostics[index]))),
+              ],
             ),
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(context),
             child: Text(t('关闭', 'Close')),
           ),
@@ -941,22 +1054,19 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     );
   }
 
-  String _contentCaption(FilePeekDocument doc) {
+  String _contentCaption(FileRecheckDocument doc) {
     if (doc.kind == FileKind.csv && doc.csvTable != null) {
       final table = doc.csvTable!;
       return t(
-        '${table.rows.length} 行 · ${table.headers.length} 列 · 点击单元格编辑副本',
-        '${table.rows.length} rows · ${table.headers.length} columns · Tap a cell to edit the copy',
+        '${table.rows.length} 行 · ${table.headers.length} 列 · 点击单元格可编辑',
+        '${table.rows.length} ${table.rows.length == 1 ? 'row' : 'rows'} · ${table.headers.length} ${table.headers.length == 1 ? 'column' : 'columns'} · Tap a cell to edit',
       );
     }
     return t(
-      '${doc.lines.length} 行 · 按行查看',
-      '${doc.lines.length} lines · Line view',
+      '${doc.lines.length} 行',
+      '${doc.lines.length} ${doc.lines.length == 1 ? 'line' : 'lines'}',
     );
   }
-
-  Widget _tag(String label) =>
-      Chip(label: Text(label), visualDensity: VisualDensity.compact);
 
   Widget _differenceCard() {
     final items = differences!;
@@ -1029,25 +1139,29 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     ValueChanged<int> onPage,
   ) async {
     int? requested = page + 1;
-    final result = await showDialog<int>(
+    final controller = TextEditingController(text: '${page + 1}');
+    final result = await showCupertinoDialog<int>(
       context: uiContext,
       builder: (context) => StatefulBuilder(
-        builder: (context, update) => AlertDialog(
+        builder: (context, update) => CupertinoAlertDialog(
           title: Text(t('跳转页面', 'Jump to page')),
-          content: TextFormField(
-            initialValue: '${page + 1}',
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: t('页码（1–$count）', 'Page (1–$count)'),
+          content: Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: CupertinoTextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              placeholder: t('页码（1–$count）', 'Page (1–$count)'),
+              onChanged: (value) =>
+                  update(() => requested = int.tryParse(value)),
             ),
-            onChanged: (value) => update(() => requested = int.tryParse(value)),
           ),
           actions: [
-            TextButton(
+            CupertinoDialogAction(
               onPressed: () => Navigator.pop(context),
               child: Text(t('取消', 'Cancel')),
             ),
-            FilledButton(
+            CupertinoDialogAction(
+              isDefaultAction: true,
               onPressed:
                   requested != null && requested! >= 1 && requested! <= count
                   ? () => Navigator.pop(context, requested! - 1)
@@ -1058,10 +1172,11 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
         ),
       ),
     );
+    controller.dispose();
     if (result != null && mounted) onPage(result);
   }
 
-  Widget _contentView(FilePeekDocument doc) {
+  Widget _contentView(FileRecheckDocument doc) {
     if (doc.kind == FileKind.csv && doc.csvTable != null) return _csvView(doc);
     final query = searchController.text.trim().toLowerCase();
     final visible = query.isEmpty
@@ -1142,7 +1257,7 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
     );
   }
 
-  Widget _csvView(FilePeekDocument doc) {
+  Widget _csvView(FileRecheckDocument doc) {
     final table = doc.csvTable!;
     final query = searchController.text.trim();
     final indexed = <({int index, CsvRow row})>[
@@ -1231,15 +1346,141 @@ class _FilePeekAppState extends State<FilePeekApp> with WidgetsBindingObserver {
   }
 }
 
-class _RawEditorPage extends StatefulWidget {
-  const _RawEditorPage({
-    required this.initialText,
+class _ReportPreviewPage extends StatefulWidget {
+  const _ReportPreviewPage({
+    required this.report,
     required this.zh,
-    required this.onDraftChanged,
+    required this.onExport,
   });
+
+  final String report;
+  final bool zh;
+  final Future<void> Function(BuildContext) onExport;
+
+  @override
+  State<_ReportPreviewPage> createState() => _ReportPreviewPageState();
+}
+
+class _ReportPreviewPageState extends State<_ReportPreviewPage> {
+  late final List<String> lines = const LineSplitter().convert(widget.report);
+  bool busy = false;
+  String? error;
+
+  String t(String cn, String en) => widget.zh ? cn : en;
+
+  Future<void> _export(BuildContext buttonContext) async {
+    if (busy) return;
+    setState(() {
+      busy = true;
+      error = null;
+    });
+    try {
+      await widget.onExport(buttonContext);
+    } catch (_) {
+      if (mounted) {
+        setState(
+          () => error = t(
+            '报告导出失败，请重试。',
+            'Could not export the report. Try again.',
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(t('报告预览', 'Report preview'))),
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    t('检查报告', 'Inspection report'),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    t(
+                      '先查看内容，需要时再导出。',
+                      'Review the contents, then export if needed.',
+                    ),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  if (error != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      error!,
+                      style: TextStyle(color: theme.colorScheme.error),
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerLow,
+                        border: Border.all(
+                          color: theme.colorScheme.outlineVariant,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: lines.length,
+                        itemBuilder: (context, index) => SelectableText(
+                          lines[index].isEmpty ? ' ' : lines[index],
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+          child: Builder(
+            builder: (buttonContext) => FilledButton.icon(
+              onPressed: busy ? null : () => _export(buttonContext),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+              ),
+              icon: const Icon(Icons.ios_share),
+              label: Text(t('导出报告', 'Export report')),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RawEditorPage extends StatefulWidget {
+  const _RawEditorPage({required this.initialText, required this.zh});
   final String initialText;
   final bool zh;
-  final ValueChanged<bool> onDraftChanged;
 
   @override
   State<_RawEditorPage> createState() => _RawEditorPageState();
@@ -1256,9 +1497,9 @@ class _RawEditorPageState extends State<_RawEditorPage> {
       Navigator.pop(context);
       return;
     }
-    final discard = await showDialog<bool>(
+    final discard = await showCupertinoDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(t('丢弃未应用的编辑？', 'Discard unapplied edits?')),
         content: Text(
           t(
@@ -1267,11 +1508,12 @@ class _RawEditorPageState extends State<_RawEditorPage> {
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(t('继续编辑', 'Keep editing')),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(t('丢弃草稿', 'Discard draft')),
           ),
@@ -1339,7 +1581,6 @@ class _RawEditorPageState extends State<_RawEditorPage> {
                 child: TextField(
                   controller: controller,
                   onChanged: (text) {
-                    widget.onDraftChanged(text != widget.initialText);
                     setState(() => tooLarge = false);
                   },
                   autofocus: true,
