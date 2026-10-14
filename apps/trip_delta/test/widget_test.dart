@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:trip_delta/backup.dart';
 import 'package:trip_delta/domain.dart';
+import 'package:trip_delta/ios_overlays.dart';
 import 'package:trip_delta/main.dart';
 import 'package:trip_delta/screens.dart';
 import 'package:trip_delta/store.dart';
@@ -10,11 +14,13 @@ import 'package:trip_delta/strings.dart';
 
 Future<void> tapVisible(WidgetTester tester, Key key) async {
   final finder = find.byKey(key);
-  await tester.scrollUntilVisible(
-    finder,
-    200,
-    scrollable: find.byType(Scrollable).first,
-  );
+  if (finder.hitTestable().evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
   await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
   await tester.tap(finder);
@@ -22,6 +28,225 @@ Future<void> tapVisible(WidgetTester tester, Key key) async {
 }
 
 void main() {
+  testWidgets('compact trip card keeps overage and estimate warnings visible', (
+    tester,
+  ) async {
+    final expense = Expense(
+      id: 'estimate',
+      title: 'Hotel',
+      category: BudgetCategory.stay,
+      amountMinor: 15000,
+      currency: 'CNY',
+      rate: 1,
+      bookedMinor: 15000,
+      recordedAt: DateTime.utc(2026, 9, 2),
+    );
+    final store = MemoryStore()
+      ..value = AppData(
+        language: 'en',
+        trips: [
+          sampleTrip().copyWith(expenses: [expense]),
+        ],
+      );
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    expect(find.text('Over plan'), findsOneWidget);
+    expect(find.text('CNY 50.00'), findsOneWidget);
+    expect(find.text('Estimated entries: 1'), findsOneWidget);
+    expect(
+      find.textContaining('Largest over-plan category: Stay'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('current and history tabs separate trips and search history', (
+    tester,
+  ) async {
+    Trip trip(
+      String id,
+      String title,
+      TripStage stage, {
+      String destination = '',
+      DateTime? completedAt,
+    }) {
+      final base = sampleTrip(stage: stage);
+      return Trip(
+        id: id,
+        title: title,
+        destination: destination,
+        baseCurrency: base.baseCurrency,
+        budgets: base.budgets,
+        stage: stage,
+        createdAt: base.createdAt,
+        completedAt: completedAt,
+        expenses: const [],
+      );
+    }
+
+    final active = trip('active', 'Kyoto', TripStage.active);
+    final draft = trip('draft', 'Osaka', TripStage.draft);
+    final older = trip(
+      'older',
+      'Paris',
+      TripStage.completed,
+      destination: 'France',
+      completedAt: DateTime.utc(2026, 8, 1),
+    );
+    final newer = trip(
+      'newer',
+      'Rome',
+      TripStage.completed,
+      destination: 'Italy',
+      completedAt: DateTime.utc(2026, 9, 1),
+    );
+    final store = MemoryStore()
+      ..value = AppData(language: 'en', trips: [older, draft, newer, active]);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    expect(find.byType(CupertinoTabBar), findsOneWidget);
+    expect(find.byKey(const Key('focus_trip')), findsOneWidget);
+    expect(find.byKey(const Key('trip_draft')), findsOneWidget);
+    expect(find.byKey(const Key('trip_older')), findsNothing);
+
+    await tester.tap(find.text('History'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('focus_trip')), findsNothing);
+    expect(find.byKey(const Key('trip_active')), findsNothing);
+    expect(find.byKey(const Key('trip_older')), findsOneWidget);
+    expect(find.byKey(const Key('trip_newer')), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byKey(const Key('trip_newer'))).dy,
+      lessThan(tester.getTopLeft(find.byKey(const Key('trip_older'))).dy),
+    );
+
+    await tester.enterText(find.byKey(const Key('history_search')), 'france');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('trip_older')), findsOneWidget);
+    expect(find.byKey(const Key('trip_newer')), findsNothing);
+    await tester.tap(find.byKey(const Key('history_clear_search')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('trip_newer')), findsOneWidget);
+    await tester.tap(find.text('Current'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('focus_trip')), findsOneWidget);
+    expect(find.byKey(const Key('trip_older')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('plan choices and travel dates use Cupertino sheets', (
+    tester,
+  ) async {
+    final store = MemoryStore();
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('new_trip'));
+
+    await tapVisible(tester, const Key('base_currency'));
+    expect(find.byType(CupertinoActionSheet), findsOneWidget);
+    await tester.tap(find.text('USD').last);
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<IosChoiceField<String>>(
+            find.byKey(const Key('base_currency')),
+          )
+          .value,
+      'USD',
+    );
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('trip_dates')),
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('trip_dates')));
+    await tester.pumpAndSettle();
+    expect(find.byType(CupertinoDatePicker), findsOneWidget);
+    expect(find.byType(CupertinoSlidingSegmentedControl<int>), findsOneWidget);
+    final later = DateUtils.dateOnly(
+      DateTime.now().add(const Duration(days: 10)),
+    );
+    tester
+        .widget<CupertinoDatePicker>(find.byType(CupertinoDatePicker))
+        .onDateTimeChanged(later);
+    await tester.tap(find.text('End'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CupertinoDatePicker), findsOneWidget);
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    expect(find.byType(CupertinoDatePicker), findsNothing);
+    expect(
+      find.textContaining(
+        '${later.year}-${later.month}-${later.day} — '
+        '${later.year}-${later.month}-${later.day}',
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'expense date uses a Cupertino picker and cancel keeps its value',
+    (tester) async {
+      final store = MemoryStore()
+        ..value = AppData(language: 'en', trips: [sampleTrip()]);
+      await tester.pumpWidget(TripDeltaApp(store: store));
+      await tester.pumpAndSettle();
+      await tapVisible(tester, const Key('home_quick_expense'));
+      await tapVisible(tester, const Key('expense_details_toggle'));
+      final dateButton = find.byKey(const Key('expense_date'));
+      await tester.scrollUntilVisible(
+        dateButton,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      final labelFinder = find.descendant(
+        of: dateButton,
+        matching: find.byType(Text),
+      );
+      final originalLabel = tester.widget<Text>(labelFinder.first).data;
+      await tester.tap(dateButton);
+      await tester.pumpAndSettle();
+      expect(find.byType(CupertinoDatePicker), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<Text>(labelFinder.first).data, originalLabel);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('expense details keep full help and a visible save action', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(353, 759);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    final store = MemoryStore()
+      ..value = AppData(
+        language: 'zh',
+        trips: [sampleTrip(localCurrency: 'USD')],
+      );
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('home_quick_expense'));
+    await tapVisible(tester, const Key('expense_details_toggle'));
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('expense_note')),
+      180,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    final help = find.text(const L(true)('postedHelp'));
+    expect(help, findsOneWidget);
+    expect(tester.widget<Text>(help).maxLines, isNull);
+    expect(find.byKey(const Key('save_expense')).hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('first quick expense locks plan and home records the next one', (
     tester,
   ) async {
@@ -78,10 +303,10 @@ void main() {
       await tapVisible(tester, const Key('home_quick_expense'));
       expect(
         tester
-            .widget<DropdownButtonFormField<String>>(
+            .widget<IosChoiceField<String>>(
               find.byKey(const Key('expense_currency')),
             )
-            .initialValue,
+            .value,
         'JPY',
       );
       await tester.enterText(find.byKey(const Key('expense_amount')), '1000');
@@ -104,7 +329,11 @@ void main() {
       final secondId = store.value.trips.single.expenses.last.id;
       await tapVisible(tester, const Key('focus_trip'));
       await tapVisible(tester, Key('expense_$secondId'));
-      await tapVisible(tester, const Key('expense_details_toggle'));
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('expense_settled')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.enterText(find.byKey(const Key('expense_settled')), '55.00');
       await tapVisible(tester, const Key('save_expense'));
       expect(store.value.trips.single.expenses.last.bookedMinor, 6000);
@@ -138,6 +367,7 @@ void main() {
     await tapVisible(tester, const Key('save_expense'));
     await tapVisible(tester, Key('expense_$id'));
     await tapVisible(tester, const Key('delete_expense'));
+    expect(find.byType(CupertinoAlertDialog), findsOneWidget);
     await tester.tap(find.text('Delete').last);
     await tester.pumpAndSettle();
     expect(store.value.trips.single.stage, TripStage.draft);
@@ -149,6 +379,52 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Edit plan'), findsOneWidget);
+  });
+
+  testWidgets('estimated expense must be confirmed before review', (
+    tester,
+  ) async {
+    final store = MemoryStore()
+      ..value = AppData(
+        language: 'en',
+        trips: [sampleTrip(localCurrency: 'JPY', stage: TripStage.draft)],
+      );
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('home_quick_expense'));
+    await tester.enterText(find.byKey(const Key('expense_amount')), '1000');
+    await tester.enterText(find.byKey(const Key('expense_rate')), '0.05');
+    await tapVisible(tester, const Key('save_expense'));
+    final id = store.value.trips.single.expenses.single.id;
+    await tapVisible(tester, const Key('focus_trip'));
+    expect(store.value.trips.single.canComplete, isFalse);
+    expect(
+      tester
+          .widget<OutlinedButton>(find.byKey(const Key('finish_trip')))
+          .onPressed,
+      isNull,
+    );
+    await tapVisible(tester, Key('settle_$id'));
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('expense_settled')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.byKey(const Key('expense_settled')), findsOneWidget);
+    await tapVisible(tester, const Key('confirm_estimate'));
+    await tapVisible(tester, const Key('save_expense'));
+    expect(store.value.trips.single.canComplete, isTrue);
+    final finish = find.byKey(const Key('finish_trip'));
+    await tester.scrollUntilVisible(
+      finish,
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(finish);
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('save_review'));
+    expect(store.value.trips.single.stage, TripStage.completed);
+    expect(store.value.trips.single.estimatedCount, 0);
   });
 
   testWidgets('review shows drivers and can reuse the plan', (tester) async {
@@ -171,19 +447,239 @@ void main() {
     await tester.pumpAndSettle();
     await tapVisible(tester, const Key('focus_trip'));
     await tapVisible(tester, const Key('finish_trip'));
+    expect(find.text('A little over, a clearer picture'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Hotel · CNY 120.00 · Posted amount'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Hotel · CNY 120.00 · Posted amount'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('reflection')),
+      -200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.enterText(find.byKey(const Key('reflection')), 'Book earlier');
     await tapVisible(tester, const Key('save_review'));
     expect(store.value.trips.single.stage, TripStage.completed);
+    expect(find.text('A little over, a clearer picture'), findsOneWidget);
     expect(
       summaryText(store.value.trips.single, const L(false)),
-      contains('Hotel'),
+      allOf(contains('Hotel'), contains('A little over, a clearer picture')),
     );
     await tapVisible(tester, const Key('repeat_plan'));
+    expect(find.byType(CupertinoAlertDialog), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(store.value.trips.length, 1);
+    await tapVisible(tester, const Key('repeat_plan'));
+    await tester.tap(find.byKey(const Key('reuse_actual')));
+    await tester.pumpAndSettle();
+    expect(find.byType(PlanPage), findsOneWidget);
+    expect(
+      tester
+          .widget<TextFormField>(find.byKey(const Key('budget_stay')))
+          .controller!
+          .text,
+      '120.00',
+    );
+    expect(store.value.trips.length, 1);
+    await tapVisible(tester, const Key('save_plan'));
     expect(store.value.trips.length, 2);
     expect(store.value.trips.first.stage, TripStage.draft);
-    expect(store.value.trips.first.plannedMinor, trip.plannedMinor);
+    expect(store.value.trips.first.plannedMinor, trip.spentMinor);
     expect(store.value.trips.first.expenses, isEmpty);
+  });
+
+  testWidgets(
+    'invalid backup leaves data intact and valid merge adds new trip',
+    (tester) async {
+      final store = MemoryStore()
+        ..value = AppData(language: 'en', trips: [sampleTrip()]);
+      final gateway = FakeBackupGateway()..picked = Uint8List.fromList([1, 2]);
+      await tester.pumpWidget(
+        TripDeltaApp(store: store, backupGateway: gateway),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('backup_open')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('backup_import')));
+      await tester.pumpAndSettle();
+      expect(store.value.trips.single.id, 'trip1');
+      expect(find.textContaining('Import failed'), findsOneWidget);
+
+      final newTrip = sampleTrip().copyWith(title: 'Osaka');
+      gateway.picked = TripBackupCodec.encode(
+        AppData(
+          language: 'zh',
+          trips: [
+            Trip(
+              id: 'trip2',
+              title: newTrip.title,
+              baseCurrency: newTrip.baseCurrency,
+              budgets: newTrip.budgets,
+              stage: newTrip.stage,
+              createdAt: newTrip.createdAt,
+              expenses: const [],
+            ),
+          ],
+        ),
+      );
+      await tester.tap(find.byKey(const Key('backup_import')));
+      await tester.pumpAndSettle();
+      expect(find.byType(CupertinoAlertDialog), findsOneWidget);
+      await tester.tap(find.byKey(const Key('backup_merge')));
+      await tester.pumpAndSettle();
+      expect(store.value.trips.length, 2);
+      expect(store.value.language, 'en');
+      await tester.tap(find.byKey(const Key('backup_export')));
+      await tester.pumpAndSettle();
+      expect(TripBackupCodec.decode(gateway.saved!).trips.length, 2);
+
+      gateway.picked = TripBackupCodec.encode(const AppData(language: 'zh'));
+      await tester.tap(find.byKey(const Key('backup_import')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('backup_replace')));
+      await tester.pumpAndSettle();
+      expect(find.byType(CupertinoAlertDialog), findsOneWidget);
+      expect(store.value.trips.length, 2);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(store.value.trips.length, 2);
+      await tester.tap(find.byKey(const Key('backup_import')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('backup_replace')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('backup_confirm_replace')));
+      await tester.pumpAndSettle();
+      expect(store.value.trips, isEmpty);
+      expect(store.value.language, 'zh');
+    },
+  );
+
+  testWidgets('ledger category filter narrows entries and can be cleared', (
+    tester,
+  ) async {
+    Expense entry(String id, BudgetCategory category) => Expense(
+      id: id,
+      title: id,
+      category: category,
+      amountMinor: 1000,
+      currency: 'CNY',
+      rate: 1,
+      bookedMinor: 1000,
+      settledMinor: 1000,
+      recordedAt: DateTime.utc(2026, 9, 2),
+    );
+    final trip = sampleTrip().copyWith(
+      expenses: [
+        entry('stay-entry', BudgetCategory.stay),
+        entry('food-entry', BudgetCategory.food),
+      ],
+    );
+    final store = MemoryStore()..value = AppData(language: 'en', trips: [trip]);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('focus_trip'));
+    await tapVisible(tester, const Key('open_expenses'));
+    final allFilter = find.byKey(const Key('ledger_category_all'));
+    await tester.tap(allFilter);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Food').last);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('expense_food-entry')), findsOneWidget);
+    expect(find.byKey(const Key('expense_stay-entry')), findsNothing);
+    await tester.tap(find.byKey(const Key('ledger_clear')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('expense_stay-entry')), findsOneWidget);
+  });
+
+  testWidgets('detail keeps three recent entries and links to full records', (
+    tester,
+  ) async {
+    final expenses = List.generate(
+      6,
+      (index) => Expense(
+        id: 'entry-$index',
+        title: 'Entry $index',
+        category: index.isEven ? BudgetCategory.food : BudgetCategory.stay,
+        amountMinor: 1000,
+        currency: 'CNY',
+        rate: 1,
+        bookedMinor: 1000,
+        settledMinor: 1000,
+        recordedAt: DateTime.utc(2026, 9, index + 1),
+      ),
+    );
+    final trip = sampleTrip().copyWith(expenses: expenses);
+    final store = MemoryStore()..value = AppData(language: 'en', trips: [trip]);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('focus_trip'));
+
+    expect(find.byKey(const Key('expense_entry-5')), findsOneWidget);
+    expect(find.byKey(const Key('ledger_category_all')), findsNothing);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('expense_entry-3')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.byKey(const Key('expense_entry-2')), findsNothing);
+    expect(find.byKey(const Key('expense_entry-0')), findsNothing);
+
+    await tapVisible(tester, const Key('open_budget_breakdown'));
+    expect(find.byType(ComparisonSection), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tapVisible(tester, const Key('open_expenses'));
+    expect(find.byType(ExpenseListPage), findsOneWidget);
+    expect(find.byKey(const Key('ledger_category_all')), findsOneWidget);
+    expect(find.text('Expenses recorded: 6 / 6'), findsOneWidget);
+    final list = find.byType(ListView).last;
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('expense_entry-0')),
+      200,
+      scrollable: find.descendant(of: list, matching: find.byType(Scrollable)),
+    );
+    expect(find.byKey(const Key('expense_entry-0')), findsOneWidget);
+  });
+
+  testWidgets('pending shortcut opens the ledger with estimates filtered', (
+    tester,
+  ) async {
+    Expense entry(String id, {required bool settled}) => Expense(
+      id: id,
+      title: id,
+      category: BudgetCategory.food,
+      amountMinor: 1000,
+      currency: 'CNY',
+      rate: 1,
+      bookedMinor: 1000,
+      settledMinor: settled ? 1000 : null,
+      recordedAt: DateTime.utc(2026, 9, 2),
+    );
+    final trip = sampleTrip().copyWith(
+      expenses: [
+        entry('pending-1', settled: false),
+        entry('posted', settled: true),
+        entry('pending-2', settled: false),
+      ],
+    );
+    final store = MemoryStore()..value = AppData(language: 'en', trips: [trip]);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('focus_trip'));
+    await tapVisible(tester, const Key('view_pending_expenses'));
+
+    expect(find.byType(ExpenseListPage), findsOneWidget);
+    expect(find.text('Expenses recorded: 2 / 3'), findsOneWidget);
+    expect(find.byKey(const Key('expense_pending-2')), findsOneWidget);
+    expect(find.byKey(const Key('expense_posted')), findsNothing);
+    await tester.tap(find.byKey(const Key('ledger_clear')));
+    await tester.pumpAndSettle();
+    expect(find.text('Expenses recorded: 3 / 3'), findsOneWidget);
+    expect(find.byKey(const Key('expense_posted')), findsOneWidget);
   });
 
   testWidgets('cancelled plan discards input', (tester) async {
@@ -283,5 +779,19 @@ class DelayedFailStore extends MemoryStore {
       await pending.future;
     }
     await super.save(data);
+  }
+}
+
+class FakeBackupGateway implements BackupGateway {
+  Uint8List? picked;
+  Uint8List? saved;
+
+  @override
+  Future<Uint8List?> pick() async => picked;
+
+  @override
+  Future<bool> save(String name, Uint8List bytes) async {
+    saved = bytes;
+    return true;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'backup.dart';
 import 'screens.dart';
 import 'store.dart';
 
@@ -10,8 +11,9 @@ void main() {
 }
 
 class TripDeltaApp extends StatefulWidget {
-  const TripDeltaApp({super.key, required this.store});
+  const TripDeltaApp({super.key, required this.store, this.backupGateway});
   final TripStore store;
+  final BackupGateway? backupGateway;
 
   @override
   State<TripDeltaApp> createState() => _TripDeltaAppState();
@@ -88,7 +90,10 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
         },
         supportedLocales: const [Locale('zh'), Locale('en')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        home: HomeScreen(controller: controller),
+        home: HomeScreen(
+          controller: controller,
+          backupGateway: widget.backupGateway ?? SystemBackupGateway(),
+        ),
       ),
     );
   }

@@ -1,5 +1,7 @@
 # 旅程差额 / Trip Delta 证据登记
 
+> 2026-10-14 更新说明：下方 2026-09 的 `app-ui-atlas` 路径和非 Git 状态是当时的来源记录。当前应用位于 `apps/trip_delta`；旧 Archive 与商店预检不代表本次版本。
+
 更新时间：2026-09-21（Asia/Shanghai）。
 
 ## 源码身份
@@ -30,6 +32,15 @@
 | Android 构建 | `flutter build apk --debug` | passed | Debug APK，未运行 Android | `build/app/outputs/flutter-apk/app-debug.apk` |
 | iOS 构建 | `flutter build ios --simulator --no-codesign`、`flutter build ipa --no-codesign` | Simulator App 和 Archive passed | Archive 未签名、无 IPA、未上传 | `build/ios/iphonesimulator/Runner.app`、`build/ios/archive/Runner.xcarchive` |
 | Store 预检 | Archive 设置检查 | blocked | 占位 ID、默认图标/启动图、无签名及公开 URL 仍未关闭 | `APP_STORE_PREFLIGHT.md` |
+
+## 2026-10-14 功能缺口补齐验证
+
+| 层级 | 操作与环境 | 结果 | 证明上限 | 证据 |
+| --- | --- | --- | --- | --- |
+| 静态与自动化 | `flutter analyze --no-pub`、`flutter test --no-pub`、`git diff --check` | 分析 0 问题、28 项测试通过、差异检查通过 | 测试覆盖估算完成门禁、预算按实付复用、类别/日期筛选、备份格式、冲突与写入失败；不证明全部原生交互 | `test/backup_test.dart`、`test/domain_test.dart`、`test/store_test.dart`、`test/widget_test.dart` |
+| iOS Simulator | iPhone 17 Pro / iOS 26.5 启动新版与备份页；空白 iPhone 16 Pro / iOS 18.3 经系统文件界面导出空备份，再选回并合并 | 启动、原生文件弹窗与空备份往返通过 | 非空真实数据的跨设备恢复、完整旅程手动操作与真机未检 | `evidence/iphone16pro-backup-import-en-20261014.png`；现场操作 |
+| Android Debug 构建 | `flutter build apk --debug --no-pub` | passed | 未在 Android 设备运行，不证明文件选择交互 | `build/app/outputs/flutter-apk/app-debug.apk` |
+| 分发/商店 | 未执行本次签名 Archive、上传或商店处理 | not_run | 无发布证明 | 无 |
 
 ## 最终工件
 

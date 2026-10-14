@@ -108,6 +108,48 @@ class AppController extends ChangeNotifier {
 
   Future<void> setLanguage(String language) =>
       update((current) => current.copyWith(language: language));
+
+  Future<BackupImportResult> importBackup(
+    AppData backup, {
+    required bool replace,
+  }) async {
+    if (replace) {
+      if (loading || busy) throw StateError('Store not ready');
+      busy = true;
+      notifyListeners();
+      try {
+        await store.save(backup);
+        data = backup;
+        loadError = null;
+        return BackupImportResult(added: backup.trips.length, skipped: 0);
+      } finally {
+        busy = false;
+        notifyListeners();
+      }
+    }
+    var added = 0;
+    var skipped = 0;
+    await update((current) {
+      final existingIds = current.trips.map((trip) => trip.id).toSet();
+      final incoming = <Trip>[];
+      for (final trip in backup.trips) {
+        if (existingIds.contains(trip.id)) {
+          skipped++;
+        } else {
+          incoming.add(trip);
+          added++;
+        }
+      }
+      return current.copyWith(trips: [...incoming, ...current.trips]);
+    });
+    return BackupImportResult(added: added, skipped: skipped);
+  }
+}
+
+class BackupImportResult {
+  const BackupImportResult({required this.added, required this.skipped});
+  final int added;
+  final int skipped;
 }
 
 String newId() {

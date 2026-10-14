@@ -191,4 +191,93 @@ void main() {
     expect(trip.dailyAvailableMinor(DateTime(2026, 9, 3)), 1833);
     expect(trip.dailyAvailableMinor(DateTime(2026, 9, 6)), isNull);
   });
+
+  test('ledger filters by category and inclusive travel dates', () {
+    Expense expense(String id, BudgetCategory category, int day) => Expense(
+      id: id,
+      title: id,
+      category: category,
+      amountMinor: 1000,
+      currency: 'CNY',
+      rate: 1,
+      bookedMinor: 1000,
+      settledMinor: 1000,
+      recordedAt: DateTime.utc(2026, 9, day),
+    );
+    final trip = Trip(
+      id: 't',
+      title: 'Trip',
+      baseCurrency: 'CNY',
+      budgets: {for (final item in BudgetCategory.values) item: 1000},
+      stage: TripStage.active,
+      createdAt: DateTime.utc(2026, 9, 1),
+      expenses: [
+        expense('stay', BudgetCategory.stay, 1),
+        expense('food', BudgetCategory.food, 2),
+        expense('food-later', BudgetCategory.food, 4),
+      ],
+    );
+    expect(
+      filterTripExpenses(
+        trip,
+        category: BudgetCategory.food,
+        startDate: DateTime(2026, 9, 2),
+        endDate: DateTime(2026, 9, 2),
+      ).map((item) => item.id),
+      ['food'],
+    );
+    expect(filterTripExpenses(trip).map((item) => item.id), [
+      'food-later',
+      'food',
+      'stay',
+    ]);
+  });
+
+  test('review bands use settled spending and exact budget boundaries', () {
+    Trip tripFor(int? spent, {int planned = 10000, bool settled = true}) =>
+        Trip(
+          id: 't',
+          title: 'Trip',
+          baseCurrency: 'CNY',
+          budgets: {BudgetCategory.food: planned},
+          stage: TripStage.active,
+          createdAt: DateTime.utc(2026, 9, 1),
+          expenses: spent == null
+              ? const []
+              : [
+                  Expense(
+                    id: 'e',
+                    title: 'Meal',
+                    category: BudgetCategory.food,
+                    amountMinor: spent,
+                    currency: 'CNY',
+                    rate: 1,
+                    bookedMinor: spent,
+                    settledMinor: settled ? spent : null,
+                    recordedAt: DateTime.utc(2026, 9, 2),
+                  ),
+                ],
+        );
+
+    expect(reviewBandFor(tripFor(null)), isNull);
+    expect(reviewBandFor(tripFor(3000, settled: false)), isNull);
+    expect(reviewBandFor(tripFor(1000, planned: 0)), isNull);
+    final cases = <int, ReviewBand>{
+      3000: ReviewBand.atMost30,
+      3001: ReviewBand.atMost60,
+      6000: ReviewBand.atMost60,
+      6001: ReviewBand.atMost90,
+      9000: ReviewBand.atMost90,
+      9001: ReviewBand.atMost100,
+      10000: ReviewBand.atMost100,
+      10001: ReviewBand.overAtMost50,
+      15000: ReviewBand.overAtMost50,
+      15001: ReviewBand.overAtMost100,
+      20000: ReviewBand.overAtMost100,
+      20001: ReviewBand.overMoreThan100,
+    };
+    for (final entry in cases.entries) {
+      expect(reviewBandFor(tripFor(entry.key)), entry.value);
+    }
+  });
 }

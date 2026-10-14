@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'backup.dart';
 import 'domain.dart';
+import 'ios_overlays.dart';
 import 'store.dart';
 import 'strings.dart';
 
@@ -22,84 +25,215 @@ Widget pageWidth(Widget child) => Align(
 );
 
 void showSaveError(BuildContext context, L l) {
-  ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(l('saveError'))));
+  showIosNotice(context, l('saveError'));
 }
 
 Future<bool> confirmDelete(BuildContext context, String question, L l) async {
-  return await showDialog<bool>(
+  return await showCupertinoDialog<bool>(
         context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: Text(question),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text(l('cancel')),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              child: Text(l('delete')),
-            ),
-          ],
+        builder: (dialogContext) => iosOverlayTheme(
+          context,
+          CupertinoAlertDialog(
+            title: Text(question),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l('cancel')),
+              ),
+              CupertinoDialogAction(
+                isDestructiveAction: true,
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l('delete')),
+              ),
+            ],
+          ),
         ),
       ) ??
       false;
 }
 
 class TripPaceCard extends StatelessWidget {
-  const TripPaceCard({super.key, required this.trip, required this.l});
+  const TripPaceCard({
+    super.key,
+    required this.trip,
+    required this.l,
+    this.showIdentity = true,
+    this.showBreakdownFooter = true,
+  });
   final Trip trip;
   final L l;
+  final bool showIdentity;
+  final bool showBreakdownFooter;
 
   @override
   Widget build(BuildContext context) {
-    final daily = trip.dailyAvailableMinor(DateTime.now());
+    final now = DateTime.now();
+    final daily = trip.remainingMinor < 0
+        ? null
+        : trip.dailyAvailableMinor(now);
+    final days = trip.daysRemaining(now);
+    final over = trip.remainingMinor < 0;
+    final planned = trip.plannedMinor;
+    final spent = trip.spentMinor;
+    final progress = planned == 0 ? 0.0 : (spent / planned).clamp(0.0, 1.0);
+    final budgetedCount = BudgetCategory.values
+        .where((category) => trip.plannedFor(category) > 0)
+        .length;
+    final largestOver = largestOverCategory(trip);
     final theme = Theme.of(context);
     return Card.filled(
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(trip.title, style: theme.textTheme.titleLarge),
-            if (trip.destination.isNotEmpty) Text(trip.destination),
-            const SizedBox(height: 12),
+            if (showIdentity)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          trip.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        if (trip.destination.isNotEmpty) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            trip.destination,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      child: Text(
+                        l.stage(trip.stage),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            SizedBox(height: showIdentity ? 20 : 0),
             Text(
-              '${l('planned')} ${moneyText(trip.plannedMinor, trip.baseCurrency)}  ·  ${l('recorded')} ${moneyText(trip.spentMinor, trip.baseCurrency)}',
+              over ? l('over') : l('remaining'),
+              style: theme.textTheme.bodySmall,
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 2),
             Text(
-              '${trip.remainingMinor < 0 ? l('over') : l('remaining')} ${moneyText(trip.remainingMinor.abs(), trip.baseCurrency)}',
+              moneyText(trip.remainingMinor.abs(), trip.baseCurrency),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: over ? theme.colorScheme.error : null,
+              ),
+            ),
+            const SizedBox(height: 14),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 7,
+                backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                color: over
+                    ? theme.colorScheme.error
+                    : theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${l('recorded')} ${moneyText(spent, trip.baseCurrency)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '${l('planned')} ${moneyText(planned, trip.baseCurrency)}',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
             ),
             if (daily != null) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 12),
               Text(
-                '${l('dailyAvailable')} ${moneyText(daily, trip.baseCurrency)}  ·  ${trip.daysRemaining(DateTime.now())} ${l('daysRemaining')}',
+                '${l('dailyAvailable')} ${moneyText(daily, trip.baseCurrency)}  ·  $days ${l('daysRemaining')}',
+                style: theme.textTheme.bodyMedium,
               ),
             ],
             if (trip.estimatedCount > 0) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
               Text(
                 '${l('includesEstimates')} ${trip.estimatedCount}',
-                style: theme.textTheme.bodySmall,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
               ),
             ],
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final category in BudgetCategory.values)
-                  if (trip.plannedFor(category) > 0 ||
-                      trip.spentFor(category) > 0)
-                    Chip(
-                      label: Text(
-                        '${l.category(category)} ${moneyText((trip.plannedFor(category) - trip.spentFor(category)).abs(), trip.baseCurrency)} ${trip.deltaFor(category) > 0 ? l('over') : l('remaining')}',
+            if (showBreakdownFooter) ...[
+              const SizedBox(height: 14),
+              const Divider(height: 1),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      largestOver == null
+                          ? '$budgetedCount ${l('budgetCategoriesSet')}'
+                          : '${l('largestDriver')}: ${l.category(largestOver)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: largestOver == null
+                            ? null
+                            : theme.colorScheme.error,
                       ),
                     ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    l('viewBreakdown'),
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -107,16 +241,288 @@ class TripPaceCard extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.controller});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({
+    super.key,
+    required this.controller,
+    required this.backupGateway,
+  });
   final AppController controller;
+  final BackupGateway backupGateway;
 
-  Future<void> _language(BuildContext context, String value) async {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedTab = 0;
+  final TextEditingController _historySearch = TextEditingController();
+
+  AppController get controller => widget.controller;
+  BackupGateway get backupGateway => widget.backupGateway;
+
+  @override
+  void dispose() {
+    _historySearch.dispose();
+    super.dispose();
+  }
+
+  Future<void> _language(String value) async {
     try {
       await controller.setLanguage(value);
     } catch (_) {
-      if (context.mounted) showSaveError(context, loc(context));
+      if (mounted) showSaveError(context, loc(context));
     }
+  }
+
+  void _openTrip(Trip trip) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => TripDetailPage(controller: controller, tripId: trip.id),
+      ),
+    );
+  }
+
+  void _newTrip() {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => PlanPage(controller: controller)),
+    );
+  }
+
+  Widget _tripRow(Trip trip, L l) {
+    final completed = trip.completedAt;
+    return InkWell(
+      key: Key('trip_${trip.id}'),
+      onTap: () => _openTrip(trip),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(trip.title, style: Theme.of(context).textTheme.titleLarge),
+            if (trip.destination.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(trip.destination),
+            ],
+            const SizedBox(height: 6),
+            Text(
+              completed == null || trip.stage != TripStage.completed
+                  ? l.stage(trip.stage)
+                  : '${l('completedOn')} ${completed.toLocal().year}-${completed.toLocal().month.toString().padLeft(2, '0')}-${completed.toLocal().day.toString().padLeft(2, '0')}',
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '${l('planned')} ${moneyText(trip.plannedMinor, trip.baseCurrency)}  ·  ${l('recorded')} ${moneyText(trip.spentMinor, trip.baseCurrency)}',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _currentPage(L l) {
+    final current = controller.trips
+        .where((trip) => trip.stage != TripStage.completed)
+        .toList();
+    final focus =
+        current.where((trip) => trip.stage == TripStage.active).firstOrNull ??
+        current.firstOrNull;
+    final others = [
+      ...current.where(
+        (trip) => trip.stage == TripStage.active && trip.id != focus?.id,
+      ),
+      ...current.where(
+        (trip) => trip.stage == TripStage.draft && trip.id != focus?.id,
+      ),
+    ];
+    return pageWidth(
+      CustomScrollView(
+        key: const PageStorageKey('current_trips_scroll'),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    l('tagline'),
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    key: const Key('new_trip'),
+                    onPressed: controller.busy ? null : _newTrip,
+                    icon: const Icon(Icons.add),
+                    label: Text(l('newTrip')),
+                  ),
+                  if (current.isEmpty) ...[
+                    const SizedBox(height: 28),
+                    Text(
+                      controller.trips.isEmpty
+                          ? l('noTrips')
+                          : l('noCurrentTrips'),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      controller.trips.isEmpty
+                          ? l('noTripsHelp')
+                          : l('noCurrentTripsHelp'),
+                    ),
+                  ],
+                  if (focus != null) ...[
+                    const SizedBox(height: 24),
+                    InkWell(
+                      key: const Key('focus_trip'),
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => _openTrip(focus),
+                      child: TripPaceCard(trip: focus, l: l),
+                    ),
+                    const SizedBox(height: 8),
+                    FilledButton.icon(
+                      key: const Key('home_quick_expense'),
+                      onPressed: controller.busy
+                          ? null
+                          : () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) => ExpensePage(
+                                  controller: controller,
+                                  tripId: focus.id,
+                                ),
+                              ),
+                            ),
+                      icon: const Icon(Icons.add),
+                      label: Text(l('addExpense')),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          if (others.isNotEmpty)
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverList.builder(
+                itemCount: others.length,
+                itemBuilder: (context, index) {
+                  final trip = others[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (index == 0 || others[index - 1].stage != trip.stage)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20, bottom: 4),
+                          child: Text(
+                            trip.stage == TripStage.active
+                                ? l('recordingTrips')
+                                : l('planningTrips'),
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                      _tripRow(trip, l),
+                      const Divider(height: 1),
+                    ],
+                  );
+                },
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+              child: Text(
+                l('localOnly'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _historyPage(L l) {
+    final completed =
+        controller.trips
+            .where((trip) => trip.stage == TripStage.completed)
+            .toList()
+          ..sort(
+            (a, b) => (b.completedAt ?? b.createdAt).compareTo(
+              a.completedAt ?? a.createdAt,
+            ),
+          );
+    final query = _historySearch.text.trim().toLowerCase();
+    final visible = query.isEmpty
+        ? completed
+        : completed
+              .where(
+                (trip) =>
+                    trip.title.toLowerCase().contains(query) ||
+                    trip.destination.toLowerCase().contains(query),
+              )
+              .toList();
+    return pageWidth(
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${l('historyTrips')} · ${completed.length}',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  key: const Key('history_search'),
+                  controller: _historySearch,
+                  onChanged: (_) => setState(() {}),
+                  decoration: InputDecoration(
+                    hintText: l('searchTrips'),
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _historySearch.text.isEmpty
+                        ? null
+                        : IconButton(
+                            key: const Key('history_clear_search'),
+                            tooltip: l('clearSearch'),
+                            onPressed: () => setState(_historySearch.clear),
+                            icon: const Icon(Icons.close),
+                          ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: visible.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        completed.isEmpty
+                            ? l('noHistoryTrips')
+                            : l('noSearchResults'),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    key: const PageStorageKey('history_trips_scroll'),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                    itemCount: visible.length,
+                    itemBuilder: (context, index) =>
+                        _tripRow(visible[index], l),
+                    separatorBuilder: (_, _) => const Divider(height: 1),
+                  ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -125,28 +531,44 @@ class HomeScreen extends StatelessWidget {
       animation: controller,
       builder: (context, _) {
         final l = loc(context);
-        Trip? focus;
-        for (final trip in controller.trips) {
-          if (trip.stage == TripStage.active) {
-            focus = trip;
-            break;
-          }
-        }
-        focus ??= controller.trips
-            .where((trip) => trip.stage == TripStage.draft)
-            .firstOrNull;
         return Scaffold(
           appBar: AppBar(
             title: Text(l('app')),
             actions: [
-              PopupMenuButton<String>(
+              IconButton(
+                key: const Key('backup_open'),
+                tooltip: l('backupTitle'),
+                onPressed: controller.loading
+                    ? null
+                    : () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => BackupPage(
+                            controller: controller,
+                            gateway: backupGateway,
+                          ),
+                        ),
+                      ),
+                icon: const Icon(Icons.folder_outlined),
+              ),
+              IconButton(
                 tooltip: l('language'),
                 icon: const Icon(Icons.translate),
-                onSelected: (value) => _language(context, value),
-                itemBuilder: (_) => [
-                  for (final code in ['auto', 'zh', 'en'])
-                    PopupMenuItem(value: code, child: Text(l(code))),
-                ],
+                onPressed: () async {
+                  const codes = ['auto', 'zh', 'en'];
+                  final index = await showIosChoices<String>(
+                    context,
+                    title: l('language'),
+                    cancelLabel: l('cancel'),
+                    choices: [
+                      for (final code in codes) IosChoice(code, l(code)),
+                    ],
+                    selected: controller.data.language,
+                  );
+                  if (index != null && context.mounted) {
+                    await _language(codes[index]);
+                  }
+                },
               ),
               IconButton(
                 tooltip: l('privacy'),
@@ -179,129 +601,205 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 )
-              : pageWidth(
-                  ListView(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-                    children: [
-                      Text(
-                        l('tagline'),
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 24),
-                      if (controller.trips.isEmpty) ...[
-                        Text(
-                          l('noTrips'),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(l('noTripsHelp')),
-                        const SizedBox(height: 24),
-                      ],
-                      if (focus != null) ...[
-                        InkWell(
-                          key: const Key('focus_trip'),
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => TripDetailPage(
-                                controller: controller,
-                                tripId: focus!.id,
-                              ),
-                            ),
-                          ),
-                          child: TripPaceCard(trip: focus, l: l),
-                        ),
-                        const SizedBox(height: 8),
-                        FilledButton.icon(
-                          key: const Key('home_quick_expense'),
-                          onPressed: controller.busy
-                              ? null
-                              : () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => ExpensePage(
-                                      controller: controller,
-                                      tripId: focus!.id,
-                                    ),
-                                  ),
-                                ),
-                          icon: const Icon(Icons.add),
-                          label: Text(l('addExpense')),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                      if (focus != null &&
-                          controller.trips.any(
-                            (trip) => trip.id != focus!.id,
-                          )) ...[
-                        Text(
-                          l('otherTrips'),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 4),
-                      ],
-                      for (final trip in controller.trips.where(
-                        (trip) => trip.id != focus?.id,
-                      )) ...[
-                        InkWell(
-                          key: Key('trip_${trip.id}'),
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => TripDetailPage(
-                                controller: controller,
-                                tripId: trip.id,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  trip.title,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                const SizedBox(height: 6),
-                                Text(l.stage(trip.stage)),
-                                const SizedBox(height: 6),
-                                Text(
-                                  '${l('planned')}  ${moneyText(trip.plannedMinor, trip.baseCurrency)}   ·   ${l('recorded')}  ${moneyText(trip.spentMinor, trip.baseCurrency)}',
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Divider(height: 1),
-                      ],
-                      const SizedBox(height: 24),
-                      OutlinedButton.icon(
-                        key: const Key('new_trip'),
-                        onPressed: controller.busy
-                            ? null
-                            : () => Navigator.push(
-                                context,
-                                MaterialPageRoute<void>(
-                                  builder: (_) =>
-                                      PlanPage(controller: controller),
-                                ),
-                              ),
-                        icon: const Icon(Icons.add),
-                        label: Text(l('newTrip')),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        l('localOnly'),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
+              : _selectedTab == 0
+              ? _currentPage(l)
+              : _historyPage(l),
+          bottomNavigationBar: CupertinoTabBar(
+            currentIndex: _selectedTab,
+            activeColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            onTap: (index) => setState(() => _selectedTab = index),
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(CupertinoIcons.location),
+                label: l('currentTrips'),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(CupertinoIcons.clock),
+                label: l('historyTrips'),
+              ),
+            ],
+          ),
         );
       },
+    );
+  }
+}
+
+enum _BackupImportMode { merge, replace }
+
+class BackupPage extends StatefulWidget {
+  const BackupPage({
+    super.key,
+    required this.controller,
+    required this.gateway,
+  });
+
+  final AppController controller;
+  final BackupGateway gateway;
+
+  @override
+  State<BackupPage> createState() => _BackupPageState();
+}
+
+class _BackupPageState extends State<BackupPage> {
+  bool _working = false;
+  String? _status;
+
+  Future<void> _export() async {
+    final l = loc(context);
+    setState(() {
+      _working = true;
+      _status = null;
+    });
+    try {
+      final bytes = TripBackupCodec.encode(widget.controller.data);
+      if (bytes.length > maxBackupBytes) {
+        throw const FormatException('Backup is too large');
+      }
+      final now = DateTime.now();
+      final stamp =
+          '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}${now.millisecond.toString().padLeft(3, '0')}';
+      final saved = await widget.gateway.save('trip-delta-$stamp.json', bytes);
+      if (mounted && saved) setState(() => _status = l('backupSaved'));
+    } catch (_) {
+      if (mounted) setState(() => _status = l('backupExportFailed'));
+    } finally {
+      if (mounted) setState(() => _working = false);
+    }
+  }
+
+  Future<void> _import() async {
+    final l = loc(context);
+    setState(() {
+      _working = true;
+      _status = null;
+    });
+    try {
+      final bytes = await widget.gateway.pick();
+      if (bytes == null || !mounted) return;
+      final backup = TripBackupCodec.decode(bytes);
+      final failedLoad = widget.controller.loadError != null;
+      final mode = await showCupertinoDialog<_BackupImportMode>(
+        context: context,
+        builder: (dialogContext) => iosOverlayTheme(
+          context,
+          CupertinoAlertDialog(
+            title: Text(l('backupImportPreview')),
+            content: Text(
+              '${l('backupFileTrips')} ${backup.trips.length}\n'
+              '${l('backupCurrentTrips')} ${widget.controller.trips.length}\n\n'
+              '${failedLoad ? l('backupRecoveryHelp') : l('backupMergeHelp')}',
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text(l('cancel')),
+              ),
+              if (!failedLoad)
+                CupertinoDialogAction(
+                  key: const Key('backup_merge'),
+                  onPressed: () =>
+                      Navigator.pop(dialogContext, _BackupImportMode.merge),
+                  child: Text(l('backupMerge')),
+                ),
+              CupertinoDialogAction(
+                key: const Key('backup_replace'),
+                isDestructiveAction: true,
+                onPressed: () =>
+                    Navigator.pop(dialogContext, _BackupImportMode.replace),
+                child: Text(l('backupReplace')),
+              ),
+            ],
+          ),
+        ),
+      );
+      if (mode == null || !mounted) return;
+      if (mode == _BackupImportMode.replace) {
+        final confirmed = await showCupertinoDialog<bool>(
+          context: context,
+          builder: (dialogContext) => iosOverlayTheme(
+            context,
+            CupertinoAlertDialog(
+              title: Text(l('backupReplace')),
+              content: Text(l('backupReplaceWarning')),
+              actions: [
+                CupertinoDialogAction(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(l('cancel')),
+                ),
+                CupertinoDialogAction(
+                  key: const Key('backup_confirm_replace'),
+                  isDestructiveAction: true,
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  child: Text(l('backupReplace')),
+                ),
+              ],
+            ),
+          ),
+        );
+        if (confirmed != true || !mounted) return;
+      }
+      final result = await widget.controller.importBackup(
+        backup,
+        replace: mode == _BackupImportMode.replace,
+      );
+      if (mounted) {
+        setState(
+          () => _status =
+              '${l('backupImported')} ${result.added} · ${l('backupSkipped')} ${result.skipped}',
+        );
+      }
+    } catch (_) {
+      if (mounted) setState(() => _status = l('backupImportFailed'));
+    } finally {
+      if (mounted) setState(() => _working = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = loc(context);
+    return PopScope(
+      canPop: !_working,
+      child: Scaffold(
+        appBar: AppBar(title: Text(l('backupTitle'))),
+        body: pageWidth(
+          ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Text(l('backupIntro')),
+              const SizedBox(height: 20),
+              FilledButton.icon(
+                key: const Key('backup_export'),
+                onPressed:
+                    _working ||
+                        widget.controller.busy ||
+                        widget.controller.loadError != null
+                    ? null
+                    : _export,
+                icon: const Icon(Icons.file_upload_outlined),
+                label: Text(l('backupExport')),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                key: const Key('backup_import'),
+                onPressed: _working || widget.controller.busy ? null : _import,
+                icon: const Icon(Icons.file_download_outlined),
+                label: Text(l('backupImport')),
+              ),
+              if (widget.controller.loadError != null) ...[
+                const SizedBox(height: 12),
+                Text(l('backupRecoveryHelp')),
+              ],
+              if (_status != null) ...[
+                const SizedBox(height: 20),
+                Text(_status!, key: const Key('backup_status')),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -330,9 +828,15 @@ class PrivacyScreen extends StatelessWidget {
 }
 
 class PlanPage extends StatefulWidget {
-  const PlanPage({super.key, required this.controller, this.existing});
+  const PlanPage({
+    super.key,
+    required this.controller,
+    this.existing,
+    this.template,
+  }) : assert(existing == null || template == null);
   final AppController controller;
   final Trip? existing;
+  final Trip? template;
 
   @override
   State<PlanPage> createState() => _PlanPageState();
@@ -351,23 +855,22 @@ class _PlanPageState extends State<PlanPage> {
   @override
   void initState() {
     super.initState();
-    _currency = widget.existing?.baseCurrency ?? 'CNY';
-    _localCurrency = widget.existing?.entryCurrency ?? _currency;
+    final initial = widget.existing ?? widget.template;
+    _currency = initial?.baseCurrency ?? 'CNY';
+    _localCurrency = initial?.entryCurrency ?? _currency;
     final today = DateUtils.dateOnly(DateTime.now());
     _dates = DateTimeRange(
-      start: widget.existing?.startDate ?? today,
-      end: widget.existing?.endDate ?? today.add(const Duration(days: 4)),
+      start: initial?.startDate ?? today,
+      end: initial?.endDate ?? today.add(const Duration(days: 4)),
     );
-    _name = TextEditingController(text: widget.existing?.title ?? '');
-    _destination = TextEditingController(
-      text: widget.existing?.destination ?? '',
-    );
+    _name = TextEditingController(text: initial?.title ?? '');
+    _destination = TextEditingController(text: initial?.destination ?? '');
     _budgets = {
       for (final category in BudgetCategory.values)
         category: TextEditingController(
-          text: widget.existing == null
+          text: initial == null
               ? ''
-              : amountInput(widget.existing!.plannedFor(category), _currency),
+              : amountInput(initial.plannedFor(category), _currency),
         ),
     };
   }
@@ -393,9 +896,7 @@ class _PlanPageState extends State<PlanPage> {
         )!,
     };
     if (budgets.values.every((value) => value == 0)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l('positiveBudget'))));
+      showIosNotice(context, l('positiveBudget'));
       return;
     }
     final now = DateTime.now().toUtc();
@@ -490,11 +991,16 @@ class _PlanPageState extends State<PlanPage> {
                 OutlinedButton.icon(
                   key: const Key('trip_dates'),
                   onPressed: () async {
-                    final selected = await showDateRangePicker(
+                    final selected = await showIosDateRangePicker(
                       context: context,
+                      title: l('travelDates'),
+                      cancelLabel: l('cancel'),
+                      doneLabel: l('done'),
+                      startLabel: l('dateStart'),
+                      endLabel: l('dateEnd'),
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
-                      initialDateRange: _dates,
+                      initialRange: _dates,
                     );
                     if (selected != null && mounted) {
                       setState(() => _dates = selected);
@@ -506,17 +1012,17 @@ class _PlanPageState extends State<PlanPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
+                IosChoiceField<String>(
                   key: const Key('base_currency'),
-                  initialValue: _currency,
-                  decoration: InputDecoration(labelText: l('baseCurrency')),
-                  items: [
+                  label: l('baseCurrency'),
+                  value: _currency,
+                  cancelLabel: l('cancel'),
+                  choices: [
                     for (final currency in supportedCurrencies)
-                      DropdownMenuItem(value: currency, child: Text(currency)),
+                      IosChoice(currency, currency),
                   ],
-                  onChanged: widget.existing == null
+                  onSelected: widget.existing == null
                       ? (value) {
-                          if (value == null) return;
                           setState(() {
                             _currency = value;
                             _localCurrency = value;
@@ -528,19 +1034,18 @@ class _PlanPageState extends State<PlanPage> {
                       : null,
                 ),
                 const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
+                IosChoiceField<String>(
                   key: ValueKey('local_currency_$_currency'),
-                  initialValue: _localCurrency,
-                  decoration: InputDecoration(labelText: l('localCurrency')),
-                  items: [
+                  label: l('localCurrency'),
+                  value: _localCurrency,
+                  cancelLabel: l('cancel'),
+                  choices: [
                     for (final currency in supportedCurrencies)
-                      DropdownMenuItem(value: currency, child: Text(currency)),
+                      IosChoice(currency, currency),
                   ],
-                  onChanged: (value) {
-                    if (value != null) setState(() => _localCurrency = value);
-                  },
+                  onSelected: (value) => setState(() => _localCurrency = value),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 Text(
                   l('budgetByCat'),
                   style: Theme.of(context).textTheme.titleLarge,
@@ -573,7 +1078,7 @@ class _PlanPageState extends State<PlanPage> {
                   ),
                   const SizedBox(height: 12),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 FilledButton(
                   key: const Key('save_plan'),
                   onPressed: _saving ? null : _save,
@@ -630,13 +1135,52 @@ class TripDetailPage extends StatelessWidget {
   Future<void> _copy(BuildContext context, Trip trip, L l) async {
     await Clipboard.setData(ClipboardData(text: summaryText(trip, l)));
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l('copied'))));
+      showIosNotice(context, l('copied'));
     }
   }
 
   Future<void> _repeatPlan(BuildContext context, Trip trip, L l) async {
+    final maxCategoryMinor =
+        1000000 * (currencyDigits(trip.baseCurrency) == 0 ? 1 : 100);
+    final actualFits = BudgetCategory.values.every(
+      (item) => trip.spentFor(item) <= maxCategoryMinor,
+    );
+    final useActual = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (dialogContext) => iosOverlayTheme(
+        context,
+        CupertinoAlertDialog(
+          title: Text(l('repeatPlan')),
+          content: Text(
+            '${l('reuseBudgetHelp')}\n\n'
+            '${l('planned')} ${moneyText(trip.plannedMinor, trip.baseCurrency)}\n'
+            '${l('spent')} ${moneyText(trip.spentMinor, trip.baseCurrency)}'
+            '${trip.estimatedCount > 0 ? '\n\n${l('reuseNeedsSettlement')}' : ''}'
+            '${!actualFits ? '\n\n${l('reuseTooLarge')}' : ''}',
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(l('cancel')),
+            ),
+            CupertinoDialogAction(
+              key: const Key('reuse_original'),
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(l('reuseOriginal')),
+            ),
+            CupertinoDialogAction(
+              key: const Key('reuse_actual'),
+              isDefaultAction: true,
+              onPressed: trip.estimatedCount > 0 || !actualFits
+                  ? null
+                  : () => Navigator.pop(dialogContext, true),
+              child: Text(l('reuseActual')),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (useActual == null || !context.mounted) return;
     final now = DateTime.now();
     final start = DateUtils.dateOnly(now);
     final duration = trip.startDate == null || trip.endDate == null
@@ -662,25 +1206,22 @@ class TripDetailPage extends StatelessWidget {
       localCurrency: trip.entryCurrency,
       startDate: start,
       endDate: start.add(Duration(days: duration)),
-      budgets: Map.of(trip.budgets),
+      budgets: useActual
+          ? {
+              for (final item in BudgetCategory.values)
+                item: trip.spentFor(item),
+            }
+          : Map.of(trip.budgets),
       stage: TripStage.draft,
       createdAt: now.toUtc(),
       expenses: const [],
     );
-    try {
-      await controller.upsertTrip(draft);
-      if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute<void>(
-            builder: (_) =>
-                TripDetailPage(controller: controller, tripId: draft.id),
-          ),
-        );
-      }
-    } catch (_) {
-      if (context.mounted) showSaveError(context, l);
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => PlanPage(controller: controller, template: draft),
+      ),
+    );
   }
 
   @override
@@ -698,12 +1239,21 @@ class TripDetailPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
               children: [
                 Text(
-                  l.stage(trip.stage),
-                  style: Theme.of(context).textTheme.labelLarge,
+                  trip.destination.isEmpty
+                      ? l.stage(trip.stage)
+                      : '${trip.destination} · ${l.stage(trip.stage)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
-                const SizedBox(height: 14),
-                TripPaceCard(trip: trip, l: l),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
+                TripPaceCard(
+                  trip: trip,
+                  l: l,
+                  showIdentity: false,
+                  showBreakdownFooter: false,
+                ),
+                const SizedBox(height: 16),
                 if (trip.stage == TripStage.draft ||
                     trip.expenses.isEmpty &&
                         trip.stage == TripStage.active) ...[
@@ -721,14 +1271,16 @@ class TripDetailPage extends StatelessWidget {
                           ),
                     child: Text(l('editPlan')),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                 ],
                 if (trip.stage != TripStage.completed) ...[
-                  if (trip.expenses.isNotEmpty)
+                  if (trip.expenses.isNotEmpty) ...[
                     Text(
                       l('lockedHelp'),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
+                    const SizedBox(height: 12),
+                  ],
                   FilledButton.icon(
                     key: const Key('add_expense'),
                     onPressed: controller.busy
@@ -745,10 +1297,10 @@ class TripDetailPage extends StatelessWidget {
                     icon: const Icon(Icons.add),
                     label: Text(l('addExpense')),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   OutlinedButton(
                     key: const Key('finish_trip'),
-                    onPressed: controller.busy || trip.expenses.isEmpty
+                    onPressed: controller.busy || !trip.canComplete
                         ? null
                         : () => Navigator.push(
                             context,
@@ -762,11 +1314,59 @@ class TripDetailPage extends StatelessWidget {
                     child: Text(l('finish')),
                   ),
                   if (trip.expenses.isEmpty) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Text(l('noExpenses')),
+                  ],
+                  if (trip.estimatedCount > 0) ...[
+                    const SizedBox(height: 12),
+                    Text(l('settleBeforeReview')),
+                    for (final expense in recentTripExpenses(
+                      trip,
+                    ).where((item) => item.isEstimate).take(1))
+                      TextButton.icon(
+                        key: Key('settle_${expense.id}'),
+                        onPressed: controller.busy
+                            ? null
+                            : () => Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (_) => ExpensePage(
+                                    controller: controller,
+                                    tripId: trip.id,
+                                    existing: expense,
+                                  ),
+                                ),
+                              ),
+                        icon: const Icon(Icons.receipt_long_outlined),
+                        label: Text(
+                          expense.title.isEmpty
+                              ? l.category(expense.category)
+                              : expense.title,
+                        ),
+                      ),
+                    if (trip.estimatedCount > 1)
+                      TextButton.icon(
+                        key: const Key('view_pending_expenses'),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (_) => ExpenseListPage(
+                              controller: controller,
+                              tripId: trip.id,
+                              estimatesOnly: true,
+                            ),
+                          ),
+                        ),
+                        icon: const Icon(Icons.list_alt_outlined),
+                        label: Text(l('viewPendingExpenses')),
+                      ),
                   ],
                 ],
                 if (trip.stage == TripStage.completed) ...[
+                  if (reviewBandFor(trip) != null) ...[
+                    ReviewVerdictCard(trip: trip, l: l),
+                    const SizedBox(height: 20),
+                  ],
                   if (trip.reflection.trim().isNotEmpty) ...[
                     Text(
                       l('reflection'),
@@ -781,7 +1381,7 @@ class TripDetailPage extends StatelessWidget {
                     icon: const Icon(Icons.copy_outlined),
                     label: Text(l('copySummary')),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   OutlinedButton.icon(
                     key: const Key('repeat_plan'),
                     onPressed: controller.busy
@@ -790,7 +1390,7 @@ class TripDetailPage extends StatelessWidget {
                     icon: const Icon(Icons.copy_all_outlined),
                     label: Text(l('repeatPlan')),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
                   OutlinedButton(
                     onPressed: controller.busy
                         ? null
@@ -798,65 +1398,55 @@ class TripDetailPage extends StatelessWidget {
                     child: Text(l('reopen')),
                   ),
                 ],
-                const SizedBox(height: 24),
-                ComparisonSection(trip: trip, l: l),
-                const SizedBox(height: 30),
-                Text(
-                  l('expenseList'),
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const Divider(),
-                if (trip.expenses.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(l('noExpenses')),
-                  ),
-                for (final expense in trip.expenses.reversed) ...[
-                  InkWell(
-                    key: Key('expense_${expense.id}'),
-                    onTap: trip.stage != TripStage.completed
-                        ? () => Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => ExpensePage(
-                                controller: controller,
-                                tripId: trip.id,
-                                existing: expense,
-                              ),
-                            ),
-                          )
-                        : null,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            expense.title.isEmpty
-                                ? l.category(expense.category)
-                                : expense.title,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${moneyText(expense.effectiveMinor, trip.baseCurrency)} · ${expense.isEstimate ? l('estimate') : l('confirmed')}',
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${l.category(expense.category)} · ${moneyText(expense.amountMinor, expense.currency)}${expense.currency == trip.baseCurrency ? '' : ' · 1 ${expense.currency} = ${expense.rate} ${trip.baseCurrency}'}',
-                          ),
-                          Text(
-                            '${expense.recordedAt.year}-${expense.recordedAt.month.toString().padLeft(2, '0')}-${expense.recordedAt.day.toString().padLeft(2, '0')}',
-                          ),
-                          if (expense.note.trim().isNotEmpty) ...[
-                            const SizedBox(height: 6),
-                            Text(expense.note),
-                          ],
-                        ],
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  key: const Key('open_budget_breakdown'),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => BudgetBreakdownPage(
+                        controller: controller,
+                        tripId: trip.id,
                       ),
                     ),
                   ),
-                  const Divider(height: 1),
+                  icon: const Icon(Icons.bar_chart_outlined),
+                  label: Text(l('viewBudgetBreakdown')),
+                ),
+                if (trip.expenses.isNotEmpty) ...[
+                  const SizedBox(height: 28),
+                  Text(
+                    l('recentExpenses'),
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  for (final expense in recentTripExpenses(trip).take(3)) ...[
+                    ExpenseRecordTile(
+                      key: Key('expense_${expense.id}'),
+                      expense: expense,
+                      trip: trip,
+                      controller: controller,
+                      compact: true,
+                    ),
+                    const Divider(height: 1),
+                  ],
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    key: const Key('open_expenses'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => ExpenseListPage(
+                          controller: controller,
+                          tripId: trip.id,
+                        ),
+                      ),
+                    ),
+                    icon: const Icon(Icons.receipt_long_outlined),
+                    label: Text(
+                      '${l('viewAllExpenses')} (${trip.expenses.length})',
+                    ),
+                  ),
                 ],
                 const SizedBox(height: 28),
                 TextButton(
@@ -870,6 +1460,308 @@ class TripDetailPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+List<Expense> recentTripExpenses(Trip trip) {
+  final indexed = trip.expenses.reversed.toList().asMap().entries.toList()
+    ..sort((a, b) {
+      final byDate = b.value.recordedAt.compareTo(a.value.recordedAt);
+      return byDate == 0 ? a.key.compareTo(b.key) : byDate;
+    });
+  return indexed.map((entry) => entry.value).toList();
+}
+
+String expenseDay(Expense expense) =>
+    '${expense.recordedAt.year}-${expense.recordedAt.month.toString().padLeft(2, '0')}-${expense.recordedAt.day.toString().padLeft(2, '0')}';
+
+class BudgetBreakdownPage extends StatelessWidget {
+  const BudgetBreakdownPage({
+    super.key,
+    required this.controller,
+    required this.tripId,
+  });
+  final AppController controller;
+  final String tripId;
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: controller,
+    builder: (context, _) {
+      final trip = controller.tripById(tripId);
+      final l = loc(context);
+      return Scaffold(
+        appBar: AppBar(title: Text(l('viewBudgetBreakdown'))),
+        body: trip == null
+            ? const SizedBox.shrink()
+            : pageWidth(
+                ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 36),
+                  children: [ComparisonSection(trip: trip, l: l)],
+                ),
+              ),
+      );
+    },
+  );
+}
+
+class ExpenseListPage extends StatelessWidget {
+  const ExpenseListPage({
+    super.key,
+    required this.controller,
+    required this.tripId,
+    this.estimatesOnly = false,
+  });
+  final AppController controller;
+  final String tripId;
+  final bool estimatesOnly;
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: controller,
+    builder: (context, _) {
+      final trip = controller.tripById(tripId);
+      final l = loc(context);
+      return Scaffold(
+        appBar: AppBar(title: Text(l('expenseList'))),
+        body: trip == null
+            ? const SizedBox.shrink()
+            : pageWidth(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                  child: ExpenseLedger(
+                    trip: trip,
+                    controller: controller,
+                    estimatesOnly: estimatesOnly,
+                  ),
+                ),
+              ),
+      );
+    },
+  );
+}
+
+class ExpenseRecordTile extends StatelessWidget {
+  const ExpenseRecordTile({
+    super.key,
+    required this.expense,
+    required this.trip,
+    required this.controller,
+    this.compact = false,
+  });
+  final Expense expense;
+  final Trip trip;
+  final AppController controller;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = loc(context);
+    final theme = Theme.of(context);
+    final title = expense.title.isEmpty
+        ? l.category(expense.category)
+        : expense.title;
+    return InkWell(
+      onTap: trip.stage == TripStage.completed
+          ? null
+          : () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => ExpensePage(
+                  controller: controller,
+                  tripId: trip.id,
+                  existing: expense,
+                ),
+              ),
+            ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: compact
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        moneyText(expense.effectiveMinor, trip.baseCurrency),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${l.category(expense.category)} · ${expenseDay(expense)} · ${expense.isEstimate ? l('estimate') : l('confirmed')}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${moneyText(expense.effectiveMinor, trip.baseCurrency)} · ${expense.isEstimate ? l('estimate') : l('confirmed')}',
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${l.category(expense.category)} · ${moneyText(expense.amountMinor, expense.currency)}${expense.currency == trip.baseCurrency ? '' : ' · 1 ${expense.currency} = ${expense.rate} ${trip.baseCurrency}'}',
+                  ),
+                  Text(expenseDay(expense)),
+                  if (expense.note.trim().isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Text(expense.note),
+                  ],
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class ExpenseLedger extends StatefulWidget {
+  const ExpenseLedger({
+    super.key,
+    required this.trip,
+    required this.controller,
+    this.estimatesOnly = false,
+  });
+  final Trip trip;
+  final AppController controller;
+  final bool estimatesOnly;
+
+  @override
+  State<ExpenseLedger> createState() => _ExpenseLedgerState();
+}
+
+class _ExpenseLedgerState extends State<ExpenseLedger> {
+  BudgetCategory? _category;
+  DateTimeRange? _range;
+  late bool _estimatesOnly = widget.estimatesOnly;
+
+  @override
+  Widget build(BuildContext context) {
+    final trip = widget.trip;
+    final l = loc(context);
+    final filtered = filterTripExpenses(
+      trip,
+      category: _category,
+      startDate: _range?.start,
+      endDate: _range?.end,
+    );
+    final matchingIds = filtered.map((expense) => expense.id).toSet();
+    final visible = recentTripExpenses(trip)
+        .where((expense) => matchingIds.contains(expense.id))
+        .where((expense) => !_estimatesOnly || expense.isEstimate)
+        .toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          '${l('entryCount')}: ${visible.length} / ${trip.expenses.length}',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        if (trip.expenses.isNotEmpty) ...[
+          IosChoiceField<BudgetCategory?>(
+            key: ValueKey('ledger_category_${_category?.name ?? 'all'}'),
+            label: l('filterCategory'),
+            value: _category,
+            cancelLabel: l('cancel'),
+            choices: [
+              IosChoice<BudgetCategory?>(null, l('allCategories')),
+              for (final item in BudgetCategory.values)
+                IosChoice<BudgetCategory?>(item, l.category(item)),
+            ],
+            onSelected: (value) => setState(() => _category = value),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            key: const Key('ledger_dates'),
+            onPressed: () async {
+              final selected = await showIosDateRangePicker(
+                context: context,
+                title: l('filterDates'),
+                cancelLabel: l('cancel'),
+                doneLabel: l('done'),
+                startLabel: l('dateStart'),
+                endLabel: l('dateEnd'),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+                initialRange: _range,
+              );
+              if (selected != null && mounted) {
+                setState(() => _range = selected);
+              }
+            },
+            icon: const Icon(Icons.date_range_outlined),
+            label: Text(
+              _range == null
+                  ? l('filterDates')
+                  : '${_range!.start.year}-${_range!.start.month}-${_range!.start.day} — ${_range!.end.year}-${_range!.end.month}-${_range!.end.day}',
+            ),
+          ),
+          if (trip.estimatedCount > 0)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilterChip(
+                key: const Key('ledger_estimates_only'),
+                label: Text(l('estimatesOnly')),
+                selected: _estimatesOnly,
+                onSelected: (selected) =>
+                    setState(() => _estimatesOnly = selected),
+              ),
+            ),
+          if (_category != null || _range != null || _estimatesOnly)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                key: const Key('ledger_clear'),
+                onPressed: () => setState(() {
+                  _category = null;
+                  _range = null;
+                  _estimatesOnly = false;
+                }),
+                child: Text(l('clearFilters')),
+              ),
+            ),
+        ],
+        const Divider(),
+        Expanded(
+          child: visible.isEmpty
+              ? Center(
+                  child: Text(
+                    trip.expenses.isEmpty
+                        ? l('noExpenses')
+                        : l('noMatchingExpenses'),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : ListView.separated(
+                  key: const PageStorageKey('expense_ledger_scroll'),
+                  padding: const EdgeInsets.only(bottom: 32),
+                  itemCount: visible.length,
+                  itemBuilder: (context, index) => ExpenseRecordTile(
+                    key: Key('expense_${visible[index].id}'),
+                    expense: visible[index],
+                    trip: trip,
+                    controller: widget.controller,
+                  ),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                ),
+        ),
+      ],
     );
   }
 }
@@ -972,6 +1864,47 @@ class ComparisonSection extends StatelessWidget {
   }
 }
 
+class ReviewVerdictCard extends StatelessWidget {
+  const ReviewVerdictCard({super.key, required this.trip, required this.l});
+  final Trip trip;
+  final L l;
+
+  @override
+  Widget build(BuildContext context) {
+    final band = reviewBandFor(trip);
+    if (band == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Card.filled(
+      key: const Key('review_verdict'),
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.surfaceContainerLow,
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l('reviewAssessment'),
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l('review_${band.name}_title'),
+              style: theme.textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(l('review_${band.name}_body')),
+            const SizedBox(height: 12),
+            Text(l('reviewBasis'), style: theme.textTheme.bodySmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 String summaryText(Trip trip, L l) {
   final lines = <String>[
     trip.title,
@@ -988,6 +1921,12 @@ String summaryText(Trip trip, L l) {
     lines.add(
       '${l('difference')}: ${moneyText(trip.deltaMinor, trip.baseCurrency)}',
     );
+  }
+  final reviewBand = reviewBandFor(trip);
+  if (reviewBand != null) {
+    lines.add(l('reviewAssessment'));
+    lines.add(l('review_${reviewBand.name}_title'));
+    lines.add(l('review_${reviewBand.name}_body'));
   }
   for (final item in BudgetCategory.values) {
     lines.add(
@@ -1086,7 +2025,8 @@ class _ExpensePageState extends State<ExpensePage> {
     );
     _detailsExpanded =
         old != null &&
-        (old.title.isNotEmpty ||
+        (old.isEstimate ||
+            old.title.isNotEmpty ||
             old.note.isNotEmpty ||
             old.settledMinor != null);
     _amount.addListener(_refresh);
@@ -1122,18 +2062,14 @@ class _ExpensePageState extends State<ExpensePage> {
       rate: rate,
     );
     if (amount <= 0 || booked <= 0) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l('invalidMoney'))));
+      showIosNotice(context, l('invalidMoney'));
       return;
     }
     final posted = _settled.text.trim().isEmpty
         ? null
         : parseMinor(_settled.text, trip.baseCurrency);
     if (_settled.text.trim().isNotEmpty && (posted == null || posted <= 0)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l('invalidMoney'))));
+      showIosNotice(context, l('invalidMoney'));
       return;
     }
     final expense = Expense(
@@ -1238,6 +2174,26 @@ class _ExpensePageState extends State<ExpensePage> {
             icon: const Icon(Icons.arrow_back),
           ),
         ),
+        bottomNavigationBar: Material(
+          color: Theme.of(context).colorScheme.surface,
+          child: SafeArea(
+            top: false,
+            child: Center(
+              heightFactor: 1,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+                  child: FilledButton(
+                    key: const Key('save_expense'),
+                    onPressed: _saving ? null : _save,
+                    child: Text(l('saveExpense')),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         body: pageWidth(
           Form(
             key: _form,
@@ -1284,21 +2240,22 @@ class _ExpensePageState extends State<ExpensePage> {
                         key: Key('category_${item.name}'),
                         label: Text(l.category(item)),
                         selected: _category == item,
+                        showCheckmark: false,
                         onSelected: (_) => setState(() => _category = item),
                       ),
                   ],
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
+                IosChoiceField<String>(
                   key: const Key('expense_currency'),
-                  initialValue: _currency,
-                  decoration: InputDecoration(labelText: l('currency')),
-                  items: [
+                  label: l('currency'),
+                  value: _currency,
+                  cancelLabel: l('cancel'),
+                  choices: [
                     for (final currency in supportedCurrencies)
-                      DropdownMenuItem(value: currency, child: Text(currency)),
+                      IosChoice(currency, currency),
                   ],
-                  onChanged: (value) {
-                    if (value == null) return;
+                  onSelected: (value) {
                     final previous = _lastRate(trip, value);
                     setState(() {
                       _currency = value;
@@ -1344,7 +2301,8 @@ class _ExpensePageState extends State<ExpensePage> {
                     '${_currency == trip.baseCurrency ? l('confirmed') : l('estimate')}: ${moneyText(booked, trip.baseCurrency)}',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                const Divider(height: 1),
                 TextButton.icon(
                   key: const Key('expense_details_toggle'),
                   onPressed: () =>
@@ -1355,6 +2313,7 @@ class _ExpensePageState extends State<ExpensePage> {
                   label: Text(l('moreDetails')),
                 ),
                 if (_detailsExpanded) ...[
+                  const SizedBox(height: 12),
                   TextFormField(
                     key: const Key('expense_title'),
                     controller: _title,
@@ -1362,13 +2321,18 @@ class _ExpensePageState extends State<ExpensePage> {
                     decoration: InputDecoration(
                       labelText: l('expenseTitle'),
                       hintText: l('expenseHint'),
+                      counterText: '',
                     ),
                   ),
+                  const SizedBox(height: 16),
                   OutlinedButton.icon(
                     key: const Key('expense_date'),
                     onPressed: () async {
-                      final selected = await showDatePicker(
+                      final selected = await showIosDatePicker(
                         context: context,
+                        title: l('expenseDate'),
+                        cancelLabel: l('cancel'),
+                        doneLabel: l('done'),
                         initialDate: _expenseDate,
                         firstDate: DateTime(2000),
                         lastDate: DateTime(2100),
@@ -1382,7 +2346,8 @@ class _ExpensePageState extends State<ExpensePage> {
                       '${l('expenseDate')}: ${_expenseDate.year}-${_expenseDate.month}-${_expenseDate.day}',
                     ),
                   ),
-                  if (_currency != trip.baseCurrency)
+                  if (_currency != trip.baseCurrency) ...[
+                    const SizedBox(height: 16),
                     TextFormField(
                       key: const Key('expense_settled'),
                       controller: _settled,
@@ -1392,32 +2357,51 @@ class _ExpensePageState extends State<ExpensePage> {
                       decoration: InputDecoration(
                         labelText: l('postedAmount'),
                         prefixText: '${trip.baseCurrency} ',
-                        helperText: l('postedHelp'),
                       ),
                       validator: (value) {
-                        if (value == null || value.trim().isEmpty) return null;
+                        if (value == null || value.trim().isEmpty) {
+                          return null;
+                        }
                         final parsed = parseMinor(value, trip.baseCurrency);
                         return parsed == null || parsed <= 0
                             ? l('invalidMoney')
                             : null;
                       },
                     ),
+                    const SizedBox(height: 6),
+                    Text(
+                      l('postedHelp'),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    if (booked != null && booked > 0)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          key: const Key('confirm_estimate'),
+                          onPressed: () => setState(
+                            () => _settled.text = amountInput(
+                              booked,
+                              trip.baseCurrency,
+                            ),
+                          ),
+                          child: Text(l('confirmEstimate')),
+                        ),
+                      ),
+                  ],
+                  const SizedBox(height: 16),
                   TextFormField(
                     key: const Key('expense_note'),
                     controller: _note,
                     maxLength: 240,
                     maxLines: 3,
-                    decoration: InputDecoration(labelText: l('note')),
+                    decoration: InputDecoration(
+                      labelText: l('note'),
+                      counterText: '',
+                    ),
                   ),
                 ],
-                const SizedBox(height: 16),
-                FilledButton(
-                  key: const Key('save_expense'),
-                  onPressed: _saving ? null : _save,
-                  child: Text(l('saveExpense')),
-                ),
                 if (widget.existing != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   TextButton(
                     key: const Key('delete_expense'),
                     onPressed: _saving ? null : () => _delete(trip, l),
@@ -1461,6 +2445,7 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 
   Future<void> _complete(Trip trip, L l) async {
+    if (!trip.canComplete) return;
     setState(() => _saving = true);
     try {
       await widget.controller.upsertTrip(
@@ -1504,10 +2489,16 @@ class _ReviewPageState extends State<ReviewPage> {
               Text(
                 trip.expenses.isEmpty
                     ? l('incompleteSummary')
-                    : '${l('difference')}: ${moneyText(trip.deltaMinor, trip.baseCurrency)}',
+                    : trip.deltaMinor > 0
+                    ? '${l('over')} ${moneyText(trip.deltaMinor, trip.baseCurrency)}'
+                    : '${l('remaining')} ${moneyText(-trip.deltaMinor, trip.baseCurrency)}',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: 16),
+              if (reviewBandFor(trip) != null) ...[
+                const SizedBox(height: 16),
+                ReviewVerdictCard(trip: trip, l: l),
+              ],
+              const SizedBox(height: 20),
               TextFormField(
                 key: const Key('reflection'),
                 controller: _reflection,

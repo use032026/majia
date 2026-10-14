@@ -1,5 +1,7 @@
 # 旅程差额 / Trip Delta App Store 预检报告
 
+> 2026-10-14 范围更新：新增本地备份文件选择插件和功能流程后，以下旧 Archive、依赖及隐私检查仍是历史证据；正式候选必须对最终构建重跑。`blocked` 结论未改变，未上传 App Store。
+
 审核日期：2026-09-18。独立 Store Reviewer 结论：**`blocked`，当前不可作为上架候选**。范围为本地源码、10 项测试、iOS 模拟器、Android Debug APK、未签名 iOS Archive 与机械预检；无实体设备、签名 IPA、App Store Connect、TestFlight、上传或 App Review。Apple 最终决定不可由本报告保证。
 
 > **2026-09-21 复检：仍为 `blocked`。** 产品核心已完成旅行日期/当地币种、快捷记账、估算/最终入账与复盘归因，13 项测试及构建通过；这降低 4.2 实用性和 2.3 准确描述风险。新 Archive 仍明确报出 `com.example.tripDelta`、默认 App Icon、默认 Launch Image，且关闭签名后不会生成 IPA。Apple 当前 5.1.1 仍要求 App Store Connect 元数据和 App 内都有易访问隐私政策链接；Support URL 仍须有真实联系方式。未上传 App Store。

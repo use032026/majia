@@ -193,6 +193,7 @@ class Trip {
 
   String get entryCurrency => localCurrency ?? baseCurrency;
   int get estimatedCount => expenses.where((item) => item.isEstimate).length;
+  bool get canComplete => expenses.isNotEmpty && estimatedCount == 0;
   int get remainingMinor => plannedMinor - spentMinor;
   int daysRemaining(DateTime now) {
     if (startDate == null || endDate == null) return 0;
@@ -321,6 +322,49 @@ class Trip {
       endDate: endDate,
     );
   }
+}
+
+enum ReviewBand {
+  atMost30,
+  atMost60,
+  atMost90,
+  atMost100,
+  overAtMost50,
+  overAtMost100,
+  overMoreThan100,
+}
+
+ReviewBand? reviewBandFor(Trip trip) {
+  if (!trip.canComplete || trip.plannedMinor <= 0) return null;
+  final planned = trip.plannedMinor;
+  final spent = trip.spentMinor;
+  if (spent * 100 <= planned * 30) return ReviewBand.atMost30;
+  if (spent * 100 <= planned * 60) return ReviewBand.atMost60;
+  if (spent * 100 <= planned * 90) return ReviewBand.atMost90;
+  if (spent <= planned) return ReviewBand.atMost100;
+  final over = spent - planned;
+  if (over * 100 <= planned * 50) return ReviewBand.overAtMost50;
+  if (over <= planned) return ReviewBand.overAtMost100;
+  return ReviewBand.overMoreThan100;
+}
+
+List<Expense> filterTripExpenses(
+  Trip trip, {
+  BudgetCategory? category,
+  DateTime? startDate,
+  DateTime? endDate,
+}) {
+  DateTime day(DateTime value) =>
+      DateTime.utc(value.year, value.month, value.day);
+  final first = startDate == null ? null : day(startDate);
+  final last = endDate == null ? null : day(endDate);
+  return trip.expenses.reversed.where((expense) {
+    if (category != null && expense.category != category) return false;
+    final date = day(expense.recordedAt);
+    if (first != null && date.isBefore(first)) return false;
+    if (last != null && date.isAfter(last)) return false;
+    return true;
+  }).toList();
 }
 
 class AppData {
