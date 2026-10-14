@@ -2396,6 +2396,8 @@ class _ExpensePageState extends State<ExpensePage> {
                 TextFormField(
                   key: const Key('expense_amount'),
                   controller: _amount,
+                  onTapOutside: (_) =>
+                      FocusManager.instance.primaryFocus?.unfocus(),
                   autofocus: widget.existing == null,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
@@ -2460,6 +2462,8 @@ class _ExpensePageState extends State<ExpensePage> {
                   TextFormField(
                     key: const Key('expense_rate'),
                     controller: _rate,
+                    onTapOutside: (_) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
@@ -2504,6 +2508,8 @@ class _ExpensePageState extends State<ExpensePage> {
                   TextFormField(
                     key: const Key('expense_title'),
                     controller: _title,
+                    onTapOutside: (_) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
                     maxLength: 80,
                     decoration: InputDecoration(
                       labelText: l('expenseTitle'),
@@ -2538,6 +2544,8 @@ class _ExpensePageState extends State<ExpensePage> {
                     TextFormField(
                       key: const Key('expense_settled'),
                       controller: _settled,
+                      onTapOutside: (_) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
                       ),
@@ -2579,6 +2587,8 @@ class _ExpensePageState extends State<ExpensePage> {
                   TextFormField(
                     key: const Key('expense_note'),
                     controller: _note,
+                    onTapOutside: (_) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
                     maxLength: 240,
                     maxLines: 3,
                     decoration: InputDecoration(

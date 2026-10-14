@@ -297,6 +297,35 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('tapping expense form blank space dismisses the keyboard', (
+    tester,
+  ) async {
+    final store = MemoryStore()
+      ..value = AppData(language: 'en', trips: [sampleTrip()]);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tapVisible(tester, const Key('home_quick_expense'));
+
+    final amount = find.byKey(const Key('expense_amount'));
+    await tester.tap(amount);
+    await tester.enterText(amount, '12.34');
+    await tester.pump();
+    expect(tester.testTextInput.isVisible, isTrue);
+
+    await tester.tapAt(const Offset(8, 180));
+    await tester.pump();
+    expect(tester.testTextInput.isVisible, isFalse);
+    expect(tester.widget<TextFormField>(amount).controller!.text, '12.34');
+
+    await tapVisible(tester, const Key('expense_details_toggle'));
+    await tapVisible(tester, const Key('expense_note'));
+    expect(tester.testTextInput.isVisible, isTrue);
+    await tester.tapAt(const Offset(8, 180));
+    await tester.pump();
+    expect(tester.testTextInput.isVisible, isFalse);
+    expect(find.byType(ExpensePage), findsOneWidget);
+  });
+
   testWidgets('first quick expense locks plan and home records the next one', (
     tester,
   ) async {
