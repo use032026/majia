@@ -28,7 +28,7 @@
 | KIFXPRO | `SDPACKET` |
 | Steady21 | `STEADY21` |
 | RoamSum / TripCost | `TRIPCOST` |
-| Trip Delta | `TRIP_DELTA` |
+| Trip Delta | `TRIPDELTA` |
 
 以 Jufu 为例，需要创建：
 

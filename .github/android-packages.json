@@ -70,8 +70,8 @@
     "trip_delta": {
       "display_name": "Trip Delta",
       "path": "apps/trip_delta",
-      "secret_prefix": "TRIP_DELTA",
-      "application_id": "com.example.trip_delta"
+      "secret_prefix": "TRIPDELTA",
+      "application_id": "com.tripdelta.lite"
     }
   }
 }
