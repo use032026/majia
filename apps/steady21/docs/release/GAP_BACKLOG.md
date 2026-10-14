@@ -1,12 +1,12 @@
 # 微成 · Steady21 差距与发布待办
 
-生成日期：2026-09-22；2026-10-12 更新来源身份和本地素材状态。功能 MVP 已通过独立审核；以下均为进入真实发布候选或提升验证深度的缺口，本轮不上传。
+生成日期：2026-09-22；2026-10-12 更新来源身份和本地素材状态；2026-10-14 按用户报告的注册结果将 iOS 标识改为 `com.steady.lite.app`，Android 保持 `com.steady.lite`。功能 MVP 已通过独立审核；以下均为进入真实发布候选或提升验证深度的缺口，本轮不上传。
 
 ## P0 — App Store 发布阻断
 
 | 来源发现 | 用户/政策影响 | 工作范围 | 验收标准 | 所需证据 | 外部输入 | 状态 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 源码已设 `com.steady.lite`，但无签名/profile 与商店登记证据 | 无法形成可上传构建 | 在开发者账号登记并确认 App ID、Team 和 Bundle ID，生成分发签名 Archive | Archive 签名有效、profile 匹配、身份与 ASC 一致 | codesign、Archive、ASC 记录 | Apple Developer 账号与签名资料 | 源码标识已更新；外部验证 open |
+| iOS 源码已设 `com.steady.lite.app`，用户报告 App ID 注册成功；尚无 Team、签名/profile 与 ASC 记录核验证据 | 无法确认可上传构建 | 核对 App ID 所属 Team、Bundle ID 和 profile，生成分发签名 Archive | Archive 签名有效、profile 匹配、身份与 ASC 一致 | codesign、Archive、ASC 记录 | Apple Developer 账号与签名资料 | iOS 源码已更新；签名和外部验证 open |
 | 隐私政策和支持页已上线，线上文案与本地一致；托管日志及最终披露尚未核对 | 5.1 与 ASC 元数据一致性风险 | 核对托管日志和最终 SDK/行为，并复核政策与商店隐私回答 | 中英文 URL 公网可访问且内容与最终行为一致 | `artifacts/release-kit/PUBLIC_URL_CHECK.md`、最终政策、联系渠道 | 托管日志与法务复核 | URL 与文案同步已验证；托管及最终披露 open |
 | 默认 Flutter 图标/启动资产 | 2.1/4.1/4.2 品牌与完整性风险 | 完成原创图标和启动资产，检查许可 | Archive 不再提示 placeholder；1024 图标无 alpha；各尺寸正确 | Asset Catalog、Archive 日志、授权记录 | 品牌名称与视觉确认 | 2026-10-12 已替换本地资产；Archive 与权属核查待完成 |
 | 未建 ASC 元数据和隐私回答 | 无法提交 | 建 App/版本，补定价地区、分类、年龄分级、隐私、审核联系人、Review Notes | 所有必填项完成且与构建一致 | ASC 截图/导出 | 开发者账号和上架地区决定 | open |
@@ -35,4 +35,4 @@
 - 选择：开发者账号登记、签名与原创品牌资产验证闭环。
 - 原因：源码标识与本地图标已更新，但商店登记、名称/知识产权及签名 Archive 仍是最前置阻断。
 - 不包含：账号、订阅、广告、社区、AI、通知或新业务功能。
-- 完成条件：最终名称完成清查；`com.steady.lite` 与 Team、App ID 和 profile 匹配；原创图标/启动资产通过最终 Archive 检查；签名 Archive 通过机械预检；仍不自动上传，上传需另行确认。
+- 完成条件：最终名称完成清查；iOS `com.steady.lite.app` 与 Team、App ID 和 profile 匹配；原创图标/启动资产通过最终 Archive 检查；签名 Archive 通过机械预检；仍不自动上传，上传需另行确认。
