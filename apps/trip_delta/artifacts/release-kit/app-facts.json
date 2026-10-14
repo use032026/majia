@@ -1,0 +1,79 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "apps/trip_delta/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "Trip Delta",
+        "package": null,
+        "path": "apps/trip_delta/android/app/src/main/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET",
+          "android.permission.WRITE_EXTERNAL_STORAGE"
+        ]
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "apps/trip_delta/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "apps/trip_delta",
+  "dependency_signals": {},
+  "generated_at": "2026-10-14T08:50:53.037787+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.tripdelta.lite",
+      "com.tripdelta.lite.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "Trip Delta",
+        "path": "apps/trip_delta/ios/Runner/Info.plist",
+        "usage_descriptions": {
+          "NSPhotoLibraryAddUsageDescription": "将旅程回顾卡片保存到相册 / Save your trip review card to Photos."
+        }
+      }
+    ],
+    "privacy_manifests": [],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [
+    {
+      "host": "gotripdelta.com",
+      "path": "lib/privacy_web_page.dart"
+    }
+  ],
+  "network_hosts_observed": [
+    "gotripdelta.com"
+  ],
+  "pubspec": {
+    "dependencies": [
+      "cupertino_icons",
+      "file_picker",
+      "flutter_localizations",
+      "gal",
+      "path_provider",
+      "share_plus",
+      "webview_flutter"
+    ],
+    "description": "Offline before-and-after trip budget comparison.",
+    "name": "trip_delta",
+    "path": "apps/trip_delta/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

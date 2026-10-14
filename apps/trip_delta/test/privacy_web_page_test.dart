@@ -13,13 +13,36 @@ void main() {
     );
   });
 
-  testWidgets('unpublished policy keeps a readable local summary', (
+  test('published policy URL follows the selected language', () {
+    expect(
+      configuredPrivacyPolicyUrl(true).toString(),
+      'https://gotripdelta.com/privacy.html?lang=zh',
+    );
+    expect(
+      configuredPrivacyPolicyUrl(false).toString(),
+      'https://gotripdelta.com/privacy.html?lang=en',
+    );
+  });
+
+  testWidgets('published Chinese policy keeps a local summary if offline', (
     tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: PrivacyScreen(l: L(true))));
-    expect(find.textContaining('在线隐私政策尚未发布'), findsOneWidget);
+    final browser = FakePrivacyBrowser(1);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: PrivacyScreen(l: const L(true), browserFactory: () => browser),
+      ),
+    );
+    await tester.pump();
+    expect(
+      browser.loadedUrl.toString(),
+      'https://gotripdelta.com/privacy.html?lang=zh',
+    );
+    browser.fail!();
+    await tester.pump();
+    expect(find.textContaining('在线隐私政策暂时无法加载'), findsOneWidget);
     expect(find.text('本地数据说明'), findsOneWidget);
-    expect(find.byKey(const Key('privacy_retry_online')), findsNothing);
+    expect(find.byKey(const Key('privacy_retry_online')), findsOneWidget);
   });
 
   testWidgets('offline fallback retries with a fresh browser', (tester) async {

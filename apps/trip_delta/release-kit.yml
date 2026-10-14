@@ -1,0 +1,88 @@
+schema_version: 2
+
+identity:
+  app_name: "Trip Delta"
+  operator: "独立开发者"
+  bundle_id: "com.tripdelta.lite"
+  android_package: "com.tripdelta.lite"
+
+contact:
+  support_email: "yamenayazman@icloud.com"
+  production_domain: "gotripdelta.com"
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: "2026-10-14"
+  confirmed:
+    - "Operator label, contact email, and effective date provided by user on 2026-10-14."
+    - "The user confirmed the published zh and en privacy URLs on gotripdelta.com on 2026-10-14; both returned HTTP 200."
+    - "Trip data and language preference are stored in app-private Application Support JSON."
+    - "Users choose JSON backup import/export, review-card sharing, and gallery saving."
+    - "No account, developer backend, ads, or analytics in inspected source."
+  open_questions:
+    - "Website hosting access-log collection and retention remain unconfirmed."
+    - "Final SDK/network audit and store privacy declarations remain pending."
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    scenes:
+      - id: current-home
+        source: artifacts/app-store-previews/source/01-home-iphone-en.png
+      - id: active-detail
+        source: artifacts/app-store-previews/source/02-detail-iphone-en.png
+      - id: budget-variance
+        source: artifacts/app-store-previews/source/03-budget-iphone-en.png
+      - id: completed-review
+        source: artifacts/app-store-previews/source/04-review-iphone-en.png
+      - id: ipad-home
+        source: artifacts/app-store-previews/source/05-home-ipad-en.png
+      - id: ipad-detail
+        source: artifacts/app-store-previews/source/06-detail-ipad-en.png
+      - id: ipad-budget
+        source: artifacts/app-store-previews/source/07-budget-ipad-en.png
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: current-home
+        source_en: artifacts/google-play-listing/source/01-home-android-en.png
+        source_zh: artifacts/google-play-listing/source/01-home-android-zh.png
+      - id: active-detail
+        source_en: artifacts/google-play-listing/source/02-detail-android-en.png
+        source_zh: artifacts/google-play-listing/source/02-detail-android-zh.png
+      - id: budget-variance
+        source_en: artifacts/google-play-listing/source/03-budget-android-en.png
+        source_zh: artifacts/google-play-listing/source/03-budget-android-zh.png
+      - id: completed-review
+        source_en: artifacts/google-play-listing/source/04-review-android-en.png
+        source_zh: artifacts/google-play-listing/source/04-review-android-zh.png
+
+paths:
+  app_root: "apps/trip_delta"

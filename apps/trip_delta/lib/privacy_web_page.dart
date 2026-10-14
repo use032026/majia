@@ -8,6 +8,7 @@ import 'strings.dart';
 const _sharedPolicyUrl = String.fromEnvironment('TRIP_DELTA_PRIVACY_URL');
 const _zhPolicyUrl = String.fromEnvironment('TRIP_DELTA_PRIVACY_URL_ZH');
 const _enPolicyUrl = String.fromEnvironment('TRIP_DELTA_PRIVACY_URL_EN');
+const _defaultPolicyUrl = 'https://gotripdelta.com/privacy.html';
 
 Uri? parsePrivacyPolicyUrl(String value) {
   final uri = Uri.tryParse(value.trim());
@@ -15,11 +16,16 @@ Uri? parsePrivacyPolicyUrl(String value) {
   return uri;
 }
 
-Uri? configuredPrivacyPolicyUrl(bool chinese) => parsePrivacyPolicyUrl(
-  chinese
-      ? (_zhPolicyUrl.isEmpty ? _sharedPolicyUrl : _zhPolicyUrl)
-      : (_enPolicyUrl.isEmpty ? _sharedPolicyUrl : _enPolicyUrl),
-);
+Uri? configuredPrivacyPolicyUrl(bool chinese) {
+  final localizedOverride = chinese ? _zhPolicyUrl : _enPolicyUrl;
+  return parsePrivacyPolicyUrl(
+    localizedOverride.isNotEmpty
+        ? localizedOverride
+        : _sharedPolicyUrl.isNotEmpty
+        ? _sharedPolicyUrl
+        : '$_defaultPolicyUrl?lang=${chinese ? 'zh' : 'en'}',
+  );
+}
 
 abstract class PrivacyPageBrowser {
   Future<void> initialize(

@@ -46,7 +46,7 @@
 
 | 工件 | SHA-256 | 限制 |
 | --- | --- | --- |
-| `build/app/outputs/flutter-apk/app-debug.apk` | `1ecccb52008b383d4d0a62fff70afbad2e84ee35d94639019e852c439ec27f0e` | 2026-09-21 Debug，未运行 Android |
+| 历史 `build/app/outputs/flutter-apk/app-debug.apk`（已被覆盖） | `1ecccb52008b383d4d0a62fff70afbad2e84ee35d94639019e852c439ec27f0e` | 2026-09-21 Debug 的哈希；当前同路径工件是 2026-10-14 新包名验证构建 |
 | `build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner` | `a66a629dc0315563efb8b8b721edaac2f3ed9aa7bb26e7118b19609a25d5d428` | 仅 Mach-O 哈希；Archive 未签名 |
 | `build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Frameworks/App.framework/App` | `1565d70d977b2dc38c3bd34146e60c098a42432f964e735ea26acdad877c327a` | 2026-09-21 Flutter 应用代码二进制；Archive 未签名 |
 
@@ -56,4 +56,6 @@
 
 ## 明确缺失
 
-正式 Bundle ID、原创图标、公开隐私政策和支持 URL、ASC 隐私回答、最终商店元数据/截图；签名 IPA 与 Xcode Privacy Report；真机、iOS 15、Android 运行、完整无障碍/横屏/后台/低存储矩阵。上传、处理、TestFlight 与 App Review 均未做。
+当前 Bundle ID `com.tripdelta.lite` 的最终签名工件及 ASC 身份核对、原创图标的最终工件核验、公开支持 URL、ASC 隐私回答、最终商店元数据/截图；签名 IPA 与 Xcode Privacy Report；真机、iOS 15、Android 运行、完整无障碍/横屏/后台/低存储矩阵。中英文隐私政策已于 2026-10-14 确认公开可访问并接入 App。上传、处理、TestFlight 与 App Review 均未做。
+
+2026-10-14 标识验证：Android Debug APK 重新构建后，包名为 `com.tripdelta.lite`，启动 Activity 为 `com.tripdelta.lite.MainActivity`；iOS Release 构建设置解析出的 Runner Bundle ID 为 `com.tripdelta.lite`。这不构成签名发布工件或商店记录的验证。

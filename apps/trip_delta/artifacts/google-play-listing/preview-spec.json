@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "store": "google_play",
+  "app_name": "Trip Delta",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#006D68",
+    "background_bottom": "#064C48",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#DBF1ED"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/01-home-android-en.png",
+      "output": "final/en-US/phone/01-home.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Plan a trip budget"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/02-detail-android-en.png",
+      "output": "final/en-US/phone/02-detail.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Record each expense"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/03-budget-android-en.png",
+      "output": "final/en-US/phone/03-budget.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Compare every category"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/04-review-android-en.png",
+      "output": "final/en-US/phone/04-review.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Review and reuse the plan"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "en-US",
+      "output": "final/feature-graphic-en.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "Plan first. Understand later."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/01-home-android-zh.png",
+      "output": "final/zh-CN/phone/01-home.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "先规划旅程预算"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/02-detail-android-zh.png",
+      "output": "final/zh-CN/phone/02-detail.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "逐笔记录支出"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/03-budget-android-zh.png",
+      "output": "final/zh-CN/phone/03-budget.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "分类对照差额"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/04-review-android-zh.png",
+      "output": "final/zh-CN/phone/04-review.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "复盘后继续规划"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "zh-CN",
+      "output": "final/feature-graphic-zh.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "先计划，后对照。"
+    }
+  ]
+}

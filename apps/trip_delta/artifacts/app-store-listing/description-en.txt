@@ -1,0 +1,17 @@
+Plan first. Understand later.
+
+Trip Delta helps you compare a travel budget with what you actually spend. Set a plan before departure, record expenses along the way, and review the difference when the trip ends.
+
+Build a plan by category
+Create a trip with a destination, dates, a base currency, a local currency, and budgets for stays, transport, food, experiences, and other costs. Your original budget is locked when you record the first expense, so the final comparison still shows what you planned.
+
+Record spending as you go
+Add an expense in the local currency and enter the exchange rate you used. Trip Delta estimates the amount in your base currency and can reuse a rate you entered earlier. This is manual arithmetic, not a live exchange-rate service. Mark an expense with its final posted amount, or confirm the estimate as final, before completing your review.
+
+See where the difference came from
+Compare the original budget and final spending overall and by category. Browse all expenses, filter by category, date, or items awaiting confirmation, and note what shaped the result. A trip recap can be saved as an image or shared through your device's share sheet.
+
+Carry a useful plan forward
+Start another trip from the original category budgets or from the last trip's final spending, then edit the new plan. Export a JSON backup to a location you choose, and preview a backup before merging or replacing local records.
+
+Trip planning, expense entry, and review work without an account. Records are stored in app-private files on your device and may be included in device backups. The app does not provide bank connections, automatic cloud sync, or live currency quotes. Available in English and Simplified Chinese.

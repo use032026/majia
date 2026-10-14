@@ -1,4 +1,4 @@
-package com.example.trip_delta
+package com.tripdelta.lite
 
 import io.flutter.embedding.android.FlutterActivity
 

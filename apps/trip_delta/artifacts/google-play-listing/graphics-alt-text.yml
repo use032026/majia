@@ -1,0 +1,12 @@
+en-US:
+  phone_01: "Current trip budget with planned spending, recorded expenses, and remaining amount."
+  phone_02: "Active trip detail with remaining budget and an expense awaiting final confirmation."
+  phone_03: "Category comparison of the original budget and recorded travel spending."
+  phone_04: "Completed trip review with a budget reflection and options to reuse the plan."
+  feature_graphic: "Trip Delta on a teal background with the message Plan first. Understand later."
+zh-CN:
+  phone_01: "当前旅程的计划预算、已记录支出与剩余金额。"
+  phone_02: "进行中旅程的详情，其中一笔支出仍待核对最终金额。"
+  phone_03: "原预算与旅行支出按类别对照的差额页面。"
+  phone_04: "已完成旅程的预算复盘，以及沿用计划的操作入口。"
+  feature_graphic: "青绿色背景上的 Trip Delta 名称与“先计划，后对照”文字。"

@@ -1,0 +1,8 @@
+# Trip Delta release-material open items
+
+Updated: 2026-10-14 (Asia/Shanghai)
+
+1. **Public pages and hosting details.** The user confirmed `gotripdelta.com`; both `privacy.html?lang=zh` and `privacy.html?lang=en` returned HTTP 200 on 2026-10-14 and are now the app's default privacy pages. Verify the product and support URLs separately and confirm hosting access-log collection and retention. Both live policy languages still say the operator will confirm hosting details "before publishing"; review that stale sentence and republish corrected copy before using the URLs in store metadata.
+2. **Privacy and release review.** Confirm whether “独立开发者” is the sufficient public legal identity, confirm the final hosting provider and access-log retention, audit the final dependency/network behavior, review the bilingual policy with the operator, and complete App Store Connect / Play Console privacy answers. The local policy is a draft until those facts are confirmed.
+3. **iPhone visual polish.** On the current iPhone 17 Pro simulator, the in-app home/detail cards shorten the “Recorded” summary and some budget-label text with ellipses. The screenshots faithfully show this app UI; consider fixing the layout and recapturing the iPhone set before store submission.
+4. **Store and device evidence.** The iOS and Android source identifiers now use `com.tripdelta.lite`; final signed release artifacts and store records still need separate verification. Privacy URL reachability is confirmed, but upload, processing, TestFlight or Play testing, review submission, legal review, and physical-device verification have not been performed in this release-material pass.

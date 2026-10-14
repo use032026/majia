@@ -24,7 +24,7 @@
 
 ## 在线隐私政策地址
 
-正式政策发布后，构建时通过 `--dart-define=TRIP_DELTA_PRIVACY_URL=<HTTPS 地址>` 配置共同网址；如果中英文分别成页，可改用 `TRIP_DELTA_PRIVACY_URL_ZH` 和 `TRIP_DELTA_PRIVACY_URL_EN`。只接受 HTTPS。尚未配置网址时，应用展示本地数据摘要；配置后在线加载失败会回退摘要，并提供重试，回到应用时也会再试一次。正式网页、责任主体和支持地址仍待确定。
+应用默认按当前语言加载已发布的[中文隐私政策](https://gotripdelta.com/privacy.html?lang=zh)或[英文隐私政策](https://gotripdelta.com/privacy.html?lang=en)。构建时仍可用 `--dart-define=TRIP_DELTA_PRIVACY_URL=<HTTPS 地址>` 覆盖共同网址，或用 `TRIP_DELTA_PRIVACY_URL_ZH`、`TRIP_DELTA_PRIVACY_URL_EN` 分别覆盖；只接受 HTTPS。在线加载失败会显示本地数据摘要，并提供重试；回到应用时也会再试一次。
 
 ## 本地验证
 
@@ -36,4 +36,4 @@ flutter build ios --release --no-codesign
 flutter build apk --debug
 ```
 
-当前 App Store 预检仍有占位 Bundle ID、公开隐私与支持 URL、品牌权利核验、签名和真机验证等阻断。历史预检报告针对旧工件，需对最终签名构建重跑。详见 [`docs/release/APP_STORE_PREFLIGHT.md`](docs/release/APP_STORE_PREFLIGHT.md)。
+当前 iOS Bundle ID 与 Android 包名均为 `com.tripdelta.lite`。隐私政策已公开并接入应用；支持 URL、品牌权利核验、iOS 签名和真机验证等上架事项仍待处理。历史预检报告针对旧工件，需对最终签名构建重跑。详见 [`docs/release/APP_STORE_PREFLIGHT.md`](docs/release/APP_STORE_PREFLIGHT.md)。

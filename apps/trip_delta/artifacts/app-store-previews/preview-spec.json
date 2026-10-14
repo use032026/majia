@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "store": "app_store",
+  "app_name": "Trip Delta",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#006D68",
+    "background_bottom": "#064C48",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#DBF1ED"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "source": "source/01-home-iphone-en.png",
+      "output": "final/iphone/01-home.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Plan before you go",
+      "subheadline": "Category budgets keep the starting plan clear.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/02-detail-iphone-en.png",
+      "output": "final/iphone/02-detail.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Track the trip",
+      "subheadline": "See spending and estimates in one place.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/03-budget-iphone-en.png",
+      "output": "final/iphone/03-budget.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Compare by category",
+      "subheadline": "Review the gap between plan and recorded costs.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/04-review-iphone-en.png",
+      "output": "final/iphone/04-review.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Look back, plan ahead",
+      "subheadline": "Reflect on final spending and reuse the plan.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/05-home-ipad-en.png",
+      "output": "final/ipad/01-home.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Keep the whole plan in view",
+      "subheadline": "A clear overview of your current trip.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/06-detail-ipad-en.png",
+      "output": "final/ipad/02-detail.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Follow every expense",
+      "subheadline": "Review your trip on a spacious screen.",
+      "icon": "../../assets/brand/app_icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "source": "source/07-budget-ipad-en.png",
+      "output": "final/ipad/03-budget.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "See the difference",
+      "subheadline": "Compare each category with the original budget.",
+      "icon": "../../assets/brand/app_icon.png"
+    }
+  ]
+}
