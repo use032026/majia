@@ -1,0 +1,3 @@
+# ASC metadata patch manifest for Steady21.
+# The upload workflow does not create a store version or change listing fields.
+uses_non_exempt_encryption: false
