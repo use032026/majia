@@ -25,7 +25,7 @@ class FileTripStore implements TripStore {
   @override
   Future<AppData> load() async {
     final file = await _file();
-    if (!await file.exists()) return const AppData();
+    if (!await file.exists()) return const AppData(onboardingComplete: false);
     return AppData.fromJson(jsonDecode(await file.readAsString()));
   }
 
@@ -108,6 +108,9 @@ class AppController extends ChangeNotifier {
 
   Future<void> setLanguage(String language) =>
       update((current) => current.copyWith(language: language));
+
+  Future<void> completeOnboarding() =>
+      update((current) => current.copyWith(onboardingComplete: true));
 
   Future<BackupImportResult> importBackup(
     AppData backup, {

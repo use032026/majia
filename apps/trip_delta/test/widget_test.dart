@@ -8,6 +8,8 @@ import 'package:trip_delta/backup.dart';
 import 'package:trip_delta/domain.dart';
 import 'package:trip_delta/ios_overlays.dart';
 import 'package:trip_delta/main.dart';
+import 'package:trip_delta/onboarding.dart';
+import 'package:trip_delta/review_share.dart';
 import 'package:trip_delta/screens.dart';
 import 'package:trip_delta/store.dart';
 import 'package:trip_delta/strings.dart';
@@ -28,6 +30,54 @@ Future<void> tapVisible(WidgetTester tester, Key key) async {
 }
 
 void main() {
+  testWidgets('new installation shows and completes three-page introduction', (
+    tester,
+  ) async {
+    final store = MemoryStore()
+      ..value = const AppData(language: 'en', onboardingComplete: false);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    expect(find.byType(OnboardingScreen), findsOneWidget);
+    expect(find.text('Give every trip a plan'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('onboarding_next')));
+    await tester.pumpAndSettle();
+    expect(find.text('Record as you go'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('onboarding_next')));
+    await tester.pumpAndSettle();
+    expect(find.text('See the difference'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('onboarding_next')));
+    await tester.pumpAndSettle();
+    expect(store.value.onboardingComplete, isTrue);
+    expect(find.byType(HomeScreen), findsOneWidget);
+  });
+
+  testWidgets('skip persists onboarding completion', (tester) async {
+    final store = MemoryStore()
+      ..value = const AppData(language: 'zh', onboardingComplete: false);
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('onboarding_skip')));
+    await tester.pumpAndSettle();
+    expect(store.value.onboardingComplete, isTrue);
+    expect(find.byType(HomeScreen), findsOneWidget);
+  });
+
+  testWidgets('failed onboarding save keeps introduction available', (
+    tester,
+  ) async {
+    final store = FailingOnboardingStore();
+    await tester.pumpWidget(TripDeltaApp(store: store));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('onboarding_skip')));
+    await tester.pumpAndSettle();
+    expect(store.value.onboardingComplete, isFalse);
+    expect(find.byType(OnboardingScreen), findsOneWidget);
+    expect(
+      find.text('Save failed; existing records are unchanged. Please retry.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('compact trip card keeps overage and estimate warnings visible', (
     tester,
   ) async {
@@ -463,10 +513,14 @@ void main() {
     await tapVisible(tester, const Key('save_review'));
     expect(store.value.trips.single.stage, TripStage.completed);
     expect(find.text('A little over, a clearer picture'), findsOneWidget);
-    expect(
-      summaryText(store.value.trips.single, const L(false)),
-      allOf(contains('Hotel'), contains('A little over, a clearer picture')),
-    );
+    await tapVisible(tester, const Key('open_review_card'));
+    expect(find.byType(ReviewCardSheet), findsOneWidget);
+    expect(find.byKey(const Key('review_card_preview')), findsOneWidget);
+    expect(find.text('Book earlier'), findsWidgets);
+    expect(find.byKey(const Key('share_review_card')), findsOneWidget);
+    expect(find.byKey(const Key('save_review_card')), findsOneWidget);
+    await tester.tap(find.byTooltip('Close'));
+    await tester.pumpAndSettle();
     await tapVisible(tester, const Key('repeat_plan'));
     expect(find.byType(CupertinoAlertDialog), findsOneWidget);
     await tester.tap(find.text('Cancel'));
@@ -489,6 +543,63 @@ void main() {
     expect(store.value.trips.first.stage, TripStage.draft);
     expect(store.value.trips.first.plannedMinor, trip.spentMinor);
     expect(store.value.trips.first.expenses, isEmpty);
+  });
+
+  testWidgets('review card renders a PNG for saving and sharing', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+    final trip = sampleTrip(stage: TripStage.completed).copyWith(
+      completedAt: DateTime.utc(2026, 10, 14),
+      reflection: 'Book earlier next time',
+    );
+    Uint8List? saved;
+    Uint8List? shared;
+    Rect? shareOrigin;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ReviewCardSheet(
+            trip: trip,
+            l: const L(false),
+            saveImage: (bytes) async {
+              saved = bytes;
+            },
+            shareImage: (bytes, origin) async {
+              shared = bytes;
+              shareOrigin = origin;
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('save_review_card')));
+    await tester.pumpAndSettle();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 250)),
+    );
+    await tester.pumpAndSettle();
+    expect(saved, isNotNull);
+    expect(saved!.sublist(0, 8), [137, 80, 78, 71, 13, 10, 26, 10]);
+    expect(find.text('Saved to Photos'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('share_review_card')));
+    await tester.pumpAndSettle();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 250)),
+    );
+    await tester.pumpAndSettle();
+    expect(shared, isNotNull);
+    expect(shared!.sublist(0, 8), [137, 80, 78, 71, 13, 10, 26, 10]);
+    expect(shareOrigin, isNotNull);
+    expect(shareOrigin!.size.isEmpty, isFalse);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
@@ -780,6 +891,15 @@ class DelayedFailStore extends MemoryStore {
     }
     await super.save(data);
   }
+}
+
+class FailingOnboardingStore extends MemoryStore {
+  FailingOnboardingStore() {
+    value = const AppData(language: 'en', onboardingComplete: false);
+  }
+
+  @override
+  Future<void> save(AppData data) async => throw StateError('disk full');
 }
 
 class FakeBackupGateway implements BackupGateway {

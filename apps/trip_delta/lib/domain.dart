@@ -368,16 +368,29 @@ List<Expense> filterTripExpenses(
 }
 
 class AppData {
-  const AppData({this.trips = const [], this.language = 'auto'});
+  const AppData({
+    this.trips = const [],
+    this.language = 'auto',
+    this.onboardingComplete = true,
+  });
   final List<Trip> trips;
   final String language;
+  final bool onboardingComplete;
 
-  AppData copyWith({List<Trip>? trips, String? language}) =>
-      AppData(trips: trips ?? this.trips, language: language ?? this.language);
+  AppData copyWith({
+    List<Trip>? trips,
+    String? language,
+    bool? onboardingComplete,
+  }) => AppData(
+    trips: trips ?? this.trips,
+    language: language ?? this.language,
+    onboardingComplete: onboardingComplete ?? this.onboardingComplete,
+  );
 
   Map<String, dynamic> toJson() => {
     'schemaVersion': 2,
     'language': language,
+    'onboardingComplete': onboardingComplete,
     'trips': trips.map((trip) => trip.toJson()).toList(),
   };
 
@@ -390,8 +403,13 @@ class AppData {
     if (!['auto', 'zh', 'en'].contains(language)) {
       throw const FormatException('Language');
     }
+    final onboardingComplete = json['onboardingComplete'] ?? true;
+    if (onboardingComplete is! bool) {
+      throw const FormatException('Onboarding state');
+    }
     return AppData(
       language: language,
+      onboardingComplete: onboardingComplete,
       trips: (json['trips'] as List).map(Trip.fromJson).toList(),
     );
   }

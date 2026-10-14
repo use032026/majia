@@ -10,12 +10,30 @@ void main() {
     addTearDown(() => directory.delete(recursive: true));
     final store = FileTripStore(directory: directory);
     expect((await store.load()).trips, isEmpty);
+    expect((await store.load()).onboardingComplete, isFalse);
     await store.save(const AppData(language: 'zh'));
     expect((await store.load()).language, 'zh');
+    expect((await store.load()).onboardingComplete, isTrue);
     final file = File('${directory.path}/trip_delta_v1.json');
     await file.writeAsString('{broken');
     await expectLater(store.load(), throwsFormatException);
     expect(await file.readAsString(), '{broken');
+  });
+
+  test('legacy files bypass onboarding and completed onboarding persists', () async {
+    final directory = await Directory.systemTemp.createTemp('trip_delta_intro_');
+    addTearDown(() => directory.delete(recursive: true));
+    final file = File('${directory.path}/trip_delta_v1.json');
+    await file.writeAsString('{"schemaVersion":2,"language":"en","trips":[]}');
+    final store = FileTripStore(directory: directory);
+    expect((await store.load()).onboardingComplete, isTrue);
+    await file.delete();
+    final controller = AppController(store);
+    addTearDown(controller.dispose);
+    await controller.load();
+    expect(controller.data.onboardingComplete, isFalse);
+    await controller.completeOnboarding();
+    expect((await store.load()).onboardingComplete, isTrue);
   });
 
   test('controller commits state only after store succeeds', () async {

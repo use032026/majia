@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'backup.dart';
 import 'domain.dart';
 import 'ios_overlays.dart';
+import 'privacy_web_page.dart';
+import 'review_share.dart';
 import 'store.dart';
 import 'strings.dart';
 
@@ -293,34 +294,163 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _tripRow(Trip trip, L l) {
     final completed = trip.completedAt;
-    return InkWell(
-      key: Key('trip_${trip.id}'),
-      onTap: () => _openTrip(trip),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(trip.title, style: Theme.of(context).textTheme.titleLarge),
-            if (trip.destination.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(trip.destination),
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final reviewed = trip.stage == TripStage.completed;
+    final statusColor = trip.stage == TripStage.draft
+        ? scheme.surfaceContainerHighest
+        : scheme.primaryContainer;
+    final statusTextColor = trip.stage == TripStage.draft
+        ? scheme.onSurfaceVariant
+        : scheme.onPrimaryContainer;
+    final date = completed?.toLocal();
+    return Card.filled(
+      margin: EdgeInsets.zero,
+      clipBehavior: Clip.antiAlias,
+      color: scheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.65)),
+      ),
+      child: InkWell(
+        key: Key('trip_${trip.id}'),
+        onTap: () => _openTrip(trip),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      trip.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: statusColor,
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      child: Text(
+                        l.stage(trip.stage),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: statusTextColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.chevron_right, size: 20, color: scheme.outline),
+                ],
+              ),
+              if (trip.destination.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.place_outlined,
+                      size: 16,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        trip.destination,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              if (reviewed && date != null) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.event_outlined,
+                      size: 16,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${l('completedOn')} ${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 16),
+              Divider(height: 1, color: scheme.outlineVariant),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: _tripAmount(
+                      l('planned'),
+                      moneyText(trip.plannedMinor, trip.baseCurrency),
+                      theme,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(width: 1, height: 38, color: scheme.outlineVariant),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _tripAmount(
+                      l('recorded'),
+                      moneyText(trip.spentMinor, trip.baseCurrency),
+                      theme,
+                    ),
+                  ),
+                ],
+              ),
             ],
-            const SizedBox(height: 6),
-            Text(
-              completed == null || trip.stage != TripStage.completed
-                  ? l.stage(trip.stage)
-                  : '${l('completedOn')} ${completed.toLocal().year}-${completed.toLocal().month.toString().padLeft(2, '0')}-${completed.toLocal().day.toString().padLeft(2, '0')}',
-            ),
-            const SizedBox(height: 6),
-            Text(
-              '${l('planned')} ${moneyText(trip.plannedMinor, trip.baseCurrency)}  ·  ${l('recorded')} ${moneyText(trip.spentMinor, trip.baseCurrency)}',
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _tripAmount(String label, String amount, ThemeData theme) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
+      const SizedBox(height: 3),
+      FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          amount,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    ],
+  );
 
   Widget _currentPage(L l) {
     final current = controller.trips
@@ -343,34 +473,75 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l('currentTrips'),
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      OutlinedButton.icon(
+                        key: const Key('new_trip'),
+                        onPressed: controller.busy ? null : _newTrip,
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(0, 48),
+                        ),
+                        icon: const Icon(Icons.add, size: 18),
+                        label: Text(l('newTrip')),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
                   Text(
                     l('tagline'),
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    key: const Key('new_trip'),
-                    onPressed: controller.busy ? null : _newTrip,
-                    icon: const Icon(Icons.add),
-                    label: Text(l('newTrip')),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (current.isEmpty) ...[
-                    const SizedBox(height: 28),
-                    Text(
-                      controller.trips.isEmpty
-                          ? l('noTrips')
-                          : l('noCurrentTrips'),
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      controller.trips.isEmpty
-                          ? l('noTripsHelp')
-                          : l('noCurrentTripsHelp'),
+                    const SizedBox(height: 24),
+                    Card.filled(
+                      margin: EdgeInsets.zero,
+                      color: Theme.of(context).colorScheme.surfaceContainerLow,
+                      child: Padding(
+                        padding: const EdgeInsets.all(22),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.route_outlined,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(height: 14),
+                            Text(
+                              controller.trips.isEmpty
+                                  ? l('noTrips')
+                                  : l('noCurrentTrips'),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              controller.trips.isEmpty
+                                  ? l('noTripsHelp')
+                                  : l('noCurrentTripsHelp'),
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                   if (focus != null) ...[
@@ -420,11 +591,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             trip.stage == TripStage.active
                                 ? l('recordingTrips')
                                 : l('planningTrips'),
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
                           ),
                         ),
                       _tripRow(trip, l),
-                      const Divider(height: 1),
+                      const SizedBox(height: 12),
                     ],
                   );
                 },
@@ -465,26 +637,80 @@ class _HomeScreenState extends State<HomeScreen> {
                     trip.destination.toLowerCase().contains(query),
               )
               .toList();
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return pageWidth(
       Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${l('historyTrips')} · ${completed.length}',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                Row(
+                  children: [
+                    Text(
+                      l('historyTrips'),
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(99),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 3,
+                        ),
+                        child: Text(
+                          '${completed.length}',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: scheme.onPrimaryContainer,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 4),
+                Text(
+                  l('historyIntro'),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 22),
                 TextField(
                   key: const Key('history_search'),
                   controller: _historySearch,
                   onChanged: (_) => setState(() {}),
                   decoration: InputDecoration(
                     hintText: l('searchTrips'),
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    filled: true,
+                    fillColor: scheme.surfaceContainerLow,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(
+                        color: scheme.outlineVariant.withValues(alpha: 0.65),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide(color: scheme.primary, width: 1.5),
+                    ),
                     suffixIcon: _historySearch.text.isEmpty
                         ? null
                         : IconButton(
@@ -502,12 +728,28 @@ class _HomeScreenState extends State<HomeScreen> {
             child: visible.isEmpty
                 ? Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        completed.isEmpty
-                            ? l('noHistoryTrips')
-                            : l('noSearchResults'),
-                        textAlign: TextAlign.center,
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            completed.isEmpty
+                                ? Icons.history_rounded
+                                : Icons.search_off_rounded,
+                            size: 36,
+                            color: scheme.primary,
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            completed.isEmpty
+                                ? l('noHistoryTrips')
+                                : l('noSearchResults'),
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   )
@@ -517,7 +759,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: visible.length,
                     itemBuilder: (context, index) =>
                         _tripRow(visible[index], l),
-                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
                   ),
           ),
         ],
@@ -574,9 +816,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 tooltip: l('privacy'),
                 onPressed: () => Navigator.push(
                   context,
-                  MaterialPageRoute<void>(
-                    builder: (_) => const PrivacyScreen(),
-                  ),
+                  MaterialPageRoute<void>(builder: (_) => PrivacyScreen(l: l)),
                 ),
                 icon: const Icon(Icons.privacy_tip_outlined),
               ),
@@ -606,16 +846,27 @@ class _HomeScreenState extends State<HomeScreen> {
               : _historyPage(l),
           bottomNavigationBar: CupertinoTabBar(
             currentIndex: _selectedTab,
+            height: 62,
+            iconSize: 24,
             activeColor: Theme.of(context).colorScheme.primary,
+            inactiveColor: Theme.of(context).colorScheme.onSurfaceVariant,
             backgroundColor: Theme.of(context).colorScheme.surface,
+            border: Border(
+              top: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+                width: 0.5,
+              ),
+            ),
             onTap: (index) => setState(() => _selectedTab = index),
             items: [
               BottomNavigationBarItem(
                 icon: const Icon(CupertinoIcons.location),
+                activeIcon: _selectedTabIcon(CupertinoIcons.location_fill),
                 label: l('currentTrips'),
               ),
               BottomNavigationBarItem(
                 icon: const Icon(CupertinoIcons.clock),
+                activeIcon: _selectedTabIcon(CupertinoIcons.clock_fill),
                 label: l('historyTrips'),
               ),
             ],
@@ -624,6 +875,17 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  Widget _selectedTabIcon(IconData icon) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.primaryContainer,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+      child: Icon(icon, size: 20),
+    ),
+  );
 }
 
 enum _BackupImportMode { merge, replace }
@@ -798,29 +1060,6 @@ class _BackupPageState extends State<BackupPage> {
               ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class PrivacyScreen extends StatelessWidget {
-  const PrivacyScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l = loc(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(l('privacy'))),
-      body: pageWidth(
-        ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            Text(
-              l('privacyBody'),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
         ),
       ),
     );
@@ -1132,13 +1371,6 @@ class TripDetailPage extends StatelessWidget {
     }
   }
 
-  Future<void> _copy(BuildContext context, Trip trip, L l) async {
-    await Clipboard.setData(ClipboardData(text: summaryText(trip, l)));
-    if (context.mounted) {
-      showIosNotice(context, l('copied'));
-    }
-  }
-
   Future<void> _repeatPlan(BuildContext context, Trip trip, L l) async {
     final maxCategoryMinor =
         1000000 * (currencyDigits(trip.baseCurrency) == 0 ? 1 : 100);
@@ -1377,9 +1609,10 @@ class TripDetailPage extends StatelessWidget {
                     const SizedBox(height: 16),
                   ],
                   OutlinedButton.icon(
-                    onPressed: () => _copy(context, trip, l),
-                    icon: const Icon(Icons.copy_outlined),
-                    label: Text(l('copySummary')),
+                    key: const Key('open_review_card'),
+                    onPressed: () => showReviewCard(context, trip, l),
+                    icon: const Icon(Icons.image_outlined),
+                    label: Text(l('reviewCard')),
                   ),
                   const SizedBox(height: 12),
                   OutlinedButton.icon(
@@ -1903,52 +2136,6 @@ class ReviewVerdictCard extends StatelessWidget {
       ),
     );
   }
-}
-
-String summaryText(Trip trip, L l) {
-  final lines = <String>[
-    trip.title,
-    if (trip.destination.isNotEmpty) trip.destination,
-    '${l('planned')}: ${moneyText(trip.plannedMinor, trip.baseCurrency)}',
-    '${l('spent')}: ${moneyText(trip.spentMinor, trip.baseCurrency)}',
-    '${l('entryCount')}: ${trip.expenses.length}',
-    if (trip.estimatedCount > 0)
-      '${l('includesEstimates')} ${trip.estimatedCount}',
-  ];
-  if (trip.expenses.isEmpty) {
-    lines.add(l('incompleteSummary'));
-  } else {
-    lines.add(
-      '${l('difference')}: ${moneyText(trip.deltaMinor, trip.baseCurrency)}',
-    );
-  }
-  final reviewBand = reviewBandFor(trip);
-  if (reviewBand != null) {
-    lines.add(l('reviewAssessment'));
-    lines.add(l('review_${reviewBand.name}_title'));
-    lines.add(l('review_${reviewBand.name}_body'));
-  }
-  for (final item in BudgetCategory.values) {
-    lines.add(
-      '${l.category(item)}  ${l('planned')} ${moneyText(trip.plannedFor(item), trip.baseCurrency)} / ${l('spent')} ${moneyText(trip.spentFor(item), trip.baseCurrency)}${trip.expenses.isEmpty ? '' : ' / ${l('difference')} ${moneyText(trip.deltaFor(item), trip.baseCurrency)}'}',
-    );
-  }
-  if (trip.expenses.isNotEmpty) {
-    final largest = largestOverCategory(trip);
-    lines.add(
-      largest == null
-          ? l('noOverage')
-          : '${l('largestDriver')}: ${l.category(largest)}',
-    );
-    lines.add(l('mainExpenses'));
-    for (final expense in mainExpenses(trip)) {
-      lines.add(
-        '${expense.title.isEmpty ? l.category(expense.category) : expense.title}: ${moneyText(expense.effectiveMinor, trip.baseCurrency)} (${expense.isEstimate ? l('estimate') : l('confirmed')})',
-      );
-    }
-  }
-  if (trip.reflection.trim().isNotEmpty) lines.add(trip.reflection.trim());
-  return lines.join('\n');
 }
 
 class ExpensePage extends StatefulWidget {

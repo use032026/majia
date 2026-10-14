@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'backup.dart';
+import 'onboarding.dart';
 import 'screens.dart';
 import 'store.dart';
 
@@ -90,10 +91,15 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
         },
         supportedLocales: const [Locale('zh'), Locale('en')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
-        home: HomeScreen(
-          controller: controller,
-          backupGateway: widget.backupGateway ?? SystemBackupGateway(),
-        ),
+        home: controller.loading
+            ? const BrandSplash()
+            : controller.loadError == null &&
+                  !controller.data.onboardingComplete
+            ? OnboardingScreen(controller: controller)
+            : HomeScreen(
+                controller: controller,
+                backupGateway: widget.backupGateway ?? SystemBackupGateway(),
+              ),
       ),
     );
   }
