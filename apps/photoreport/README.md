@@ -14,20 +14,20 @@
 - 灵活 PDF：默认生成照片加说明的简洁记录，也可选择完整排版及具体字段。
 - 再次分享：项目内保留最近生成的 PDF 路径，退出生成页后仍可预览和分享。
 - 本地备份：记录、照片和标注可打包为本地备份文件，并在其他设备恢复。
-- 本地离线：SQLite 保存结构化记录，照片存放在 App Documents，PDF 在 iPhone 本机生成。
+- 本地离线：SQLite 保存结构化记录，照片存放在 App Documents，PDF 在 iPhone 和 Android 设备本机生成。
 
 ## 技术结构
 
 - Flutter 负责数据录入、照片清单、标注编辑和项目管理。
 - SQLite (`sqflite`) 保存项目、记录、照片索引与标注 JSON。
-- iOS `UIGraphicsPDFRenderer` 负责中文 A4 整理，`QuickLook` 预览，系统分享面板发送。
-- 首版仅生成 iOS 工程，最低部署版本为 iOS 15.0。
+- iOS 使用 `UIGraphicsPDFRenderer` 与 `QuickLook`，Android 使用 `PdfDocument` 与应用内预览；两个平台均通过系统分享面板发送文件。
+- 最低支持 iOS 15.0 和 Android 7.0（API 24）；Android `targetSdk` 为 36。
 
 ## 本地运行
 
 ```bash
 flutter pub get
-flutter run -d <iOS Simulator 或设备 ID>
+flutter run -d <iOS 或 Android 设备 ID>
 ```
 
 静态检查与模型测试：
@@ -39,7 +39,7 @@ flutter test
 
 ## 数据与权限边界
 
-照片、项目记录和 PDF 默认不上传网络。App 仅在用户主动拍照或选择照片时请求相机、相册权限；分享报告时由用户在 iOS 系统面板中选择接收方。
+照片、项目记录和 PDF 默认不上传网络。App 仅在用户主动操作时调用相机或系统照片选择器；分享报告或备份时由用户在系统面板中选择接收方。Android 文件导入使用系统文件选择器，报告分享使用临时文件授权，不请求整个存储空间的读取权限。
 
 App 与导出内容仅用于现场沟通与情况记录，不构成专业鉴定、验收结论或法律意见。
 
@@ -47,14 +47,14 @@ App 与导出内容仅用于现场沟通与情况记录，不构成专业鉴定�
 
 - `artifacts/` 只存放本地验证截图并由 Git 忽略，禁止加入 `pubspec.yaml` assets。
 - Flutter 测试只放在 `test/`，原生测试只属于 `RunnerTests` Target；两者都不属于 Runner 的生产资源。
-- Release 构建会执行 `ios/scripts/release_input_guard.sh`，发现测试文件、验证截图或 Flutter 默认占位图标会直接失败。
+- iOS Release 构建会执行 `ios/scripts/release_input_guard.sh`，发现测试文件、验证截图或 Flutter 默认占位图标会直接失败。
+- Android 工程目前仅配置了调试签名；正式发布仍需配置独立签名密钥并验证 AAB。
 - AppIcon、冷启动标识和首次引导共用同一套“取景框 + 文档 + 完成勾”品牌视觉；AppIcon 已替换全套 iPhone/iPad 尺寸。
 - LaunchScreen 仅显示无语言文字的品牌标识，避免 Flutter 读取用户语言偏好前出现错误语言。
 - 首次安装默认跟随系统语言；用户选择简体中文或 English 后会持久使用该选择，也可恢复为跟随系统。
 
 ## 尚未覆盖
 
-- Android 报告生成与分享。
 - 企业 Logo 与更多可配置 PDF 版式。
 - 云同步、多人协作、账号权限与 AI 图片识别。
-- 真机相机、系统相册及大批量项目的性能验证。
+- Android 和 iOS 真机相机、系统相册及大批量项目的性能验证。
