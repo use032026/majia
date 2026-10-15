@@ -195,7 +195,7 @@
   "@versionBuild": {"placeholders": {"version": {}, "build": {}}},
   "aboutBody": "用于快速登记纸箱、离线搜索物品并追踪搬运状态。全部功能免费，无订阅、试用倒计时或付费墙。",
   "platformSupport": "系统要求",
-  "platformSupportBody": "iOS 15 或更高版本；Android 14 或更高版本。",
+  "platformSupportBody": "iOS 15 或更高版本；Android 7.0 或更高版本。",
   "noArchived": "没有已归档项目",
   "voiceTitle": "语音登记",
   "voiceHint": "说出箱内物品、目的房间和注意事项。转写内容可在保存前修改。",

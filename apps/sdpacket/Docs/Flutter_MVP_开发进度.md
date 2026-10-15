@@ -1,11 +1,11 @@
 # Flutter MVP 开发进度
 
-更新日期：2026-10-10
+更新日期：2026-10-15
 当前版本：`1.0.0+1`
 
 ## 已实现
 
-- Flutter 双平台工程，最低支持 iOS 15、Android 14（API 34）。
+- Flutter 双平台工程，最低支持 iOS 15、Android 7.0（API 24）。
 - 本地 JSON 数据快照与应用支持目录存储；写入先生成临时文件，并保留上一份备份。
 - 新用户可删除示例项目；示例删除后不会在下次启动时重新生成。
 - 项目创建、编辑、归档、恢复、删除和进度统计。
@@ -38,14 +38,14 @@
 - 项目收尾 PDF：经 Poppler 实际渲染确认 A4 单页、中文正常，统计卡片、箱号清单和房间分布无截断。
 - `flutter build ios --simulator --no-codesign`：通过。
 - iPhone 17 Pro / iOS 26.5 模拟器：安装、启动及中文首页显示通过。
-- `flutter build apk --debug`：通过，生成 Debug APK。
-- `plutil -lint`、Android XML、Xcode 工程文件和最低系统版本检查：通过；产物确认 iOS `MinimumOSVersion=15.0`、Android `sdkVersion=34`。
+- `flutter build apk --debug`：2026-10-15 通过，生成 Debug APK；产物确认 Android `sdkVersion=24`、`targetSdkVersion=36`。
+- 此前 `plutil -lint`、Android XML 和 Xcode 工程文件检查通过；iOS 产物确认 `MinimumOSVersion=15.0`。
 
-以上证据不代表真机、iOS 15 运行时、Android 14 运行时、打印机、离线语音、App Store、Google Play 或 Release 签名已经验收。
+以上证据不代表真机、iOS 15 运行时、Android 7.0 / 14 运行时、打印机、离线语音、App Store、Google Play 或 Release 签名已经验收。
 
 ## 下一批 P0
 
 1. 将 Android `image_picker.retrieveLostData()` 接入启动恢复流程，避免系统回收 Activity 后遗漏选图结果。
 2. 确认并注入真实隐私政策 URL、支持邮箱、正式名称、图标、生产 Bundle ID/Application ID 及双平台 Release 签名。
 3. 用真实 A4 黑白打印、折痕/反光标签和损坏二维码完成打印扫描矩阵。
-4. 在 iOS 15 真机和 Android 14 真机验证相机、照片、麦克风、语音、拒绝权限、连续扫码、震动、分享、打印和飞行模式。
+4. 在 iOS 15 真机及 Android 7.0、Android 14 真机验证相机、照片、麦克风、语音、拒绝权限、连续扫码、震动、分享、打印和飞行模式。

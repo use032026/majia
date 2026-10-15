@@ -190,7 +190,7 @@
   "@versionBuild": {"placeholders": {"version": {}, "build": {}}},
   "aboutBody": "Quickly register boxes, find items offline and track moving status. Every feature is free, with no subscription, trial countdown or paywall.",
   "platformSupport": "System requirements",
-  "platformSupportBody": "iOS 15 or later; Android 14 or later.",
+  "platformSupportBody": "iOS 15 or later; Android 7.0 or later.",
   "noArchived": "No archived projects",
   "voiceTitle": "Voice entry",
   "voiceHint": "Say the items, destination room and handling notes. You can edit the transcript before saving.",

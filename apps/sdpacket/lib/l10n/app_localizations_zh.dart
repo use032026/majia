@@ -580,7 +580,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get platformSupport => '系统要求';
 
   @override
-  String get platformSupportBody => 'iOS 15 或更高版本；Android 14 或更高版本。';
+  String get platformSupportBody => 'iOS 15 或更高版本；Android 7.0 或更高版本。';
 
   @override
   String get noArchived => '没有已归档项目';

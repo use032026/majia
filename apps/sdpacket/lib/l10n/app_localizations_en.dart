@@ -597,7 +597,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get platformSupport => 'System requirements';
 
   @override
-  String get platformSupportBody => 'iOS 15 or later; Android 14 or later.';
+  String get platformSupportBody => 'iOS 15 or later; Android 7.0 or later.';
 
   @override
   String get noArchived => 'No archived projects';

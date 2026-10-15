@@ -1175,7 +1175,7 @@ abstract class AppLocalizations {
   /// No description provided for @platformSupportBody.
   ///
   /// In zh, this message translates to:
-  /// **'iOS 15 或更高版本；Android 14 或更高版本。'**
+  /// **'iOS 15 或更高版本；Android 7.0 或更高版本。'**
   String get platformSupportBody;
 
   /// No description provided for @noArchived.

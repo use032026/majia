@@ -25,7 +25,7 @@ Flutter 实现的本地优先装箱登记与定位应用。产品规格见
 
 - Flutter 3.35.7 / Dart 3.9.2（当前验证工具链）
 - iOS 15+
-- Android 14+（`minSdk = 34`）
+- Android 7.0+（`minSdk = 24`）
 
 当前平台标识：
 
@@ -59,7 +59,7 @@ flutter build ios --simulator --no-codesign
 flutter build apk --debug
 ```
 
-构建和自动化测试不能替代真机相机、语音、照片选择、扫码、系统分享、打印、飞行模式及 Android 14 设备验收。
+构建和自动化测试不能替代真机相机、语音、照片选择、扫码、系统分享、打印、飞行模式及 Android 7.0 等目标设备验收。
 
 ## 代码结构
 
