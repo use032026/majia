@@ -1,0 +1,87 @@
+{
+  "@@locale": "ug",
+
+  "appTitle": "Jufu Lite",
+  "@appTitle": {
+    "description": "ئەپ نامى"
+  },
+
+  "home": "باش بەت",
+  "market": "بازار",
+  "trade": "سودا",
+  "assets": "مۈلۈك",
+  "mine": "مېنىڭ",
+
+  "welcome": "قايتىپ كەلگىنىڭىزگە مەرھابا",
+  "todayProfit": "بۈگۈنكى پايدا",
+  "totalAssets": "ئومۇمىي مۈلۈك",
+  "available": "ئىشلەتكىلى بولىدۇ",
+
+  "marketTitle": "بازار",
+  "viewMoreMarket": "تېخىمۇ كۆپ بازارنى كۆرۈش",
+
+  "bannerAd": "Banner ئېلان ئورنى",
+
+  "accountOverview": "ھېسابات ئومۇمىي كۆرۈنۈشى",
+
+  "balanceTitle": "قالدۇق",
+
+  "listTitle": "تىزىملىك",
+
+  "close": "يېپىش",
+  "confirm": "جەزملەشتۈرۈش",
+  "cancel": "بىكار قىلىش",
+
+  "loading": "يۈكلىنىۋاتىدۇ...",
+  "error": "خاتالىق كۆرۈلدى",
+  "retry": "قايتا سىناپ بېقىش",
+
+  "account_manage": "ھېسابات باشقۇرۇش",
+  "account": "ھېسابات",
+  "balance": "قالدۇق",
+  "account_equity": "ساپ قىممەت",
+  "currency_type": "پۇل تۈرى",
+  "status": "ھالەت",
+  "current_account": "نۆۋەتتىكى ھېسابات",
+  "switch_account": "ئالماشتۇرۇش",
+  "deposit": "پۇل كىرگۈزۈش",
+  "active_account": "ھېساباتنى قوزغىتىش",
+  "reset_account": "سىناق ھېساباتنى قايتا تەڭشەش",
+  "go_to_the_exam": "ئىمتىھانغا بېرىش",
+  "promotion_level": "دەرىجىنى ئۆستۈرۈش",
+  "to_trade": "سودا قىلىش",
+  "retest": "قايتا سىناش",
+  "replicating_success": "كۆچۈرۈلدى",
+  "load_failed": "يۈكلەش مەغلۇپ بولدى",
+  "switch_success": "ھېسابات مۇۋەپپەقىيەتلىك ئالماشتۇرۇلدى",
+  "switch_failed": "ئالماشتۇرۇش مەغلۇپ بولدى",
+  "reset_account_success": "سىناق ھېسابات قايتا تەڭشەلدى",
+  "reset_account_failed": "سىناق ھېساباتنى قايتا تەڭشەش مەغلۇپ بولدى",
+  "real_account": "ھەقىقىي ھېسابات",
+  "trial_account": "تەجرىبە ھېسابات",
+  "demo_account": "سىناق ھېسابات",
+  "trader_account": "تېرىدېر",
+  "option_account": "ئىككىلىك تاللاش",
+  "normal_status": "نورمال",
+  "disabled_status": "چەكلەنگەن",
+  "cancelled_status": "تاقالغان",
+  "blacklist_status": "قارا تىزىملىك",
+  "unknown_status": "نامەلۇم",
+  "to_be_activated": "قوزغىتىلىدۇ",
+  "not_started": "باشلانمىدى",
+  "in_progress": "داۋاملىشىۋاتىدۇ",
+  "passed": "ئۆتتى",
+  "failed": "ئۆتمىدى",
+  "fail_the_exam": "ئىمتىھان مەغلۇپ بولدى",
+  "fail_the_exam_sec": "مەغلۇپ بولۇش سەۋەبى",
+  "reason": "سەۋەب",
+  "i_know": "چۈشەندىم",
+  "restart_exam": "قايتا ئىمتىھان بېرىش",
+  "warning": "ئاگاھلاندۇرۇش",
+  "reset_account_warning": "ھېساباتنى قايتا تەڭشەش ئۇنى دەسلەپكى ھالەتكە قايتۇرىدۇ، سودا خاتىرىلىرىنى تازىلايدۇ ۋە دەسلەپكى مەبلەغنى قايتا تەڭشەيدۇ. داۋاملاشتۇرامسىز؟",
+  "operation_switch_trader": "بۇ مەشغۇلات ئۈچۈن تېرىدېر ھېساباتىغا ئالماشتۇرۇش كېرەك. داۋاملاشتۇرامسىز؟",
+  "switch_now": "ھازىر ئالماشتۇرۇش",
+  "not_switch_now": "ھازىرچە ئەمەس",
+
+  "languageSet": "Language Settings"
+}

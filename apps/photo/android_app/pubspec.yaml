@@ -1,0 +1,133 @@
+name: jufu
+description: "Jufu Lite - Financial Trading App"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # === 核心依赖（对齐 PRD） ===
+  go_router: ^14.2.0                    # 路由系统（对齐 PageRouter）
+  riverpod: ^2.5.1                      # 状态管理
+  flutter_riverpod: ^2.5.1
+  dio: ^5.7.0                           # 网络请求（对齐 STService）
+  webview_flutter: ^4.9.0               # WebView / H5 容器
+  webview_flutter_wkwebview: ^3.25.0    # iOS WebKit UA / 手势
+  webview_flutter_android: ^4.12.0      # Android WebView UA
+  shared_preferences: ^2.5.5            # 本地持久化
+  flutter_secure_storage: ^9.2.2        # 敏感数据安全存储
+  intl: ^0.20.2                         # 国际化与日期格式
+  url_launcher: ^6.3.0                  # 外部链接
+  package_info_plus: ^8.1.1             # App 版本信息
+  connectivity_plus: ^6.1.3             # 网络状态监听
+  web_socket_channel: ^3.0.1            # WebSocket 连接
+
+  path_provider: ^2.1.5                 # 缓存目录（设置页对齐 iOS）
+
+  # === 主题与 UI ===
+  flutter_svg: ^2.0.10                  # SVG 图标支持
+  image_picker: ^1.2.2                  # 相册/相机选图（身份证认证，对齐 iOS PHPicker/UIImagePicker）
+  permission_handler: ^11.3.1           # 相册/相机授权状态（对齐 iOS STAuthorization）
+
+  # === 工具 ===
+  json_annotation: ^4.9.0               # JSON 序列化
+  freezed_annotation: ^2.4.4            # 不可变模型
+  uuid: ^4.5.1                          # 请求 ID 生成
+  crypto: ^3.0.6                        # HMAC-SHA256（对齐 iOS 登录/资金密码）
+  sign_in_with_apple: ^7.0.1
+  keyboard_actions: ^4.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+  # 代码生成
+  build_runner: ^2.4.13
+  json_serializable: ^6.8.0
+  freezed: ^2.5.7
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/app_icon/app_icon.png"
+  remove_alpha_ios: true
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/app_icon/
+    - assets/ios_language/resources/
+    - assets/ios_language/cards/account_1/
+    - assets/ios_language/cards/account_2/
+    - assets/ios_language/cards/account_3/
+    - assets/ios_language/cards/balance_1/
+    - assets/ios_language/cards/balance_2/
+    - assets/ios_language/cards/balance_3/
+    - assets/ios_language/cards/categorymarket_1/
+    - assets/ios_language/cards/categorymarket_2/
+    - assets/ios_language/cards/header_1/
+    - assets/ios_language/cards/header_2/
+    - assets/ios_language/cards/header_3/
+    - assets/ios_language/cards/header_4/
+    - assets/ios_language/cards/market_1/
+    - assets/ios_language/cards/market_2/
+    - assets/ios_language/cards/market_3/
+    - assets/ios_language/cards/market_4/
+    - assets/ios_language/cards/market_5/
+    - assets/ios_language/cards/market_6/
+    - assets/ios_language/cards/market_7/
+    - assets/ios_language/cards/newslist_1/
+    - assets/ios_language/cards/newslist_2/
+    - assets/ios_language/cards/newslist_3/
+    - assets/ios_language/cards/newslist_4/
+    - assets/ios_language/cards/selfmarket_1/
+    - assets/ios_language/cards/selfmarket_2/
+    - assets/ios_language/cards/unlock_1/
+    - assets/ios_language/cards/unlock_2/
+    - assets/ios_language/cards/vip_1/
+    - assets/ios_language/cards/vip_2/
+    - assets/ios_language/cards/vip_3/
+    - assets/local_mini/codeverify/
+    - assets/local_mini/codeverify/assets/
+    - assets/local_mini/codeverify/polymer/
+    - assets/local_mini/codeverify/polymer/env/
+    - assets/local_mini/davmu/
+    - assets/local_mini/davmu/assets/
+    - assets/local_mini/davmu/css/
+    - assets/local_mini/davmu/images/
+    - assets/local_mini/davmu/js/
+    - assets/local_mini/davmu/tinymce/
+    - assets/local_mini/davmu/tinymce/langs/
+    - assets/local_mini/davmu/tinymce/plugins/
+    - assets/local_mini/davmu/tinymce/plugins/cimage/
+    - assets/local_mini/davmu/tinymce/skins/
+    - assets/local_mini/davmu/tinymce/skins/content/
+    - assets/local_mini/davmu/tinymce/skins/content/dark/
+    - assets/local_mini/davmu/tinymce/skins/content/default/
+    - assets/local_mini/davmu/tinymce/skins/content/document/
+    - assets/local_mini/davmu/tinymce/skins/content/tinymce-5/
+    - assets/local_mini/davmu/tinymce/skins/content/tinymce-5-dark/
+    - assets/local_mini/davmu/tinymce/skins/content/writer/
+    - assets/local_mini/davmu/tinymce/skins/ui/
+    - assets/local_mini/davmu/tinymce/skins/ui/oxide/
+    - assets/local_mini/davmu/tinymce/skins/ui/oxide-dark/
+    - assets/local_mini/davmu/tinymce/skins/ui/tinymce-5/
+    - assets/local_mini/davmu/tinymce/skins/ui/tinymce-5-dark/
+    - assets/local_mini/davmu/tinymce/themes/
+    - assets/local_mini/davmu/tinymce/themes/mobile/
+    - assets/local_mini/davmu/tinymce/themes/silver/
+
+  generate: true  # 启用 intl 代码生成

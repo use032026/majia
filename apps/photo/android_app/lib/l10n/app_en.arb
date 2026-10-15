@@ -1,0 +1,87 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Jufu Lite",
+  "@appTitle": {
+    "description": "Application title"
+  },
+
+  "home": "Home",
+  "market": "Market",
+  "trade": "Trade",
+  "assets": "Assets",
+  "mine": "Mine",
+
+  "welcome": "Welcome back",
+  "todayProfit": "Today's Profit",
+  "totalAssets": "Total Assets",
+  "available": "Available",
+
+  "marketTitle": "Market",
+  "viewMoreMarket": "View More Markets",
+
+  "bannerAd": "Banner Ad",
+
+  "accountOverview": "Account Overview",
+
+  "balanceTitle": "Balance",
+
+  "listTitle": "List",
+
+  "close": "Close",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+
+  "loading": "Loading...",
+  "error": "Error",
+  "retry": "Retry",
+
+  "account_manage": "Account Management",
+  "account": "Account",
+  "balance": "Balance",
+  "account_equity": "Equity",
+  "currency_type": "Currency",
+  "status": "Status",
+  "current_account": "Current Account",
+  "switch_account": "Switch",
+  "deposit": "Deposit",
+  "active_account": "Activate Account",
+  "reset_account": "Reset Demo Account",
+  "go_to_the_exam": "Take Exam",
+  "promotion_level": "Upgrade Level",
+  "to_trade": "Trade",
+  "retest": "Retake Challenge",
+  "replicating_success": "Copied",
+  "load_failed": "Load failed",
+  "switch_success": "Account switched successfully",
+  "switch_failed": "Switch failed",
+  "reset_account_success": "Demo account reset successfully",
+  "reset_account_failed": "Failed to reset demo account",
+  "real_account": "Real Account",
+  "trial_account": "Trial Account",
+  "demo_account": "Demo Account",
+  "trader_account": "Trader",
+  "option_account": "Binary Option",
+  "normal_status": "Normal",
+  "disabled_status": "Disabled",
+  "cancelled_status": "Closed",
+  "blacklist_status": "Blacklisted",
+  "unknown_status": "Unknown",
+  "to_be_activated": "Pending Activation",
+  "not_started": "Not Started",
+  "in_progress": "In Progress",
+  "passed": "Passed",
+  "failed": "Failed",
+  "fail_the_exam": "Exam Failed",
+  "fail_the_exam_sec": "Failure reason",
+  "reason": "Reason",
+  "i_know": "Got it",
+  "restart_exam": "Retake Exam",
+  "warning": "Warning",
+  "reset_account_warning": "Resetting the account will restore it to the initial state, clear trading records, and reset the initial funds. Continue?",
+  "operation_switch_trader": "This operation requires switching to a trader account. Continue?",
+  "switch_now": "Switch Now",
+  "not_switch_now": "Not Now",
+
+  "languageSet": "Language Setting"
+}

@@ -39,7 +39,7 @@
     },
     "photo": {
       "display_name": "Jufu",
-      "path": "apps/photo",
+      "path": "apps/photo/android_app",
       "secret_prefix": "PHOTO",
       "application_id": "com.lunelle.lite"
     },

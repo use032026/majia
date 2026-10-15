@@ -141,7 +141,7 @@ pbpaste | wc -c
 
 2. 在 [`.github/workflows/android-package.yml`](../.github/workflows/android-package.yml) 的 `workflow_dispatch.inputs.app.options` 中添加 `newapp`，使它出现在 Actions 下拉菜单中。
 
-3. 在新应用的 `android/app/build.gradle.kts` 接入 `android/key.properties` 签名读取逻辑。可复制仓库中任一已接入项目的相同区块，例如 [Jufu 的 Android 构建配置](../apps/photo/android/app/build.gradle.kts)。`key.properties` 和 `release-keystore.jks` 已被 `.gitignore` 排除，工作流会在 runner 上临时生成它们。
+3. 在新应用的 `android/app/build.gradle.kts` 接入 `android/key.properties` 签名读取逻辑。可复制仓库中任一已接入项目的相同区块，例如 [Jufu 的 Android 构建配置](../apps/photo/android_app/android/app/build.gradle.kts)。`key.properties` 和 `release-keystore.jks` 已被 `.gitignore` 排除，工作流会在 runner 上临时生成它们。
 
 4. 按上一节创建 `NEWAPP_ANDROID_*` 四项 Repository Secrets。`secret_prefix`、四项 Secret 名称和工作流下拉 app 名必须指向同一个马甲。
 

@@ -1,0 +1,12 @@
+{
+  "account_equity": "Собственные средства",
+  "balance": "Баланс",
+  "enable_draw": "Доступно для вывода",
+  "floating_profit_loss": "Плавающая прибыль/убыток",
+  "has_draw": "Выведено",
+  "manage": "Управление",
+  "margin_level": "Уровень маржи",
+  "my_commission": "Мои вознаграждения",
+  "send_an_invitation": "Пригласить сейчас",
+  "total_revenue": "Общий доход"
+}

@@ -1,0 +1,12 @@
+{
+  "account_equity": "Nettoarvo",
+  "balance": "Saldo",
+  "enable_draw": "Odottaa nostoa",
+  "floating_profit_loss": "Liukuva voitto/tappio",
+  "has_draw": "Saatu voitto",
+  "manage": "Hallinnoi",
+  "margin_level": "Marginaalitaso",
+  "my_commission": "Komissiopalautus",
+  "send_an_invitation": "Kutsu nyt",
+  "total_revenue": "Kaikki"
+}

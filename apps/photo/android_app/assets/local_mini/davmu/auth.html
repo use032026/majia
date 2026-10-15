@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录授权</title>
+    <style>
+      .info {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 24px;
+      }
+    </style>
+    <script src="./js/sdk.js"></script>
+    <script>
+      function login() {
+        if (window.mcSdk) {
+          window.mcSdk.externalExtendedAction({
+            params: {
+              event: 'getEqxiuUserCode'
+            }
+          })
+        } else {
+          console.log('分享页')
+        }
+      }
+      login()
+    </script>
+  </head>
+  <body>
+    <div class="info">
+      <span>活动需登录授权才能参与</span>
+      <button onclick="login()">登录</button>
+    </div>
+  </body>
+</html>

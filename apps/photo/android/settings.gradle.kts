@@ -23,4 +23,8 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
+throw GradleException(
+    "The Jufu Android build moved to apps/photo/android_app. Run Flutter from that directory."
+)
+
 include(":app")

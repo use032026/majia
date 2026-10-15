@@ -1,0 +1,12 @@
+{
+  "account_equity": "エクイティ",
+  "balance": "残高",
+  "enable_draw": "出金待ち",
+  "floating_profit_loss": "未実現損益",
+  "has_draw": "確定済み利益",
+  "manage": "管理",
+  "margin_level": "マージンレベル",
+  "my_commission": "リベート",
+  "send_an_invitation": "今すぐ招待",
+  "total_revenue": "すべて"
+}

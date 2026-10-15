@@ -1,0 +1,87 @@
+{
+  "@@locale": "zh_Hans",
+
+  "appTitle": "聚福 Lite",
+  "@appTitle": {
+    "description": "应用标题"
+  },
+
+  "home": "首页",
+  "market": "行情",
+  "trade": "交易",
+  "assets": "资产",
+  "mine": "我的",
+
+  "welcome": "欢迎回来",
+  "todayProfit": "今日收益",
+  "totalAssets": "总资产",
+  "available": "可用",
+
+  "marketTitle": "行情",
+  "viewMoreMarket": "查看更多行情",
+
+  "bannerAd": "Banner 广告位",
+
+  "accountOverview": "账户总览",
+
+  "balanceTitle": "余额",
+
+  "listTitle": "列表",
+
+  "close": "关闭",
+  "confirm": "确认",
+  "cancel": "取消",
+
+  "loading": "加载中...",
+  "error": "出错了",
+  "retry": "重试",
+
+  "account_manage": "账户管理",
+  "account": "账号",
+  "balance": "余额",
+  "account_equity": "净值",
+  "currency_type": "货币类型",
+  "status": "状态",
+  "current_account": "当前账户",
+  "switch_account": "切换",
+  "deposit": "入金",
+  "active_account": "激活账户",
+  "reset_account": "重置模拟账户",
+  "go_to_the_exam": "去考试",
+  "promotion_level": "提升等级",
+  "to_trade": "去交易",
+  "retest": "再次挑战",
+  "replicating_success": "已复制",
+  "load_failed": "加载失败",
+  "switch_success": "切换账户成功",
+  "switch_failed": "切换失败",
+  "reset_account_success": "重置模拟账户成功",
+  "reset_account_failed": "重置模拟账户失败",
+  "real_account": "实盘账户",
+  "trial_account": "真实账户",
+  "demo_account": "模拟账号",
+  "trader_account": "交易员",
+  "option_account": "二元期权",
+  "normal_status": "正常",
+  "disabled_status": "禁用",
+  "cancelled_status": "已注销",
+  "blacklist_status": "黑名单",
+  "unknown_status": "未知",
+  "to_be_activated": "待激活",
+  "not_started": "未开始",
+  "in_progress": "进行中",
+  "passed": "通过",
+  "failed": "未通过",
+  "fail_the_exam": "未通过考试",
+  "fail_the_exam_sec": "失败原因",
+  "reason": "原因",
+  "i_know": "知道了",
+  "restart_exam": "重新考试",
+  "warning": "警告",
+  "reset_account_warning": "重置账户功能将对账户恢复到初始状态，清空交易记录并重置账户初始资金，确定继续吗？",
+  "operation_switch_trader": "当前操作需要切换至交易员账号，是否继续",
+  "switch_now": "立即切换",
+  "not_switch_now": "暂不切换",
+
+  "languageSet": "语言设置"
+}

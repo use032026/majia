@@ -1,0 +1,12 @@
+{
+  "account_equity": "มูลค่าพอร์ต",
+  "balance": "ยอดคงเหลือ",
+  "enable_draw": "สามารถถอนได้",
+  "floating_profit_loss": "กำไรขาดทุนลอยตัว",
+  "has_draw": "ถอนแล้ว",
+  "manage": "จัดการ",
+  "margin_level": "ระดับมาร์จิ้น",
+  "my_commission": "รางวัลของฉัน",
+  "send_an_invitation": "เชิญเลย",
+  "total_revenue": "กำไรรวม"
+}

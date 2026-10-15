@@ -1,0 +1,27 @@
+/* * {
+  -webkit-touch-callout: none;
+
+  -webkit-user-select: none;
+
+  -khtml-user-select: none;
+
+  -moz-user-select: none;
+
+  -ms-user-select: none;
+
+  user-select: none;
+} */
+
+/* Toast 样式优化：不截断单词，充分利用空间 */
+.van-toast--html,
+.van-toast--text {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+.van-toast__text {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}

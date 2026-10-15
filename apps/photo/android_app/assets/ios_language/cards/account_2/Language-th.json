@@ -1,0 +1,12 @@
+{
+  "account_equity": "มูลค่าสุทธิ",
+  "balance": "ยอดคงเหลือ",
+  "enable_draw": "รอถอนเงิน",
+  "floating_profit_loss": "กำไรขาดทุนลอยตัว",
+  "has_draw": "ผลตอบแทนที่ได้รับ",
+  "manage": "จัดการ",
+  "margin_level": "อัตราส่วนมาร์จิน",
+  "my_commission": "ค่าคอมมิชชั่นของฉัน",
+  "send_an_invitation": "ส่งคำเชิญทันที",
+  "total_revenue": "ทั้งหมด"
+}
