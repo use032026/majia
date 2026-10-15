@@ -3,7 +3,7 @@ schema_version: 2
 identity:
   app_name: "Trip Delta"
   operator: "独立开发者"
-  bundle_id: "com.tripdelta.lite"
+  bundle_id: "com.tripdelta.lite.app"
   android_package: "com.tripdelta.lite"
 
 contact:
