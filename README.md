@@ -26,7 +26,7 @@
 
 ## iOS 云构建与发布
 
-以下工作流均从 GitHub Actions 手动触发，仅允许 `main` 分支作为发布来源。它们使用受保护的 GitHub Environment 完成签名构建并保留 IPA；是否上传 App Store Connect、创建商店版本、提交审核或修改元数据由运行时开关决定。
+以下工作流均从 GitHub Actions 手动触发，仅允许 `main` 分支作为发布来源。它们使用受保护的 GitHub Environment 完成签名构建并保留 IPA；是否上传 App Store Connect、创建商店版本、提交审核或修改元数据由各工作流提供的运行时开关决定。
 
 | 应用 | 工作流 | GitHub Environment | 签名 Targets | ASC 状态查询 |
 | --- | --- | --- | --- | --- |
@@ -35,14 +35,16 @@
 | LAURUS | [`Hearthio iOS Release`](.github/workflows/donesome-ios-release.yml) | `hearthio-production` | `Runner` | 支持 |
 | KIFXPRO | [`KIFXPRO iOS Release`](.github/workflows/sdpacket-ios-release.yml) | `sdpacket-production` | `Runner` | 支持 |
 | PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
+| Steady21 | [`Steady21 iOS Release`](.github/workflows/steady21-ios-release.yml) | `steady-production` | `Runner` | 构建上传时回查 |
+| Trip Delta | [`TripDelta iOS Release`](.github/workflows/tripdelta-ios-release.yml) | `tripdelta-production` | `Runner` | 构建上传时回查 |
 
-`CleanTrail`、`PhotoReport`、`Steady21`、`PaceJar`、`Trip Delta`、`Diary`、`ReaderEdit`、`Somniloquy`、`Almanac` 和 `FilePeek` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
+`CleanTrail`、`PhotoReport`、`PaceJar`、`Diary`、`ReaderEdit`、`Somniloquy`、`Almanac` 和 `FilePeek` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
 
 ### 发布开关
 
 - `upload_to_asc=false` 是默认值：执行签名构建并保留产物，但不上传 App Store Connect。
 - `auto_create_store_version=true` 要求同时设置 `upload_to_asc=true`；它只创建或复用商店版本，不会提交审核。
-- 在上述构建发布工作流中，`submit=true` 要求同时设置 `auto_create_store_version=true`；只有该开关为 `true` 时才会在版本和构建准备完成后提交审核。`submit=false` 不会提交。
+- 在提供 `submit` 开关的构建发布工作流中，`submit=true` 要求同时设置 `auto_create_store_version=true`；只有该开关为 `true` 时才会在版本和构建准备完成后提交审核。`submit=false` 不会提交。TripDelta 工作流仅支持打包与 ASC 上传。
 - [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 可从 `main` 独立提交已经存在且已关联有效构建的商店版本；手动运行时只需选择应用 Environment 和版本号，不会重新构建、上传 IPA、创建商店版本或修改元数据。
 - `update_asc_text_metadata` 和 `replace_asc_media` 只有在自动创建商店版本时才能启用，并且只处理应用 `app-store/metadata.yml` 中明确声明的字段或媒体集合。
 - 非空 `release_notes_json` 要求 `update_asc_text_metadata=true`。`whats_new` 不再交给外部构建 action 直接创建 locale：仓库脚本会优先使用已有版本 locale；仅有一个请求 locale 时，才允许安全映射到应用主 locale 或唯一现有 locale。脚本只 PATCH `whatsNew`，不会创建 App Info locale，并会读取 ASC 结果进行逐项校验。

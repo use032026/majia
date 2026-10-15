@@ -1,6 +1,6 @@
 # 旅程差额 / Trip Delta App Store 预检报告
 
-> 2026-10-15 标识更新：当前 iOS Runner 为 `com.tripdelta.lite.app`，Android 为 `com.tripdelta.lite`；先前的 Archive、机械预检及截图记录的是旧标识。正式签名工件与 App Store Connect 的身份一致性仍待云构建验证。
+> 2026-10-15 云构建更新：iOS `com.tripdelta.lite.app` 的 1.0.0 (2) 已签名打包并上传 ASC，上传 `COMPLETE`、处理 `VALID`。见 [当日 ASC 上传记录](IOS_ASC_UPLOAD_2026-10-15.md)。下方 2026-09 预检结论和表格是历史快照；Android 仍使用 `com.tripdelta.lite`。此记录不代表已提交 App Review 或上架。
 
 > 2026-10-14 隐私更新：中英文政策已在 `gotripdelta.com` 公开并接入 App；下方“无公开隐私政策 URL”是 2026-09 预检的历史发现。公开支持 URL 与商店隐私回答仍需核对。
 
