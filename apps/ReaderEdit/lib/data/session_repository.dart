@@ -11,11 +11,13 @@ class RepositoryLoadResult {
     required this.sessions,
     required this.novels,
     required this.recoveredFromBackup,
+    this.hasExistingWorkspace = false,
   });
 
   final List<RevisionSession> sessions;
   final List<Novel> novels;
   final bool recoveredFromBackup;
+  final bool hasExistingWorkspace;
 }
 
 abstract class SessionRepository {
@@ -27,6 +29,8 @@ abstract class SessionRepository {
   });
   Future<String?> loadLanguageCode();
   Future<void> saveLanguageCode(String code);
+  Future<bool?> loadOnboardingCompleted();
+  Future<void> saveOnboardingCompleted();
   Future<bool> loadDarkMode();
   Future<void> saveDarkMode(bool enabled);
 }
@@ -37,6 +41,7 @@ class JsonFileSessionRepository implements SessionRepository {
     required this.preferences,
   });
 
+  static const _onboardingKey = 'reader_edit_onboarding_completed_v1';
   static const _languageKey = 'reader_edit_language_v1';
   static const _darkModeKey = 'reader_edit_dark_mode_v1';
 
@@ -82,6 +87,7 @@ class JsonFileSessionRepository implements SessionRepository {
           sessions: snapshot.sessions,
           novels: snapshot.novels,
           recoveredFromBackup: candidate.$2,
+          hasExistingWorkspace: true,
         );
       } on Object catch (error) {
         lastError = error;
@@ -137,6 +143,16 @@ class JsonFileSessionRepository implements SessionRepository {
   }
 
   @override
+  Future<bool?> loadOnboardingCompleted() async =>
+      preferences.getBool(_onboardingKey);
+
+  @override
+  Future<void> saveOnboardingCompleted() async {
+    final saved = await preferences.setBool(_onboardingKey, true);
+    if (!saved) throw StateError('Unable to save onboarding completion.');
+  }
+
+  @override
   Future<bool> loadDarkMode() async =>
       preferences.getBool(_darkModeKey) ?? false;
 
@@ -153,6 +169,8 @@ class MemorySessionRepository implements SessionRepository {
     List<Novel>? novels,
     this.languageCode,
     this.darkMode = false,
+    this.onboardingCompleted,
+    this.hasExistingWorkspace = false,
   }) : sessions = List<RevisionSession>.from(sessions ?? const []),
        novels = List<Novel>.from(novels ?? const []);
 
@@ -160,6 +178,8 @@ class MemorySessionRepository implements SessionRepository {
   List<Novel> novels;
   String? languageCode;
   bool darkMode;
+  bool? onboardingCompleted;
+  bool hasExistingWorkspace;
   bool failNextSave = false;
   bool? lastRetainPrevious;
 
@@ -168,6 +188,8 @@ class MemorySessionRepository implements SessionRepository {
     sessions: List<RevisionSession>.from(sessions),
     novels: List<Novel>.from(novels),
     recoveredFromBackup: false,
+    hasExistingWorkspace:
+        hasExistingWorkspace || sessions.isNotEmpty || novels.isNotEmpty,
   );
 
   @override
@@ -180,6 +202,7 @@ class MemorySessionRepository implements SessionRepository {
       failNextSave = false;
       throw StateError('Simulated save failure.');
     }
+    hasExistingWorkspace = true;
     lastRetainPrevious = retainPrevious;
     this.sessions = List<RevisionSession>.from(sessions);
     this.novels = List<Novel>.from(novels);
@@ -191,6 +214,18 @@ class MemorySessionRepository implements SessionRepository {
   @override
   Future<void> saveLanguageCode(String code) async {
     languageCode = code;
+  }
+
+  @override
+  Future<bool?> loadOnboardingCompleted() async => onboardingCompleted;
+
+  @override
+  Future<void> saveOnboardingCompleted() async {
+    if (failNextSave) {
+      failNextSave = false;
+      throw StateError('Simulated onboarding save failure.');
+    }
+    onboardingCompleted = true;
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../data/session_repository.dart';
 import '../domain/novel.dart';
 import '../domain/revision_session.dart';
+import '../domain/sample_content.dart';
 
 class ReaderEditStore extends ChangeNotifier {
   ReaderEditStore(this.repository);
@@ -13,16 +14,21 @@ class ReaderEditStore extends ChangeNotifier {
   List<Novel> _novels = const [];
   String _languageCode = 'zh';
   bool _darkMode = false;
+  bool _onboardingCompleted = false;
   bool _isReady = false;
   bool _isBusy = false;
   bool _loadFailed = false;
   bool _recoveredFromBackup = false;
   Object? _lastError;
 
-  List<RevisionSession> get sessions => List.unmodifiable(_sessions);
+  List<RevisionSession> get sessions => List.unmodifiable(
+    _sessions.map((session) => localizeUneditedSample(session, _languageCode)),
+  );
   List<Novel> get novels => List.unmodifiable(_novels);
   String get languageCode => _languageCode;
   bool get darkMode => _darkMode;
+  bool get shouldShowOnboarding =>
+      _isReady && !_loadFailed && !_onboardingCompleted;
   bool get isReady => _isReady;
   bool get isBusy => _isBusy;
   bool get loadFailed => _loadFailed;
@@ -41,8 +47,27 @@ class ReaderEditStore extends ChangeNotifier {
       _novels = List<Novel>.from(result.novels)
         ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       _recoveredFromBackup = result.recoveredFromBackup;
-      _languageCode = await repository.loadLanguageCode() ?? 'zh';
+      final existing =
+          result.hasExistingWorkspace ||
+          _sessions.isNotEmpty ||
+          _novels.isNotEmpty;
+      final defaultLanguage =
+          existing || PlatformDispatcher.instance.locale.languageCode == 'zh'
+          ? 'zh'
+          : 'en';
+      _languageCode = await repository.loadLanguageCode() ?? defaultLanguage;
       _darkMode = await repository.loadDarkMode();
+      final completed = await repository.loadOnboardingCompleted();
+      _onboardingCompleted = completed ?? existing;
+      if (completed == null && existing) {
+        try {
+          await repository.saveOnboardingCompleted();
+        } on Object catch (error) {
+          // Existing users can still open their workspace if this preference
+          // cannot be migrated yet. Retry on the next launch.
+          _lastError = error;
+        }
+      }
     } on Object catch (error) {
       _lastError = error;
       _loadFailed = true;
@@ -53,7 +78,10 @@ class ReaderEditStore extends ChangeNotifier {
   }
 
   RevisionSession sessionById(String id) {
-    return _sessions.firstWhere((session) => session.id == id);
+    return localizeUneditedSample(
+      _sessions.firstWhere((session) => session.id == id),
+      _languageCode,
+    );
   }
 
   Novel novelById(String id) {
@@ -348,6 +376,22 @@ class ReaderEditStore extends ChangeNotifier {
 
   Future<void> clearAll() async {
     await _commit(const [], nextNovels: const [], retainPrevious: false);
+  }
+
+  Future<void> completeOnboarding() async {
+    if (_onboardingCompleted) return;
+    if (_isBusy) throw StateError('Another local save is still in progress.');
+    _setBusy(true);
+    try {
+      await repository.saveOnboardingCompleted();
+      _onboardingCompleted = true;
+      _lastError = null;
+    } on Object catch (error) {
+      _lastError = error;
+      rethrow;
+    } finally {
+      _setBusy(false);
+    }
   }
 
   Future<void> setLanguageCode(String value) async {

@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../data/text_import_service.dart';
 import '../l10n/app_strings.dart';
 import '../ui/home_page.dart';
+import '../ui/onboarding_page.dart';
 import 'reader_edit_store.dart';
 
 class ReaderEditApp extends StatelessWidget {
@@ -35,7 +36,9 @@ class ReaderEditApp extends StatelessWidget {
           theme: _lightTheme,
           darkTheme: _darkTheme,
           themeMode: store.darkMode ? ThemeMode.dark : ThemeMode.light,
-          home: HomePage(store: store, importService: textImportService),
+          home: store.shouldShowOnboarding
+              ? OnboardingPage(store: store)
+              : HomePage(store: store, importService: textImportService),
         );
       },
     );
@@ -145,21 +148,21 @@ TextTheme _textTheme(Brightness brightness) {
   final color = brightness == Brightness.light ? _ink : const Color(0xFFF4EEF7);
   return TextTheme(
     displaySmall: TextStyle(
-      fontSize: 36,
-      height: 1.12,
+      fontSize: 30,
+      height: 1.25,
       fontWeight: FontWeight.w800,
-      letterSpacing: -1.2,
+      letterSpacing: -0.5,
       color: color,
     ),
     headlineMedium: TextStyle(
-      fontSize: 26,
+      fontSize: 23,
       height: 1.2,
       fontWeight: FontWeight.w700,
       letterSpacing: -0.5,
       color: color,
     ),
     titleLarge: TextStyle(
-      fontSize: 20,
+      fontSize: 18,
       height: 1.25,
       fontWeight: FontWeight.w700,
       color: color,
@@ -170,11 +173,12 @@ TextTheme _textTheme(Brightness brightness) {
       fontWeight: FontWeight.w700,
       color: color,
     ),
-    bodyLarge: TextStyle(fontSize: 17, height: 1.65, color: color),
-    bodyMedium: TextStyle(fontSize: 15, height: 1.5, color: color),
+    bodyLarge: TextStyle(fontSize: 16, height: 1.6, color: color),
+    bodyMedium: TextStyle(fontSize: 14, height: 1.5, color: color),
     labelLarge: TextStyle(
-      fontSize: 15,
-      fontWeight: FontWeight.w700,
+      fontSize: 14,
+      height: 1.4,
+      fontWeight: FontWeight.w600,
       color: color,
     ),
   );

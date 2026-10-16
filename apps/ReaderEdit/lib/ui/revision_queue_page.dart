@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
+
 import '../app/reader_edit_store.dart';
 import '../domain/revision_session.dart';
 import '../l10n/app_strings.dart';
@@ -29,12 +33,12 @@ class RevisionQueuePage extends StatelessWidget {
             .toList();
         return Scaffold(
           appBar: AppBar(title: Text(strings.queueTitle)),
-          body: SafeArea(
-            child: Center(
+          body: PageSafeArea(
+            builder: (context) => Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 760),
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 120),
+                  padding: pageScrollPadding(context),
                   children: [
                     Text(
                       session.title,
@@ -97,19 +101,20 @@ class RevisionQueuePage extends StatelessWidget {
               ),
             ),
           ),
-          bottomNavigationBar: SafeArea(
-            top: false,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                border: Border(
-                  top: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
+          bottomNavigationBar: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: Border(
+                top: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant,
                 ),
               ),
+            ),
+            child: SafeArea(
+              top: false,
+              minimum: const EdgeInsets.only(bottom: 12),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
                 child: Center(
                   heightFactor: 1,
                   child: ConstrainedBox(
@@ -155,9 +160,7 @@ class RevisionQueuePage extends StatelessWidget {
       await store.reopenRevision(sessionId: sessionId, passageId: passageId);
     } on Object {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppStrings.of(context).saveFailed)),
-        );
+        showAppNotice(context, AppStrings.of(context).saveFailed);
       }
     }
   }

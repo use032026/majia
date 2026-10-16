@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
 
 import '../app/reader_edit_store.dart';
 import '../domain/revision_session.dart';
@@ -80,8 +85,8 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       },
       child: Scaffold(
         appBar: AppBar(title: Text(strings.createTitle)),
-        body: SafeArea(
-          child: Form(
+        body: PageSafeArea(
+          builder: (context) => Form(
             key: _formKey,
             child: Center(
               child: ConstrainedBox(
@@ -89,7 +94,7 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
                 child: ListView(
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+                  padding: pageScrollPadding(context),
                   children: [
                     Text(
                       strings.createIntro,
@@ -217,9 +222,7 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
       }
     } on Object {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppStrings.of(context).saveFailed)),
-        );
+        showAppNotice(context, AppStrings.of(context).saveFailed);
         setState(() => _submitting = false);
       }
     }
@@ -227,17 +230,19 @@ class _CreateSessionPageState extends State<CreateSessionPage> {
 
   Future<bool> _confirmDiscard() async {
     final strings = AppStrings.of(context);
-    return await showDialog<bool>(
+    return await showCupertinoDialog<bool>(
           context: context,
-          builder: (dialogContext) => AlertDialog(
+          builder: (dialogContext) => CupertinoAlertDialog(
             title: Text(strings.createUnsavedTitle),
             content: Text(strings.createUnsavedBody),
             actions: [
-              TextButton(
+              CupertinoDialogAction(
+                isDefaultAction: true,
                 onPressed: () => Navigator.pop(dialogContext, false),
                 child: Text(strings.cancel),
               ),
-              FilledButton(
+              CupertinoDialogAction(
+                isDestructiveAction: true,
                 onPressed: () => Navigator.pop(dialogContext, true),
                 child: Text(strings.discard),
               ),

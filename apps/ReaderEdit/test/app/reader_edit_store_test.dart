@@ -1,9 +1,102 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:reader_edit/l10n/app_strings.dart';
 import 'package:reader_edit/app/reader_edit_store.dart';
 import 'package:reader_edit/data/session_repository.dart';
 import 'package:reader_edit/domain/revision_session.dart';
 
 void main() {
+  test(
+    'legacy sample follows locale with its signals and notes intact',
+    () async {
+      const chinese = AppStrings(Locale('zh'));
+      final repository = MemorySessionRepository(languageCode: 'zh');
+      final store = ReaderEditStore(repository);
+      await store.load();
+      final sample = await store.createSession(
+        title: chinese.sampleTitle,
+        draft: chinese.sampleDraft,
+        knowPromise: chinese.sampleKnow,
+        feelPromise: chinese.sampleFeel,
+        wonderPromise: chinese.sampleWonder,
+      );
+      await store.recordSignal(
+        sessionId: sample.id,
+        passageId: sample.passages.first.id,
+        signal: ReaderSignal.dragging,
+        note: '保留我的备注',
+      );
+      await store.setLanguageCode('en');
+      final english = store.sessionById(sample.id);
+      expect(english.title, 'The Letter at Fog Station');
+      expect(store.sessions.single.title, english.title);
+      expect(
+        english.passages.first.original,
+        startsWith('After the last train left, Mara'),
+      );
+      expect(
+        english.passages.every((p) => countCjkCharacters(p.original) == 0),
+        isTrue,
+      );
+      expect(english.passages.first.signal, ReaderSignal.dragging);
+      expect(english.passages.first.note, '保留我的备注');
+      expect(english.knowPromise, 'Someone at the station knows Mara’s plans');
+      expect(english.changedCount, 0);
+      expect(
+        repository.sessions.single.passages.first.original,
+        sample.passages.first.original,
+      );
+      final reloaded = ReaderEditStore(repository);
+      await reloaded.load();
+      expect(reloaded.sessions.single.title, 'The Letter at Fog Station');
+      await reloaded.setLanguageCode('zh');
+      expect(reloaded.sessions.single.title, '雾站来信');
+      expect(reloaded.sessions.single.passages.first.note, '保留我的备注');
+    },
+  );
+
+  test(
+    'switching locale preserves rewritten sample text and ordinary drafts',
+    () async {
+      const chinese = AppStrings(Locale('zh'));
+      final store = ReaderEditStore(
+        MemorySessionRepository(languageCode: 'zh'),
+      );
+      await store.load();
+      final sample = await store.createSession(
+        title: chinese.sampleTitle,
+        draft: chinese.sampleDraft,
+        knowPromise: chinese.sampleKnow,
+        feelPromise: chinese.sampleFeel,
+        wonderPromise: chinese.sampleWonder,
+      );
+      await store.saveRevision(
+        sessionId: sample.id,
+        passageId: sample.passages.first.id,
+        revised: '这是我自己改写的段落。',
+        isResolved: false,
+      );
+      final custom = await store.createSession(
+        title: '雾站来信',
+        draft: '我的正文。\n\n第二段。',
+        knowPromise: 'A',
+        feelPromise: 'B',
+        wonderPromise: 'C',
+      );
+      await store.setLanguageCode('en');
+      expect(
+        store.sessionById(sample.id).passages.first.revised,
+        '这是我自己改写的段落。',
+      );
+      expect(
+        store.sessionById(sample.id).passages.first.original,
+        sample.passages.first.original,
+      );
+      expect(store.sessionById(custom.id).title, '雾站来信');
+      expect(store.sessionById(custom.id).passages.first.original, '我的正文。');
+    },
+  );
+
   test(
     'commits the reader-signal to revision workflow and persists it',
     () async {

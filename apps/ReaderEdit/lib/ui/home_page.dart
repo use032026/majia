@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
 
 import '../app/reader_edit_store.dart';
 import '../data/text_import_service.dart';
@@ -10,6 +15,7 @@ import 'create_session_page.dart';
 import 'novel_detail_page.dart';
 import 'revision_queue_page.dart';
 import 'scan_page.dart';
+import 'settings_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({required this.store, required this.importService, super.key});
@@ -26,32 +32,34 @@ class HomePage extends StatelessWidget {
     if (store.loadFailed) {
       return Scaffold(
         appBar: AppBar(title: Text(strings.appName)),
-        body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.shield_outlined,
-                    size: 48,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    strings.loadFailed,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton.icon(
-                    onPressed: store.isBusy ? null : store.load,
-                    icon: const Icon(Icons.refresh),
-                    label: Text(strings.retry),
-                  ),
-                ],
+        body: PageSafeArea(
+          builder: (context) => Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: SingleChildScrollView(
+                padding: pageScrollPadding(context, horizontal: 24, top: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.shield_outlined,
+                      size: 48,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      strings.loadFailed,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 24),
+                    FilledButton.icon(
+                      onPressed: store.isBusy ? null : store.load,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(strings.retry),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -85,27 +93,32 @@ class HomePage extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: SafeArea(
-        child: Center(
+      body: PageSafeArea(
+        builder: (context) => Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 760),
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+              padding: pageScrollPadding(context, horizontal: 24, top: 24),
               children: [
                 if (store.recoveredFromBackup) ...[
                   _RecoveryBanner(store: store),
                   const SizedBox(height: 20),
                 ],
                 Text(
-                  strings.tagline,
-                  style: Theme.of(context).textTheme.displaySmall,
+                  strings.text('写作、阅读与修订', 'Write, read, and revise.'),
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    fontSize: 26,
+                    height: 1.4,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     Icon(
                       Icons.lock_outline_rounded,
-                      size: 18,
+                      size: 16,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: 7),
@@ -113,14 +126,14 @@ class HomePage extends StatelessWidget {
                       child: Text(
                         strings.localOnly,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 36),
                 _LibrarySection(
                   store: store,
                   onCreate: () => _openCreateNovel(context),
@@ -129,18 +142,20 @@ class HomePage extends StatelessWidget {
                   onDelete: (novel) => _confirmDeleteNovel(context, novel),
                 ),
                 const SizedBox(height: 36),
-                Text(
-                  strings.text('读者视角修订', 'Reader-perspective revisions'),
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 14),
-                if (store.sessions.isEmpty)
+                if (store.sessions.isEmpty) ...[
+                  Text(
+                    strings.text('读者视角修订', 'Reader-perspective revisions'),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(fontSize: 22),
+                  ),
+                  const SizedBox(height: 18),
                   _EmptyDesk(
                     store: store,
                     onNew: () => _openCreate(context),
                     onSample: () => _createSample(context),
-                  )
-                else ...[
+                  ),
+                ] else ...[
                   Wrap(
                     alignment: WrapAlignment.spaceBetween,
                     crossAxisAlignment: WrapCrossAlignment.center,
@@ -198,14 +213,11 @@ class HomePage extends StatelessWidget {
       if (context.mounted) await _openNovel(context, novel.id);
     } on Object {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            strings.text(
-              '导入失败。请选择 UTF-8 / UTF-16 编码且不超过 200 万字符的 TXT / Markdown 文件。',
-              'Import failed. Choose a UTF-8 / UTF-16 TXT or Markdown file under 2 million characters.',
-            ),
-          ),
+      showAppNotice(
+        context,
+        strings.text(
+          '导入失败。请选择 UTF-8 / UTF-16 编码且不超过 200 万字符的 TXT / Markdown 文件。',
+          'Import failed. Choose a UTF-8 / UTF-16 TXT or Markdown file under 2 million characters.',
         ),
       );
     }
@@ -225,9 +237,9 @@ class HomePage extends StatelessWidget {
 
   Future<void> _confirmDeleteNovel(BuildContext context, Novel novel) async {
     final strings = AppStrings.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(
           strings.text('删除“${novel.title}”？', 'Delete “${novel.title}”?'),
         ),
@@ -238,11 +250,13 @@ class HomePage extends StatelessWidget {
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
+            isDefaultAction: true,
             onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(strings.cancel),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(strings.delete),
           ),
@@ -297,20 +311,19 @@ class HomePage extends StatelessWidget {
     RevisionSession session,
   ) async {
     final strings = AppStrings.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(strings.deleteTitle.replaceAll('{title}', session.title)),
         content: Text(strings.deleteBody),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
+            isDefaultAction: true,
             onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(strings.cancel),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(strings.delete),
           ),
@@ -326,18 +339,13 @@ class HomePage extends StatelessWidget {
   }
 
   Future<void> _showSettings(BuildContext context) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (sheetContext) => _SettingsSheet(store: store),
+    await Navigator.of(context).push<void>(
+      CupertinoPageRoute(builder: (_) => SettingsPage(store: store)),
     );
   }
 
   void _showSaveError(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(AppStrings.of(context).saveFailed)));
+    showAppNotice(context, AppStrings.of(context).saveFailed);
   }
 }
 
@@ -362,66 +370,70 @@ class _LibrarySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 12,
-          runSpacing: 12,
+        Text(
+          strings.text('我的小说', 'My novels'),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 22),
+        ),
+        const SizedBox(height: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              strings.text('我的小说', 'My novels'),
-              style: Theme.of(context).textTheme.headlineMedium,
+            FilledButton.icon(
+              key: const ValueKey('create_novel_button'),
+              onPressed: store.isBusy ? null : onCreate,
+              icon: const Icon(Icons.add, size: 20),
+              label: Text(strings.text('创建小说', 'Create novel')),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(0, 48),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+              ),
             ),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  key: const ValueKey('import_novel_button'),
-                  onPressed: store.isBusy ? null : onImport,
-                  icon: const Icon(Icons.file_open_outlined),
-                  label: Text(strings.text('导入', 'Import')),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              key: const ValueKey('import_novel_button'),
+              onPressed: store.isBusy ? null : onImport,
+              icon: const Icon(Icons.file_open_outlined, size: 20),
+              label: Text(strings.text('导入', 'Import')),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 48),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
                 ),
-                FilledButton.icon(
-                  key: const ValueKey('create_novel_button'),
-                  onPressed: store.isBusy ? null : onCreate,
-                  icon: const Icon(Icons.add),
-                  label: Text(strings.text('创建小说', 'Create novel')),
-                ),
-              ],
+              ),
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 20),
         if (store.novels.isEmpty)
           Card(
             child: Padding(
               padding: const EdgeInsets.all(22),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.auto_stories_outlined,
-                    size: 38,
+                    size: 28,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          strings.text('从一本小说开始', 'Start with a novel'),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          strings.text(
-                            '创建空白小说，或导入 TXT / Markdown。导入后可按章节阅读并随时切换编辑。',
-                            'Create a blank novel or import TXT / Markdown, then read by chapter and switch into editing at any time.',
-                          ),
-                        ),
-                      ],
+                  const SizedBox(height: 16),
+                  Text(
+                    strings.text('从一本小说开始', 'Start with a novel'),
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    strings.text(
+                      '创建空白小说，或导入 TXT / Markdown。按章节阅读，随时切换编辑。',
+                      'Create a novel or import TXT / Markdown. Read by chapter and edit at any time.',
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      height: 1.7,
                     ),
                   ),
                 ],
@@ -570,18 +582,21 @@ class _EmptyDesk extends StatelessWidget {
           children: [
             Icon(
               Icons.chrome_reader_mode_outlined,
-              size: 42,
+              size: 28,
               color: Theme.of(context).colorScheme.primary,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               strings.emptyTitle,
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 10),
             Text(
               strings.emptyBody,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.7,
+              ),
             ),
             const SizedBox(height: 24),
             Wrap(
@@ -726,130 +741,5 @@ class _RecoveryBanner extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _SettingsSheet extends StatelessWidget {
-  const _SettingsSheet({required this.store});
-
-  final ReaderEditStore store;
-
-  @override
-  Widget build(BuildContext context) {
-    final strings = AppStrings.of(context);
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          4,
-          20,
-          24 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 620),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  strings.settings,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  strings.language,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 10),
-                SegmentedButton<String>(
-                  key: const ValueKey('language_selector'),
-                  segments: [
-                    ButtonSegment(value: 'zh', label: Text(strings.chinese)),
-                    ButtonSegment(value: 'en', label: Text(strings.english)),
-                  ],
-                  selected: {store.languageCode},
-                  onSelectionChanged: store.isBusy
-                      ? null
-                      : (selection) async {
-                          try {
-                            await store.setLanguageCode(selection.first);
-                          } on Object {
-                            if (context.mounted) _showError(context);
-                          }
-                        },
-                ),
-                const SizedBox(height: 16),
-                SwitchListTile(
-                  key: const ValueKey('dark_mode_switch'),
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(strings.darkMode),
-                  value: store.darkMode,
-                  onChanged: store.isBusy
-                      ? null
-                      : (value) async {
-                          try {
-                            await store.setDarkMode(value);
-                          } on Object {
-                            if (context.mounted) _showError(context);
-                          }
-                        },
-                ),
-                const Divider(height: 36),
-                Text(
-                  strings.dataPrivacy,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(strings.dataPrivacyBody),
-                const SizedBox(height: 20),
-                OutlinedButton.icon(
-                  onPressed:
-                      (store.sessions.isEmpty && store.novels.isEmpty) ||
-                          store.isBusy
-                      ? null
-                      : () => _confirmClear(context),
-                  icon: const Icon(Icons.delete_sweep_outlined),
-                  label: Text(strings.clearAll),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _confirmClear(BuildContext context) async {
-    final strings = AppStrings.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(strings.clearAllTitle),
-        content: Text(strings.clearAllBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text(strings.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(strings.erase),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    try {
-      await store.clearAll();
-      if (context.mounted) Navigator.pop(context);
-    } on Object {
-      if (context.mounted) _showError(context);
-    }
-  }
-
-  void _showError(BuildContext context) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(AppStrings.of(context).saveFailed)));
   }
 }

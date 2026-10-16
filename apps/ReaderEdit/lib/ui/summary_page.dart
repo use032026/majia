@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
+
 import '../app/reader_edit_store.dart';
 import '../domain/revision_session.dart';
 import '../l10n/app_strings.dart';
@@ -21,12 +25,12 @@ class SummaryPage extends StatelessWidget {
         final session = store.sessionById(sessionId);
         return Scaffold(
           appBar: AppBar(title: Text(strings.summaryTitle)),
-          body: SafeArea(
-            child: Center(
+          body: PageSafeArea(
+            builder: (context) => Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 760),
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+                  padding: pageScrollPadding(context),
                   children: [
                     _CompletionBanner(session: session),
                     const SizedBox(height: 26),
@@ -172,9 +176,7 @@ class SummaryPage extends StatelessWidget {
       );
     } on Object {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppStrings.of(context).saveFailed)),
-        );
+        showAppNotice(context, AppStrings.of(context).saveFailed);
       }
     }
   }
@@ -183,15 +185,11 @@ class SummaryPage extends StatelessWidget {
     try {
       await Clipboard.setData(ClipboardData(text: value));
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(AppStrings.of(context).copied)));
+        showAppNotice(context, AppStrings.of(context).copied);
       }
     } on Object {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppStrings.of(context).copyFailed)),
-        );
+        showAppNotice(context, AppStrings.of(context).copyFailed);
       }
     }
   }

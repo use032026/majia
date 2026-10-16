@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../domain/sample_content.dart';
+
 class AppStrings {
   const AppStrings(this.locale);
 
@@ -33,6 +35,42 @@ class AppStrings {
   String get chinese => '简体中文';
   String get english => 'English';
   String get darkMode => text('深色外观', 'Dark appearance');
+  String get tour => text('使用引导', 'Quick tour');
+  String get help => text('帮助', 'Help');
+  String get skipTour => text('跳过', 'Skip');
+  String get nextTour => text('下一步', 'Next');
+  String get finishTour => text('开始创作', 'Open my workspace');
+  String tourTitle(int step) => [
+    text('把故事留在自己手中', 'Your story, in your hands'),
+    text('换个视角，读自己的故事', 'Read with fresh eyes'),
+    text('让每次修改都有方向', 'Revise with a clear purpose'),
+  ][step];
+  String tourBody(int step) => [
+    text(
+      '创建一本小说，或导入 TXT / Markdown。按章节写作与阅读，作品保存在此设备，无需账号。',
+      'Create a novel or import TXT / Markdown. Write and read by chapter, with your work on this device and no account needed.',
+    ),
+    text(
+      '先读，再改。逐段记录“清楚”“拖沓”或“迷失”，留下你的第一感受。',
+      'Read before you rewrite. Mark each passage Clear, Dragging, or Lost and capture your first response.',
+    ),
+    text(
+      '集中处理需要调整的段落，保留原稿与前后对照，再核对你想带给读者的感受。',
+      'Focus on passages that need attention. Keep the original, compare your edits, and check what the reader should take away.',
+    ),
+  ][step];
+
+  String get privacyPolicy => text('隐私政策', 'Privacy policy');
+  String get privacyUnpublished =>
+      text('隐私政策暂未发布', 'Privacy policy is not published yet');
+  String get privacyUnpublishedBody => text(
+    '在线隐私政策发布后，可在此页面查看。',
+    'The online privacy policy will be available here once it is published.',
+  );
+  String get privacyLoadFailed =>
+      text('暂时无法打开隐私政策', 'Unable to open the privacy policy');
+  String get privacyLoadFailedBody =>
+      text('请检查网络连接后重试。', 'Check your connection and try again.');
   String get dataPrivacy => text('数据与隐私', 'Data & privacy');
   String get dataPrivacyBody => text(
     '小说、章节、草稿、信号和修订记录只保存在应用沙盒内。没有账号、后台、分析或广告。导入文件会复制到本地数据中；复制导出后，文本将进入系统剪贴板并受其他应用管理。',
@@ -107,7 +145,7 @@ class AppStrings {
   String get previous => text('上一段', 'Previous');
   String get saveNext => text('保存并继续', 'Save & continue');
   String get saveAndReturn => text('保存并返回队列', 'Save & return to queue');
-  String get buildQueue => text('保存并建立修订队列', 'Save & build revision queue');
+  String get buildQueue => text('保存并建立修订队列', 'Save & build queue');
   String get queueTitle => text('修订队列', 'Revision queue');
   String get queueIntro => text(
     '这里只出现被标记为“拖沓”或“迷失”的段落。修改前版本会一直保留。',
@@ -199,19 +237,12 @@ class AppStrings {
     '$passages 段 · $cjk 汉字 · $words 英文词',
     '$passages passages · $words words · $cjk CJK characters',
   );
-  String get sampleTitle => text('雾站来信', 'The Letter at Fog Station');
-  String get sampleDraft => text(
-    '晚班火车离站后，林秋才发现长椅下有一封没有署名的信。信封很旧，右下角却沾着刚落下的雨。\n\n她拆开信，第一句话写着：“不要搭明早六点的车。”她抬头看向时刻表，又看见玻璃里的自己。\n\n站外没有人。售票窗口已经熄灯，可远处的广播忽然报出了她的名字。',
-    'After the last train left, Mara found an unsigned letter beneath the station bench. The envelope looked old, but fresh rain darkened one corner.\n\nShe opened it. The first line read: “Do not take the six o’clock train.” She looked up at the timetable, then at her reflection in the glass.\n\nNo one waited outside. The ticket window was dark, yet the distant loudspeaker suddenly announced her name.',
-  );
-  String get sampleKnow =>
-      text('车站里有人知道林秋的行程', 'Someone at the station knows Mara’s plans');
-  String get sampleFeel =>
-      text('安静里逐渐出现不安', 'Unease growing inside a quiet place');
-  String get sampleWonder => text(
-    '是谁写信，为什么不能上车',
-    'Who wrote the letter and why the train is dangerous',
-  );
+  SampleContent get _sample => SampleContent.forLanguage(locale.languageCode);
+  String get sampleTitle => _sample.title;
+  String get sampleDraft => _sample.draft;
+  String get sampleKnow => _sample.know;
+  String get sampleFeel => _sample.feel;
+  String get sampleWonder => _sample.wonder;
 }
 
 class AppStringsDelegate extends LocalizationsDelegate<AppStrings> {

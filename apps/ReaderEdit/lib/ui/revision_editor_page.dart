@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
 
 import '../app/reader_edit_store.dart';
 import '../domain/revision_session.dart';
@@ -74,14 +79,14 @@ class _RevisionEditorPageState extends State<RevisionEditorPage> {
       },
       child: Scaffold(
         appBar: AppBar(title: Text(strings.revisionTitle)),
-        body: SafeArea(
-          child: Center(
+        body: PageSafeArea(
+          builder: (context) => Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 760),
               child: ListView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 36),
+                padding: pageScrollPadding(context),
                 children: [
                   Text(
                     strings.before,
@@ -191,24 +196,24 @@ class _RevisionEditorPageState extends State<RevisionEditorPage> {
   }
 
   void _show(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    showAppNotice(context, message);
   }
 
   Future<bool> _confirmDiscard() async {
     final strings = AppStrings.of(context);
-    return await showDialog<bool>(
+    return await showCupertinoDialog<bool>(
           context: context,
-          builder: (dialogContext) => AlertDialog(
+          builder: (dialogContext) => CupertinoAlertDialog(
             title: Text(strings.unsavedTitle),
             content: Text(strings.unsavedBody),
             actions: [
-              TextButton(
+              CupertinoDialogAction(
+                isDefaultAction: true,
                 onPressed: () => Navigator.pop(dialogContext, false),
                 child: Text(strings.cancel),
               ),
-              FilledButton(
+              CupertinoDialogAction(
+                isDestructiveAction: true,
                 onPressed: () => Navigator.pop(dialogContext, true),
                 child: Text(strings.discard),
               ),

@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
 
 import '../app/reader_edit_store.dart';
 import '../data/text_import_service.dart';
@@ -34,12 +39,12 @@ class NovelDetailPage extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          body: SafeArea(
-            child: Center(
+          body: PageSafeArea(
+            builder: (context) => Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 760),
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
+                  padding: pageScrollPadding(context, top: 12),
                   children: [
                     Text(
                       novel.title,
@@ -169,27 +174,21 @@ class NovelDetailPage extends StatelessWidget {
         content: file.content,
       );
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            strings.text(
-              '已导入 ${chapters.length} 个章节。',
-              'Imported ${chapters.length} chapters.',
-            ),
-          ),
+      showAppNotice(
+        context,
+        strings.text(
+          '已导入 ${chapters.length} 个章节。',
+          'Imported ${chapters.length} chapters.',
         ),
       );
       await _openChapter(context, chapters.first.id);
     } on Object {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            strings.text(
-              '导入失败。请选择 UTF-8 / UTF-16 编码且不超过 200 万字符的 TXT / Markdown 文件。',
-              'Import failed. Choose a UTF-8 / UTF-16 TXT or Markdown file under 2 million characters.',
-            ),
-          ),
+      showAppNotice(
+        context,
+        strings.text(
+          '导入失败。请选择 UTF-8 / UTF-16 编码且不超过 200 万字符的 TXT / Markdown 文件。',
+          'Import failed. Choose a UTF-8 / UTF-16 TXT or Markdown file under 2 million characters.',
         ),
       );
     }
@@ -212,9 +211,9 @@ class NovelDetailPage extends StatelessWidget {
     NovelChapter chapter,
   ) async {
     final strings = AppStrings.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showCupertinoDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: Text(
           strings.text('删除“${chapter.title}”？', 'Delete “${chapter.title}”?'),
         ),
@@ -225,11 +224,13 @@ class NovelDetailPage extends StatelessWidget {
           ),
         ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
+            isDefaultAction: true,
             onPressed: () => Navigator.pop(dialogContext, false),
             child: Text(strings.cancel),
           ),
-          FilledButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(strings.delete),
           ),
@@ -241,9 +242,7 @@ class NovelDetailPage extends StatelessWidget {
       await store.deleteChapter(novelId, chapter.id);
     } on Object {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(strings.saveFailed)));
+        showAppNotice(context, strings.saveFailed);
       }
     }
   }

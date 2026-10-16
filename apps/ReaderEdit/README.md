@@ -26,6 +26,30 @@ flutter pub get
 flutter run
 ```
 
+## Launch and first run
+
+- iOS uses a native, appearance-aware book mark and ReaderEdit wordmark before Flutter draws its first frame.
+- Android uses the same book mark, with native Android 12+ splash resources and a matching fallback for older versions.
+- New workspaces open a three-step Chinese/English tour. Users may skip or complete it; the choice is stored locally and survives clearing manuscript data.
+- Existing saved workspaces bypass the first-run tour. Settings → Quick tour replays it without resetting work or completion.
+- If saving completion fails, onboarding remains visible and can be retried. No artificial startup delay is added.
+
+## Online privacy policy
+
+Settings is a full page. Its Privacy policy entry opens an embedded web page.
+The app does not include a production privacy URL yet. With no configured URL,
+that page shows a localized unpublished state without making a web request.
+
+Set these build-time values once the HTML policy is hosted:
+
+- `READEREDIT_PRIVACY_URL_ZH`: Chinese HTTPS policy URL.
+- `READEREDIT_PRIVACY_URL_EN`: English HTTPS policy URL.
+- `READEREDIT_PRIVACY_URL`: optional shared fallback if a localized URL is absent.
+
+Pass values through Flutter's `--dart-define` options when running or packaging.
+No sample website is used as a fallback. The privacy page loads online content
+only when opened; novel and revision data continue to stay on the device.
+
 ## Validation
 
 ```bash

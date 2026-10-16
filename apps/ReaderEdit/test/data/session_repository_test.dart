@@ -50,6 +50,30 @@ void main() {
     if (await directory.exists()) await directory.delete(recursive: true);
   });
 
+  test(
+    'onboarding completion persists separately from workspace erasure',
+    () async {
+      expect(await repository.loadOnboardingCompleted(), isNull);
+      await repository.saveOnboardingCompleted();
+      await repository.saveSessions([], retainPrevious: false);
+      final reloaded = JsonFileSessionRepository(
+        directory: directory,
+        preferences: await SharedPreferences.getInstance(),
+      );
+      expect(await reloaded.loadOnboardingCompleted(), isTrue);
+      expect((await reloaded.loadSessions()).hasExistingWorkspace, isTrue);
+    },
+  );
+
+  test(
+    'fresh workspace is distinguishable from a saved empty workspace',
+    () async {
+      expect((await repository.loadSessions()).hasExistingWorkspace, isFalse);
+      await repository.saveSessions([]);
+      expect((await repository.loadSessions()).hasExistingWorkspace, isTrue);
+    },
+  );
+
   test('fresh install loads empty and accepts the first write', () async {
     final result = await repository.loadSessions();
 

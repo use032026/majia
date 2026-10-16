@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
 
 import '../app/reader_edit_store.dart';
 import '../domain/revision_session.dart';
@@ -90,14 +95,14 @@ class _ScanPageState extends State<ScanPage> {
       },
       child: Scaffold(
         appBar: AppBar(title: Text(strings.scanTitle)),
-        body: SafeArea(
-          child: Center(
+        body: PageSafeArea(
+          builder: (context) => Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 760),
               child: ListView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 36),
+                padding: pageScrollPadding(context),
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,8 +157,8 @@ class _ScanPageState extends State<ScanPage> {
                         passage.original,
                         key: ValueKey('passage_text_${passage.id}'),
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 19,
-                          height: 1.85,
+                          fontSize: 17,
+                          height: 1.7,
                         ),
                       ),
                     ),
@@ -164,35 +169,43 @@ class _ScanPageState extends State<ScanPage> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: [
-                      _SignalChip(
-                        key: const ValueKey('signal_clear'),
-                        icon: Icons.check_circle_outline,
-                        label: strings.signalClear,
-                        color: const Color(0xFF1D6B52),
-                        selected: _signal == ReaderSignal.clear,
-                        onSelected: () => _choose(ReaderSignal.clear),
-                      ),
-                      _SignalChip(
-                        key: const ValueKey('signal_dragging'),
-                        icon: Icons.hourglass_bottom_rounded,
-                        label: strings.signalDragging,
-                        color: const Color(0xFF95451E),
-                        selected: _signal == ReaderSignal.dragging,
-                        onSelected: () => _choose(ReaderSignal.dragging),
-                      ),
-                      _SignalChip(
-                        key: const ValueKey('signal_lost'),
-                        icon: Icons.help_outline_rounded,
-                        label: strings.signalLost,
-                        color: const Color(0xFF923149),
-                        selected: _signal == ReaderSignal.lost,
-                        onSelected: () => _choose(ReaderSignal.lost),
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) => Row(
+                      children: [
+                        Expanded(
+                          child: _SignalChip(
+                            key: const ValueKey('signal_clear'),
+                            label: strings.signalClear,
+                            color: const Color(0xFF1D6B52),
+                            fontSize: constraints.maxWidth < 300 ? 13 : 14,
+                            selected: _signal == ReaderSignal.clear,
+                            onSelected: () => _choose(ReaderSignal.clear),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _SignalChip(
+                            key: const ValueKey('signal_dragging'),
+                            label: strings.signalDragging,
+                            color: const Color(0xFF95451E),
+                            fontSize: constraints.maxWidth < 300 ? 13 : 14,
+                            selected: _signal == ReaderSignal.dragging,
+                            onSelected: () => _choose(ReaderSignal.dragging),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _SignalChip(
+                            key: const ValueKey('signal_lost'),
+                            label: strings.signalLost,
+                            color: const Color(0xFF923149),
+                            fontSize: constraints.maxWidth < 300 ? 13 : 14,
+                            selected: _signal == ReaderSignal.lost,
+                            onSelected: () => _choose(ReaderSignal.lost),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 18),
                   TextField(
@@ -208,44 +221,58 @@ class _ScanPageState extends State<ScanPage> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (_index > 0) ...[
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: _saving ? null : _saveAndPrevious,
-                            icon: const Icon(Icons.arrow_back),
-                            label: Text(strings.previous),
+                        OutlinedButton.icon(
+                          onPressed: _saving ? null : _saveAndPrevious,
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(0, 48),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 14,
+                            ),
+                          ),
+                          icon: const Icon(Icons.arrow_back),
+                          label: Text(
+                            strings.previous,
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(height: 12),
                       ],
-                      Expanded(
-                        flex: 2,
-                        child: FilledButton.icon(
-                          key: const ValueKey('scan_save_button'),
-                          onPressed: _saving ? null : _saveAndContinue,
-                          icon: _saving
-                              ? const SizedBox.square(
-                                  dimension: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Icon(
-                                  widget.returnAfterSave
-                                      ? Icons.arrow_back_rounded
-                                      : isLast
-                                      ? Icons.playlist_add_check
-                                      : Icons.arrow_forward,
-                                ),
-                          label: Text(
-                            widget.returnAfterSave
-                                ? strings.saveAndReturn
-                                : isLast
-                                ? strings.buildQueue
-                                : strings.saveNext,
+                      FilledButton.icon(
+                        key: const ValueKey('scan_save_button'),
+                        onPressed: _saving ? null : _saveAndContinue,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 48),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 14,
                           ),
+                        ),
+                        icon: _saving
+                            ? const SizedBox.square(
+                                dimension: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Icon(
+                                widget.returnAfterSave
+                                    ? Icons.arrow_back_rounded
+                                    : isLast
+                                    ? Icons.playlist_add_check
+                                    : Icons.arrow_forward,
+                              ),
+                        label: Text(
+                          widget.returnAfterSave
+                              ? strings.saveAndReturn
+                              : isLast
+                              ? strings.buildQueue
+                              : strings.saveNext,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
@@ -268,9 +295,7 @@ class _ScanPageState extends State<ScanPage> {
 
   Future<bool> _save() async {
     if (_signal == ReaderSignal.unset) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppStrings.of(context).chooseSignal)),
-      );
+      showAppNotice(context, AppStrings.of(context).chooseSignal);
       return false;
     }
     setState(() => _saving = true);
@@ -291,9 +316,7 @@ class _ScanPageState extends State<ScanPage> {
     } on Object {
       if (mounted) {
         setState(() => _saving = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppStrings.of(context).saveFailed)),
-        );
+        showAppNotice(context, AppStrings.of(context).saveFailed);
       }
       return false;
     }
@@ -330,17 +353,19 @@ class _ScanPageState extends State<ScanPage> {
 
   Future<bool> _confirmDiscard() async {
     final strings = AppStrings.of(context);
-    return await showDialog<bool>(
+    return await showCupertinoDialog<bool>(
           context: context,
-          builder: (dialogContext) => AlertDialog(
+          builder: (dialogContext) => CupertinoAlertDialog(
             title: Text(strings.unsavedTitle),
             content: Text(strings.unsavedBody),
             actions: [
-              TextButton(
+              CupertinoDialogAction(
+                isDefaultAction: true,
                 onPressed: () => Navigator.pop(dialogContext, false),
                 child: Text(strings.cancel),
               ),
-              FilledButton(
+              CupertinoDialogAction(
+                isDestructiveAction: true,
                 onPressed: () => Navigator.pop(dialogContext, true),
                 child: Text(strings.discard),
               ),
@@ -353,15 +378,15 @@ class _ScanPageState extends State<ScanPage> {
 
 class _SignalChip extends StatelessWidget {
   const _SignalChip({
-    required this.icon,
     required this.label,
     required this.color,
     required this.selected,
+    required this.fontSize,
     required this.onSelected,
     super.key,
   });
 
-  final IconData icon;
+  final double fontSize;
   final String label;
   final Color color;
   final bool selected;
@@ -370,15 +395,22 @@ class _SignalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChoiceChip(
-      avatar: Icon(icon, size: 19, color: selected ? Colors.white : color),
-      label: Text(label),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+      label: SizedBox(
+        width: double.infinity,
+        child: Text(label, textAlign: TextAlign.center),
+      ),
       selected: selected,
+      showCheckmark: false,
       selectedColor: color,
       labelStyle: TextStyle(
+        fontSize: fontSize,
+        height: 1.3,
         color: selected
             ? Colors.white
             : Theme.of(context).colorScheme.onSurface,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
       ),
       onSelected: (_) => onSelected(),
     );

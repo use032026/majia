@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'page_safe_area.dart';
+
 import '../domain/revision_session.dart';
 import '../l10n/app_strings.dart';
 
@@ -16,14 +18,18 @@ class ChangesPage extends StatelessWidget {
         .toList();
     return Scaffold(
       appBar: AppBar(title: Text(strings.compareTitle)),
-      body: SafeArea(
-        child: Center(
+      body: PageSafeArea(
+        builder: (context) => Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 760),
             child: changed.isEmpty
                 ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(28),
+                    child: SingleChildScrollView(
+                      padding: pageScrollPadding(
+                        context,
+                        horizontal: 28,
+                        top: 28,
+                      ),
                       child: Text(
                         strings.noChanges,
                         textAlign: TextAlign.center,
@@ -32,7 +38,7 @@ class ChangesPage extends StatelessWidget {
                     ),
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
+                    padding: pageScrollPadding(context),
                     itemCount: changed.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 14),
                     itemBuilder: (context, index) {

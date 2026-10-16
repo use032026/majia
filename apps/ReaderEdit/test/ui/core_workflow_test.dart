@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reader_edit/app/reader_edit_app.dart';
@@ -7,6 +7,8 @@ import 'package:reader_edit/data/session_repository.dart';
 import 'package:reader_edit/data/text_import_service.dart';
 import 'package:reader_edit/domain/novel.dart';
 import 'package:reader_edit/domain/revision_session.dart';
+import 'package:reader_edit/ui/home_page.dart';
+import 'package:reader_edit/ui/scan_page.dart';
 
 class _FakeTextImportService implements TextImportService {
   const _FakeTextImportService(this.file);
@@ -27,6 +29,7 @@ Future<ReaderEditStore> _pumpApp(
 }) async {
   final store = ReaderEditStore(
     MemorySessionRepository(
+      onboardingCompleted: true,
       languageCode: languageCode,
       darkMode: darkMode,
       sessions: sessions,
@@ -42,6 +45,13 @@ Future<ReaderEditStore> _pumpApp(
 }
 
 Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
+  if (finder.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
   await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
   await tester.tap(finder);
@@ -49,22 +59,139 @@ Future<void> _tapAndSettle(WidgetTester tester, Finder finder) async {
 }
 
 void main() {
-  testWidgets('settings sheet dismisses, reopens, and switches locale', (
-    tester,
-  ) async {
-    await _pumpApp(tester);
+  testWidgets(
+    'settings is a full page with working back navigation and locale switching',
+    (tester) async {
+      await _pumpApp(tester);
 
-    await _tapAndSettle(tester, find.byKey(const ValueKey('settings_button')));
-    expect(find.text('数据与隐私'), findsOneWidget);
-    await tester.tapAt(const Offset(8, 8));
-    await tester.pumpAndSettle();
-    expect(find.text('数据与隐私'), findsNothing);
+      await _tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('settings_button')),
+      );
+      expect(find.text('数据与隐私'), findsOneWidget);
+      expect(find.text('写作、阅读与修订'), findsNothing);
+      expect(
+        find.byType(CupertinoSlidingSegmentedControl<String>),
+        findsOneWidget,
+      );
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('数据与隐私'), findsNothing);
 
-    await _tapAndSettle(tester, find.byKey(const ValueKey('settings_button')));
-    await _tapAndSettle(tester, find.text('English'));
-    expect(find.text('Settings & privacy'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      await _tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('settings_button')),
+      );
+      await _tapAndSettle(tester, find.text('English'));
+      expect(find.text('Settings & privacy'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'privacy entry opens an unpublished-policy page and returns to settings',
+    (tester) async {
+      await _pumpApp(tester);
+      await _tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('settings_button')),
+      );
+      await _tapAndSettle(tester, find.text('隐私政策'));
+      expect(find.text('隐私政策暂未发布'), findsOneWidget);
+      expect(find.text('界面语言'), findsNothing);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('界面语言'), findsOneWidget);
+      await _tapAndSettle(tester, find.text('English'));
+      await _tapAndSettle(tester, find.text('Privacy policy'));
+      expect(find.text('Privacy policy is not published yet'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'iOS delete confirmation cancels safely and deletes only on confirm',
+    (tester) async {
+      final now = DateTime.utc(2026, 10, 16);
+      final store = await _pumpApp(
+        tester,
+        novels: [
+          Novel(
+            id: 'delete-test',
+            title: '保留到确认',
+            description: '',
+            chapters: const [],
+            createdAt: now,
+            updatedAt: now,
+          ),
+        ],
+      );
+      await _tapAndSettle(tester, find.byTooltip('删除小说'));
+      expect(find.byType(CupertinoAlertDialog), findsOneWidget);
+      final destructiveAction = find.widgetWithText(
+        CupertinoDialogAction,
+        '删除',
+      );
+      expect(
+        tester
+            .widget<CupertinoDialogAction>(destructiveAction)
+            .isDestructiveAction,
+        isTrue,
+      );
+      await _tapAndSettle(tester, find.text('取消'));
+      expect(store.novels.single.title, '保留到确认');
+      await _tapAndSettle(tester, find.byTooltip('删除小说'));
+      await _tapAndSettle(
+        tester,
+        find.widgetWithText(CupertinoDialogAction, '删除'),
+      );
+      expect(store.novels, isEmpty);
+      expect(find.text('从一本小说开始'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'large-text dark iOS settings keeps data when erase is cancelled',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 720);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 1.6;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+        tester.platformDispatcher.clearTextScaleFactorTestValue();
+      });
+      final now = DateTime.utc(2026, 10, 16);
+      final store = await _pumpApp(
+        tester,
+        languageCode: 'en',
+        darkMode: true,
+        novels: [
+          Novel(
+            id: 'keep',
+            title: 'Keep this novel',
+            description: '',
+            chapters: const [],
+            createdAt: now,
+            updatedAt: now,
+          ),
+        ],
+      );
+      await _tapAndSettle(
+        tester,
+        find.byKey(const ValueKey('settings_button')),
+      );
+      expect(find.byType(CupertinoSwitch), findsOneWidget);
+      await _tapAndSettle(tester, find.text('Erase all local data'));
+      expect(find.byType(CupertinoAlertDialog), findsOneWidget);
+      await _tapAndSettle(tester, find.text('Cancel'));
+      expect(store.novels.single.title, 'Keep this novel');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('My novels'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'sample completes reader scan, revision, verification and export',
@@ -206,6 +333,7 @@ void main() {
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.text('放弃未保存的草稿？'), findsOneWidget);
+    expect(find.byType(CupertinoAlertDialog), findsOneWidget);
     await _tapAndSettle(tester, find.text('取消'));
     expect(find.text('未保存'), findsOneWidget);
 
@@ -270,6 +398,93 @@ void main() {
     expect(reloadedStore.sessions.single.flaggedCount, 0);
     expect(reloadedStore.sessions.single.unresolvedCount, 0);
   });
+
+  for (final language in ['zh', 'en']) {
+    testWidgets(
+      '$language scan keeps all signals aligned and long save text visible at large text',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 720);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = 1.6;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+          tester.platformDispatcher.clearTextScaleFactorTestValue();
+        });
+        final session = RevisionSession(
+          id: 'layout',
+          title: 'Layout',
+          knowPromise: '',
+          feelPromise: '',
+          wonderPromise: '',
+          passages: const [
+            PassageRevision(
+              id: 'first',
+              original: '第一段。',
+              revised: '第一段。',
+              signal: ReaderSignal.clear,
+            ),
+            PassageRevision(
+              id: 'last',
+              original: '最后一段。',
+              revised: '最后一段。',
+              signal: ReaderSignal.lost,
+            ),
+          ],
+          updatedAt: DateTime.utc(2026, 10, 16),
+        );
+        final store = await _pumpApp(
+          tester,
+          languageCode: language,
+          sessions: [session],
+        );
+        Navigator.of(tester.element(find.byType(HomePage))).push<void>(
+          CupertinoPageRoute(
+            builder: (_) => ScanPage(
+              store: store,
+              sessionId: 'layout',
+              initialPassageId: 'last',
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.byKey(const ValueKey('signal_clear')),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        final clear = tester.getRect(
+          find.byKey(const ValueKey('signal_clear')),
+        );
+        final dragging = tester.getRect(
+          find.byKey(const ValueKey('signal_dragging')),
+        );
+        final lost = tester.getRect(find.byKey(const ValueKey('signal_lost')));
+        expect(dragging.top, closeTo(clear.top, 0.1));
+        expect(lost.top, closeTo(clear.top, 0.1));
+        expect(dragging.width, closeTo(clear.width, 0.1));
+        await tester.scrollUntilVisible(
+          find.byKey(const ValueKey('scan_save_button')),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        final button = tester.getRect(
+          find.byKey(const ValueKey('scan_save_button')),
+        );
+        final label = tester.getRect(
+          find.descendant(
+            of: find.byKey(const ValueKey('scan_save_button')),
+            matching: find.byType(Text),
+          ),
+        );
+        expect(button.contains(label.topLeft), isTrue);
+        expect(button.contains(label.bottomRight), isTrue);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets(
     'compact English layout with large text has no framework exception',

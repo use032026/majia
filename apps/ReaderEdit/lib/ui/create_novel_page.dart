@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
+
 import '../app/reader_edit_store.dart';
 import '../l10n/app_strings.dart';
 
@@ -30,14 +34,14 @@ class _CreateNovelPageState extends State<CreateNovelPage> {
     final strings = AppStrings.of(context);
     return Scaffold(
       appBar: AppBar(title: Text(strings.text('创建小说', 'Create novel'))),
-      body: SafeArea(
-        child: Center(
+      body: PageSafeArea(
+        builder: (context) => Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 720),
             child: Form(
               key: _formKey,
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+                padding: pageScrollPadding(context, top: 12),
                 children: [
                   Text(
                     strings.text(
@@ -110,9 +114,7 @@ class _CreateNovelPageState extends State<CreateNovelPage> {
     } on Object {
       if (!mounted) return;
       setState(() => _submitting = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppStrings.of(context).saveFailed)),
-      );
+      showAppNotice(context, AppStrings.of(context).saveFailed);
     }
   }
 }

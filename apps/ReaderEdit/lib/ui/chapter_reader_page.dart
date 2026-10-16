@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'app_notice.dart';
+
+import 'page_safe_area.dart';
 
 import '../app/reader_edit_store.dart';
 import '../domain/novel.dart';
@@ -99,8 +104,8 @@ class _ChapterReaderPageState extends State<ChapterReaderPage> {
             const SizedBox(width: 8),
           ],
         ),
-        body: SafeArea(
-          child: Center(
+        body: PageSafeArea(
+          builder: (context) => Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 760),
               child: _editing
@@ -202,9 +207,9 @@ class _ChapterReaderPageState extends State<ChapterReaderPage> {
 
   Future<bool> _confirmDiscard() async {
     final strings = AppStrings.of(context);
-    return await showDialog<bool>(
+    return await showCupertinoDialog<bool>(
           context: context,
-          builder: (dialogContext) => AlertDialog(
+          builder: (dialogContext) => CupertinoAlertDialog(
             title: Text(strings.text('放弃未保存的章节修改？', 'Discard chapter edits?')),
             content: Text(
               strings.text(
@@ -213,11 +218,13 @@ class _ChapterReaderPageState extends State<ChapterReaderPage> {
               ),
             ),
             actions: [
-              TextButton(
+              CupertinoDialogAction(
+                isDefaultAction: true,
                 onPressed: () => Navigator.pop(dialogContext, false),
                 child: Text(strings.cancel),
               ),
-              FilledButton(
+              CupertinoDialogAction(
+                isDestructiveAction: true,
                 onPressed: () => Navigator.pop(dialogContext, true),
                 child: Text(strings.discard),
               ),
@@ -228,9 +235,7 @@ class _ChapterReaderPageState extends State<ChapterReaderPage> {
   }
 
   void _show(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    showAppNotice(context, message);
   }
 }
 
@@ -245,7 +250,7 @@ class _ReadChapterBody extends StatelessWidget {
     final strings = AppStrings.of(context);
     return ListView(
       key: const ValueKey('chapter_read_view'),
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 56),
+      padding: pageScrollPadding(context, horizontal: 24, top: 12),
       children: [
         Text(chapter.title, style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(height: 10),
@@ -308,7 +313,7 @@ class _EditChapterBody extends StatelessWidget {
     return ListView(
       key: const ValueKey('chapter_edit_view'),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 48),
+      padding: pageScrollPadding(context, top: 12),
       children: [
         TextField(
           key: const ValueKey('edit_chapter_title_field'),
