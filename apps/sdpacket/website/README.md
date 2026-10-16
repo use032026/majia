@@ -1,7 +1,6 @@
 # KIFXPRO website
 
-Static, dependency-free official website and privacy policy for the current
-KIFXPRO `0.1.0` implementation.
+Static, dependency-free official website and privacy policy for KIFXPRO.
 
 ## Files
 
@@ -45,9 +44,9 @@ product-specific compliance draft, not legal advice.
 The app settings screen uses fixed, language-aware public links:
 
 - Chinese privacy: `https://kifxpro.com/privacy.html?lang=zh`
-- English privacy: `https://kifxpro.com/index.html?lang=en`
+- English privacy: `https://kifxpro.com/privacy.html?lang=en`
 - support email: `15211857631@163.com`
 
-If a remote privacy page cannot be opened, the app shows its complete built-in
-privacy notice. If no mail app is available, it shows the support address for
-manual use.
+The app opens the privacy policy in an in-app web view. If the online page
+cannot be loaded, the app shows a local summary and a retry action. If no mail
+app is available, it shows the support address for manual use.

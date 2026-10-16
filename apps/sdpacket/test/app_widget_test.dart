@@ -232,7 +232,7 @@ void main() {
         .push(MaterialPageRoute<void>(builder: (_) => const SettingsScreen()));
     await tester.pumpAndSettle();
 
-    expect(find.text('https://kifxpro.com/index.html?lang=en'), findsOneWidget);
+    expect(find.text('Read the privacy policy in the app'), findsOneWidget);
     expect(find.text('15211857631@163.com'), findsOneWidget);
     expect(find.text('System requirements'), findsNothing);
     expect(find.text('About KIFXPRO'), findsNothing);
@@ -245,10 +245,7 @@ void main() {
     expect(store.languageCode, 'zh');
     expect(find.text('设置'), findsOneWidget);
     expect(find.text('简体中文'), findsOneWidget);
-    expect(
-      find.text('https://kifxpro.com/privacy.html?lang=zh'),
-      findsOneWidget,
-    );
+    expect(find.text('在应用内查看隐私政策'), findsOneWidget);
     expect(find.text('系统要求'), findsNothing);
     expect(find.text('关于 KIFXPRO'), findsNothing);
     expect(tester.takeException(), isNull);

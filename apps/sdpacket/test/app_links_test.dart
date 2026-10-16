@@ -9,7 +9,7 @@ void main() {
     );
     expect(
       AppLinks.privacyPolicyUrlFor('en'),
-      'https://kifxpro.com/index.html?lang=en',
+      'https://kifxpro.com/privacy.html?lang=en',
     );
   });
 

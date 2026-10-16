@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../app.dart';
 import '../config/app_links.dart';
 import '../widgets/ios_modal.dart';
+import 'privacy_web_page.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -131,22 +132,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Future<void> _openPrivacy() async {
-    final rawUrl = AppLinks.privacyPolicyUrlFor(
-      StoreScope.of(context).languageCode,
+  void _openPrivacy() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            PrivacyWebPage(languageCode: StoreScope.of(context).languageCode),
+      ),
     );
-    final uri = Uri.tryParse(rawUrl);
-    try {
-      if (uri != null &&
-          await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-        return;
-      }
-    } on Exception {
-      // Fall back to the complete built-in privacy notice below.
-    }
-    if (mounted) {
-      await _showInfo(context.l10n.privacy, context.l10n.privacyBody);
-    }
   }
 
   Future<void> _contactSupport() async {
@@ -170,9 +162,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final privacyPolicyUrl = AppLinks.privacyPolicyUrlFor(
-      StoreScope.of(context).languageCode,
-    );
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.settings)),
       body: ListView(
@@ -217,9 +206,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               children: [
                 ListTile(
+                  key: const Key('settings-privacy'),
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: Text(context.l10n.privacy),
-                  subtitle: Text(privacyPolicyUrl),
+                  subtitle: Text(context.l10n.privacyInAppSubtitle),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _openPrivacy,
                 ),

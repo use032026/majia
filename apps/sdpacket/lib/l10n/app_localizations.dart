@@ -1118,11 +1118,23 @@ abstract class AppLocalizations {
   /// **'隐私说明'**
   String get privacy;
 
+  /// No description provided for @privacyInAppSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'在应用内查看隐私政策'**
+  String get privacyInAppSubtitle;
+
   /// No description provided for @localPrivacyFallback.
   ///
   /// In zh, this message translates to:
-  /// **'公开网页未配置，当前显示内置隐私说明'**
+  /// **'在线隐私协议暂时无法加载，以下仅为本地摘要。'**
   String get localPrivacyFallback;
+
+  /// No description provided for @retryOnlinePrivacy.
+  ///
+  /// In zh, this message translates to:
+  /// **'重新加载在线协议'**
+  String get retryOnlinePrivacy;
 
   /// No description provided for @privacyBody.
   ///

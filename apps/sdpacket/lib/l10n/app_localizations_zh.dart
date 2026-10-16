@@ -550,7 +550,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privacy => '隐私说明';
 
   @override
-  String get localPrivacyFallback => '公开网页未配置，当前显示内置隐私说明';
+  String get privacyInAppSubtitle => '在应用内查看隐私政策';
+
+  @override
+  String get localPrivacyFallback => '在线隐私协议暂时无法加载，以下仅为本地摘要。';
+
+  @override
+  String get retryOnlinePrivacy => '重新加载在线协议';
 
   @override
   String get privacyBody =>

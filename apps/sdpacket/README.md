@@ -34,13 +34,13 @@ Flutter 实现的本地优先装箱登记与定位应用。产品规格见
 
 iOS 和 Android 已统一使用生产标识。Android 在存在 `android/key.properties` 时使用独立上传密钥签名；缺少该文件时仅回退到 Debug 签名用于非商店验证。正式云构建仍需配置独立的 `SDPACKET_ANDROID_*` Repository Secrets。
 
-设置页会根据当前应用语言在外部浏览器打开公开页面：
+设置页会根据当前应用语言在应用内打开公开的隐私政策：
 
 - 简体中文：`https://kifxpro.com/privacy.html?lang=zh`
-- English：`https://kifxpro.com/index.html?lang=en`
+- English：`https://kifxpro.com/privacy.html?lang=en`
 - 支持邮箱：`15211857631@163.com`
 
-远程隐私页面无法打开时，应用会显示内置隐私说明作为兜底；无法打开邮件应用时，会显示可手动发送的支持邮箱。
+隐私政策在应用内打开；在线页面无法加载时，应用会显示内置摘要并提供重试。无法打开邮件应用时，会显示可手动发送的支持邮箱。
 
 ## 本地运行
 

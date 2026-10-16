@@ -277,8 +277,7 @@ a {
 
 .eyebrow,
 .section-kicker,
-.mini-kicker,
-.legal-kicker {
+.mini-kicker {
   text-transform: uppercase;
   letter-spacing: 0.11em;
   font-size: 12px;
@@ -748,8 +747,7 @@ a {
 }
 
 .section-kicker,
-.mini-kicker,
-.legal-kicker {
+.mini-kicker {
   color: var(--forest-soft);
 }
 
@@ -1324,12 +1322,6 @@ a {
   color: #bcdace;
   font-size: 13px;
   font-weight: 690;
-}
-
-.legal-kicker {
-  display: block;
-  margin-bottom: 15px;
-  color: #a8dac8;
 }
 
 .legal-hero h1 {
@@ -2045,8 +2037,7 @@ a {
   }
 
   .legal-hero p,
-  .legal-meta span,
-  .legal-kicker {
+  .legal-meta span {
     color: #222;
   }
 

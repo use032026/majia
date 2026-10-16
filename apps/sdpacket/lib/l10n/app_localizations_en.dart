@@ -564,8 +564,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy => 'Privacy';
 
   @override
+  String get privacyInAppSubtitle => 'Read the privacy policy in the app';
+
+  @override
   String get localPrivacyFallback =>
-      'Public URL not configured; showing the built-in privacy notice';
+      'The online privacy policy is unavailable. This is a local summary only.';
+
+  @override
+  String get retryOnlinePrivacy => 'Retry online policy';
 
   @override
   String get privacyBody =>
