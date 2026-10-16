@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trip_cost/core/infrastructure/app_providers.dart';
+import 'package:trip_cost/features/settings/presentation/settings_detail_pages.dart';
 import 'package:trip_cost/features/settings/presentation/settings_page.dart';
 import 'package:trip_cost/l10n/app_localizations.dart';
 
@@ -11,6 +12,53 @@ import '../../../helpers/isolated_test_database.dart';
 import '../../../helpers/m4_fakes.dart';
 
 void main() {
+  testWidgets('privacy notices open pages with the existing localized text', (
+    tester,
+  ) async {
+    final database = createIsolatedTestDatabase();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(database),
+          settingsRepositoryProvider.overrideWithValue(
+            MemorySettingsRepository(),
+          ),
+        ],
+        child: CupertinoApp(
+          locale: const Locale('en'),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const PrivacySettingsPage(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    for (final kind in ['disclaimer', 'permissions']) {
+      await tester.tap(find.byKey(Key('privacy-$kind-row')));
+      await tester.pumpAndSettle();
+
+      final page = find.byKey(Key('privacy-$kind-page'));
+      expect(page, findsOneWidget);
+      expect(find.byType(CupertinoPopupSurface), findsNothing);
+      final localizations = AppLocalizations.of(tester.element(page));
+      expect(
+        tester.widget<Text>(find.byKey(Key('privacy-$kind-body'))).data,
+        kind == 'disclaimer'
+            ? localizations.disclaimerBody
+            : localizations.permissionsBody,
+      );
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('privacy-settings-list')), findsOneWidget);
+    }
+  });
+
   testWidgets('Android settings omit the Apple-only iCloud category', (
     tester,
   ) async {

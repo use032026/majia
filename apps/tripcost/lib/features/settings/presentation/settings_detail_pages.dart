@@ -520,22 +520,18 @@ class PrivacySettingsPage extends ConsumerWidget {
                       _openPrivacyPolicy(context, privacyPolicyUri),
                 ),
                 _DetailNavigationRow(
+                  key: const Key('privacy-disclaimer-row'),
                   icon: CupertinoIcons.info_circle,
                   title: localizations.disclaimerTitle,
-                  onPressed: () => _showLongText(
-                    context,
-                    localizations.disclaimerTitle,
-                    localizations.disclaimerBody,
-                  ),
+                  onPressed: () =>
+                      _openNoticePage(context, _PrivacyNoticeKind.disclaimer),
                 ),
                 _DetailNavigationRow(
+                  key: const Key('privacy-permissions-row'),
                   icon: CupertinoIcons.lock_shield,
                   title: localizations.permissionsTitle,
-                  onPressed: () => _showLongText(
-                    context,
-                    localizations.permissionsTitle,
-                    localizations.permissionsBody,
-                  ),
+                  onPressed: () =>
+                      _openNoticePage(context, _PrivacyNoticeKind.permissions),
                 ),
               ],
             ),
@@ -568,50 +564,53 @@ class PrivacySettingsPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _showLongText(BuildContext context, String title, String body) {
-    return showCupertinoModalPopup<void>(
-      context: context,
-      builder: (context) => CupertinoPopupSurface(
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: MediaQuery.sizeOf(context).height * 0.72,
-            child: Column(
+  Future<void> _openNoticePage(BuildContext context, _PrivacyNoticeKind kind) {
+    return Navigator.of(context, rootNavigator: true).push<void>(
+      CupertinoPageRoute<void>(builder: (_) => _PrivacyNoticePage(kind: kind)),
+    );
+  }
+}
+
+enum _PrivacyNoticeKind { disclaimer, permissions }
+
+class _PrivacyNoticePage extends StatelessWidget {
+  const _PrivacyNoticePage({required this.kind});
+
+  final _PrivacyNoticeKind kind;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final title = switch (kind) {
+      _PrivacyNoticeKind.disclaimer => localizations.disclaimerTitle,
+      _PrivacyNoticeKind.permissions => localizations.permissionsTitle,
+    };
+    final body = switch (kind) {
+      _PrivacyNoticeKind.disclaimer => localizations.disclaimerBody,
+      _PrivacyNoticeKind.permissions => localizations.permissionsBody,
+    };
+
+    return CupertinoPageScaffold(
+      key: Key('privacy-${kind.name}-page'),
+      navigationBar: CupertinoNavigationBar(middle: Text(title)),
+      child: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: AppInsets.secondaryPageScrollPadding(context),
+          children: <Widget>[
+            _DetailGroup(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(AppSpacing.medium),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: CupertinoTheme.of(
-                            context,
-                          ).textTheme.navTitleTextStyle,
-                        ),
-                      ),
-                      CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text(AppLocalizations.of(context).commonDone),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.medium,
-                      0,
-                      AppSpacing.medium,
-                      AppSpacing.large,
-                    ),
-                    child: Text(body),
+                  child: Text(
+                    body,
+                    key: Key('privacy-${kind.name}-body'),
+                    style: CupertinoTheme.of(context).textTheme.textStyle,
                   ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
