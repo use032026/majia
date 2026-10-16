@@ -1,0 +1,256 @@
+[
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/01-library.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "bytes": 256944,
+    "sha256": "9f992938fc90620b68408ed64bc1a868db0980a1506d0dc10dd6ea783cbe7c28",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/03-queue.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "bytes": 330512,
+    "sha256": "0f75ee45611b26f7eb7bae676688c4c74e6b0c567479d63d25ba59c16d6b0f10",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/01-library.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 301669,
+    "sha256": "47fd200b43906fd85e3f614c2d6dd4b741d9d2cc547af64e5864a2ead208a3b3",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/02-read.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 397709,
+    "sha256": "4bc243f53bb1a941832c270e89179cdba27342ce531ce08f4ad8c4ed7557858e",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/03-queue.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 358218,
+    "sha256": "53cc970617153196cf78cfb877182ca96fd821b6ab59e3e67a30d9c7547c69e3",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/04-compare.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 231884,
+    "sha256": "c1a25a99c40f6872fb0c19bbf6d99e8719e2e6757faf1955b420ddd29975a074",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/01-library.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "bytes": 225585,
+    "sha256": "523991dbb94119bf4d13ecefcfc253ecf5b66ddc52cbf8ac75682957b63054c5",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/03-queue.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "bytes": 304939,
+    "sha256": "04a07565ad1a96597e604b4977810e0e9792df8102ea839f1665a079e4adc44a",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/01-library.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 246997,
+    "sha256": "e69915af8a3512173be41b686a77d0f44ac894c324b92b56a52373c8bbfa4500",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/02-read.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 342026,
+    "sha256": "ef10340802916e25ad6ef3dc426c17533446355daca41c3f62b867779e6b2176",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/03-queue.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 360319,
+    "sha256": "7f75aae5d55522d733ae7a7660af31bee360ac73ebff77e0f9f9bd0e5052b483",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/04-compare.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "bytes": 215228,
+    "sha256": "e5cc290671d615936a36f2997f3c3a2d1b8772b20636c3770a6b1377b3995dad",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/01-library.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 209944,
+    "sha256": "2b17f1297437d8fec4e5af4842b4f1672e769e19d59abac462b96e7ea59fdfe4",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/02-read.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 299646,
+    "sha256": "617ab33a5ee71d57c3f8d7cf76a50c9486d07cfbaca9b4d8c1584ab311feada3",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/03-queue.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 302028,
+    "sha256": "220038944a95ed2ceb0fe6b2eefc089e629c2cb8af6c36897f4ffca2947e165a",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/04-compare.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 148454,
+    "sha256": "509540ea8f013992c654e630ef8ba4ca363e82a706cdd5d96fb7945f82cd0854",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/feature-graphic-en.png",
+    "size": [
+      1024,
+      500
+    ],
+    "mode": "RGB",
+    "bytes": 21745,
+    "sha256": "b4b35ed38f529cceaad65ea77dbfdbd28d3a58f25d17acada8c550edbc2413f3",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/feature-graphic-zh.png",
+    "size": [
+      1024,
+      500
+    ],
+    "mode": "RGB",
+    "bytes": 22538,
+    "sha256": "d525703b85ed25ddb218f446ad0d1c36cc7a4ca0db1f4f1ff7dd5b8723f7905c",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/01-library.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 170642,
+    "sha256": "1089d0d6ce832fed6f3785a5cf6704626e3ec31e7391d16ec0355a5d7777a838",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/02-read.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 255285,
+    "sha256": "03ef97e515ff8bbd4f527506a9c26ed9e2969a7f3289d12e6f95b5b854d9ae46",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/03-queue.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 276159,
+    "sha256": "226ea89563b025f917e76ebf0fb80c3606ef4a2dace1e2a393510c6ad691170b",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/04-compare.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "bytes": 136209,
+    "sha256": "c1339bf0b95f427d2305759ed25a6ab55362160cc2bdd361c443e30072b808b4",
+    "visual_review": "inspected at original resolution; current source English pluralization note in OPEN_ITEMS.md"
+  },
+  {
+    "path": "artifacts/google-play-listing/app-icon-512.png",
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "bytes": 305337,
+    "sha256": "0c69bd5f97367b5829e6dbd026bb0c404add7bab631e63cef6c5207a30ab9a27",
+    "source": "current production icon",
+    "visual_review": "same branding as inspected app icon"
+  }
+]

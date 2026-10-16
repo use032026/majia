@@ -1,0 +1,21 @@
+ReaderEdit is a local writing and revision workspace for novels and chapters, with English and Simplified Chinese interfaces.
+
+KEEP YOUR MANUSCRIPT TOGETHER
+Create novels and chapters on your device. Import TXT or Markdown files through the system file picker. ReaderEdit decodes UTF-8 and BOM-marked UTF-16 text and separates supported Chinese or Markdown chapter headings into chapters. Imported text becomes a working copy; the original file is left unchanged.
+
+READ AND EDIT IN ONE PLACE
+Open a chapter in a reading view, then switch directly into editing. Chapter titles and text are saved in your local workspace.
+
+REVISE FROM A READER'S PERSPECTIVE
+Create a separate revision session for a passage. Set what you want a reader to know, feel, and wonder. Mark each paragraph Clear, Dragging, or Lost, and add your own reader notes. Flagged paragraphs form a focused revision queue.
+
+SEE WHAT CHANGED
+Revise selected paragraphs while preserving their original versions. Compare before and after, reopen an item, reassess its signal, and check the result against your reader promises. Copy the revised draft or revision log to the system clipboard when you choose.
+
+A WORKSPACE ON YOUR DEVICE
+Writing, reading, and revision work without an account or cloud sync. Local snapshots support save recovery. Delete individual novels, chapters, or revision sessions, or erase all manuscript and revision data from Settings. Separately created revision sessions remain independent of novel and chapter deletions.
+
+CHOOSE YOUR READING ENVIRONMENT
+Switch between English and Simplified Chinese, use light or dark appearance, and replay the quick tour from Settings.
+
+The core manuscript workflow works offline. Opening an online privacy policy requires a connection when a policy URL has been configured. Files selected from a cloud provider and operating-system backups follow that provider's or system's settings. Clipboard export does not publish your writing.

@@ -1,0 +1,26 @@
+[
+  {
+    "page": "index.html",
+    "local_references": 16,
+    "all_exist": true,
+    "no_external_resources": true
+  },
+  {
+    "page": "privacy-en.html",
+    "local_references": 7,
+    "all_exist": true,
+    "no_external_resources": true
+  },
+  {
+    "page": "privacy-zh.html",
+    "local_references": 7,
+    "all_exist": true,
+    "no_external_resources": true
+  },
+  {
+    "page": "privacy.html",
+    "local_references": 6,
+    "all_exist": true,
+    "no_external_resources": true
+  }
+]

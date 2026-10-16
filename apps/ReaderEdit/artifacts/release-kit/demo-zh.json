@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 2,
+  "sessions": [
+    {
+      "id": "demo-revision",
+      "title": "雾站来信",
+      "knowPromise": "有人知道林秋的行程",
+      "feelPromise": "安静里逐渐出现不安",
+      "wonderPromise": "是谁写的信？",
+      "updatedAt": "2026-10-16T09:41:00.000",
+      "passages": [
+        {
+          "id": "p0",
+          "original": "晚班火车离站后，林秋才发现长椅下有一封没有署名的信。信封很旧，右下角却沾着刚落下的雨。",
+          "revised": "晚班火车离站后，林秋才发现长椅下有一封没有署名的信。信封很旧，右下角却沾着刚落下的雨。",
+          "signal": "clear",
+          "note": "",
+          "isResolved": true
+        },
+        {
+          "id": "p1",
+          "original": "她拆开信，第一句话写着：“不要搭明早六点的车。”她抬头看向时刻表，又看见玻璃里的自己。",
+          "revised": "林秋借着站灯展开信纸。“不要搭明早六点的车。”空荡荡的站台对面，时刻表刚好翻到了六点。",
+          "signal": "dragging",
+          "note": "保留警告的悬念，让下一步动作更清楚。",
+          "isResolved": true
+        },
+        {
+          "id": "p2",
+          "original": "站外没有人。售票窗口已经熄灯，可远处的广播忽然报出了她的名字。",
+          "revised": "站外没有人。售票窗口已经熄灯，可远处的广播忽然报出了她的名字。",
+          "signal": "lost",
+          "note": "",
+          "isResolved": false
+        }
+      ],
+      "knowChecked": false,
+      "feelChecked": false,
+      "wonderChecked": false
+    }
+  ],
+  "novels": [
+    {
+      "id": "demo-novel",
+      "title": "雾站来信",
+      "description": "一座安静的车站，一封没有署名的信。",
+      "chapters": [
+        {
+          "id": "demo-chapter",
+          "title": "第一章 · 末班车后",
+          "content": "晚班火车离站后，林秋才发现长椅下有一封没有署名的信。信封很旧，右下角却沾着刚落下的雨。\n\n她拆开信，第一句话写着：“不要搭明早六点的车。”她抬头看向时刻表，又看见玻璃里的自己。\n\n站外没有人。售票窗口已经熄灯，可远处的广播忽然报出了她的名字。",
+          "createdAt": "2026-10-16T09:41:00.000",
+          "updatedAt": "2026-10-16T09:41:00.000"
+        }
+      ],
+      "createdAt": "2026-10-16T09:41:00.000",
+      "updatedAt": "2026-10-16T09:41:00.000"
+    }
+  ]
+}

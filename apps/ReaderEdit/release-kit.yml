@@ -1,0 +1,73 @@
+schema_version: 2
+identity:
+  app_name: "ReaderEdit"
+  operator: ""
+  bundle_id: "com.example.readerEdit"
+  android_package: "com.example.reader_edit"
+contact:
+  support_email: ""
+  production_domain: ""
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: true
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+privacy:
+  effective_date: ""
+  confirmed:
+    - "2026-10-16 user: operator, support email, production domain and effective date are all undecided."
+    - "Core manuscript and revision data are stored locally; no account or app backend is implemented."
+    - "Online policy WebView is conditional on build-time HTTPS configuration; JavaScript is disabled."
+    - "File import uses the system picker; exports write to the system clipboard on user action."
+    - "OS backups, file providers and clipboard behavior are controlled outside ReaderEdit."
+  open_questions:
+    - "Legal operator, monitored support address, production domain and effective date."
+    - "Intended audience, launch regions, final distribution SDK inventory and legal review."
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    locales:
+      - en-US
+      - zh-Hans
+    scenes:
+      - id: library
+        source: source/iphone-en-01-library.png
+      - id: read
+        source: source/iphone-en-02-read.png
+      - id: queue
+        source: source/iphone-en-03-queue.png
+      - id: compare
+        source: source/iphone-en-04-compare.png
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    scenes:
+      - id: library
+        source: source/prepared/android-en-01-library.png
+      - id: read
+        source: source/prepared/android-en-02-read.png
+      - id: queue
+        source: source/prepared/android-en-03-queue.png
+      - id: compare
+        source: source/prepared/android-en-04-compare.png
+paths:
+  app_root: "apps/ReaderEdit"

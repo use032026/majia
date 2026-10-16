@@ -1,0 +1,1 @@
+novel,chapter,manuscript,revision,writing,reader,editing,draft,markdown,offline,notes

@@ -1,0 +1,82 @@
+{
+  "android": {
+    "manifests": [
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/ReaderEdit/android/app/src/debug/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": "ReaderEdit",
+        "package": null,
+        "path": "/Users/starburst/majia/apps/ReaderEdit/android/app/src/main/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      },
+      {
+        "application_label": null,
+        "package": null,
+        "path": "/Users/starburst/majia/apps/ReaderEdit/android/app/src/profile/AndroidManifest.xml",
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
+      }
+    ]
+  },
+  "app_root": "/Users/starburst/majia/apps/ReaderEdit",
+  "dependency_signals": {
+    "local_storage": [
+      "shared_preferences"
+    ]
+  },
+  "generated_at": "2026-10-16T10:21:49.093586+00:00",
+  "ios": {
+    "bundle_identifiers": [
+      "com.example.readerEdit",
+      "com.example.readerEdit.RunnerTests"
+    ],
+    "info_plists": [
+      {
+        "display_name": "ReaderEdit",
+        "path": "/Users/starburst/majia/apps/ReaderEdit/ios/Runner/Info.plist",
+        "usage_descriptions": {}
+      }
+    ],
+    "privacy_manifests": [
+      {
+        "path": "/Users/starburst/majia/apps/ReaderEdit/ios/Runner/PrivacyInfo.xcprivacy",
+        "payload": {
+          "NSPrivacyAccessedAPITypes": [],
+          "NSPrivacyCollectedDataTypes": [],
+          "NSPrivacyTracking": false,
+          "NSPrivacyTrackingDomains": []
+        }
+      }
+    ],
+    "targeted_device_families": [
+      "1,2"
+    ]
+  },
+  "network_host_evidence": [],
+  "network_hosts_observed": [],
+  "pubspec": {
+    "dependencies": [
+      "cupertino_icons",
+      "file_selector",
+      "flutter_localizations",
+      "path_provider",
+      "shared_preferences",
+      "webview_flutter"
+    ],
+    "description": "Offline, bilingual reader-perspective revision workspace.",
+    "name": "reader_edit",
+    "path": "/Users/starburst/majia/apps/ReaderEdit/pubspec.yaml",
+    "version": "1.0.0+1"
+  },
+  "schema_version": 1,
+  "warning": "These are source signals, not verified privacy or product conclusions."
+}

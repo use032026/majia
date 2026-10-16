@@ -1,0 +1,171 @@
+{
+  "schema_version": 2,
+  "store": "app_store",
+  "app_name": "ReaderEdit",
+  "font_path": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#5142CF",
+    "background_bottom": "#242039",
+    "text_color": "#FFFCF7",
+    "muted_text_color": "#E0D9FA"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone-en-01-library.png",
+      "output": "final/en-US/iphone/01-library.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Your writing, together",
+      "subheadline": "Keep novels and chapters in a local workspace.",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone-en-02-read.png",
+      "output": "final/en-US/iphone/02-read.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Read. Then revise.",
+      "subheadline": "Switch from chapter reading to editing.",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone-en-03-queue.png",
+      "output": "final/en-US/iphone/03-queue.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Follow reader signals",
+      "subheadline": "Focus on passages marked Dragging or Lost.",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone-en-04-compare.png",
+      "output": "final/en-US/iphone/04-compare.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "See every change",
+      "subheadline": "Compare your original and revised passages.",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/ipad-en-01-library.png",
+      "output": "final/en-US/ipad/01-library.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Your writing, together",
+      "subheadline": "Keep novels and chapters in a local workspace.",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/ipad-en-03-queue.png",
+      "output": "final/en-US/ipad/03-queue.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Follow reader signals",
+      "subheadline": "Focus on passages marked Dragging or Lost.",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone-zh-01-library.png",
+      "output": "final/zh-Hans/iphone/01-library.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "整理小说与章节",
+      "subheadline": "在本地工作区管理小说与章节。",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone-zh-02-read.png",
+      "output": "final/zh-Hans/iphone/02-read.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "阅读之后，直接修改",
+      "subheadline": "从章节阅读直接切换到编辑。",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone-zh-03-queue.png",
+      "output": "final/zh-Hans/iphone/03-queue.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "跟随读者信号修订",
+      "subheadline": "集中处理“拖沓”与“迷失”的段落。",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone-zh-04-compare.png",
+      "output": "final/zh-Hans/iphone/04-compare.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "看清每一处修改",
+      "subheadline": "对照原文与修订后的段落。",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/ipad-zh-01-library.png",
+      "output": "final/zh-Hans/ipad/01-library.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "整理小说与章节",
+      "subheadline": "在本地工作区管理小说与章节。",
+      "icon": "../../website/assets/app-icon.png"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/ipad-zh-03-queue.png",
+      "output": "final/zh-Hans/ipad/03-queue.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "跟随读者信号修订",
+      "subheadline": "集中处理“拖沓”与“迷失”的段落。",
+      "icon": "../../website/assets/app-icon.png"
+    }
+  ]
+}

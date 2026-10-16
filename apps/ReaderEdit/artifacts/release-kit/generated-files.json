@@ -1,0 +1,577 @@
+[
+  {
+    "path": "release-kit.yml",
+    "bytes": 2167,
+    "sha256": "f4667ed1bcaa0a7db078f1149a317a04b93ddeca6995683539f3ab0a964e0c9b"
+  },
+  {
+    "path": "website/assets/02-read-en.png",
+    "bytes": 300611,
+    "sha256": "6aa456c9f242f5c65e81fc263a4e1da30e5053bd45862c1eec295659950b3b01"
+  },
+  {
+    "path": "website/assets/02-read-zh.png",
+    "bytes": 266390,
+    "sha256": "b4f8c9b9710266969061bff6c02f32955eed402b96981662dda2fb7d7eeb334a"
+  },
+  {
+    "path": "website/assets/03-queue-en.png",
+    "bytes": 288303,
+    "sha256": "c17cf1805c31e1d596d2efd278b339109e23dee634dc49eb1c16dc50158a378b"
+  },
+  {
+    "path": "website/assets/03-queue-zh.png",
+    "bytes": 299756,
+    "sha256": "9ab3074bb552ccaea49602faa6a1a0a5dfbe18035ea669829d0ccefc44c610b8"
+  },
+  {
+    "path": "website/assets/04-compare-en.png",
+    "bytes": 188970,
+    "sha256": "c70f10088da56432ff9083641859023b19c06aeb4fa1cfa01ea1974fb10da984"
+  },
+  {
+    "path": "website/assets/04-compare-zh.png",
+    "bytes": 179184,
+    "sha256": "95107d3057c9f67d7c94ec67aec66c9a44610350ee38f096b7bfc335ed1ae687"
+  },
+  {
+    "path": "website/assets/app-icon.png",
+    "bytes": 1238633,
+    "sha256": "ec172a9db18dc213b7d6107193c5e9ed8d1f1d4407eb26e09af27bd7643e2b64"
+  },
+  {
+    "path": "website/assets/library-en.png",
+    "bytes": 240028,
+    "sha256": "fffa07bd8759b07cc8fff9a59f361db1dc6449dfe634d02014491702b3c5643c"
+  },
+  {
+    "path": "website/assets/library-zh.png",
+    "bytes": 211382,
+    "sha256": "0a2da55a82e2ad1cf6ce0da5adc20e1849a52a990b5100bd15639b5b747f0cf5"
+  },
+  {
+    "path": "website/index.html",
+    "bytes": 8015,
+    "sha256": "ae968db49e69bede07504314e5190aa720c41d9ffc8e62708794a9f06f7be9de"
+  },
+  {
+    "path": "website/privacy-en.html",
+    "bytes": 6526,
+    "sha256": "b60327f20c8e0df8e19313355add5238b48ef15620b96f9ed99e261bc10089ea"
+  },
+  {
+    "path": "website/privacy-zh.html",
+    "bytes": 5824,
+    "sha256": "3a2032e9596da00fffb24f6cedb5e038edb5ef36431c7450da60b8ca27f68dd7"
+  },
+  {
+    "path": "website/privacy.html",
+    "bytes": 11293,
+    "sha256": "73c68cb1f36f52732d123dee717523123bee87d14a8a14ea2d979570ad8e2d44"
+  },
+  {
+    "path": "website/site.js",
+    "bytes": 2310,
+    "sha256": "3ffa72a2c374edf0386826a6d16341210ef413b07b21e983d1bd15ff21e206f9"
+  },
+  {
+    "path": "website/styles.css",
+    "bytes": 5480,
+    "sha256": "e1fad66d6d5809abe0f1bb6c7e34ae7b88ac5142f44a5523bb52f33df0c1d3f6"
+  },
+  {
+    "path": "artifacts/app-store-listing/description-en.txt",
+    "bytes": 1957,
+    "sha256": "1f9367568ed10d2c4d346072b139e8621cf7cb8e5b3519f86fdc4e32bd5d02d5"
+  },
+  {
+    "path": "artifacts/app-store-listing/keywords-en.txt",
+    "bytes": 86,
+    "sha256": "c6e41f509598844daa05f39eab9f47d4f32edb7a35d9007b89af9ff1c294fb91"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/01-library.png",
+    "bytes": 256944,
+    "sha256": "9f992938fc90620b68408ed64bc1a868db0980a1506d0dc10dd6ea783cbe7c28"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/03-queue.png",
+    "bytes": 330512,
+    "sha256": "0f75ee45611b26f7eb7bae676688c4c74e6b0c567479d63d25ba59c16d6b0f10"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/01-library.png",
+    "bytes": 301669,
+    "sha256": "47fd200b43906fd85e3f614c2d6dd4b741d9d2cc547af64e5864a2ead208a3b3"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/02-read.png",
+    "bytes": 397709,
+    "sha256": "4bc243f53bb1a941832c270e89179cdba27342ce531ce08f4ad8c4ed7557858e"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/03-queue.png",
+    "bytes": 358218,
+    "sha256": "53cc970617153196cf78cfb877182ca96fd821b6ab59e3e67a30d9c7547c69e3"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/04-compare.png",
+    "bytes": 231884,
+    "sha256": "c1a25a99c40f6872fb0c19bbf6d99e8719e2e6757faf1955b420ddd29975a074"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/01-library.png",
+    "bytes": 225585,
+    "sha256": "523991dbb94119bf4d13ecefcfc253ecf5b66ddc52cbf8ac75682957b63054c5"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/03-queue.png",
+    "bytes": 304939,
+    "sha256": "04a07565ad1a96597e604b4977810e0e9792df8102ea839f1665a079e4adc44a"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/01-library.png",
+    "bytes": 246997,
+    "sha256": "e69915af8a3512173be41b686a77d0f44ac894c324b92b56a52373c8bbfa4500"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/02-read.png",
+    "bytes": 342026,
+    "sha256": "ef10340802916e25ad6ef3dc426c17533446355daca41c3f62b867779e6b2176"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/03-queue.png",
+    "bytes": 360319,
+    "sha256": "7f75aae5d55522d733ae7a7660af31bee360ac73ebff77e0f9f9bd0e5052b483"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/04-compare.png",
+    "bytes": 215228,
+    "sha256": "e5cc290671d615936a36f2997f3c3a2d1b8772b20636c3770a6b1377b3995dad"
+  },
+  {
+    "path": "artifacts/app-store-previews/preview-spec.json",
+    "bytes": 4922,
+    "sha256": "7c64e31b769f692011bfb5abc25dce0ece3a0c450feeb10b981ea9a3e629b338"
+  },
+  {
+    "path": "artifacts/app-store-previews/qa/contact-sheet-1206x2622.jpg",
+    "bytes": 224979,
+    "sha256": "77588cf291a9ee9c7a43efdee2d7e8f0c749937b8a443fb667ff2319eeb9fcf5"
+  },
+  {
+    "path": "artifacts/app-store-previews/qa/contact-sheet-2064x2752.jpg",
+    "bytes": 105543,
+    "sha256": "b68c47c4537f7b34a5a83f9a87df671223ba878e50fe4b741ef1b1d75ce918ac"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/ipad-en-01-library.png",
+    "bytes": 237986,
+    "sha256": "0ab7b0e8c564501cce604c8e1b7c1489e2789a21a4cf177b06499f023f605ea2"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/ipad-en-03-queue.png",
+    "bytes": 290708,
+    "sha256": "be9414d06a6336e26b815944a79bd599b20c2ecf8024d352ff3e1e6807da8893"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/ipad-zh-01-library.png",
+    "bytes": 218528,
+    "sha256": "1cbbac93eea4a0c3441b7c656db2bb2f5abbe885b2f49dab9bc09b13a2bad448"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/ipad-zh-03-queue.png",
+    "bytes": 282990,
+    "sha256": "2229a4b6d91b5bce429109c4bbe056691653e2a352de20f876f3f66abebc0472"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-en-01-library.png",
+    "bytes": 240028,
+    "sha256": "fffa07bd8759b07cc8fff9a59f361db1dc6449dfe634d02014491702b3c5643c"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-en-02-read.png",
+    "bytes": 300611,
+    "sha256": "6aa456c9f242f5c65e81fc263a4e1da30e5053bd45862c1eec295659950b3b01"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-en-03-queue.png",
+    "bytes": 288303,
+    "sha256": "c17cf1805c31e1d596d2efd278b339109e23dee634dc49eb1c16dc50158a378b"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-en-04-compare.png",
+    "bytes": 188970,
+    "sha256": "c70f10088da56432ff9083641859023b19c06aeb4fa1cfa01ea1974fb10da984"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-zh-01-library.png",
+    "bytes": 211382,
+    "sha256": "0a2da55a82e2ad1cf6ce0da5adc20e1849a52a990b5100bd15639b5b747f0cf5"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-zh-02-read.png",
+    "bytes": 266390,
+    "sha256": "b4f8c9b9710266969061bff6c02f32955eed402b96981662dda2fb7d7eeb334a"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-zh-03-queue.png",
+    "bytes": 299756,
+    "sha256": "9ab3074bb552ccaea49602faa6a1a0a5dfbe18035ea669829d0ccefc44c610b8"
+  },
+  {
+    "path": "artifacts/app-store-previews/source/iphone-zh-04-compare.png",
+    "bytes": 179184,
+    "sha256": "95107d3057c9f67d7c94ec67aec66c9a44610350ee38f096b7bfc335ed1ae687"
+  },
+  {
+    "path": "artifacts/google-play-listing/app-icon-512.png",
+    "bytes": 305337,
+    "sha256": "0c69bd5f97367b5829e6dbd026bb0c404add7bab631e63cef6c5207a30ab9a27"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/01-library.png",
+    "bytes": 209944,
+    "sha256": "2b17f1297437d8fec4e5af4842b4f1672e769e19d59abac462b96e7ea59fdfe4"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/02-read.png",
+    "bytes": 299646,
+    "sha256": "617ab33a5ee71d57c3f8d7cf76a50c9486d07cfbaca9b4d8c1584ab311feada3"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/03-queue.png",
+    "bytes": 302028,
+    "sha256": "220038944a95ed2ceb0fe6b2eefc089e629c2cb8af6c36897f4ffca2947e165a"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/04-compare.png",
+    "bytes": 148454,
+    "sha256": "509540ea8f013992c654e630ef8ba4ca363e82a706cdd5d96fb7945f82cd0854"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/feature-graphic-en.png",
+    "bytes": 21745,
+    "sha256": "b4b35ed38f529cceaad65ea77dbfdbd28d3a58f25d17acada8c550edbc2413f3"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/feature-graphic-zh.png",
+    "bytes": 22538,
+    "sha256": "d525703b85ed25ddb218f446ad0d1c36cc7a4ca0db1f4f1ff7dd5b8723f7905c"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/01-library.png",
+    "bytes": 170642,
+    "sha256": "1089d0d6ce832fed6f3785a5cf6704626e3ec31e7391d16ec0355a5d7777a838"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/02-read.png",
+    "bytes": 255285,
+    "sha256": "03ef97e515ff8bbd4f527506a9c26ed9e2969a7f3289d12e6f95b5b854d9ae46"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/03-queue.png",
+    "bytes": 276159,
+    "sha256": "226ea89563b025f917e76ebf0fb80c3606ef4a2dace1e2a393510c6ad691170b"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/04-compare.png",
+    "bytes": 136209,
+    "sha256": "c1339bf0b95f427d2305759ed25a6ab55362160cc2bdd361c443e30072b808b4"
+  },
+  {
+    "path": "artifacts/google-play-listing/preview-spec.json",
+    "bytes": 2950,
+    "sha256": "f0ed4760ff8d04c52d7c8f9e0ff0d8cf36af6efdf7e03d84525a213259e755c6"
+  },
+  {
+    "path": "artifacts/google-play-listing/qa/contact-sheet-1024x500.jpg",
+    "bytes": 48749,
+    "sha256": "0a53cbcec81d6fd5c5beaa711cc15801a45c630a246dd8c0bca4d31952b59be3"
+  },
+  {
+    "path": "artifacts/google-play-listing/qa/contact-sheet-1080x1920.jpg",
+    "bytes": 236551,
+    "sha256": "3caa8f28436fab5372a5d2a58a2446708504772d87b6cd5768ee034b664012ef"
+  },
+  {
+    "path": "artifacts/google-play-listing/short-description-en.txt",
+    "bytes": 75,
+    "sha256": "878bf75bd5729e2d9d9c544ca6d93ecc2c98ffa40e31c842378851641a042201"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-01-library.png",
+    "bytes": 152721,
+    "sha256": "d93118eeff9f405c9778a116da93d92eb245846cef5a70757559cb4461292575"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-01-library.xml",
+    "bytes": 10272,
+    "sha256": "6c6a86746d796936eaf3e7225d0e38598ce587c437bf9cf562515b59ef7c1075"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-02-read.png",
+    "bytes": 205087,
+    "sha256": "726620bf1cf26b8aa9ae4e870ca5d961311029c7d0f854c17666dff30fa0f438"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-02-read.xml",
+    "bytes": 7823,
+    "sha256": "dd871aa2de954e7638c41ecb7d617dbcb5b607b466137cf1192db1b8d6316d35"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-03-queue.png",
+    "bytes": 215662,
+    "sha256": "85598d798ec15a59127c9d7fe551bcedab051b9b1e6c7c460c0e77d8bcb6d627"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-03-queue.xml",
+    "bytes": 10484,
+    "sha256": "03b143d034577b670dd9fcd1920c7058b3d3263a5c339d59ba32923e6397dd4f"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-04-compare.png",
+    "bytes": 115556,
+    "sha256": "3cbc2c14ce1f094b7b9d02013590e0b7270fe50d8be74a502a984b38d3710021"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-en-04-compare.xml",
+    "bytes": 6003,
+    "sha256": "c277c37a501b2060d85c11f7b76fdca4db3325fe7bf407365afc284e9eff5e10"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-01-library.png",
+    "bytes": 132431,
+    "sha256": "f902c2b720f9b215310ea6000b8d91bd8cd90e61a154e38367f5e95775e94fa7"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-01-library.xml",
+    "bytes": 10213,
+    "sha256": "186bcbe8fcbf26035f2380ee40251e0edc064e2917c348db10fb0857f3bdcee8"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-02-read.png",
+    "bytes": 193174,
+    "sha256": "1ecf0b07328407ffc8a07d61c1f97fd24e65b38d4a1888acaa0f60c07ea52bc9"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-02-read.xml",
+    "bytes": 7762,
+    "sha256": "592a6483a1540c3b01e81949ebefe789ad2444b59c1b577065f52a6147014e12"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-03-queue.png",
+    "bytes": 226530,
+    "sha256": "a4163f873a2b9fc9e3c42adffb9c1af09daebedcb1dab54404d5934db54070f7"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-03-queue.xml",
+    "bytes": 10775,
+    "sha256": "a6b5bd549bb492a3722a0181d76720148b75f4d359346e855deffb6f023c44cd"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-04-compare.png",
+    "bytes": 114575,
+    "sha256": "5c834533a86e19a9f0e9a948ffb92fa815571cdb293b728542700943c01c8edc"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/android-zh-04-compare.xml",
+    "bytes": 5966,
+    "sha256": "8d88b94f9d088f9a24d3f8b4dba0090f55bb013bb0501c449987d695aedfa21b"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-en-01-library.png",
+    "bytes": 130744,
+    "sha256": "022b937d9df70d9fa7c297cf3d56608e147a1852c11e1d94235b0cd6ece29cf9"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-en-02-read.png",
+    "bytes": 177882,
+    "sha256": "2921d8b81a000e5f3ddc5b2b345df3701ea08a332885db7502c4b91152b83e68"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-en-03-queue.png",
+    "bytes": 187912,
+    "sha256": "c2270fa84c2e6d150f62d682664951b3cf2131c7cda1f9c6da9643df2461a053"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-en-04-compare.png",
+    "bytes": 97346,
+    "sha256": "504f0a3cd1248313e5be67ca5d34fba91c2c95aeff9b9305b35f9c4b4e8f0e32"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-zh-01-library.png",
+    "bytes": 112787,
+    "sha256": "7af1fcb11c189fdb8ab4f28695827e70f0984d3e8b232a1cf1ffce2539bda6f3"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-zh-02-read.png",
+    "bytes": 168636,
+    "sha256": "8c2d355fd6bac9b3ca1d8f56bcc63764d2a03f6cbfd5ee3dd0568a5481ff42e7"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-zh-03-queue.png",
+    "bytes": 198414,
+    "sha256": "cef8db732c4b03564153540f72da3046970fc477ccac810db2f831a92b2960b5"
+  },
+  {
+    "path": "artifacts/google-play-listing/source/prepared/android-zh-04-compare.png",
+    "bytes": 96495,
+    "sha256": "befedad6009c53f1cd1d08b7ec5211f888c6b35f8528a617c47b77d6c9d66a18"
+  },
+  {
+    "path": "artifacts/release-kit/CAPTURE_README.md",
+    "bytes": 3816,
+    "sha256": "43c9b0c3dc30a98da1976dadb738b0eed191c936a74ae68901539440c4ef04a7"
+  },
+  {
+    "path": "artifacts/release-kit/DELIVERY.md",
+    "bytes": 6268,
+    "sha256": "a82ff0fc25936e1d08ef9ae220c02de8ed7d0458f7652ad8f7aea9e9e6433116"
+  },
+  {
+    "path": "artifacts/release-kit/OPEN_ITEMS.md",
+    "bytes": 3023,
+    "sha256": "c58a8d720c01b922446973854a1b404df2c01c7c57e9fb0002bf3649c0555583"
+  },
+  {
+    "path": "artifacts/release-kit/QA_REPORT.md",
+    "bytes": 3372,
+    "sha256": "499cc8941b8c17a01d19456b809763a8a5ea1be7b5bbb19be7378f913287e635"
+  },
+  {
+    "path": "artifacts/release-kit/SOURCE_AUDIT.md",
+    "bytes": 5292,
+    "sha256": "464d1f8c39b2ff3fccdd8b9130bd8d31829c706c67631b7340a52e190ab31a74"
+  },
+  {
+    "path": "artifacts/release-kit/VISUAL_REVIEW.md",
+    "bytes": 4393,
+    "sha256": "7bcfbca8396b8734926b87fb7a48c8466d38436a86ed6fdbd34097c63c6beb77"
+  },
+  {
+    "path": "artifacts/release-kit/app-facts.json",
+    "bytes": 2296,
+    "sha256": "31abf75c10ea5adb187c99334377de60e3065138b9f768b1a2e22c51389f5e65"
+  },
+  {
+    "path": "artifacts/release-kit/asset-inventory.json",
+    "bytes": 8425,
+    "sha256": "659dfbf640c9d4826abc81d0b9b68a963300c8b401aac4ba829272c54b53f0d1"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/browser-results.json",
+    "bytes": 4060,
+    "sha256": "add93341a1f556acf2b9e498abd448dc6d8e215cd7bc63d07011716a6b08a89c"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/index-en-desktop.png",
+    "bytes": 313350,
+    "sha256": "3204dd82efbccdc1e2d80b3c3d6619f58e57102a64b2dad479976702fc6491a6"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/index-en-mobile.png",
+    "bytes": 268074,
+    "sha256": "c0f0baa4bbcd84f40dc022d9a0a294ab3c9082b8a4bf1035384508a975e46bf2"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/index-zh-desktop.png",
+    "bytes": 267669,
+    "sha256": "314e0b43d1c03a9af95b57b5cf8dfd406b721db1f41b782e44ea8df0c247b534"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/index-zh-mobile.png",
+    "bytes": 225688,
+    "sha256": "88af983be1f56ad65956535af966cd9af2f7f6cf0be6aefdd3a936da93f896df"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/privacy-en-desktop.png",
+    "bytes": 352329,
+    "sha256": "7b106976e5c63b21e2a9597a7d0201d1a24a1fecfec954622ff72d6d452e7c5d"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/privacy-en-mobile.png",
+    "bytes": 330805,
+    "sha256": "6f150dd317330598e0bd821aa26ea4ab363576122fe6d52c9afc34305d7e6b13"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/privacy-en-static-mobile.png",
+    "bytes": 330230,
+    "sha256": "ae06639c0979d456f893d5a86160599bc45af15c7eda2bc14b09b3c88a4f7d14"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/privacy-zh-desktop.png",
+    "bytes": 265973,
+    "sha256": "590634e8bd7160b4187943b2aed471cf3c8e6a7db659e5197c92032d3d5a8995"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/privacy-zh-mobile.png",
+    "bytes": 247904,
+    "sha256": "dcbaa0257e824caed68a502870fbd20ef387901906a419ec413a3d3715e41e06"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/privacy-zh-static-mobile.png",
+    "bytes": 246998,
+    "sha256": "ff4f0bf50a358d439853319a484b27f6ea6518618ea6e9de1a3bc26f033cc538"
+  },
+  {
+    "path": "artifacts/release-kit/browser-qa/website-preview.png",
+    "bytes": 51936,
+    "sha256": "342174676b8fe4fd2d39379d705068e4fc6f375f96ca20dd505a806ee0077e3b"
+  },
+  {
+    "path": "artifacts/release-kit/capture-manifest.json",
+    "bytes": 22532,
+    "sha256": "7547b8ce63e7513cf5db69707d8e91dd38311ef0281331307dffd8fe90d75d5b"
+  },
+  {
+    "path": "artifacts/release-kit/capture_android.py",
+    "bytes": 1963,
+    "sha256": "a0eb66b260d13cc17f6e8d1349e685d8588477bdb45049ad9cfce3acf064830a"
+  },
+  {
+    "path": "artifacts/release-kit/demo-en.json",
+    "bytes": 2767,
+    "sha256": "36164a2793ea5fefdb0b1e42af6d637bd0f97790e8a671667bdd925cb716ccd8"
+  },
+  {
+    "path": "artifacts/release-kit/demo-zh.json",
+    "bytes": 2574,
+    "sha256": "a032b1249e3052b736d551c144feec3ddf22bcecfcda4c2d5d17a289df85f56a"
+  },
+  {
+    "path": "artifacts/release-kit/generate_package.py",
+    "bytes": 29929,
+    "sha256": "3321337eed727db366d5d0b72a80974485e14a807e47ea1d22ffe71c11591588"
+  },
+  {
+    "path": "artifacts/release-kit/graphic-alt-text.json",
+    "bytes": 2504,
+    "sha256": "d44a68a0a2bc4db90a76bc71a668a9f74bbfebb975194836be35bf1b85a37dad"
+  },
+  {
+    "path": "artifacts/release-kit/make_demo.py",
+    "bytes": 2852,
+    "sha256": "9dd7ba91aed71537766a9aacfed029e65f5cedf669d52f8644d9efbd86dc0179"
+  },
+  {
+    "path": "artifacts/release-kit/material-checks.json",
+    "bytes": 394,
+    "sha256": "c4120a67807cbe7b35b78065539d6877d7ea3c3042de5ed29c878c598b507172"
+  },
+  {
+    "path": "artifacts/release-kit/record_evidence.py",
+    "bytes": 5013,
+    "sha256": "a9e97290a99b5e529a1a258b1688be470fc2e3d57874681afe1665c25eef890e"
+  },
+  {
+    "path": "artifacts/release-kit/seed_demo.py",
+    "bytes": 3038,
+    "sha256": "fd46b2cf5ec3e88decf2a9504052230819926266649c672e828f2c60655df59e"
+  },
+  {
+    "path": "artifacts/release-kit/website-links.json",
+    "bytes": 492,
+    "sha256": "ae287e9d5ee1528c9cb5a092fb3cdc952a8e67f0cb4fbd390f29ac86b858a43e"
+  }
+]

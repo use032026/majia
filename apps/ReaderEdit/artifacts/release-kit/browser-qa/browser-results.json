@@ -1,0 +1,146 @@
+[
+  {
+    "label": "stored Chinese preference without query",
+    "url": "http://127.0.0.1:8876/index.html?lang=zh",
+    "description": "本地小说与章节工作区，支持阅读、编辑、读者信号和修订前后对照。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "ReaderEdit — 用读者的眼光，打磨文字。",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "desktop product Chinese",
+    "url": "http://127.0.0.1:8876/index.html?lang=zh",
+    "description": "本地小说与章节工作区，支持阅读、编辑、读者信号和修订前后对照。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "ReaderEdit — 用读者的眼光，打磨文字。",
+    "viewport": [
+      1280,
+      900
+    ]
+  },
+  {
+    "label": "desktop product English switch",
+    "url": "http://127.0.0.1:8876/index.html?lang=en",
+    "description": "A local novel and chapter workspace with reading, editing, reader signals, and revision comparisons.",
+    "lang": "en",
+    "overflow": false,
+    "title": "ReaderEdit — Write with a reader’s eye.",
+    "viewport": [
+      1280,
+      900
+    ]
+  },
+  {
+    "label": "desktop privacy English link",
+    "url": "http://127.0.0.1:8876/privacy.html?lang=en",
+    "description": "Privacy Policy for ReaderEdit",
+    "lang": "en",
+    "overflow": false,
+    "title": "Privacy Policy — ReaderEdit",
+    "viewport": [
+      1280,
+      900
+    ]
+  },
+  {
+    "label": "desktop privacy Chinese switch",
+    "url": "http://127.0.0.1:8876/privacy.html?lang=zh",
+    "description": "ReaderEdit 隐私政策",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "隐私政策 — ReaderEdit",
+    "viewport": [
+      1280,
+      900
+    ]
+  },
+  {
+    "label": "mobile product English",
+    "url": "http://127.0.0.1:8876/index.html?lang=en",
+    "description": "A local novel and chapter workspace with reading, editing, reader signals, and revision comparisons.",
+    "lang": "en",
+    "overflow": false,
+    "title": "ReaderEdit — Write with a reader’s eye.",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "mobile product Chinese switch",
+    "url": "http://127.0.0.1:8876/index.html?lang=zh",
+    "description": "本地小说与章节工作区，支持阅读、编辑、读者信号和修订前后对照。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "ReaderEdit — 用读者的眼光，打磨文字。",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "mobile privacy Chinese link",
+    "url": "http://127.0.0.1:8876/privacy.html?lang=zh",
+    "description": "ReaderEdit 隐私政策",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "隐私政策 — ReaderEdit",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "mobile privacy English switch",
+    "url": "http://127.0.0.1:8876/privacy.html?lang=en",
+    "description": "Privacy Policy for ReaderEdit",
+    "lang": "en",
+    "overflow": false,
+    "title": "Privacy Policy — ReaderEdit",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "static Chinese privacy",
+    "url": "http://127.0.0.1:8876/privacy-zh.html",
+    "description": "ReaderEdit 隐私政策",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "隐私政策 — ReaderEdit",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "static English privacy link",
+    "url": "http://127.0.0.1:8876/privacy-en.html",
+    "description": "Privacy Policy for ReaderEdit",
+    "lang": "en",
+    "overflow": false,
+    "title": "Privacy Policy — ReaderEdit",
+    "viewport": [
+      390,
+      844
+    ]
+  },
+  {
+    "label": "browser language fallback on fresh origin",
+    "url": "http://localhost:8876/index.html?lang=zh",
+    "description": "本地小说与章节工作区，支持阅读、编辑、读者信号和修订前后对照。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "title": "ReaderEdit — 用读者的眼光，打磨文字。",
+    "viewport": [
+      390,
+      844
+    ]
+  }
+]

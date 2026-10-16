@@ -1,0 +1,19 @@
+[
+  {
+    "spec": "app-store-previews",
+    "items": 12,
+    "size_mode_and_source_path_check": "pass"
+  },
+  {
+    "spec": "google-play-listing",
+    "items": 10,
+    "size_mode_and_source_path_check": "pass"
+  },
+  {
+    "android_prepared_crops": "all pixel-identical to recorded raw crop; app pixels preserved"
+  },
+  {
+    "browser_observations": 12,
+    "horizontal_overflow": false
+  }
+]

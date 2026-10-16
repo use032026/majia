@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 2,
+  "sessions": [
+    {
+      "id": "demo-revision",
+      "title": "The Letter at Fog Station",
+      "knowPromise": "Someone knows Mara’s plans",
+      "feelPromise": "Unease growing in a quiet place",
+      "wonderPromise": "Who wrote the letter?",
+      "updatedAt": "2026-10-16T09:41:00.000",
+      "passages": [
+        {
+          "id": "p0",
+          "original": "After the last train left, Mara found an unsigned letter beneath the station bench. The envelope looked old, but fresh rain darkened one corner.",
+          "revised": "After the last train left, Mara found an unsigned letter beneath the station bench. The envelope looked old, but fresh rain darkened one corner.",
+          "signal": "clear",
+          "note": "",
+          "isResolved": true
+        },
+        {
+          "id": "p1",
+          "original": "She opened it. The first line read: “Do not take the six o’clock train.” She looked up at the timetable, then at her reflection in the glass.",
+          "revised": "Mara unfolded the letter beneath the station lamp. “Do not take the six o’clock train.” Across the empty platform, the timetable clicked to 06:00.",
+          "signal": "dragging",
+          "note": "Keep the warning in focus and make the next action concrete.",
+          "isResolved": true
+        },
+        {
+          "id": "p2",
+          "original": "No one waited outside. The ticket window was dark, yet the distant loudspeaker suddenly announced her name.",
+          "revised": "No one waited outside. The ticket window was dark, yet the distant loudspeaker suddenly announced her name.",
+          "signal": "lost",
+          "note": "",
+          "isResolved": false
+        }
+      ],
+      "knowChecked": false,
+      "feelChecked": false,
+      "wonderChecked": false
+    }
+  ],
+  "novels": [
+    {
+      "id": "demo-novel",
+      "title": "The Letter at Fog Station",
+      "description": "A quiet station. An unsigned letter. One train to avoid.",
+      "chapters": [
+        {
+          "id": "demo-chapter",
+          "title": "Chapter 1 · The last train",
+          "content": "After the last train left, Mara found an unsigned letter beneath the station bench. The envelope looked old, but fresh rain darkened one corner.\n\nShe opened it. The first line read: “Do not take the six o’clock train.” She looked up at the timetable, then at her reflection in the glass.\n\nNo one waited outside. The ticket window was dark, yet the distant loudspeaker suddenly announced her name.",
+          "createdAt": "2026-10-16T09:41:00.000",
+          "updatedAt": "2026-10-16T09:41:00.000"
+        }
+      ],
+      "createdAt": "2026-10-16T09:41:00.000",
+      "updatedAt": "2026-10-16T09:41:00.000"
+    }
+  ]
+}

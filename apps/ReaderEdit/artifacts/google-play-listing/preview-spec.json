@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "store": "google_play",
+  "app_name": "ReaderEdit",
+  "font_path": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#5142CF",
+    "background_bottom": "#242039",
+    "text_color": "#FFFCF7",
+    "muted_text_color": "#E0D9FA"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/prepared/android-en-01-library.png",
+      "output": "final/en-US/phone/01-library.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Your writing, together"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/prepared/android-en-02-read.png",
+      "output": "final/en-US/phone/02-read.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Read. Then revise."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/prepared/android-en-03-queue.png",
+      "output": "final/en-US/phone/03-queue.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "Follow reader signals"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/prepared/android-en-04-compare.png",
+      "output": "final/en-US/phone/04-compare.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "See every change"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "en-US",
+      "output": "final/feature-graphic-en.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "A reader’s eye on your draft"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/prepared/android-zh-01-library.png",
+      "output": "final/zh-CN/phone/01-library.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "整理小说与章节"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/prepared/android-zh-02-read.png",
+      "output": "final/zh-CN/phone/02-read.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "阅读之后，直接修改"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/prepared/android-zh-03-queue.png",
+      "output": "final/zh-CN/phone/03-queue.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "跟随读者信号修订"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-CN",
+      "source": "source/prepared/android-zh-04-compare.png",
+      "output": "final/zh-CN/phone/04-compare.png",
+      "size": [
+        1080,
+        1920
+      ],
+      "headline": "看清每一处修改"
+    },
+    {
+      "kind": "feature_graphic",
+      "locale": "zh-CN",
+      "output": "final/feature-graphic-zh.png",
+      "size": [
+        1024,
+        500
+      ],
+      "headline": "用读者的眼光，打磨文字"
+    }
+  ]
+}

@@ -1,0 +1,629 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Asia/Shanghai",
+  "git_head": "0123e3a49db3d8957c43989c2b3a6b1b2ad292ae",
+  "version": "1.0.0",
+  "build": "1",
+  "built_in_this_run": false,
+  "source_files": [
+    {
+      "path": "lib/app/reader_edit_app.dart",
+      "sha256": "423bf421406fad4c61ad838902dde66e95e1311a7662064b4c7b7e961bbd16c6"
+    },
+    {
+      "path": "lib/app/reader_edit_store.dart",
+      "sha256": "0777d7726f648a57ba04c547dfd0f49caf7bd5eaccc4263ea365880f0b245225"
+    },
+    {
+      "path": "lib/config/privacy_policy_config.dart",
+      "sha256": "16eeb641261d68e3abfa32bfca0aef2ddbc28b82f8ed2bf69c3c5306d0ba99e3"
+    },
+    {
+      "path": "lib/data/session_repository.dart",
+      "sha256": "cd777f4a65ce2f611315952d30595d231057961910c763904daef2b92281488d"
+    },
+    {
+      "path": "lib/data/text_import_service.dart",
+      "sha256": "81463f4bb4d6704c7c3f275365d76428b0ce0bd0989c609fb4c1324f9537fe17"
+    },
+    {
+      "path": "lib/domain/novel.dart",
+      "sha256": "dcea7bd17d4a19bbfa4be6c7fd19021d7a27c6df952c936bb40913f7da367976"
+    },
+    {
+      "path": "lib/domain/revision_session.dart",
+      "sha256": "b6d6fc15770887d61bf94549babd6551f74ca1cc7bbc0db4e8dcc523d4885a95"
+    },
+    {
+      "path": "lib/domain/sample_content.dart",
+      "sha256": "e5d5862fbcda497210aec9e2d00f80c88da61fe7f57beb03448c6d8f8b6186ae"
+    },
+    {
+      "path": "lib/l10n/app_strings.dart",
+      "sha256": "1690905ee9235d66bcb3b0dc4f0fa62e2fa2527121adaa966688bda2b4e4f39e"
+    },
+    {
+      "path": "lib/main.dart",
+      "sha256": "95c15512fe3d1fb665a42ea764c55a26cba9d5c39688d62524477b19c2cd3236"
+    },
+    {
+      "path": "lib/ui/app_notice.dart",
+      "sha256": "42d963a0c08181658f1b6d511b159481887046a8dc50f5b19604f3d9ddc22cf1"
+    },
+    {
+      "path": "lib/ui/changes_page.dart",
+      "sha256": "1453e1f40d6bbe20210b6c9c395264a4bb5c65600c7b10c7ca3d3a02228a5f70"
+    },
+    {
+      "path": "lib/ui/chapter_reader_page.dart",
+      "sha256": "8f34ae2e08c82f6d1efa0f882dac75b4f50c06906e0689e5f1e1aa6901ebc519"
+    },
+    {
+      "path": "lib/ui/create_chapter_page.dart",
+      "sha256": "c973efe74de6cf3543f5fd93311ed74e2e7f42e9b249de20a3c0da571e564fa9"
+    },
+    {
+      "path": "lib/ui/create_novel_page.dart",
+      "sha256": "43a8c0224863f410416fd61fa8a045ec70b6787e7780aa8f98bbcf9ac1af5063"
+    },
+    {
+      "path": "lib/ui/create_session_page.dart",
+      "sha256": "e614e51ef8555d3e7905e95317da8b3b5ec6a15e74e1eda5ed808d6aa6279794"
+    },
+    {
+      "path": "lib/ui/home_page.dart",
+      "sha256": "bea19745a99277d375d82ac2f4a34dbb506fcc76676c7c4f777cf124c1a39df0"
+    },
+    {
+      "path": "lib/ui/novel_detail_page.dart",
+      "sha256": "c6b73983810d03b35c4d87f9c91f2cb61f7d5e2efb28bb36595378b0dc303778"
+    },
+    {
+      "path": "lib/ui/onboarding_page.dart",
+      "sha256": "bda98168b29cfe0bc80905b9535a8886883308b2b48c65f39f4430b3d73aa3da"
+    },
+    {
+      "path": "lib/ui/page_safe_area.dart",
+      "sha256": "29828dacc8376875ab50429b5de6389301b8e202d5c6936bafb67f82fcc8d91e"
+    },
+    {
+      "path": "lib/ui/privacy_policy_page.dart",
+      "sha256": "a2c68b92cf4dfb1301cc473676e7c2db0f6659c6c20c0fa8a987b4be9195ca45"
+    },
+    {
+      "path": "lib/ui/revision_editor_page.dart",
+      "sha256": "b4ac6e3f75da9e0c5442ce916d62cee1f1eddaacc53122a4eda9e40459517e15"
+    },
+    {
+      "path": "lib/ui/revision_queue_page.dart",
+      "sha256": "5d1ed3eb1c37c83e6f7a751b89f85268e79f4aa802c27b30b8ddb6d6b4c5db1b"
+    },
+    {
+      "path": "lib/ui/scan_page.dart",
+      "sha256": "354d6e06b16aba38a80d2e6942c186763a330465a7745f2c4aafeba968b57643"
+    },
+    {
+      "path": "lib/ui/settings_page.dart",
+      "sha256": "bdb8cde70871c1ab096a16be1f72c85441b211c0810688d8ccc08ba944e1e403"
+    },
+    {
+      "path": "lib/ui/summary_page.dart",
+      "sha256": "5623a13518c80a2515e89e8622ac06c4ee271a923a9627bef02047bc4b3d0b62"
+    },
+    {
+      "path": "ios/Runner/AppDelegate.swift",
+      "sha256": "9418c676adebac7e3f04daa80a7db62066e77f9766c804fd3e5e264124a31f80"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256": "3b1e214f466ffedff74baa5598ad5c4421130eea6bc8d57b8fe23435e8280ae4"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "sha256": "ec172a9db18dc213b7d6107193c5e9ed8d1f1d4407eb26e09af27bd7643e2b64"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "sha256": "c8d8c32325d7bcad8f738ee68bad0728a62d96a1317cf3cb7b00db1bd0dcebf5"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "sha256": "3dca2de4522e3dd4493bb175ad1add091aa9d5a48c8803455adbe9844668dbcb"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "sha256": "6866ccbe00488ee15de52583f754597f4e32937d412557417df059e8d67dacf0"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "sha256": "00b61a715366d4a8aae9e09a3a72bcca15b1c1b6801e03a0cd433328d1c74ed2"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "sha256": "b42632f09c147a2e7de1bf76859158c05d74a949877d558bf05aab107699b0e0"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "sha256": "4dff8f18af63cf4e858fdc111a43ae462d6f4ba2f8ebb4a732dc3bf8811ab936"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "sha256": "3dca2de4522e3dd4493bb175ad1add091aa9d5a48c8803455adbe9844668dbcb"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "sha256": "f0656c150a46439980e7dac13d6e0d5a308fc13d468e94b3e8393dce387a24ae"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "sha256": "c01d4034e0dd6fd8c233add26271c2d4fb183c8c2c42c8de4ba2b584ecbda0b5"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "sha256": "c01d4034e0dd6fd8c233add26271c2d4fb183c8c2c42c8de4ba2b584ecbda0b5"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "sha256": "20e019180c6d5c7ebc0599a43a19b9c673242a31a741cfcc58e6e308d160b80b"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "sha256": "3f65be9c2977e70f37ac076e25ee95e507ae68807b8ec73ac352797b4e2c4d24"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "sha256": "b3eeee9f7dc05982a5329df1c0140f5f036562c6ebd8fcef0e4c87d1a068f7a1"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "sha256": "27281767e0f5011cc39b6b2605b6821d8706046a5ffdb563e68db0038eddaa2d"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchBackground.colorset/Contents.json",
+      "sha256": "960c65cad30341e2b1c0761c48786bc1c0ebb2c1d2ebd7974020fbaf9c54fb5e"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "sha256": "ccc7950fd5f5b82067c85f667940a9d59189151460761ece8098ca78daa19469"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "sha256": "53aaa351d6d3c36cf62023769cd2fe9fe12a66156edbac9a166e84e34b2fc9e9"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "sha256": "96fbac6f7ca7d1fdbabc9f09e9167dd4ebfb481a5369ce6635befe12e5978a3f"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "sha256": "bb741ee77410d1a5c23d553ba6f0b75e051561a19fa5fd40dbce780407fa186b"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "sha256": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchInk.colorset/Contents.json",
+      "sha256": "5e4dfa18333e5cc382eaaa652de12d48e61be88ee21bb6ceea1f7f10454e0761"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchMark.imageset/Contents.json",
+      "sha256": "f8398af5632cbed84337d4b788fd68fad54fe5d6e9f7f446860c8cd682ac2782"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchMark.imageset/LaunchMark.svg",
+      "sha256": "2ac7c4809e84b06d8a883a89f0961c9e36421c9192eddf6ce6627d6786604074"
+    },
+    {
+      "path": "ios/Runner/Assets.xcassets/LaunchMark.imageset/LaunchMarkDark.svg",
+      "sha256": "d670bd02c269c64407252a23499da01bf40a28145d39af379782e1aa6a2011c5"
+    },
+    {
+      "path": "ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "sha256": "438a2bef4e6e539b8fdf96347705f4a93842b3e8a6cd26a0c20e304874011d47"
+    },
+    {
+      "path": "ios/Runner/Base.lproj/Main.storyboard",
+      "sha256": "fd367b6c43006d61b730f674970dd48b9f662c8f2264e52ffc1558102a2c9f2d"
+    },
+    {
+      "path": "ios/Runner/GeneratedPluginRegistrant.h",
+      "sha256": "a5f88cc6415d2e639d2cb549348b84e02a7fdd0261603b0063abef6fa11f075a"
+    },
+    {
+      "path": "ios/Runner/GeneratedPluginRegistrant.m",
+      "sha256": "b37268e03763de9ab5fa09fd4dab4d6e7929fe6f7b71f04152fb8ce8d8f5f642"
+    },
+    {
+      "path": "ios/Runner/Info.plist",
+      "sha256": "c864acafdfe577fc391453d404eea162ca3f3ccedf8f728f19c60f5795d929f4"
+    },
+    {
+      "path": "ios/Runner/PrivacyInfo.xcprivacy",
+      "sha256": "74b0cd72fc23c1ef302f22ee2753f61817cdc5af0ff7a7f2d0632b524fb8acea"
+    },
+    {
+      "path": "ios/Runner/Runner-Bridging-Header.h",
+      "sha256": "1a8d11d01d1cc92c650c9c9ed35299240052d4683a15a719a2315ef44185e074"
+    },
+    {
+      "path": "android/app/src/main/AndroidManifest.xml",
+      "sha256": "dfa4fb205dba0ecf92ebc31bbea9edeac7d683e9078fc2fbc8726b983e3183ef"
+    },
+    {
+      "path": "android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java",
+      "sha256": "15ab984a878f13f1e4bf98c0ec68cad0b6d3d5338010695ef381e37a8dcb611d"
+    },
+    {
+      "path": "android/app/src/main/kotlin/com/example/reader_edit/MainActivity.kt",
+      "sha256": "61b11c71c896b0bbbe57489a013fa75061deec59bbe2154f6b346771fe86b32a"
+    },
+    {
+      "path": "android/app/src/main/res/drawable/launch_background.xml",
+      "sha256": "e6962ff8be89af4d93c9d3960a329535d5dd84759ab623e6ec6ad0dac1199e28"
+    },
+    {
+      "path": "android/app/src/main/res/drawable/launch_mark.xml",
+      "sha256": "6287cebdb6b1b7d2bbc5ed0924d9a15df6e23886ab2e8f7cd8445a43b3f0fc84"
+    },
+    {
+      "path": "android/app/src/main/res/drawable/launch_mark_splash.xml",
+      "sha256": "a2fbd69a7630e764f1fee2cc10a78b3c59f13ffbde3b77f9a162b1f68135ff96"
+    },
+    {
+      "path": "android/app/src/main/res/drawable-v21/launch_background.xml",
+      "sha256": "e6962ff8be89af4d93c9d3960a329535d5dd84759ab623e6ec6ad0dac1199e28"
+    },
+    {
+      "path": "android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "sha256": "f7fb2325ca64a0e971b668ceeb6e021a4a37c4337f50ffbe159ba3292ecd2171"
+    },
+    {
+      "path": "android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "sha256": "dc0d4a96f3829bc38cce5a620bd29e84ebf03a6364540a5c98bb73190c1dfeda"
+    },
+    {
+      "path": "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "sha256": "9864ead1b4ae05b423b5c71159068050706f167e0b82d2496ac65bbef5fd6b5e"
+    },
+    {
+      "path": "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "sha256": "3dc80ad060577b208de33972add0e07b463b601a38158cc6a90f146021f2ef2f"
+    },
+    {
+      "path": "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "sha256": "0043e10e71abb0b6165fd859f210f9ead8db690aca58af5b3506f7640f0293aa"
+    },
+    {
+      "path": "android/app/src/main/res/values/colors.xml",
+      "sha256": "456f3eba1fb3f48b72c43e1dcc3f9156ee840040073e407dfafbad9cf7fbf471"
+    },
+    {
+      "path": "android/app/src/main/res/values/styles.xml",
+      "sha256": "1f32736bd3c0d56f316be5619711aca60a0c2c4e0527450f1d59736863027fa7"
+    },
+    {
+      "path": "android/app/src/main/res/values-night/colors.xml",
+      "sha256": "73cfcc0e3a4fe96a8b669bfe7cfa71907fbe17d5b305d08f2263fbf83b980ca8"
+    },
+    {
+      "path": "android/app/src/main/res/values-night/styles.xml",
+      "sha256": "b2c1da92bf7253fd9253c7c595fce35207f994fa5c70236393de2d9d3ccb9627"
+    },
+    {
+      "path": "android/app/src/main/res/values-night-v31/styles.xml",
+      "sha256": "120bd430c13ecfca1d392e9a083e3cdb7948fd40928ed8cb5049f31755a81c45"
+    },
+    {
+      "path": "android/app/src/main/res/values-v31/styles.xml",
+      "sha256": "7ec7e43c001da32fac40c4b70b303ee5883388418124a356453b48494272ef23"
+    },
+    {
+      "path": "pubspec.yaml",
+      "sha256": "927837db05850026e3d469461e060359eee4eda1a0f5b9f2760e14d84cda92a7"
+    },
+    {
+      "path": "pubspec.lock",
+      "sha256": "f3ca739a1d14cf51608fc3414734a20024e7f433b1b7a71d9a18e3ffc52daf8e"
+    },
+    {
+      "path": "ios/Runner.xcodeproj/project.pbxproj",
+      "sha256": "0be98e76e186841a671797b28ce1d5255a58012b352a90cb3fe779093c06f2d5"
+    },
+    {
+      "path": "android/app/build.gradle.kts",
+      "sha256": "ffec6a61902b70dbfc1dfa9b4ea1ad20707797d9c78a7216321a7af0ba4b83d9"
+    }
+  ],
+  "existing_binaries": [
+    {
+      "path": "build/ios/iphonesimulator/Runner.app/Runner",
+      "sha256": "ef8882acb35966f4759466d77d9d42f904550e332580496f4a5613d0c5163734",
+      "bytes": 123808,
+      "existing_local_artifact": true
+    },
+    {
+      "path": "build/ios/iphonesimulator/Runner.app/Frameworks/App.framework/flutter_assets/kernel_blob.bin",
+      "sha256": "974a2d32d81335f735f1332dd595ebae938ff656ea43df2dbb1b651f1abc946d",
+      "bytes": 53228136,
+      "existing_local_artifact": true
+    },
+    {
+      "path": "build/app/outputs/flutter-apk/app-debug.apk",
+      "sha256": "a08721006e7bf6fe6bb55125898ee87891f0b3512f5f28b2b143600c5fa72f4a",
+      "bytes": 147621738,
+      "existing_local_artifact": true
+    }
+  ],
+  "captures": [
+    {
+      "path": "artifacts/app-store-previews/source/ipad-en-01-library.png",
+      "platform": "ios",
+      "device": "iPad Pro 13-inch (M5) / iOS 26.5 Simulator",
+      "size": [
+        2064,
+        2752
+      ],
+      "mode": "RGBA",
+      "sha256": "0ab7b0e8c564501cce604c8e1b7c1489e2789a21a4cf177b06499f023f605ea2",
+      "captured_at_local": "2026-10-16T18:26:55.250992+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad-en-03-queue.png",
+      "platform": "ios",
+      "device": "iPad Pro 13-inch (M5) / iOS 26.5 Simulator",
+      "size": [
+        2064,
+        2752
+      ],
+      "mode": "RGBA",
+      "sha256": "be9414d06a6336e26b815944a79bd599b20c2ecf8024d352ff3e1e6807da8893",
+      "captured_at_local": "2026-10-16T18:27:13.847074+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad-zh-01-library.png",
+      "platform": "ios",
+      "device": "iPad Pro 13-inch (M5) / iOS 26.5 Simulator",
+      "size": [
+        2064,
+        2752
+      ],
+      "mode": "RGBA",
+      "sha256": "1cbbac93eea4a0c3441b7c656db2bb2f5abbe885b2f49dab9bc09b13a2bad448",
+      "captured_at_local": "2026-10-16T18:27:27.301924+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad-zh-03-queue.png",
+      "platform": "ios",
+      "device": "iPad Pro 13-inch (M5) / iOS 26.5 Simulator",
+      "size": [
+        2064,
+        2752
+      ],
+      "mode": "RGBA",
+      "sha256": "2229a4b6d91b5bce429109c4bbe056691653e2a352de20f876f3f66abebc0472",
+      "captured_at_local": "2026-10-16T18:27:40.285462+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-en-01-library.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "fffa07bd8759b07cc8fff9a59f361db1dc6449dfe634d02014491702b3c5643c",
+      "captured_at_local": "2026-10-16T18:24:37.864974+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-en-02-read.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "6aa456c9f242f5c65e81fc263a4e1da30e5053bd45862c1eec295659950b3b01",
+      "captured_at_local": "2026-10-16T18:24:55.474165+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-en-03-queue.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "c17cf1805c31e1d596d2efd278b339109e23dee634dc49eb1c16dc50158a378b",
+      "captured_at_local": "2026-10-16T18:25:14.989448+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-en-04-compare.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "c70f10088da56432ff9083641859023b19c06aeb4fa1cfa01ea1974fb10da984",
+      "captured_at_local": "2026-10-16T18:25:27.864601+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-zh-01-library.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "0a2da55a82e2ad1cf6ce0da5adc20e1849a52a990b5100bd15639b5b747f0cf5",
+      "captured_at_local": "2026-10-16T18:25:59.021264+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-zh-02-read.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "b4f8c9b9710266969061bff6c02f32955eed402b96981662dda2fb7d7eeb334a",
+      "captured_at_local": "2026-10-16T18:26:18.371511+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-zh-03-queue.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "9ab3074bb552ccaea49602faa6a1a0a5dfbe18035ea669829d0ccefc44c610b8",
+      "captured_at_local": "2026-10-16T18:26:38.464986+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone-zh-04-compare.png",
+      "platform": "ios",
+      "device": "iPhone 17 Pro / iOS 26.5 Simulator",
+      "size": [
+        1206,
+        2622
+      ],
+      "mode": "RGBA",
+      "sha256": "95107d3057c9f67d7c94ec67aec66c9a44610350ee38f096b7bfc335ed1ae687",
+      "captured_at_local": "2026-10-16T18:26:55.002604+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-en-01-library.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "d93118eeff9f405c9778a116da93d92eb245846cef5a70757559cb4461292575",
+      "captured_at_local": "2026-10-16T18:28:28.852201+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-en-02-read.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "726620bf1cf26b8aa9ae4e870ca5d961311029c7d0f854c17666dff30fa0f438",
+      "captured_at_local": "2026-10-16T18:28:35.071356+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-en-03-queue.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "85598d798ec15a59127c9d7fe551bcedab051b9b1e6c7c460c0e77d8bcb6d627",
+      "captured_at_local": "2026-10-16T18:28:43.234923+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-en-04-compare.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "3cbc2c14ce1f094b7b9d02013590e0b7270fe50d8be74a502a984b38d3710021",
+      "captured_at_local": "2026-10-16T18:28:49.384092+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-zh-01-library.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "f902c2b720f9b215310ea6000b8d91bd8cd90e61a154e38367f5e95775e94fa7",
+      "captured_at_local": "2026-10-16T18:28:54.743643+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-zh-02-read.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "1ecf0b07328407ffc8a07d61c1f97fd24e65b38d4a1888acaa0f60c07ea52bc9",
+      "captured_at_local": "2026-10-16T18:29:00.869358+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-zh-03-queue.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "a4163f873a2b9fc9e3c42adffb9c1af09daebedcb1dab54404d5934db54070f7",
+      "captured_at_local": "2026-10-16T18:29:09.026495+08:00",
+      "demo_only": true
+    },
+    {
+      "path": "artifacts/google-play-listing/source/android-zh-04-compare.png",
+      "platform": "android",
+      "device": "Pixel 7 / Android 15 API 35 emulator",
+      "size": [
+        1080,
+        2400
+      ],
+      "mode": "RGBA",
+      "sha256": "5c834533a86e19a9f0e9a948ffb92fa815571cdb293b728542700943c01c8edc",
+      "captured_at_local": "2026-10-16T18:29:15.123591+08:00",
+      "demo_only": true
+    }
+  ],
+  "android_preparation": {
+    "crop": [
+      0,
+      115,
+      1080,
+      2315
+    ],
+    "preserves_all_app_pixels": true
+  }
+}
