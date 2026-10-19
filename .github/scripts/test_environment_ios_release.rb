@@ -8,6 +8,16 @@ require_relative "lib/environment_ios_release"
 class EnvironmentIOSReleaseTest < Minitest::Test
   Release = MajiaCI::EnvironmentIOSRelease
 
+  def test_two_component_versions_require_explicit_opt_in
+    assert Release.valid_marketing_version?("1.0.0")
+    refute Release.valid_marketing_version?("1.0")
+    assert Release.valid_marketing_version?("1.0", allow_two_components: true)
+    assert Release.valid_marketing_version?("1.0.0", allow_two_components: true)
+    %w[1 1. 1.0.0.0 01.0 1.00 1.0-beta -1.0].each do |version|
+      refute Release.valid_marketing_version?(version, allow_two_components: true), version
+    end
+  end
+
   def test_store_version_switch_requires_upload
     error = assert_raises(MajiaCI::ReleaseInputError) do
       Release.validate_release_switches!(

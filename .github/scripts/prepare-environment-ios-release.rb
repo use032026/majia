@@ -17,6 +17,7 @@ OptionParser.new do |parser|
   parser.on("--container-path PATH") { |value| options[:container_path] = value }
   parser.on("--targets-json JSON") { |value| options[:targets_json] = value }
   parser.on("--marketing-version VERSION") { |value| options[:marketing_version] = value }
+  parser.on("--allow-two-component-version") { options[:allow_two_component_version] = true }
   parser.on("--upload-to-asc BOOLEAN") { |value| options[:upload_to_asc] = value }
   parser.on("--auto-create-store-version BOOLEAN") { |value| options[:auto_create_store_version] = value }
   parser.on("--submit BOOLEAN") { |value| options[:submit] = value }
@@ -99,8 +100,12 @@ begin
   unless options.fetch(:app_name).match?(MajiaCI::EnvironmentIOSRelease::SAFE_NAME_PATTERN)
     raise MajiaCI::ReleaseInputError, "app-name is invalid"
   end
-  unless options.fetch(:marketing_version).match?(MajiaCI::EnvironmentIOSRelease::VERSION_PATTERN)
-    raise MajiaCI::ReleaseInputError, "marketing-version must contain three dot-separated integers"
+  unless MajiaCI::EnvironmentIOSRelease.valid_marketing_version?(
+    options.fetch(:marketing_version),
+    allow_two_components: options.fetch(:allow_two_component_version, false)
+  )
+    raise MajiaCI::ReleaseInputError,
+          "marketing-version must contain three dot-separated integers, or two when explicitly enabled"
   end
 
   upload_to_asc = MajiaCI::EnvironmentIOSRelease.boolean(options.fetch(:upload_to_asc), "upload_to_asc")

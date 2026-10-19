@@ -15,6 +15,11 @@ module MajiaCI
     BUNDLE_SUFFIX_PATTERN = /\A(?:|\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*)\z/
     VERSION_PATTERN = /\A(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\z/
 
+    def valid_marketing_version?(value, allow_two_components: false)
+      value.match?(VERSION_PATTERN) ||
+        (allow_two_components && value.match?(/\A(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\z/))
+    end
+
     def boolean(value, name)
       return true if value == "true"
       return false if value == "false"

@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       marketing_version:
-        description: Three-component version to build
+        description: Version to build, such as 1.0 or 1.0.0
         required: true
-        default: 1.0.0
+        default: "1.0"
         type: string
       build_number:
         description: Optional build number; ASC increments it when empty
@@ -37,6 +37,17 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Check out pinned iOS build engine
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: CherryIce/ios-multi-app-cloud-build-system
+          ref: b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9
+          path: .github/runtime-ios-engine
+          persist-credentials: false
+
+      - name: Enable two-component versions for Deynu
+        run: ruby .github/scripts/enable-ios-two-component-version.rb .github/runtime-ios-engine
+
       - name: Prepare Environment-backed release inputs
         id: prepare
         shell: bash
@@ -58,6 +69,7 @@ jobs:
             --container-path apps/almanac/ios/Runner.xcworkspace \
             --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"}]' \
             --marketing-version "$MARKETING_VERSION" \
+            --allow-two-component-version \
             --upload-to-asc "$UPLOAD_TO_ASC" \
             --auto-create-store-version false \
             --submit false \
@@ -92,7 +104,7 @@ jobs:
 
       - name: Build, retain, and upload Deynu
         id: release
-        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9
+        uses: ./.github/runtime-ios-engine/.github/actions/build-upload
         with:
           config_path: ${{ steps.prepare.outputs.config_path }}
           marketing_version: ${{ inputs.marketing_version }}
