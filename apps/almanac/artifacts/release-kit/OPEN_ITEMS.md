@@ -5,6 +5,7 @@ The user supplied the operator description (independent developer), support cont
 1. Production HTTPS domain and reachable public support and privacy URLs are pending publication.
 2. Confirm whether the operator's legal name is needed in store and privacy disclosures; "independent developer" is a role description, not a legal name.
 3. Complete final legal review and compare the privacy text with the exact signed iOS and Android builds.
+4. Check the chosen web host's request logs, cookies, and analytics before deployment, and update the website privacy section if the host processes visitor data beyond the local language preference.
 
 The website and policy remain local drafts until a production domain is published. The supplied support contact is `CercyServello4757@outlook.com`; the site must not be presented as a public support or privacy URL until it is hosted and checked.
 
