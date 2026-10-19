@@ -2,6 +2,8 @@
 
 审核日期：2026-10-10
 
+历史快照：2026-10-19 已将源码中的 iOS Bundle ID 和 Android applicationId 改为 `com.almanac.lite`，并补充上架素材中的运营描述、联系邮箱和计划隐私生效日期。下文记录的是 2026-10-10 的构建与预检，不代表新标识下的签名包或当前上架状态。当前未完成项见 `artifacts/release-kit/OPEN_ITEMS.md`。
+
 范围：本地源码、自动化测试、iOS 18.3 iPhone/iPad 模拟器、Android 15 API 35 模拟器、Xcode 26.5 / iOS SDK 26.5 无签名 Archive、Android release APK/AAB。未执行实体设备、生产签名、App Store Connect、Play Console、TestFlight/内部测试或上传。
 
 ## 结论

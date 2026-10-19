@@ -1,14 +1,14 @@
 # Almanac release-kit open items
 
-The user confirmed that the following publication facts are still **pending**. Do not fill them with a guessed person, company, email address, domain, or date.
+The user supplied the operator description (independent developer), support contact, planned privacy date, and `com.almanac.lite` package identity. The following publication facts and checks remain open:
 
-1. Final operator or legal entity name.
-2. Monitored support email address.
-3. Production HTTPS domain and public support and privacy URLs.
-4. Privacy policy effective date and final legal review.
+1. Production HTTPS domain and reachable public support and privacy URLs are pending publication.
+2. Confirm whether the operator's legal name is needed in store and privacy disclosures; "independent developer" is a role description, not a legal name.
+3. Confirm the planned privacy effective date, **2029-10-19**, before public use. It is in the future relative to the current draft date, 2026-10-19.
+4. Complete final legal review and compare the privacy text with the exact signed iOS and Android builds.
 
-The website and policy are local drafts until those facts are supplied. The local website therefore has no working support contact and must not be deployed as a final support or privacy URL.
+The website and policy remain local drafts until a production domain is published. The supplied support contact is `CercyServello4757@outlook.com`; the site must not be presented as a public support or privacy URL until it is hosted and checked.
 
-Other release checks outside this materials pass: replace the placeholder `com.example.almanac` iOS and Android identifiers; compare screenshots and privacy statements with the final signed binaries and SDK inventory; complete store privacy forms, identity and rights review, signed build checks, public URL reachability, and device verification. The generated screenshots come from debug simulator builds.
+The iOS and Android source identifiers now use `com.almanac.lite`; signed archive/AAB identity and store records have not been checked. Other release checks outside this materials pass: compare screenshots and privacy statements with the final signed binaries and SDK inventory; complete store privacy forms, identity and rights review, signed build checks, public URL reachability, and device verification. The generated screenshots come from debug simulator builds.
 
 Apple's App Review Guideline 4.3(b) specifically names fortune-telling apps as a crowded category. Almanac's listing presents its implemented choice, reflection, and folio workflow and avoids prediction claims, but approval remains a review decision.

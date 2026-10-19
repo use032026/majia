@@ -11,3 +11,5 @@ The eight PNGs referenced by `artifacts/google-play-listing/preview-spec.json` w
 ## Review boundary
 
 All final screenshots and feature graphics were inspected at contact-sheet size; selected phone outputs were also inspected at full resolution. Final images are RGB without alpha. Captures represent debug emulator/simulator runtime, not the future signed release binaries or physical-device behavior. Recheck against the final signed builds before store upload.
+
+The captured debug builds predate the 2026-10-19 source identifier change from `com.example.almanac` to `com.almanac.lite`. The artwork and UI have not been recaptured from a signed build under the new identity.
