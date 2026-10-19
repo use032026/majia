@@ -2,9 +2,30 @@ import 'package:almanac/src/almanac_app.dart';
 import 'package:almanac/src/app_controller.dart';
 import 'package:almanac/src/domain/almanac_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:url_launcher_platform_interface/link.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
 import 'test_support.dart';
+
+class _FakeUrlLauncher extends UrlLauncherPlatform {
+  final urls = <String>[];
+  final modes = <PreferredLaunchMode>[];
+  bool result = false;
+  PlatformException? error;
+
+  @override
+  LinkDelegate? get linkDelegate => null;
+
+  @override
+  Future<bool> launchUrl(String url, LaunchOptions options) async {
+    urls.add(url);
+    modes.add(options.mode);
+    if (error != null) throw error!;
+    return result;
+  }
+}
 
 Future<AppController> _controller({
   bool onboarded = true,
@@ -22,6 +43,17 @@ Future<AppController> _controller({
 }
 
 void main() {
+  late UrlLauncherPlatform originalLauncher;
+  late _FakeUrlLauncher launcher;
+
+  setUp(() {
+    originalLauncher = UrlLauncherPlatform.instance;
+    launcher = _FakeUrlLauncher();
+    UrlLauncherPlatform.instance = launcher;
+  });
+
+  tearDown(() => UrlLauncherPlatform.instance = originalLauncher);
+
   testWidgets('system defaults follow language and appearance changes', (
     tester,
   ) async {
@@ -402,7 +434,7 @@ void main() {
   });
 
   testWidgets(
-    'privacy note opens as a separate page in the selected language',
+    'unavailable online policy falls back to local guidance in each language',
     (tester) async {
       final controller = await _controller();
       await tester.pumpWidget(AlmanacApp(controller: controller));
@@ -418,6 +450,10 @@ void main() {
       expect(find.byKey(const Key('privacy_screen')), findsOneWidget);
       expect(find.text('本地记录'), findsOneWidget);
       expect(find.text('备份与主动复制'), findsOneWidget);
+      expect(find.byKey(const Key('privacy_retry_button')), findsOneWidget);
+      expect(launcher.urls, <String>[
+        'https://www.almanac1.com/privacy.html?lang=zh',
+      ]);
 
       Navigator.of(
         tester.element(find.byKey(const Key('privacy_screen'))),
@@ -432,8 +468,72 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Local records'), findsOneWidget);
       expect(find.text('Backups and copies'), findsOneWidget);
+      expect(
+        launcher.urls.last,
+        'https://www.almanac1.com/privacy.html?lang=en',
+      );
     },
   );
+
+  testWidgets('privacy entry opens the published policy for the app language', (
+    tester,
+  ) async {
+    launcher.result = true;
+    final controller = await _controller();
+    await tester.pumpWidget(AlmanacApp(controller: controller));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('settings_button')));
+    await tester.pumpAndSettle();
+
+    final privacyButton = find.byKey(const Key('privacy_button'));
+    await tester.ensureVisible(privacyButton);
+    await tester.tap(privacyButton);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('privacy_screen')), findsNothing);
+
+    await tester.ensureVisible(find.byKey(const Key('locale_en')));
+    await tester.tap(find.byKey(const Key('locale_en')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(privacyButton);
+    await tester.tap(privacyButton);
+    await tester.pumpAndSettle();
+
+    expect(launcher.urls, <String>[
+      'https://www.almanac1.com/privacy.html?lang=zh',
+      'https://www.almanac1.com/privacy.html?lang=en',
+    ]);
+    expect(launcher.modes, everyElement(PreferredLaunchMode.inAppBrowserView));
+    expect(find.byKey(const Key('privacy_screen')), findsNothing);
+  });
+
+  testWidgets('privacy launch error preserves local guidance and can retry', (
+    tester,
+  ) async {
+    launcher.error = PlatformException(code: 'launch_failed');
+    final controller = await _controller();
+    await tester.pumpWidget(AlmanacApp(controller: controller));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('settings_button')));
+    await tester.pumpAndSettle();
+    final privacyButton = find.byKey(const Key('privacy_button'));
+    await tester.ensureVisible(privacyButton);
+    await tester.tap(privacyButton);
+    await tester.pumpAndSettle();
+    expect(find.text('本地记录'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    launcher.error = null;
+    launcher.result = true;
+    await tester.tap(find.byKey(const Key('privacy_retry_button')));
+    await tester.pumpAndSettle();
+    expect(launcher.urls, <String>[
+      'https://www.almanac1.com/privacy.html?lang=zh',
+      'https://www.almanac1.com/privacy.html?lang=zh',
+    ]);
+    expect(find.byKey(const Key('privacy_screen')), findsNothing);
+    expect(find.byKey(const Key('settings_button')), findsNothing);
+    expect(find.text('数据与隐私'), findsOneWidget);
+  });
 
   testWidgets('settings and privacy stay reachable with large text', (
     tester,

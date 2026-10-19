@@ -31,7 +31,7 @@
       "shared_preferences"
     ]
   },
-  "generated_at": "2026-10-19T05:53:46.838790+00:00",
+  "generated_at": "2026-10-19T06:57:28.684867+00:00",
   "ios": {
     "bundle_identifiers": [
       "com.almanac.lite",
@@ -66,7 +66,8 @@
       "characters",
       "cupertino_icons",
       "flutter_localizations",
-      "shared_preferences"
+      "shared_preferences",
+      "url_launcher"
     ],
     "description": "A private daily reflection inspired by almanac forms.",
     "name": "almanac",

@@ -7,6 +7,7 @@ import '../app_controller.dart';
 import '../app_strings.dart';
 import '../domain/almanac_content.dart';
 import '../domain/almanac_models.dart';
+import '../privacy_policy.dart';
 
 class RecoveryScreen extends StatelessWidget {
   const RecoveryScreen({
@@ -1051,10 +1052,32 @@ class _FolioCard extends StatelessWidget {
   }
 }
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, required this.controller});
 
   final AppController controller;
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isOpeningPrivacy = false;
+
+  AppController get controller => widget.controller;
+
+  Future<void> _openPrivacy(AppStrings strings) async {
+    if (_isOpeningPrivacy) return;
+    setState(() => _isOpeningPrivacy = true);
+    final opened = await openPrivacyPolicy(useChinese: strings.useChinese);
+    if (!mounted) return;
+    setState(() => _isOpeningPrivacy = false);
+    if (!opened) {
+      await Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => const PrivacyScreen()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1154,11 +1177,9 @@ class SettingsScreen extends StatelessWidget {
                       title: strings.text('privacyTitle'),
                       subtitle: strings.text('privacyHint'),
                       showChevron: true,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => const PrivacyScreen(),
-                        ),
-                      ),
+                      onTap: _isOpeningPrivacy
+                          ? null
+                          : () => _openPrivacy(strings),
                     ),
                   ],
                 ),
@@ -1225,8 +1246,30 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-class PrivacyScreen extends StatelessWidget {
+class PrivacyScreen extends StatefulWidget {
   const PrivacyScreen({super.key});
+
+  @override
+  State<PrivacyScreen> createState() => _PrivacyScreenState();
+}
+
+class _PrivacyScreenState extends State<PrivacyScreen> {
+  bool _isOpeningPolicy = false;
+
+  Future<void> _retryPolicy(AppStrings strings) async {
+    if (_isOpeningPolicy) return;
+    setState(() => _isOpeningPolicy = true);
+    final opened = await openPrivacyPolicy(useChinese: strings.useChinese);
+    if (!mounted) return;
+    setState(() => _isOpeningPolicy = false);
+    if (opened) {
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(strings.text('privacyOpenFailed'))),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1264,6 +1307,17 @@ class PrivacyScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              key: const Key('privacy_retry_button'),
+              onPressed: _isOpeningPolicy ? null : () => _retryPolicy(strings),
+              icon: const Icon(Icons.open_in_browser_outlined),
+              label: Text(
+                strings.text(
+                  _isOpeningPolicy ? 'privacyOpening' : 'privacyRetry',
+                ),
               ),
             ),
             const SizedBox(height: 16),

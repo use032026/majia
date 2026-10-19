@@ -8,7 +8,10 @@ identity:
 
 contact:
   support_email: "CercyServello4757@outlook.com"
-  production_domain: ""
+  production_domain: "https://www.almanac1.com"
+  support_url: "https://www.almanac1.com/#support"
+  privacy_url_zh: "https://www.almanac1.com/privacy.html?lang=zh"
+  privacy_url_en: "https://www.almanac1.com/privacy.html?lang=en"
 
 platforms:
   ios:
@@ -37,7 +40,6 @@ privacy:
     - "Folio Markdown is copied to the system clipboard only after a user action."
     - "Clear all daily leaves removes app-managed leaf records but keeps preferences and the installation seed."
   open_questions:
-    - "Production HTTPS domain and public support/privacy URLs are pending publication."
     - "The operator is described as an independent developer; confirm the legal name required for store and privacy disclosures before publication."
     - "Audit the exact signed iOS and Android builds and final store privacy disclosures before publication."
 

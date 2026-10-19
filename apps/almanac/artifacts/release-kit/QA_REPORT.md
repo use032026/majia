@@ -2,11 +2,10 @@
 
 Target: `/Users/starburst/majia/apps/almanac`
 
-Result: FAIL — 1 error(s), 0 warning(s), 17 passed check(s)
+Result: PASS — 0 error(s), 0 warning(s), 17 passed check(s)
 
 ## Findings
 
-- **ERROR** `manifest.production_domain`: Manifest value production_domain is missing — `/Users/starburst/majia/apps/almanac/release-kit.yml`
 - **PASS** `description.limit`: Shared description is 920/4000 characters — `/Users/starburst/majia/apps/almanac/artifacts/app-store-listing/description-en.txt`
 - **PASS** `keywords.limit`: Apple keywords use 74/100 UTF-8 bytes — `/Users/starburst/majia/apps/almanac/artifacts/app-store-listing/keywords-en.txt`
 - **PASS** `play_short_description.limit`: Google Play short description is 68/80 characters — `/Users/starburst/majia/apps/almanac/artifacts/google-play-listing/short-description-en.txt`

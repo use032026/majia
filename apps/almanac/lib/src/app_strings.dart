@@ -72,9 +72,12 @@ class AppStrings {
     'clearConfirmBody': '这会删除应用管理的全部选择与文字，无法撤销。语言与外观设置会保留。',
     'cancel': '取消',
     'clear': '确认清除',
-    'privacyTitle': '本地隐私说明',
-    'privacyHint': '查看本地存储、备份与复制说明',
-    'privacyIntro': '这里说明当前版本如何在设备上处理你的日笺。',
+    'privacyTitle': '隐私政策',
+    'privacyHint': '阅读完整隐私政策',
+    'privacyIntro': '暂时无法打开在线隐私政策。你可以重试，或先查看下方的本地数据说明。',
+    'privacyRetry': '重新打开在线政策',
+    'privacyOpening': '正在打开…',
+    'privacyOpenFailed': '仍无法打开在线政策，请稍后重试。',
     'privacyStorageTitle': '本地记录',
     'privacyStorageBody':
         '安装种子、每日选择、意图、回看和偏好保存在应用本地。当前版本不向开发者服务器发送这些内容，也不含账号、广告或分析 SDK。',
@@ -173,10 +176,14 @@ class AppStrings {
         'This permanently removes all app-managed choices and writing. Language and appearance settings remain.',
     'cancel': 'Cancel',
     'clear': 'Clear permanently',
-    'privacyTitle': 'Local privacy note',
-    'privacyHint': 'Read about local storage, backups, and copying',
+    'privacyTitle': 'Privacy Policy',
+    'privacyHint': 'Read the full privacy policy',
     'privacyIntro':
-        'How this version handles your daily leaves on your device.',
+        'The online privacy policy could not be opened. You can retry or read the local data summary below.',
+    'privacyRetry': 'Retry online policy',
+    'privacyOpening': 'Opening…',
+    'privacyOpenFailed':
+        'The online policy could not be opened. Please try again later.',
     'privacyStorageTitle': 'Local records',
     'privacyStorageBody':
         'The installation seed, daily choices, intentions, reflections, and preferences stay in local app storage. This version does not send them to a developer server and has no account, ads, or analytics SDK.',

@@ -1,13 +1,18 @@
 # Almanac release-kit open items
 
-The user supplied the operator description (independent developer), support contact, privacy effective date (2026-10-19), and `com.almanac.lite` package identity. The following publication facts and checks remain open:
+The user supplied the operator description (independent developer), support contact, privacy effective date (2026-10-19), `com.almanac.lite` package identity, and the published website. HTTPS requests to the following URLs returned HTTP 200:
 
-1. Production HTTPS domain and reachable public support and privacy URLs are pending publication.
-2. Confirm whether the operator's legal name is needed in store and privacy disclosures; "independent developer" is a role description, not a legal name.
-3. Complete final legal review and compare the privacy text with the exact signed iOS and Android builds.
-4. Check the chosen web host's request logs, cookies, and analytics before deployment, and update the website privacy section if the host processes visitor data beyond the local language preference.
+- Website and support: https://www.almanac1.com/#support
+- Chinese privacy policy: https://www.almanac1.com/privacy.html?lang=zh
+- English privacy policy: https://www.almanac1.com/privacy.html?lang=en
 
-The website and policy remain local drafts until a production domain is published. The supplied support contact is `CercyServello4757@outlook.com`; the site must not be presented as a public support or privacy URL until it is hosted and checked.
+The following publication checks remain open:
+
+1. Confirm whether the operator's legal name is needed in store and privacy disclosures; "independent developer" is a role description, not a legal name.
+2. Complete final legal review and compare the privacy text with the exact signed iOS and Android builds.
+3. Check the web host's request logs, cookies, and analytics, and update the website privacy section if the host processes visitor data beyond the local language preference.
+
+The supplied support contact is `CercyServello4757@outlook.com`. The application opens the corresponding published policy in the system browser view, with local data guidance and a retry action if the browser cannot be opened.
 
 The iOS and Android source identifiers now use `com.almanac.lite`; signed archive/AAB identity and store records have not been checked. Other release checks outside this materials pass: compare screenshots and privacy statements with the final signed binaries and SDK inventory; complete store privacy forms, identity and rights review, signed build checks, public URL reachability, and device verification. The generated screenshots come from debug simulator builds.
 
