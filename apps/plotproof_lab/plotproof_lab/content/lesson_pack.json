@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "revision": "2026-W42",
-  "generatedAt": "2026-10-12T03:35:59.347328Z",
-  "contentSha256": "de748f6c6ca004d74ee87fb2ef846781b974cb94067eb1513c4bd142495cc525",
+  "revision": "2026-W43",
+  "generatedAt": "2026-10-19T03:47:56.795066Z",
+  "contentSha256": "f6f9a2ee38588c4915c1227eef87b7c1b0ce97c23671a91b7b94c588bb751643",
   "lessons": [
     {
-      "id": "remote-owid-axis-2026-w42",
-      "revision": "2026-W42",
+      "id": "remote-owid-axis-2026-w43",
+      "revision": "2026-W43",
       "kind": "axis",
       "mode": "axisBaseline",
       "title": {
@@ -18,8 +18,8 @@
         "en": "Axes · public data this week"
       },
       "claim": {
-        "zh": "2023 年，巴西的预期寿命远高于墨西哥",
-        "en": "In 2023, life expectancy in Brazil is far higher than in Mexico"
+        "zh": "2023 年，韩国的预期寿命远高于法国",
+        "en": "In 2023, life expectancy in South Korea is far higher than in France"
       },
       "prompt": {
         "zh": "截断纵轴后的柱高公平支持“远高于”吗？",
@@ -27,8 +27,8 @@
       },
       "correctVerdict": "misleading",
       "explanation": {
-        "zh": "公开数据分别约为 75.1 与 75.8 年，相差 0.7 年。当前截断范围把视觉差异放大约 3.6 倍；数据真实不等于呈现方式自动公平。",
-        "en": "The public values are about 75.1 and 75.8 years, a gap of 0.7 years. The cropped range amplifies the visual difference about 3.6 times; real data does not automatically make a presentation fair."
+        "zh": "公开数据分别约为 83.3 与 84.3 年，相差 1.0 年。当前截断范围把视觉差异放大约 5.0 倍；数据真实不等于呈现方式自动公平。",
+        "en": "The public values are about 83.3 and 84.3 years, a gap of 1.0 years. The cropped range amplifies the visual difference about 5.0 times; real data does not automatically make a presentation fair."
       },
       "checklist": [
         {
@@ -45,14 +45,14 @@
         "en": "Assume real data guarantees a fair scale"
       },
       "values": [
-        75.1,
-        75.8
+        83.3,
+        84.3
       ],
       "parameters": {
-        "initial": 72.0,
+        "initial": 80.0,
         "fair": 0.0,
         "min": 0.0,
-        "max": 74.0,
+        "max": 82.0,
         "axisMaximum": 100.0
       },
       "source": {
@@ -63,8 +63,8 @@
       }
     },
     {
-      "id": "remote-world-bank-axis-2026-w42",
-      "revision": "2026-W42",
+      "id": "remote-world-bank-axis-2026-w43",
+      "revision": "2026-W43",
       "kind": "axis",
       "mode": "axisBaseline",
       "title": {
@@ -76,8 +76,8 @@
         "en": "Axes · World Bank data"
       },
       "claim": {
-        "zh": "2024 年，日本的出生时预期寿命显著高于澳大利亚",
-        "en": "In 2024, life expectancy at birth in Japan is dramatically higher than in Australia"
+        "zh": "2024 年，韩国的互联网使用率显著高于澳大利亚",
+        "en": "In 2024, internet use in South Korea is dramatically higher than in Australia"
       },
       "prompt": {
         "zh": "当前纵轴是否把差值讲得过头？",
@@ -85,8 +85,8 @@
       },
       "correctVerdict": "misleading",
       "explanation": {
-        "zh": "两项公开数据约为 83.1 和 84.0，实际差值 0.9。截断范围使视觉差异约放大 5.0 倍，因此“显著高于”超过了图中数值能支持的程度。",
-        "en": "The public values are about 83.1 and 84.0, a gap of 0.9. The cropped range amplifies the visual difference about 5.0 times, so “dramatically higher” goes beyond what the values support."
+        "zh": "两项公开数据约为 96.1 和 97.9，实际差值 1.8。截断范围使视觉差异约放大 12.5 倍，因此“显著高于”超过了图中数值能支持的程度。",
+        "en": "The public values are about 96.1 and 97.9, a gap of 1.8. The cropped range amplifies the visual difference about 12.5 times, so “dramatically higher” goes beyond what the values support."
       },
       "checklist": [
         {
@@ -103,26 +103,26 @@
         "en": "Treat cropped bar height as the real proportion"
       },
       "values": [
-        83.1,
-        84.0
+        96.1,
+        97.9
       ],
       "parameters": {
-        "initial": 80.0,
+        "initial": 92.0,
         "fair": 0.0,
         "min": 0.0,
-        "max": 82.0,
+        "max": 95.0,
         "axisMaximum": 100.0
       },
       "source": {
         "name": "World Bank",
-        "url": "https://api.worldbank.org/v2/country/AUS;BRA;CHN;DEU;FRA;GBR;IND;JPN;KOR;MEX;USA;ZAF/indicator/SP.DYN.LE00.IN?date=2019:2026&format=json&per_page=1000",
+        "url": "https://api.worldbank.org/v2/country/AUS;BRA;CHN;DEU;FRA;GBR;IND;JPN;KOR;MEX;USA;ZAF/indicator/IT.NET.USER.ZS?date=2019:2026&format=json&per_page=1000",
         "license": "CC BY 4.0",
-        "attribution": "World Bank, World Development Indicators: Life expectancy at birth, total (years)"
+        "attribution": "World Bank, World Development Indicators: Individuals using the Internet (% of population)"
       }
     },
     {
-      "id": "remote-owid-correlation-2026-w42",
-      "revision": "2026-W42",
+      "id": "remote-owid-correlation-2026-w43",
+      "revision": "2026-W43",
       "kind": "correlation",
       "mode": "correlationOutlier",
       "title": {
@@ -143,8 +143,8 @@
       },
       "correctVerdict": "needsContext",
       "explanation": {
-        "zh": "当前样本的相关系数约为 0.76；移除最敏感的数据点后约为 0.86。相关性还受国家选择、年份、遗漏变量和指标定义影响，不能只用一个系数概括。",
-        "en": "The correlation is about 0.76; without the most influential point it is about 0.86. Country selection, year, omitted variables, and indicator definitions still matter, so one coefficient is not enough."
+        "zh": "当前样本的相关系数约为 0.76；移除最敏感的数据点后约为 0.85。相关性还受国家选择、年份、遗漏变量和指标定义影响，不能只用一个系数概括。",
+        "en": "The correlation is about 0.76; without the most influential point it is about 0.85. Country selection, year, omitted variables, and indicator definitions still matter, so one coefficient is not enough."
       },
       "checklist": [
         {
@@ -161,8 +161,6 @@
         "en": "Treat one correlation coefficient as a stable rule"
       },
       "values": [
-        54.029,
-        84.329,
         21.865,
         75.069,
         13.695,
@@ -177,6 +175,8 @@
         81.378,
         54.297,
         83.325,
+        53.423,
+        81.302,
         74.352,
         79.304
       ],
@@ -194,8 +194,8 @@
       }
     },
     {
-      "id": "remote-world-bank-correlation-2026-w42",
-      "revision": "2026-W42",
+      "id": "remote-world-bank-correlation-2026-w43",
+      "revision": "2026-W43",
       "kind": "correlation",
       "mode": "correlationOutlier",
       "title": {
@@ -207,8 +207,8 @@
         "en": "Correlation · World Bank data"
       },
       "claim": {
-        "zh": "2024 年样本证明了人均收入与互联网使用率存在稳定关系",
-        "en": "The 2024 sample proves a stable relationship between income per person and internet use"
+        "zh": "2024 年样本证明了城镇人口占比与互联网使用率存在稳定关系",
+        "en": "The 2024 sample proves a stable relationship between urban population share and internet use"
       },
       "prompt": {
         "zh": "当前散点和相关系数足以称为“证明”吗？",
@@ -216,8 +216,8 @@
       },
       "correctVerdict": "needsContext",
       "explanation": {
-        "zh": "当前相关系数约为 0.80，移除最敏感点后约为 0.89。即使方向没有改变，横截面相关仍不能说明机制、时间顺序或因果。",
-        "en": "The correlation is about 0.80, and about 0.89 without the most influential point. Even if the direction remains, cross-sectional correlation does not establish mechanism, timing, or causation."
+        "zh": "当前相关系数约为 0.44，移除最敏感点后约为 -0.01。即使方向没有改变，横截面相关仍不能说明机制、时间顺序或因果。",
+        "en": "The correlation is about 0.44, and about -0.01 without the most influential point. Even if the direction remains, cross-sectional correlation does not establish mechanism, timing, or causation."
       },
       "checklist": [
         {
@@ -234,24 +234,24 @@
         "en": "Call cross-sectional correlation causal proof"
       },
       "values": [
-        61.051,
-        97.896,
-        25.82,
+        79.754,
         83.122,
-        86.17,
+        80.125,
         94.694,
-        15.479,
-        78.358,
-        72.118,
+        87.602,
         96.131,
-        22.371,
+        87.896,
         84.463,
-        73.957,
+        65.895,
+        92.0,
+        82.021,
         93.5,
-        62.525,
+        78.8,
         88.654,
-        27.14,
-        92.0
+        83.243,
+        95.472,
+        63.692,
+        78.358
       ],
       "parameters": {
         "initial": 1.0,
@@ -261,9 +261,9 @@
       },
       "source": {
         "name": "World Bank",
-        "url": "https://api.worldbank.org/v2/country/AUS;BRA;CHN;DEU;FRA;GBR;IND;JPN;KOR;MEX;USA;ZAF/indicator/NY.GDP.PCAP.PP.CD?date=2019:2026&format=json&per_page=1000",
+        "url": "https://api.worldbank.org/v2/country/AUS;BRA;CHN;DEU;FRA;GBR;IND;JPN;KOR;MEX;USA;ZAF/indicator/SP.URB.TOTL.IN.ZS?date=2019:2026&format=json&per_page=1000",
         "license": "CC BY 4.0",
-        "attribution": "World Bank, World Development Indicators: GDP per capita, PPP (current international $); Individuals using the Internet (% of population)"
+        "attribution": "World Bank, World Development Indicators: Urban population (% of total population); Individuals using the Internet (% of population)"
       }
     }
   ]
