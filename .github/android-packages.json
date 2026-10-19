@@ -1,6 +1,12 @@
 {
   "schema_version": 1,
   "apps": {
+    "almanac": {
+      "display_name": "Almanac",
+      "path": "apps/almanac",
+      "secret_prefix": "ALMANAC",
+      "application_id": "com.almanac.lite"
+    },
     "diary": {
       "display_name": "Diary",
       "path": "apps/Diary",
