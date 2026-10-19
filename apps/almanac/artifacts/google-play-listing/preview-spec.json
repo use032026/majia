@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "app_name": "Almanac",
+  "app_name": "Deynu",
   "font_path": "/System/Library/Fonts/PingFang.ttc",
   "qa_dir": "qa",
   "defaults": {
@@ -20,7 +20,7 @@
         1080,
         1920
       ],
-      "headline": "A new daily leaf"
+      "headline": "A daily leaf with Deynu"
     },
     {
       "kind": "screenshot",
@@ -31,7 +31,7 @@
         1080,
         1920
       ],
-      "headline": "Choose one Try and one Skip"
+      "headline": "One Try. One Skip."
     },
     {
       "kind": "screenshot",
@@ -42,7 +42,7 @@
         1080,
         1920
       ],
-      "headline": "Reflect on the day"
+      "headline": "Return and reflect"
     },
     {
       "kind": "screenshot",
@@ -53,7 +53,7 @@
         1080,
         1920
       ],
-      "headline": "Keep a local folio"
+      "headline": "Keep your days together"
     },
     {
       "kind": "feature_graphic",
@@ -63,7 +63,7 @@
         1024,
         500
       ],
-      "headline": "One leaf a day. One clear intention."
+      "headline": "Make room for today."
     },
     {
       "kind": "feature_graphic",
@@ -84,7 +84,7 @@
         1080,
         1920
       ],
-      "headline": "每日一笺"
+      "headline": "和 Deynu 开启今日"
     },
     {
       "kind": "screenshot",
@@ -95,18 +95,18 @@
         1080,
         1920
       ],
-      "headline": "选一项宜与一项忌"
+      "headline": "留住今天的宜与忌"
     },
     {
       "kind": "screenshot",
       "locale": "zh-CN",
-      "source": "source/04-sealed-zh-android.png",
-      "output": "final/zh-CN/phone/03-sealed.png",
+      "source": "source/05-reflect-zh-android.png",
+      "output": "final/zh-CN/phone/03-reflect.png",
       "size": [
         1080,
         1920
       ],
-      "headline": "收下今日笺"
+      "headline": "回看今天，记录感受"
     },
     {
       "kind": "screenshot",
@@ -117,7 +117,7 @@
         1080,
         1920
       ],
-      "headline": "在本地笺册回看"
+      "headline": "把每天留在笺册"
     }
   ]
 }

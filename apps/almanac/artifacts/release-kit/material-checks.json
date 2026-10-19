@@ -1,0 +1,714 @@
+{
+  "app_name": "Deynu",
+  "date": "2026-10-19",
+  "passed": true,
+  "check_count": 101,
+  "metadata": [
+    {
+      "file": "artifacts/app-store-listing/name-en.txt",
+      "length": 5,
+      "unit": "characters",
+      "limit": 30,
+      "sha256": "ba3d4285a2ab5c2602ee7b533179469727fdf128213978887d0bfa9c1e169264"
+    },
+    {
+      "file": "artifacts/app-store-listing/subtitle-en.txt",
+      "length": 26,
+      "unit": "characters",
+      "limit": 30,
+      "sha256": "9fc381bde3adb99b095e9346e056abc0a3f5d792438d1963efe75f7028edd0f7"
+    },
+    {
+      "file": "artifacts/app-store-listing/promotional-text-en.txt",
+      "length": 137,
+      "unit": "characters",
+      "limit": 170,
+      "sha256": "e888d0dc85297a4c8e2686d97dc484fe4e6879fdf6f0dcc0478812a56495c65b"
+    },
+    {
+      "file": "artifacts/app-store-listing/keywords-en.txt",
+      "length": 94,
+      "unit": "UTF-8 bytes",
+      "limit": 100,
+      "sha256": "5a23499a525ea19ad969502a4be677738103393158cdf4988f1ca161d91bffd7"
+    },
+    {
+      "file": "artifacts/app-store-listing/description-en.txt",
+      "length": 1411,
+      "unit": "characters",
+      "limit": 4000,
+      "sha256": "c82d0bafe2c6cfcbef2d2f23470e5ddd508a3193c3970ed5a3e7d8f4c751b630"
+    },
+    {
+      "file": "artifacts/google-play-listing/name-en.txt",
+      "length": 5,
+      "unit": "characters",
+      "limit": 30,
+      "sha256": "ba3d4285a2ab5c2602ee7b533179469727fdf128213978887d0bfa9c1e169264"
+    },
+    {
+      "file": "artifacts/google-play-listing/short-description-en.txt",
+      "length": 66,
+      "unit": "characters",
+      "limit": 80,
+      "sha256": "c8d99e0b7212400582549e62f8aa3191b9d74000c4c600a6649f2c208e47d1ca"
+    }
+  ],
+  "final_graphics": [
+    {
+      "file": "artifacts/app-store-previews/final/en-US/iphone/01-seal.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "sha256": "d3d4f95f1926e0a770adb2a1ef5c70f37a057d11df584f947be881b7569ac245"
+    },
+    {
+      "file": "artifacts/app-store-previews/final/en-US/iphone/02-reflect.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "sha256": "7f913371cd9ce81102c415194adb5d2daea8e2fc80a0cb4b6893151103b3a198"
+    },
+    {
+      "file": "artifacts/app-store-previews/final/en-US/iphone/03-folio.png",
+      "dimensions": [
+        1206,
+        2622
+      ],
+      "mode": "RGB",
+      "sha256": "7909d37fb6909cb9c902a9d1baca4d0927555ea32f63781937f929a2e2206add"
+    },
+    {
+      "file": "artifacts/app-store-previews/final/en-US/ipad/01-welcome.png",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "sha256": "b2bb7fc955680b8c949b1abbc2e6d91d3d519705a93a25bea4bb84100d33a03d"
+    },
+    {
+      "file": "artifacts/app-store-previews/final/en-US/ipad/02-today.png",
+      "dimensions": [
+        2064,
+        2752
+      ],
+      "mode": "RGB",
+      "sha256": "e3bc951405e5776eabe57ca941a1b2e7462e4f2e5b34a7cf11b02b5766d1ffe2"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/en-US/phone/01-today.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "5a7c5411c716e3ed5615ea27bcd7fd41841db82aef7574acc09723e5744e0d0a"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/en-US/phone/02-choices.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "04642d88d456e382d65e1033d46a89f4d3b79284ee870fae6c24c4b2a310e9db"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/en-US/phone/03-reflect.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "466a2e186253f7129857ec3aeaeee8a6b196e7c8fdfbd0fb695d195684d5fa2b"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/en-US/phone/04-folio.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "2df0aa819353dcad629d5321959be5199fc643c6bc27ae8ff594bd1ad0abf01a"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/feature-graphic-en.png",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB",
+      "sha256": "14036a5e0db3171ed78d0e85457a601e6270a03bc215bf989740936900296670"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/feature-graphic-zh.png",
+      "dimensions": [
+        1024,
+        500
+      ],
+      "mode": "RGB",
+      "sha256": "b89bc29dcd2afc2fea05494f1f52f097fc921b108dfddcf9940732ab64babf67"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/zh-CN/phone/01-today.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "887269c8a0c0513c0f926f3ddd63d00519130a2253e3fe731f55fca71f71c681"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/zh-CN/phone/02-choices.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "a99ccc79c355cd27a8de9ab9119abc67c73617b61ebbd6acdfc0cbf087e70369"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/zh-CN/phone/03-reflect.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "34622059dba034b4d9802dba0bf04b5e8863bb20c05067cc129835be69c3f726"
+    },
+    {
+      "file": "artifacts/google-play-listing/final/zh-CN/phone/04-folio.png",
+      "dimensions": [
+        1080,
+        1920
+      ],
+      "mode": "RGB",
+      "sha256": "1e34dc88cb03cd64e6c54aabfe1180ec2e81a892f32f3e0fd6e1da6c73d56d3f"
+    }
+  ],
+  "checks": [
+    {
+      "check": "metadata:app-store-listing/name-en.txt",
+      "passed": true,
+      "detail": "5/30 characters"
+    },
+    {
+      "check": "brand:app-store-listing/name-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "metadata:app-store-listing/subtitle-en.txt",
+      "passed": true,
+      "detail": "26/30 characters"
+    },
+    {
+      "check": "brand:app-store-listing/subtitle-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "metadata:app-store-listing/promotional-text-en.txt",
+      "passed": true,
+      "detail": "137/170 characters"
+    },
+    {
+      "check": "brand:app-store-listing/promotional-text-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "metadata:app-store-listing/keywords-en.txt",
+      "passed": true,
+      "detail": "94/100 UTF-8 bytes"
+    },
+    {
+      "check": "brand:app-store-listing/keywords-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "metadata:app-store-listing/description-en.txt",
+      "passed": true,
+      "detail": "1411/4000 characters"
+    },
+    {
+      "check": "brand:app-store-listing/description-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "metadata:google-play-listing/name-en.txt",
+      "passed": true,
+      "detail": "5/30 characters"
+    },
+    {
+      "check": "brand:google-play-listing/name-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "metadata:google-play-listing/short-description-en.txt",
+      "passed": true,
+      "detail": "66/80 characters"
+    },
+    {
+      "check": "brand:google-play-listing/short-description-en.txt",
+      "passed": true,
+      "detail": "No previous brand wordmark"
+    },
+    {
+      "check": "keywords.unique",
+      "passed": true,
+      "detail": [
+        "reflection",
+        "journal",
+        "intention",
+        "poetry",
+        "verse",
+        "folio",
+        "offline",
+        "mindful",
+        "routine",
+        "diary",
+        "thoughts",
+        "choices"
+      ]
+    },
+    {
+      "check": "keywords.no_name",
+      "passed": true,
+      "detail": "Name not repeated in Apple keyword field"
+    },
+    {
+      "check": "keywords.words",
+      "passed": true,
+      "detail": "Every keyword longer than two characters and trimmed"
+    },
+    {
+      "check": "spec.brand:app-store-previews",
+      "passed": true,
+      "detail": "Deynu"
+    },
+    {
+      "check": "image:01-seal.png",
+      "passed": true,
+      "detail": "(1206, 2622), RGB, PNG"
+    },
+    {
+      "check": "source:source/01-sealed-ios.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "icon:final/en-US/iphone/01-seal.png",
+      "passed": true,
+      "detail": "Production icon reference resolves"
+    },
+    {
+      "check": "image:02-reflect.png",
+      "passed": true,
+      "detail": "(1206, 2622), RGB, PNG"
+    },
+    {
+      "check": "source:source/02-reflection-ios.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "icon:final/en-US/iphone/02-reflect.png",
+      "passed": true,
+      "detail": "Production icon reference resolves"
+    },
+    {
+      "check": "image:03-folio.png",
+      "passed": true,
+      "detail": "(1206, 2622), RGB, PNG"
+    },
+    {
+      "check": "source:source/03-folio-ios.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "icon:final/en-US/iphone/03-folio.png",
+      "passed": true,
+      "detail": "Production icon reference resolves"
+    },
+    {
+      "check": "image:01-welcome.png",
+      "passed": true,
+      "detail": "(2064, 2752), RGB, PNG"
+    },
+    {
+      "check": "source:source/01-welcome-ipad-ios.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "icon:final/en-US/ipad/01-welcome.png",
+      "passed": true,
+      "detail": "Production icon reference resolves"
+    },
+    {
+      "check": "image:02-today.png",
+      "passed": true,
+      "detail": "(2064, 2752), RGB, PNG"
+    },
+    {
+      "check": "source:source/02-today-ipad-ios.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "icon:final/en-US/ipad/02-today.png",
+      "passed": true,
+      "detail": "Production icon reference resolves"
+    },
+    {
+      "check": "spec.brand:google-play-listing",
+      "passed": true,
+      "detail": "Deynu"
+    },
+    {
+      "check": "image:01-today.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/02-today-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:02-choices.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/03-choices-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:03-reflect.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/05-reflect-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:04-folio.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/06-folio-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:feature-graphic-en.png",
+      "passed": true,
+      "detail": "(1024, 500), RGB, PNG"
+    },
+    {
+      "check": "image:feature-graphic-zh.png",
+      "passed": true,
+      "detail": "(1024, 500), RGB, PNG"
+    },
+    {
+      "check": "image:01-today.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/02-today-zh-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:02-choices.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/03-choices-zh-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:03-reflect.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/05-reflect-zh-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "image:04-folio.png",
+      "passed": true,
+      "detail": "(1080, 1920), RGB, PNG"
+    },
+    {
+      "check": "source:source/06-folio-zh-android.png",
+      "passed": true,
+      "detail": "Native source exists"
+    },
+    {
+      "check": "final_files.exact",
+      "passed": true,
+      "detail": "15 final graphics, exact match with specifications"
+    },
+    {
+      "check": "provenance.count",
+      "passed": true,
+      "detail": "15 final hashes"
+    },
+    {
+      "check": "provenance.set",
+      "passed": true,
+      "detail": "Exact final asset set"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/final/en-US/iphone/01-seal.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/source/01-sealed-ios.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/final/en-US/iphone/02-reflect.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/source/02-reflection-ios.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/final/en-US/iphone/03-folio.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/source/03-folio-ios.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/final/en-US/ipad/01-welcome.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/source/01-welcome-ipad-ios.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/final/en-US/ipad/02-today.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/app-store-previews/source/02-today-ipad-ios.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/en-US/phone/01-today.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/02-today-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/en-US/phone/02-choices.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/03-choices-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/en-US/phone/03-reflect.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/05-reflect-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/en-US/phone/04-folio.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/06-folio-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/feature-graphic-en.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/feature-graphic-zh.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/zh-CN/phone/01-today.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/02-today-zh-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/zh-CN/phone/02-choices.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/03-choices-zh-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/zh-CN/phone/03-reflect.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/05-reflect-zh-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/final/zh-CN/phone/04-folio.png",
+      "passed": true,
+      "detail": "Final hash matches"
+    },
+    {
+      "check": "provenance:artifacts/google-play-listing/source/06-folio-zh-android.png",
+      "passed": true,
+      "detail": "Native source hash matches"
+    },
+    {
+      "check": "ocr.passed",
+      "passed": true,
+      "detail": "15/15 final artworks passed"
+    },
+    {
+      "check": "ocr.set",
+      "passed": true,
+      "detail": "Exact current final image set"
+    },
+    {
+      "check": "ocr.brand",
+      "passed": true,
+      "detail": "Deynu detected; no previous wordmarks"
+    },
+    {
+      "check": "alt:icon-512.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/en-US/phone/01-today.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/en-US/phone/02-choices.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/en-US/phone/03-reflect.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/en-US/phone/04-folio.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/feature-graphic-en.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/zh-CN/phone/01-today.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/zh-CN/phone/02-choices.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/zh-CN/phone/03-reflect.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/zh-CN/phone/04-folio.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "alt:final/feature-graphic-zh.png",
+      "passed": true,
+      "detail": "Current image exists and alternative text uses Deynu"
+    },
+    {
+      "check": "icon:artifacts/app-store-previews/icon-1024.png",
+      "passed": true,
+      "detail": "(1024, 1024), RGB"
+    },
+    {
+      "check": "icon:artifacts/google-play-listing/icon-512.png",
+      "passed": true,
+      "detail": "(512, 512), RGBA"
+    },
+    {
+      "check": "icon.native",
+      "passed": true,
+      "detail": "App Store icon is exact native production icon"
+    },
+    {
+      "check": "protected_files.unchanged",
+      "passed": true,
+      "detail": "62 protected production/native/website files match initial snapshot"
+    }
+  ]
+}

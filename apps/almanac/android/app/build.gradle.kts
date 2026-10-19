@@ -51,7 +51,7 @@ android {
 
     buildTypes {
         release {
-            // GitHub Actions writes android/key.properties from Almanac's repository secrets.
+            // GitHub Actions writes android/key.properties from Deynu's repository secrets.
             // Local builds without credentials use the debug key for internal verification only.
             signingConfig = if (keystorePropertiesFile.isFile) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
         }

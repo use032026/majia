@@ -1,4 +1,4 @@
-# Almanac 隐私政策草案 / Privacy Policy Draft
+# Deynu 隐私政策草案 / Privacy Policy Draft
 
 状态：仅本地草案，不能直接发布。发布前必须由最终开发者主体审核，替换方括号内容，并按最终签名包、SDK 清单、首发地区与适用法律复核。
 
@@ -13,7 +13,7 @@
 
 ### 产品与账号
 
-Almanac 是离线优先的每日反思工具，不提供账号系统、广告、订阅或开发者自有后台。它使用本机规则组合项目原创的双语提示与短诗，让用户选择一项“宜/Try”、一项“忌/Skip”，可选写下一句意图并稍后回看。
+Deynu 是离线优先的每日反思工具，不提供账号系统、广告、订阅或开发者自有后台。它使用本机规则组合项目原创的双语提示与短诗，让用户选择一项“宜/Try”、一项“忌/Skip”，可选写下一句意图并稍后回看。
 
 ### 应用处理的数据
 
@@ -23,7 +23,7 @@ Almanac 是离线优先的每日反思工具，不提供账号系统、广告、
 - 用户主动选择“复制岁时册”时，导出内容会进入系统剪贴板；之后由操作系统和用户选择的其他应用处理。
 - 操作系统备份、设备迁移、系统诊断或用户主动复制可能使本地内容离开设备，这些流程由相应平台或用户控制。
 
-Almanac 不要求用户输入身份、健康、财务、位置、联系人或儿童数据。意图字段是自由文本；请不要写入不希望保存在设备或系统备份中的敏感信息。
+Deynu 不要求用户输入身份、健康、财务、位置、联系人或儿童数据。意图字段是自由文本；请不要写入不希望保存在设备或系统备份中的敏感信息。
 
 ### 权限与第三方组件
 
@@ -45,7 +45,7 @@ Almanac 不要求用户输入身份、健康、财务、位置、联系人或儿
 
 ### Product and account model
 
-Almanac is an offline-first daily reflection tool. It has no account system, ads, subscriptions, or developer-operated backend. Local rules compose original bilingual prompts and verse so a user can choose one Try, one Skip, optionally write an intention, and reflect later.
+Deynu is an offline-first daily reflection tool. It has no account system, ads, subscriptions, or developer-operated backend. Local rules compose original bilingual prompts and verse so a user can choose one Try, one Skip, optionally write an intention, and reflect later.
 
 ### Data handled by the app
 
@@ -55,7 +55,7 @@ Almanac is an offline-first daily reflection tool. It has no account system, ads
 - When the user chooses to copy the folio, exported text is placed on the system clipboard and may then be handled by the operating system or apps the user selects.
 - Operating-system backup, device migration, diagnostics, or user-initiated copying may move local content off the device under the platform's or user's control.
 
-Almanac does not ask for identity, health, financial, location, contacts, or children's data. The intention field accepts free text; users should avoid entering sensitive information they do not want stored on the device or in system backups.
+Deynu does not ask for identity, health, financial, location, contacts, or children's data. The intention field accepts free text; users should avoid entering sensitive information they do not want stored on the device or in system backups.
 
 ### Permissions and third parties
 

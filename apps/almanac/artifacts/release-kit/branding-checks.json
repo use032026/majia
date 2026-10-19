@@ -1,0 +1,100 @@
+{
+  "asset_count" : 15,
+  "assets" : [
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/app-store-previews\/final\/en-US\/iphone\/01-seal.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 23
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/app-store-previews\/final\/en-US\/iphone\/02-reflect.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 23
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/app-store-previews\/final\/en-US\/iphone\/03-folio.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 24
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/app-store-previews\/final\/en-US\/ipad\/01-welcome.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 15
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/app-store-previews\/final\/en-US\/ipad\/02-today.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 26
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/en-US\/phone\/01-today.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 17
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/en-US\/phone\/02-choices.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 16
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/en-US\/phone\/03-reflect.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 15
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/en-US\/phone\/04-folio.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 16
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/feature-graphic-en.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 2
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/feature-graphic-zh.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 2
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/zh-CN\/phone\/01-today.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 7
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/zh-CN\/phone\/02-choices.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 7
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/zh-CN\/phone\/03-reflect.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 4
+    },
+    {
+      "brand_detected" : true,
+      "file" : "\/Users\/starburst\/majia\/apps\/almanac\/artifacts\/google-play-listing\/final\/zh-CN\/phone\/04-folio.png",
+      "old_brand_detected" : false,
+      "recognized_lines" : 7
+    }
+  ],
+  "failures" : [
+
+  ],
+  "method" : "Apple Vision OCR of final artwork",
+  "passed" : true
+}

@@ -1,4 +1,4 @@
-# Almanac 产品简报与 MVP PRD
+# Deynu 产品简报与 MVP PRD
 
 版本：1.0 · 2026-10-10
 

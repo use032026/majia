@@ -1,7 +1,20 @@
-Almanac is a daily reflection space inspired by the simple “try and skip” form of traditional almanacs. Each day, it composes an original prompt and short verse on your device. Choose one small thing to try and one thing to leave aside, then make the day your own.
+Deynu turns a few quiet minutes into a daily reflection ritual. Read an original short verse, choose one thing to try and one thing to set aside, and keep a daily leaf you can return to.
 
-Write an optional intention and seal your daily leaf. Later, reflect on what happened by choosing Practiced, Reframed, or Released. Your sealed leaves remain in a local Folio, where you can revisit the verse, your choices, and your reflection.
+MAKE A SMALL CHOICE
+Each day brings a prompt and short verse composed by local rules on your device. Select one Try and one Skip as a gentle direction for the day. Add an optional intention in your own words.
 
-Almanac works without an account or a developer-operated backend. It supports English and Simplified Chinese, with system, light, and dark appearance options. You can copy your Folio as readable Markdown or clear your daily records from Settings.
+SEAL YOUR DAILY LEAF
+Keep the verse, choices and intention together in a dated record. The day is yours to practice, adjust or let go.
 
-The prompts are for cultural reflection and personal choice. Almanac does not offer fortune telling, auspicious-date advice, predictions, or a complete calendar.
+RETURN AND REFLECT
+Come back when you are ready. Record your reflection as Practiced, Reframed or Released. A changed plan can still be worth remembering.
+
+KEEP YOUR OWN FOLIO
+Revisit saved leaves and their reflections in a local folio. Copy your folio as readable Markdown when you choose, or clear daily records from Settings while keeping your preferences.
+
+A SIMPLE SPACE THAT STAYS PERSONAL
+No account is needed. Daily content is generated locally, and core daily features work without an internet connection. Records are stored in the app on your device. System backups and text you copy into other apps may be handled by those services.
+
+Use Deynu in English or Simplified Chinese, with light, dark or system appearance.
+
+Deynu is for cultural reflection and personal choice. It does not offer fortune telling, predictions, auspicious-date advice or a complete calendar.

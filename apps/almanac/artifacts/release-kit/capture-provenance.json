@@ -1,0 +1,128 @@
+{
+  "app_name": "Deynu",
+  "date": "2026-10-19",
+  "version": "1.0.0+1",
+  "ios_runtime": "iOS 26.5",
+  "android_runtime": "Pixel 7 API 35",
+  "android_capture_entrypoint": "production widgets and controllers with a deterministic local demo harness",
+  "android_capture_apk_sha256": "af56516666b2d9a512e84caedc98552a3959b8d157659b16f106447803ca1dce",
+  "capture_entrypoint_sha256": "1559b78777195c70c363cddc9940df77c42c93474e19fef4ab94e47e56389d8a",
+  "assets": [
+    {
+      "platform": "ios",
+      "kind": "screenshot",
+      "final": "artifacts/app-store-previews/final/en-US/iphone/01-seal.png",
+      "final_sha256": "d3d4f95f1926e0a770adb2a1ef5c70f37a057d11df584f947be881b7569ac245",
+      "source": "artifacts/app-store-previews/source/01-sealed-ios.png",
+      "source_sha256": "e3cb305b3e5ee095ea5242c0112b3864a4381747d2056dc7f35a48802d829a8f"
+    },
+    {
+      "platform": "ios",
+      "kind": "screenshot",
+      "final": "artifacts/app-store-previews/final/en-US/iphone/02-reflect.png",
+      "final_sha256": "7f913371cd9ce81102c415194adb5d2daea8e2fc80a0cb4b6893151103b3a198",
+      "source": "artifacts/app-store-previews/source/02-reflection-ios.png",
+      "source_sha256": "68aa5af8e9f6000684f8c26c96c0a9a9644617264bd31901fa7caaef2c764e4c"
+    },
+    {
+      "platform": "ios",
+      "kind": "screenshot",
+      "final": "artifacts/app-store-previews/final/en-US/iphone/03-folio.png",
+      "final_sha256": "7909d37fb6909cb9c902a9d1baca4d0927555ea32f63781937f929a2e2206add",
+      "source": "artifacts/app-store-previews/source/03-folio-ios.png",
+      "source_sha256": "3f1332bb3a19e000804bafb23dd58be595763adddede8af417becef673c0eb83"
+    },
+    {
+      "platform": "ios",
+      "kind": "screenshot",
+      "final": "artifacts/app-store-previews/final/en-US/ipad/01-welcome.png",
+      "final_sha256": "b2bb7fc955680b8c949b1abbc2e6d91d3d519705a93a25bea4bb84100d33a03d",
+      "source": "artifacts/app-store-previews/source/01-welcome-ipad-ios.png",
+      "source_sha256": "396ab406b69450f4b1906e727e02c25f543575712968476742cd615985461b58"
+    },
+    {
+      "platform": "ios",
+      "kind": "screenshot",
+      "final": "artifacts/app-store-previews/final/en-US/ipad/02-today.png",
+      "final_sha256": "e3bc951405e5776eabe57ca941a1b2e7462e4f2e5b34a7cf11b02b5766d1ffe2",
+      "source": "artifacts/app-store-previews/source/02-today-ipad-ios.png",
+      "source_sha256": "1288758edd5598800c999fea30c4b2c190981c4b65548df794a5f33afcecafb0"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/en-US/phone/01-today.png",
+      "final_sha256": "5a7c5411c716e3ed5615ea27bcd7fd41841db82aef7574acc09723e5744e0d0a",
+      "source": "artifacts/google-play-listing/source/02-today-android.png",
+      "source_sha256": "81ddf29ae8b6cbbb3f24960255caf72a792931dc4066f6d0797346540f67a0b2"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/en-US/phone/02-choices.png",
+      "final_sha256": "04642d88d456e382d65e1033d46a89f4d3b79284ee870fae6c24c4b2a310e9db",
+      "source": "artifacts/google-play-listing/source/03-choices-android.png",
+      "source_sha256": "5272df3ac1cc46469a200b6da7e37b5b0f173a17bff825f3af6dbd012baa1bc4"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/en-US/phone/03-reflect.png",
+      "final_sha256": "466a2e186253f7129857ec3aeaeee8a6b196e7c8fdfbd0fb695d195684d5fa2b",
+      "source": "artifacts/google-play-listing/source/05-reflect-android.png",
+      "source_sha256": "e37dca81047044700d1cfd4edb3c22dcb1149e669d48c0ce735981d49e4f95a4"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/en-US/phone/04-folio.png",
+      "final_sha256": "2df0aa819353dcad629d5321959be5199fc643c6bc27ae8ff594bd1ad0abf01a",
+      "source": "artifacts/google-play-listing/source/06-folio-android.png",
+      "source_sha256": "5fe1b3c6f1843f77fa2d169d40b9a3da5d3f1947b927bdf280fededa3f481018"
+    },
+    {
+      "platform": "android",
+      "kind": "feature_graphic",
+      "final": "artifacts/google-play-listing/final/feature-graphic-en.png",
+      "final_sha256": "14036a5e0db3171ed78d0e85457a601e6270a03bc215bf989740936900296670"
+    },
+    {
+      "platform": "android",
+      "kind": "feature_graphic",
+      "final": "artifacts/google-play-listing/final/feature-graphic-zh.png",
+      "final_sha256": "b89bc29dcd2afc2fea05494f1f52f097fc921b108dfddcf9940732ab64babf67"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/zh-CN/phone/01-today.png",
+      "final_sha256": "887269c8a0c0513c0f926f3ddd63d00519130a2253e3fe731f55fca71f71c681",
+      "source": "artifacts/google-play-listing/source/02-today-zh-android.png",
+      "source_sha256": "510b5dbc3ba26569cb1a0249e1c8a037b17104653efd62e6eb881f8949612365"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/zh-CN/phone/02-choices.png",
+      "final_sha256": "a99ccc79c355cd27a8de9ab9119abc67c73617b61ebbd6acdfc0cbf087e70369",
+      "source": "artifacts/google-play-listing/source/03-choices-zh-android.png",
+      "source_sha256": "782ffe590cd876b21c33aa92a55f527b1424f5531def832a111ec750d11f336e"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/zh-CN/phone/03-reflect.png",
+      "final_sha256": "34622059dba034b4d9802dba0bf04b5e8863bb20c05067cc129835be69c3f726",
+      "source": "artifacts/google-play-listing/source/05-reflect-zh-android.png",
+      "source_sha256": "fb6d93635fed54ec45d708387c18b223c727e2fd05e8dba8b14d6dd243901450"
+    },
+    {
+      "platform": "android",
+      "kind": "screenshot",
+      "final": "artifacts/google-play-listing/final/zh-CN/phone/04-folio.png",
+      "final_sha256": "1e34dc88cb03cd64e6c54aabfe1180ec2e81a892f32f3e0fd6e1da6c73d56d3f",
+      "source": "artifacts/google-play-listing/source/06-folio-zh-android.png",
+      "source_sha256": "e1644de0d9536cf2a8a6c1870aef9594c65e883b0ec011b5290ee802f2c1a14f"
+    }
+  ]
+}

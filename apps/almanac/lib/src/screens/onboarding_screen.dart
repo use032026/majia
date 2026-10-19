@@ -360,7 +360,7 @@ class _CoverArt extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'ALMANAC',
+                'DEYNU',
                 textScaler: TextScaler.noScaling,
                 style: TextStyle(
                   color: colors.primary,

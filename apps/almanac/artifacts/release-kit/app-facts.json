@@ -10,7 +10,7 @@
         ]
       },
       {
-        "application_label": "Almanac",
+        "application_label": "Deynu",
         "package": null,
         "path": "/Users/starburst/majia/apps/almanac/android/app/src/main/AndroidManifest.xml",
         "permissions": []
@@ -31,7 +31,7 @@
       "shared_preferences"
     ]
   },
-  "generated_at": "2026-10-19T06:57:28.684867+00:00",
+  "generated_at": "2026-10-19T10:13:24.965570+00:00",
   "ios": {
     "bundle_identifiers": [
       "com.almanac.lite",
@@ -39,7 +39,7 @@
     ],
     "info_plists": [
       {
-        "display_name": "Almanac",
+        "display_name": "Deynu",
         "path": "/Users/starburst/majia/apps/almanac/ios/Runner/Info.plist",
         "usage_descriptions": {}
       }

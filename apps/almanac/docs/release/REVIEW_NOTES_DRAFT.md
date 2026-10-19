@@ -1,10 +1,10 @@
-# Almanac App Review Notes Draft
+# Deynu App Review Notes Draft
 
 Status: local draft. Verify against the exact signed build and current App Store Connect record before use.
 
 ## Core purpose
 
-Almanac is a bilingual, offline-first daily reflection tool inspired by the concise “宜/忌” form of traditional almanacs. It is not divination, fortune telling, auspicious-date advice, a complete calendar, or a book reader. It does not provide lunar-calendar facts, solar terms, luck scores, predictions, medical advice, or financial advice.
+Deynu is a bilingual, offline-first daily reflection tool inspired by the concise “宜/忌” form of traditional almanacs. It is not divination, fortune telling, auspicious-date advice, a complete calendar, or a book reader. It does not provide lunar-calendar facts, solar terms, luck scores, predictions, medical advice, or financial advice.
 
 The durable user loop is: read one locally composed daily leaf → choose one Try and one Skip → optionally write an intention → seal the leaf → reflect as Practiced, Reframed, or Released → retain it in the local Folio → optionally copy the folio as Markdown.
 

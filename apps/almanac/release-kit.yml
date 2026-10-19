@@ -1,7 +1,7 @@
 schema_version: 2
 
 identity:
-  app_name: "Almanac"
+  app_name: "Deynu"
   operator: "Independent developer / 独立开发者"
   bundle_id: "com.almanac.lite"
   android_package: "com.almanac.lite"
@@ -25,8 +25,15 @@ listing:
   shared_full_description: artifacts/app-store-listing/description-en.txt
   app_store:
     primary_locale: en-US
+    name_file: artifacts/app-store-listing/name-en.txt
+    subtitle_file: artifacts/app-store-listing/subtitle-en.txt
+    promotional_text_file: artifacts/app-store-listing/promotional-text-en.txt
+    keywords_file: artifacts/app-store-listing/keywords-en.txt
   google_play:
     primary_locale: en-US
+    name_file: artifacts/google-play-listing/name-en.txt
+    short_description_file: artifacts/google-play-listing/short-description-en.txt
+    search_terms_reference: artifacts/google-play-listing/search-terms-en.txt
     localized_graphics:
       - en-US
       - zh-CN
@@ -81,8 +88,8 @@ screenshots:
         source: source/02-today-zh-android.png
       - id: choices-zh
         source: source/03-choices-zh-android.png
-      - id: sealed-zh
-        source: source/04-sealed-zh-android.png
+      - id: reflection-zh
+        source: source/05-reflect-zh-android.png
       - id: folio-zh
         source: source/06-folio-zh-android.png
 

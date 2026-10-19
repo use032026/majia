@@ -223,7 +223,7 @@ class AppController extends ChangeNotifier {
 
   String exportMarkdown({required bool useChinese}) {
     final buffer = StringBuffer()
-      ..writeln(useChinese ? '# Almanac 岁时册' : '# Almanac folio')
+      ..writeln(useChinese ? '# Deynu 岁时册' : '# Deynu folio')
       ..writeln()
       ..writeln(
         useChinese

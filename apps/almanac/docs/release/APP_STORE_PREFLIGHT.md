@@ -1,4 +1,4 @@
-# Almanac App Store / Google Play 预检报告
+# Deynu App Store / Google Play 预检报告
 
 审核日期：2026-10-10
 
@@ -10,7 +10,7 @@
 
 代码与功能 verdict：`passed`。上架 verdict：`blocked / high_risk`。
 
-阻断来自占位 Bundle/Application ID、iOS 无签名、Android Debug 证书、无公开隐私/支持 URL、无商店记录与法定主体事实。即使补齐这些机械项，Apple 4.3(b) 对 fortune telling 饱和类别的明确限制仍使“Almanac + 宜忌”定位保持高审核风险；应用必须靠真实的“选择→封笺→回看→笺册”行为和非预测元数据证明有显著差异，而不是依赖免责声明。
+阻断来自占位 Bundle/Application ID、iOS 无签名、Android Debug 证书、无公开隐私/支持 URL、无商店记录与法定主体事实。即使补齐这些机械项，Apple 4.3(b) 对 fortune telling 饱和类别的明确限制仍使“Deynu + 宜忌”定位保持高审核风险；应用必须靠真实的“选择→封笺→回看→笺册”行为和非预测元数据证明有显著差异，而不是依赖免责声明。
 
 ## 阻断与风险
 

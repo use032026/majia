@@ -1,12 +1,12 @@
 locale	file	alt_text
-en-US	icon-512.png	Almanac icon with a paper leaf and red seal on a green background
-en-US	final/en-US/phone/01-today.png	Daily leaf with an original verse and Try prompts
-en-US	final/en-US/phone/02-choices.png	Selected Try and Skip prompts above an optional intention field
-en-US	final/en-US/phone/03-reflect.png	Reflection sheet with Practiced, Reframed, and Released options
-en-US	final/en-US/phone/04-folio.png	Local folio showing a saved leaf and reflection outcome
-en-US	final/feature-graphic-en.png	Almanac message: One leaf a day. One clear intention.
-zh-CN	final/zh-CN/phone/01-today.png	今日笺展示原创短诗和“宜”的提示
-zh-CN	final/zh-CN/phone/02-choices.png	已选中的“宜”和“忌”以及可选的意图输入框
-zh-CN	final/zh-CN/phone/03-sealed.png	已收下的今日笺展示个人选择与回看入口
-zh-CN	final/zh-CN/phone/04-folio.png	本地笺册展示已保存的日笺和回看结果
-zh-CN	final/feature-graphic-zh.png	Almanac 宣传语：一日一笺，留一寸清明
+en-US	icon-512.png	Deynu app icon with a paper leaf and red seal on a green background
+en-US	final/en-US/phone/01-today.png	Deynu daily leaf showing original verse and Try prompts
+en-US	final/en-US/phone/02-choices.png	Deynu sealed leaf showing the selected Try and Skip and a personal intention
+en-US	final/en-US/phone/03-reflect.png	Deynu reflection sheet offering Practiced, Reframed, and Released
+en-US	final/en-US/phone/04-folio.png	Deynu saved leaf detail showing the verse, choices, and intention
+en-US	final/feature-graphic-en.png	Deynu message: Make room for today.
+zh-CN	final/zh-CN/phone/01-today.png	Deynu 今日笺展示原创短诗和宜的提示
+zh-CN	final/zh-CN/phone/02-choices.png	Deynu 已收笺页面展示宜忌选择与今日意图
+zh-CN	final/zh-CN/phone/03-reflect.png	Deynu 回看面板提供践行、调整、放下三种结果
+zh-CN	final/zh-CN/phone/04-folio.png	Deynu 笺册详情展示已保存的诗句、宜忌和意图
+zh-CN	final/feature-graphic-zh.png	Deynu 宣传语：一日一笺，留一寸清明

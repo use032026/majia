@@ -6,7 +6,7 @@ class AppStrings {
   final bool useChinese;
 
   static const Map<String, String> _zh = <String, String>{
-    'appName': 'Almanac',
+    'appName': 'Deynu',
     'tagline': '一日一笺，留一寸清明',
     'introEyebrow': '现代日笺 · 本地生成',
     'introTitle': '把宜与忌，变成\n今天自己的选择',
@@ -90,7 +90,7 @@ class AppStrings {
     'methodBody':
         '宜忌与短诗均为项目原创内容，由日期和本机安装种子稳定组合。切换语言不会改变当天内容 ID。内容不构成医疗、法律、财务或安全建议。',
     'loadErrorTitle': '无法安全读取本地日笺',
-    'loadErrorBody': '为避免把读取失败误当成空数据，Almanac 已停止写入。你可以先重试；确认无需保留旧数据后再重置。',
+    'loadErrorBody': '为避免把读取失败误当成空数据，Deynu 已停止写入。你可以先重试；确认无需保留旧数据后再重置。',
     'saveError': '未能保存。原有本地记录没有被替换，请重试。',
     'dayChanged': '日期已经更新。请重新选择今天的宜与忌。',
     'retry': '重试读取',
@@ -104,7 +104,7 @@ class AppStrings {
   };
 
   static const Map<String, String> _en = <String, String>{
-    'appName': 'Almanac',
+    'appName': 'Deynu',
     'tagline': 'One leaf a day, one clear intention',
     'introEyebrow': 'A MODERN DAILY LEAF · MADE LOCALLY',
     'introTitle': 'Turn “try and skip”\ninto your own choice',
@@ -153,7 +153,7 @@ class AppStrings {
     'emptyFolio': 'Your folio is still empty',
     'emptyFolioBody': 'Seal your first daily leaf and it will rest here.',
     'language': 'Language',
-    'settingsIntroTitle': 'Make Almanac yours',
+    'settingsIntroTitle': 'Make Deynu yours',
     'settingsIntroBody':
         'Language and appearance follow your device until you choose otherwise.',
     'languageHint': 'Follow your device or choose a language',
@@ -198,7 +198,7 @@ class AppStrings {
         'Prompts and verse are original project text, combined deterministically from the date and a local installation seed. Language changes do not change content IDs. Nothing here is medical, legal, financial, or safety advice.',
     'loadErrorTitle': 'Local leaves could not be read safely',
     'loadErrorBody':
-        'Almanac stopped writing so a read failure cannot be mistaken for empty data. Retry first, or reset only when the old data is no longer needed.',
+        'Deynu stopped writing so a read failure cannot be mistaken for empty data. Retry first, or reset only when the old data is no longer needed.',
     'saveError':
         'Not saved. Existing local records were not replaced. Please retry.',
     'dayChanged':

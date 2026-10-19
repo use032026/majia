@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "app_name": "Almanac",
+  "app_name": "Deynu",
   "font_path": "/System/Library/Fonts/PingFang.ttc",
   "qa_dir": "qa",
   "defaults": {
@@ -19,8 +19,8 @@
         1206,
         2622
       ],
-      "headline": "Make a small choice",
-      "subheadline": "Choose one Try and one Skip for the day.",
+      "headline": "Make room for today",
+      "subheadline": "Choose one Try, one Skip, and your own intention.",
       "icon": "../../website/assets/almanac-icon.png"
     },
     {
@@ -31,8 +31,8 @@
         1206,
         2622
       ],
-      "headline": "Return to your day",
-      "subheadline": "Reflect as Practiced, Reframed, or Released.",
+      "headline": "Return with reflection",
+      "subheadline": "Mark the day as Practiced, Reframed, or Released.",
       "icon": "../../website/assets/almanac-icon.png"
     },
     {
@@ -43,8 +43,8 @@
         1206,
         2622
       ],
-      "headline": "Keep a local folio",
-      "subheadline": "Revisit the verse, choices, and reflection.",
+      "headline": "Keep your days together",
+      "subheadline": "Revisit each verse, choice, and reflection in your folio.",
       "icon": "../../website/assets/almanac-icon.png"
     },
     {
@@ -55,8 +55,8 @@
         2064,
         2752
       ],
-      "headline": "One leaf a day",
-      "subheadline": "A simple space for cultural reflection.",
+      "headline": "A small daily ritual",
+      "subheadline": "Meet Deynu: daily verse, personal choices, a local folio.",
       "icon": "../../website/assets/almanac-icon.png"
     },
     {
@@ -67,8 +67,8 @@
         2064,
         2752
       ],
-      "headline": "A daily prompt, made locally",
-      "subheadline": "Read original verse and choose your own direction.",
+      "headline": "A little verse. A clear intention.",
+      "subheadline": "Read, choose, and return to your day.",
       "icon": "../../website/assets/almanac-icon.png"
     }
   ]

@@ -19,7 +19,7 @@ class AlmanacApp extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Almanac',
+          title: 'Deynu',
           locale: controller.flutterLocale,
           supportedLocales: const <Locale>[Locale('en'), Locale('zh', 'CN')],
           localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
