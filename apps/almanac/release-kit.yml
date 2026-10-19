@@ -30,7 +30,7 @@ listing:
   tone: clear, specific, trustworthy
 
 privacy:
-  effective_date: "2029-10-19"
+  effective_date: "2026-10-19"
   confirmed:
     - "Current source stores the installation seed, leaves, choices, optional intentions, reflections, and preferences with shared_preferences."
     - "Current source has no account, developer backend, advertising, analytics, or runtime permission request."
@@ -38,7 +38,6 @@ privacy:
     - "Clear all daily leaves removes app-managed leaf records but keeps preferences and the installation seed."
   open_questions:
     - "Production HTTPS domain and public support/privacy URLs are pending publication."
-    - "The user supplied 2029-10-19 as the privacy policy effective date; because it is in the future, confirm timing before public use."
     - "The operator is described as an independent developer; confirm the legal name required for store and privacy disclosures before publication."
     - "Audit the exact signed iOS and Android builds and final store privacy disclosures before publication."
 

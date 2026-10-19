@@ -1,11 +1,10 @@
 # Almanac release-kit open items
 
-The user supplied the operator description (independent developer), support contact, planned privacy date, and `com.almanac.lite` package identity. The following publication facts and checks remain open:
+The user supplied the operator description (independent developer), support contact, privacy effective date (2026-10-19), and `com.almanac.lite` package identity. The following publication facts and checks remain open:
 
 1. Production HTTPS domain and reachable public support and privacy URLs are pending publication.
 2. Confirm whether the operator's legal name is needed in store and privacy disclosures; "independent developer" is a role description, not a legal name.
-3. Confirm the planned privacy effective date, **2029-10-19**, before public use. It is in the future relative to the current draft date, 2026-10-19.
-4. Complete final legal review and compare the privacy text with the exact signed iOS and Android builds.
+3. Complete final legal review and compare the privacy text with the exact signed iOS and Android builds.
 
 The website and policy remain local drafts until a production domain is published. The supplied support contact is `CercyServello4757@outlook.com`; the site must not be presented as a public support or privacy URL until it is hosted and checked.
 
