@@ -1,5 +1,9 @@
 platform :ios, '15.0'
 
+# Fylto imports JSON/CSV/TXT/LOG documents through the system document picker.
+Pod::PICKER_MEDIA = false
+Pod::PICKER_AUDIO = false
+
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
