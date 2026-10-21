@@ -12,15 +12,26 @@ flutter test
 flutter run
 ```
 
-核心逻辑位于 `lib/src/domain/filerecheck_document.dart`；系统文件选择与主动导出位于 `lib/src/data/file_gateway.dart`；启动与引导位于 `lib/src/presentation/intro.dart`，其余界面位于 `lib/main.dart`。测试覆盖引导进度、格式边界、工作副本、错误与撤销、比较、分页及编辑草稿保护。
+核心逻辑位于 `lib/src/domain/filerecheck_document.dart`；系统文件选择与主动导出位于 `lib/src/data/file_gateway.dart`；启动与引导位于 `lib/src/presentation/intro.dart`，隐私说明及政策入口位于 `lib/src/presentation/privacy_note.dart`，其余界面位于 `lib/main.dart`。测试覆盖引导进度、格式边界、工作副本、错误与撤销、比较、分页及编辑草稿保护。
 
 ## 更名说明
 
 2026-10-21 将产品显示名统一为 Fylto；`apps/filepeek` 目录、Dart 包名、Bundle ID、Android applicationId、存储键与资源路径保持不变。同日已用 Fylto 调试构建重采 iPhone、iPad 和 Android 中英文截图，更新网站展示图、商店成图及英文描述/关键词/简介。截图通过调试接口载入仓库示例并由原应用界面渲染，不代表系统文件选择器或真机流程的验证；采集说明见 `artifacts/release-kit/CAPTURE_NOTES.md`，历史验证记录保留原样。
 
+## 发布资料
+
+- 运营主体：独立开发者。
+- 支持与隐私联系邮箱：ashcar1986@icloud.com。
+- 隐私政策生效日期：2026-10-21。
+- 正式官网：https://fylto1.com；支持页：https://fylto1.com/#support。
+- 中文隐私政策：https://fylto1.com/privacy.html?lang=zh。
+- 英文隐私政策：https://fylto1.com/privacy.html?lang=en。
+- 应用内从“设置与隐私 → 隐私说明 → 完整隐私政策”（英文为“Privacy policy”）进入，按当前应用语言打开对应网页。网页使用系统浏览器视图，关闭后返回本地说明；无法打开时可重试或复制网址。本地隐私说明可离线阅读，打开网页不会附带所选文件或报告。
+- 上述包名是在截图采集之后确认并更新的；旧截图的构建身份记录保留在采集说明中。
+
 ## 范围和限制
 
 - 单文件最多 5 MiB、10,000 个实际文本行；CSV 最多 200 列。原文副本编辑最多 128 KiB，长内容分页显示。
 - 读取 UTF-8（含 BOM）；其他编码和二进制会报错。源文件只读，导出由用户主动通过系统分享完成。
-- `com.example.filerecheck` 仍为开发占位。Fylto 是当前选定名称；发布前仍需核查目标地区名称与商标，并确认生产 Bundle ID/包名、签名与隐私/支持页面。图标由 `tool/generate_icons.py` 生成。
+- iOS Bundle ID 与 Android applicationId/namespace 均已按用户确认更新为 `com.fylto.lite`；Dart 包名、存储键与业务逻辑保持不变。签名、开发者账户中的身份配置及公开隐私/支持页面仍需核对。图标由 `tool/generate_icons.py` 生成。
 - 本仓库的本地质量门禁和预检在 `docs/release`。通过测试或无签名 Archive 不代表商店已接收或审核；本次没有上传商店。

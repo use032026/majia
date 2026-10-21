@@ -1,25 +1,27 @@
 # Fylto release kit: open items
 
-The named app is `apps/filepeek`; its displayed product name is Fylto. The user confirmed on 2026-10-13 that the following publication facts are **not yet determined**. They remain empty in `release-kit.yml` and intentionally cause six QA errors:
+## User-confirmed facts — 2026-10-21
 
-1. Legal operator name.
-2. Real support email, to appear on the product and privacy pages.
-3. Production HTTPS domain and public page URLs.
-4. Privacy policy effective date.
+- Operator: 独立开发者 / Independent developer.
+- Support and privacy contact: ashcar1986@icloud.com.
+- Privacy policy effective date: 2026-10-21.
+- iOS Bundle ID and Android applicationId/namespace: `com.fylto.lite`; Android launcher class is `com.fylto.lite.MainActivity`.
+- Production website: https://fylto1.com; support: https://fylto1.com/#support.
+- Privacy policy: https://fylto1.com/privacy.html?lang=zh (Chinese), https://fylto1.com/privacy.html?lang=en (English).
 
-The website and privacy policy are review drafts with visible pre-publication notices. Do not host or submit them as final policy or support pages until those facts are confirmed, the copy is reviewed, and the release-kit validator is rerun.
+These values are saved in `release-kit.yml` and reflected in the current application configuration, website and privacy materials. No personal or company legal name was inferred from the operator description.
+
+## Public policy and support URLs
+
+The user confirmed the production domain and both privacy URLs on 2026-10-21. The homepage and both privacy URLs returned HTTP 200 over HTTPS; their response bodies matched the checked-in website pages at verification time. The application keeps its local privacy note and opens the full online policy in the current app language through a system browser view. Browser-launch failure retains the note and exposes a retry and selectable URL. No selected file or report is passed to the browser. No required identity/contact/domain/effective-date fact remains missing from the manifest; see `QA_REPORT.md` for material validation.
 
 ## Further release checks
 
-- `com.example.filerecheck` is a development Bundle ID and Android application ID. Confirm the owned production identities before store submission.
-- Reconcile privacy statements with the final signed iOS and Android packages, plugin privacy manifests, Xcode Privacy Report, App Store App Privacy answers, Google Play Data safety form, system file-provider temporary copies, and backup behavior.
-- Confirm final store name and legal rights in target regions, public URL reachability, and complete platform listing fields in the store consoles.
-- Final signed IPA/AAB, physical-device behavior, accessibility, and minimum-version coverage are outside this material-generation run.
+- Confirm `com.fylto.lite` in the relevant developer accounts and signing configuration, then verify the final signed IPA/AAB identities. Source configuration is not account registration or distribution evidence.
+- Fill and verify the confirmed support/privacy URLs in the store consoles when preparing a submission; this source change does not update either console.
+- Reconcile privacy statements with the final signed packages, plugin privacy manifests, Xcode Privacy Report, App Store App Privacy answers, Google Play Data safety form, file-provider temporary copies and backup behavior.
+- Final signing, physical-device behavior, accessibility, minimum-version coverage and store submission remain separate release checks.
 
-## Material refresh — 2026-10-21
+## Existing image provenance
 
-All current website product screenshots, App Store and Google Play source/final screenshots, feature graphics, contact sheets and the CSV editor QA images have been refreshed for Fylto. The English full description, Apple keywords and Google Play short description were also updated. App facts and deterministic QA were regenerated.
-
-`CAPTURE_NOTES.md` records current build/device provenance, debugger-loaded repository sample states, counts, dimensions and validation limits. `name-audit.json` records OCR and hashes for 44 images with no recognized old branding. These current screenshots do not rely on the earlier FileRecheck captures.
-
-The six remaining QA errors all concern the previously unconfirmed publication facts above; image/metadata checks passed. This material refresh does not resolve production identities, signing, public contacts/URLs, legal review, physical-device proof or store submission.
+The Fylto website/store images were captured before the package-identity update, from the earlier `com.example.filerecheck` simulator/emulator builds. Their displayed branding is already Fylto and the photographed scenes are unchanged by this configuration/contact update. The original build identity and validation scope remain in `CAPTURE_NOTES.md`; these images do not prove the new package's runtime or signed identity. `name-audit.json` retains OCR and SHA-256 records for all 44 image files.

@@ -1,4 +1,4 @@
-package com.example.filerecheck
+package com.fylto.lite
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,9 +6,9 @@
 
 | 来源发现 | 工作范围与验收 | 所需证据 | 依赖 |
 | --- | --- | --- | --- |
-| 生产身份占位 | Fylto 已选为名称；确认可用性及拥有的 iOS Bundle ID、Android applicationId，跨平台同步，重新归档。 | 最终源码、Archive/AAB 内身份。 | 名称/商标核查与开发者账户 |
+| 生产身份待账户/发行包核对 | 用户已确认 `com.fylto.lite`，源码中的 iOS Bundle ID、Android applicationId/namespace 与启动类路径已统一；仍需核对开发者账户、签名及发行包身份。 | 最终源码、Archive/AAB 内身份。 | 开发者账户与签名 |
 | 发行包缺失 | 配好 iOS 分发签名和 Android release keystore；产出可验证的 IPA/AAB。 | 签名、profile、证书指纹、版本/SDK/包名及 16 KB 检查。 | 开发者账户与安全签名流程 |
-| 公开隐私/支持页面缺失 | 法律主体审阅政策并发布稳定 HTTPS 页面；应用内入口、商店字段和联系渠道一致。 | 实际打开的公开 URL、页面内容与最终包核对。 | 法律主体与联系方式 |
+| 隐私/支持地址待最终发行核对 | 已确认 https://fylto1.com、`privacy.html?lang=zh` / `?lang=en` 及 `/#support`；主页和政策页均返回 HTTPS 200，应用入口按当前语言打开政策并保留本地说明。提交时仍需核对最终签名包入口与商店字段。 | 公开 URL、页面内容、语言路由及最终包核对。 | 最终签名包与商店配置 |
 | 商店材料及申报缺失 | 用最终构建制作双语真实截图/元数据、示例附件、App Privacy 和 Play Data safety。 | 截图尺寸与原始运行画面、平台表单导出/人工核对。 | 最终名称、包与政策 |
 
 ## P1 — 下一发行候选门禁

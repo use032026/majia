@@ -1,6 +1,6 @@
 # Fylto App Review Notes 草稿
 
-状态：**不可提交**。基于 2026-10-12 本地构建，2026-10-13 将产品名更新为 FileRecheck，并移除外部分享导入；2026-10-21 仅将产品显示名更新为 Fylto；名称可用性、生产身份、签名包、附件示例文件和 ASC 元数据仍未最终确认。
+状态：**不可提交**。基于 2026-10-12 本地构建，2026-10-13 将产品名更新为 FileRecheck，并移除外部分享导入；2026-10-21 将产品显示名更新为 Fylto；用户已确认 iOS/Android 包名为 `com.fylto.lite`、运营主体为独立开发者、支持与隐私联系邮箱为 ashcar1986@icloud.com、隐私政策生效日期为 2026-10-21、正式域名为 https://fylto1.com；账户侧身份配置、签名包、附件示例文件和 ASC 元数据仍需最终核对。
 
 ## 审核者可执行的路径
 
@@ -9,6 +9,7 @@
 3. CSV：导入含表头的 `name,status\nAlice,ready\nBob,warning` 文件；搜索 `warning`，点击单元格并修改工作副本，然后通过“导出副本 / Export copy”打开系统分享界面。原文件不会被覆盖。
 4. LOG：导入 `INFO started\nWARN delayed\nERROR failed`；搜索 `ERROR`，查看按级别着色的行。选择“检查报告 / Report”可预览本机生成的报告；返回不会导出，只有点击预览页“导出报告 / Export report”才打开系统分享界面。
 5. 错误与恢复：导入语法错误的 JSON，页面会显示位置；“编辑原文副本 / Edit raw copy”修正后重新检查。关闭或替换已修改副本会要求确认。
+6. 隐私入口：“设置与隐私 / Settings and privacy → 隐私说明 / Privacy note → 完整隐私政策 / Privacy policy”。中文打开 https://fylto1.com/privacy.html?lang=zh，英文打开 https://fylto1.com/privacy.html?lang=en；网页需联网，本地说明可离线阅读，关闭网页返回应用且不丢弃文件会话。
 
 仓库中的 `docs/release/review_samples/` 已备好不含真实用户数据的示例。正式提交时仍需通过 App Review 附件或应用内样本入口让审核者取得；当前应用没有内置样本，故这份草稿尚不能视为充分的审核访问证明。
 

@@ -2,13 +2,14 @@ schema_version: 2
 
 identity:
   app_name: "Fylto"
-  operator: ""
-  bundle_id: "com.example.filerecheck" # Development placeholder; not a release identity.
-  android_package: "com.example.filerecheck" # Development placeholder; not a release identity.
+  operator: "独立开发者"
+  bundle_id: "com.fylto.lite"
+  android_package: "com.fylto.lite"
 
 contact:
-  support_email: ""
-  production_domain: ""
+  support_email: "ashcar1986@icloud.com"
+  production_domain: "https://fylto1.com"
+  support_url: "https://fylto1.com/#support"
 
 platforms:
   ios:
@@ -30,15 +31,17 @@ listing:
   tone: clear, specific, trustworthy
 
 privacy:
-  effective_date: ""
+  effective_date: "2026-10-21"
+  policy_url_zh: "https://fylto1.com/privacy.html?lang=zh"
+  policy_url_en: "https://fylto1.com/privacy.html?lang=en"
   confirmed:
     - "Selected JSON, CSV, TXT and LOG files are processed in an in-memory session."
     - "The original selected file is not overwritten; exports use a temporary app cache and the system share sheet."
     - "Old app-generated export files are deleted on the next app launch when deletion succeeds."
     - "Onboarding completion is stored in the app support directory."
     - "Current source has no account, analytics, advertising, or developer-operated file upload flow."
+    - "The full privacy policy opens on fylto1.com in the current app language through a system browser view; no selected file or report is attached to the request."
   open_questions:
-    - "Confirm the legal operator, support email, production HTTPS domain, and privacy effective date."
     - "Review final signed package dependencies, privacy manifests, platform privacy declarations, file-provider copies, and backup behavior."
 
 website:

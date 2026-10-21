@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'src/data/file_gateway.dart';
 import 'src/domain/filerecheck_document.dart';
 import 'src/presentation/intro.dart';
+import 'src/presentation/privacy_note.dart';
 
 void main() => runApp(const FileRecheckApp());
 
@@ -609,23 +610,7 @@ class _FileRecheckAppState extends State<FileRecheckApp> {
   void _showPrivacy() {
     showCupertinoDialog<void>(
       context: uiContext,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(t('隐私说明', 'Privacy note')),
-        content: SingleChildScrollView(
-          child: Text(
-            t(
-              '文件只在本机检查，不发送至开发者服务器。只有你主动导出时，处理副本或报告才交给系统分享目标。系统文件提供方及设备备份可能另有处理规则。临时导出文件会在下次启动时清理。',
-              'Files are inspected on this device and are not sent to a developer server. A working copy or report reaches a share destination only when you export it. File providers and device backups may have their own handling. Temporary exports are cleared at the next launch.',
-            ),
-          ),
-        ),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => Navigator.pop(context),
-            child: Text(t('关闭', 'Close')),
-          ),
-        ],
-      ),
+      builder: (context) => PrivacyNoteDialog(zh: zh),
     );
   }
 

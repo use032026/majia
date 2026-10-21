@@ -27,11 +27,11 @@
   },
   "app_root": "/Users/starburst/majia/apps/filepeek",
   "dependency_signals": {},
-  "generated_at": "2026-10-21T02:48:06.082432+00:00",
+  "generated_at": "2026-10-21T08:32:25.265720+00:00",
   "ios": {
     "bundle_identifiers": [
-      "com.example.filerecheck",
-      "com.example.filerecheck.RunnerTests"
+      "com.fylto.lite",
+      "com.fylto.lite.RunnerTests"
     ],
     "info_plists": [
       {
@@ -53,7 +53,8 @@
       "file_picker",
       "flutter_localizations",
       "path_provider",
-      "share_plus"
+      "share_plus",
+      "url_launcher"
     ],
     "description": "Offline file inspection for JSON, CSV, text and logs.",
     "name": "filerecheck",

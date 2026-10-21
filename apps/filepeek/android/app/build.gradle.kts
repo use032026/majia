@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.filerecheck"
+    namespace = "com.fylto.lite"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -20,8 +20,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.filerecheck"
+        applicationId = "com.fylto.lite"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
@@ -30,8 +29,8 @@ android {
         versionName = flutter.versionName
     }
 
-    // Release signing is intentionally unset until the production identity,
-    // keystore and Play distribution process have been confirmed.
+    // Release signing is intentionally unset until the keystore and Play
+    // distribution process have been confirmed.
 }
 
 flutter {
