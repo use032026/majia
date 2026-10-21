@@ -1,8 +1,17 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.isFile) {
+    FileInputStream(keystorePropertiesFile).use { keystoreProperties.load(it) }
 }
 
 android {
@@ -29,8 +38,24 @@ android {
         versionName = flutter.versionName
     }
 
-    // Release signing is intentionally unset until the keystore and Play
-    // distribution process have been confirmed.
+    signingConfigs {
+        if (keystorePropertiesFile.isFile) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            // GitHub Actions writes android/key.properties from this app's secrets.
+            // The debug key is only for internal builds without release credentials.
+            signingConfig = if (keystorePropertiesFile.isFile) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
+        }
+    }
 }
 
 flutter {

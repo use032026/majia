@@ -22,6 +22,7 @@
 | ReaderEdit | `READEREDIT` |
 | Somniloquy | `SOMNILOQUY` |
 | CleanTrail | `CLEANTRAIL` |
+| Fylto (apps/filepeek) | `FILEPEEK` |
 | LAURUS / Hearthio | `HEARTHIO` |
 | looters | `LOOTERS` |
 | Jufu | `PHOTO` |
@@ -46,6 +47,6 @@ PHOTO_ANDROID_KEY_PASSWORD
 
 ## 当前范围
 
-已覆盖 13 个已有 Android 工程的 Flutter 应用。`PhotoReport` 当前没有 Android 工程，因此不能由此工作流打包。TripCost 已使用 `com.tripcost.lite` 接入；未配置 `TRIPCOST_ANDROID_*` Secrets 前，只能用 `sign_release=false` 生成内部验证包。
+已覆盖 14 个已有 Android 工程的 Flutter 应用。`PhotoReport` 当前没有 Android 工程，因此不能由此工作流打包。TripCost 已使用 `com.tripcost.lite` 接入；未配置 `TRIPCOST_ANDROID_*` Secrets 前，只能用 `sign_release=false` 生成内部验证包。
 
 许多现有工程仍使用 `com.example.*` 占位 Application ID。工作流可以构建，但这类应用在注册正式包名、配置 Play Console 和验证签名身份之前，不应视作可发布的商店构建。

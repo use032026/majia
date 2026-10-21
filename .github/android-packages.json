@@ -31,6 +31,12 @@
       "secret_prefix": "CLEANTRAIL",
       "application_id": "com.example.cleantrail"
     },
+    "filepeek": {
+      "display_name": "Fylto",
+      "path": "apps/filepeek",
+      "secret_prefix": "FILEPEEK",
+      "application_id": "com.fylto.lite"
+    },
     "hearthio": {
       "display_name": "LAURUS (Hearthio)",
       "path": "apps/donesome/Hearthio",
