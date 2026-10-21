@@ -1,0 +1,36 @@
+--------- beginning of main
+10-21 13:50:10.002  3271  3271 I m.example.refqo: Late-enabling -Xcheck:jni
+10-21 13:50:10.039  3271  3271 I m.example.refqo: Using CollectorTypeCMC GC.
+10-21 13:50:10.076  3271  3271 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+10-21 13:50:10.110  3271  3271 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+10-21 13:50:10.111  3271  3271 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+10-21 13:50:10.114  3271  3271 W ziparchive: Unable to open '/data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.dm': No such file or directory
+10-21 13:50:10.114  3271  3271 W ziparchive: Unable to open '/data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.dm': No such file or directory
+10-21 13:50:10.195  3271  3271 D nativeloader: Configuring clns-7 for other apk /data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/lib/arm64:/data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.refqo
+10-21 13:50:10.205  3271  3271 V GraphicsEnvironment: Currently set values for:
+10-21 13:50:10.205  3271  3271 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+10-21 13:50:10.205  3271  3271 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+10-21 13:50:10.205  3271  3271 V GraphicsEnvironment: Global.Settings values are invalid: number of packages: 0, number of values: 0
+10-21 13:50:10.205  3271  3271 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+10-21 13:50:10.331  3271  3293 D FlutterJNI: Beginning load of flutter...
+10-21 13:50:10.332  3271  3294 I ResourceExtractor: Found extracted resources res_timestamp-1-1792561428343
+10-21 13:50:10.415  3271  3293 D nativeloader: Load /data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.apk!/lib/arm64-v8a/libflutter.so using ns clns-7 from class loader (caller=/data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.apk): ok
+10-21 13:50:10.416  3271  3293 D FlutterJNI: flutter (null) was loaded normally!
+10-21 13:50:10.493  3271  3271 W m.example.refqo: type=1400 audit(0.0:38): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=22771 scontext=u:r:untrusted_app:s0:c208,c256,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.example.refqo
+10-21 13:50:10.513  3271  3296 I EGL_emulation: Opening libGLESv1_CM_emulation.so
+10-21 13:50:10.514  3271  3296 I EGL_emulation: Opening libGLESv2_emulation.so
+10-21 13:50:10.616  3271  3296 I flutter : [IMPORTANT:flutter/shell/platform/android/android_context_gl_impeller.cc(104)] Using the Impeller rendering backend (OpenGLES).
+10-21 13:50:10.657  3271  3303 I flutter : The Dart VM service is listening on http://127.0.0.1:34471/GLrmxnqVy88=/
+10-21 13:50:10.812  3271  3271 D nativeloader: Load /data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.apk!/lib/arm64-v8a/libdartjni.so using ns clns-7 from class loader (caller=/data/app/~~ydEZKuf8QRDY-vsLG2E6IA==/com.example.refqo-aMD_vK1_SnYGTloxpOVD3w==/base.apk!classes4.dex): ok
+10-21 13:50:10.830  3271  3271 W m.example.refqo: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (unsupported,test-api, reflection, allowed)
+10-21 13:50:10.830  3271  3271 W m.example.refqo: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (unsupported, reflection, allowed)
+10-21 13:50:10.830  3271  3271 W m.example.refqo: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (unsupported, reflection, allowed)
+10-21 13:50:10.830  3271  3271 W m.example.refqo: Accessing hidden method Landroid/util/LongArray;->get(I)J (unsupported, reflection, allowed)
+10-21 13:50:10.851  3271  3271 W HWUI    : Unknown dataspace 0
+10-21 13:50:11.297  3271  3271 I WindowExtensionsImpl: Initializing Window Extensions, vendor API level=6, activity embedding enabled=true
+10-21 13:50:11.322  3271  3276 I m.example.refqo: Compiler allocated 5250KB to compile void android.view.ViewRootImpl.performTraversals()
+10-21 13:50:11.360  3271  3290 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+10-21 13:50:11.362  3271  3290 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+10-21 13:50:11.379  3271  3296 I Gralloc4: mapper 4.x is not supported
+10-21 13:50:12.285  3271  3271 I Choreographer: Skipped 57 frames!  The application may be doing too much work on its main thread.
+10-21 13:50:16.185  3271  3316 D ProfileInstaller: Installing profile for com.example.refqo

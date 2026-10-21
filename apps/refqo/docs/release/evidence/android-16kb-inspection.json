@@ -1,0 +1,57 @@
+{
+  "artifact_sha256": "1ebdcc00e0c3b88ca60e891fd03829fc270fc4dbc2eb0a7f5b973c977895194b",
+  "all_pass": true,
+  "runtime_page_size": 4096,
+  "libraries": [
+    {
+      "library": "lib/arm64-v8a/libVkLayer_khronos_validation.so",
+      "elf_load_alignment": [
+        65536,
+        65536,
+        65536,
+        65536
+      ],
+      "elf_pass": true,
+      "zip_compressed": false,
+      "zip_data_offset_mod_16384": 0,
+      "zip_pass": true
+    },
+    {
+      "library": "lib/arm64-v8a/libdartjni.so",
+      "elf_load_alignment": [
+        16384,
+        16384,
+        16384
+      ],
+      "elf_pass": true,
+      "zip_compressed": false,
+      "zip_data_offset_mod_16384": 0,
+      "zip_pass": true
+    },
+    {
+      "library": "lib/arm64-v8a/libflutter.so",
+      "elf_load_alignment": [
+        65536,
+        65536,
+        65536,
+        65536
+      ],
+      "elf_pass": true,
+      "zip_compressed": false,
+      "zip_data_offset_mod_16384": 0,
+      "zip_pass": true
+    },
+    {
+      "library": "lib/x86_64/libdartjni.so",
+      "elf_load_alignment": [
+        16384,
+        16384,
+        16384
+      ],
+      "elf_pass": true,
+      "zip_compressed": false,
+      "zip_data_offset_mod_16384": 0,
+      "zip_pass": true
+    }
+  ]
+}

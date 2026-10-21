@@ -1,0 +1,35 @@
+{
+  "device": "Refqo_QA (Pixel 7)",
+  "android": "15",
+  "api": "35",
+  "target": "lib/main.dart",
+  "final_state": "baseline after UI replacement/undo and receipt/undo; cold launch verified",
+  "same_ios_demo": true,
+  "language_for_preview": "zh",
+  "selected_choice_chips": "No checkmark; 30 days, system language, Chinese language, system appearance visually verified",
+  "checks": {
+    "initial": {
+      "stock": 1,
+      "demand_30_days": 2,
+      "purchase_gap": 1
+    },
+    "replacement": {
+      "stock": 0,
+      "demand_30_days": 2,
+      "purchase_gap": 2
+    },
+    "replacement_undo": "full baseline restored",
+    "receipt": {
+      "stock": 2,
+      "demand_30_days": 2,
+      "purchase_gap": 0
+    },
+    "receipt_undo": "full baseline restored",
+    "cold_launch": "ok"
+  },
+  "resumed_activity": [
+    "topResumedActivity=ActivityRecord{c563a62 u0 com.example.refqo/.MainActivity t14}"
+  ],
+  "runtime_error_matches": [],
+  "product_code_changed": false
+}

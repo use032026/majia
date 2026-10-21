@@ -1,0 +1,195 @@
+Running Gradle task 'assembleDebug'...                             27.8s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...        1,889ms
+W/HWUI    ( 3751): Unknown dataspace 0
+I/WindowExtensionsImpl( 3751): Initializing Window Extensions, vendor API level=6, activity embedding enabled=true
+W/HWUI    ( 3751): Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+W/HWUI    ( 3751): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+I/m.example.refqo( 3751): Compiler allocated 5250KB to compile void android.view.ViewRootImpl.performTraversals()
+I/Gralloc4( 3751): mapper 4.x is not supported
+I/Choreographer( 3751): Skipped 73 frames!  The application may be doing too much work on its main thread.
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:60066/dSr6OHfVDi0=/
+VMServiceFlutterDriver: Isolate found with number: 8617558106232695
+VMServiceFlutterDriver: Isolate 8617558106232695 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+I/flutter ( 3751): 00:00 +0: offline shelf purchase replace undo and persistence on device
+D/ProfileInstaller( 3751): Installing profile for com.example.refqo
+VMServiceFlutterDriver: Connected to Flutter application.
+I/Choreographer( 3751): Skipped 30 frames!  The application may be doing too much work on its main thread.
+D/EGL_emulation( 3751): app_time_stats: avg=1005.05ms min=303.06ms max=1756.23ms count=3
+I/m.example.refqo( 3751): NativeAlloc concurrent mark compact GC freed 1907KB AllocSpace bytes, 11(1108KB) LOS objects, 49% free, 2577KB/5154KB, paused 41us,59.450ms total 94.695ms
+D/EGL_emulation( 3751): app_time_stats: avg=216.44ms min=1.56ms max=584.52ms count=7
+W/WindowOnBackDispatcher( 3751): OnBackInvokedCallback is not enabled for the application.
+W/WindowOnBackDispatcher( 3751): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+I/ImeTracker( 3751): com.example.refqo:a629f7e5: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F....ID 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:6a79d14b: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F....ID 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+D/EGL_emulation( 3751): app_time_stats: avg=1192.72ms min=1192.72ms max=1192.72ms count=1
+VMServiceFlutterDriver: request_data message is taking a long time to complete...
+D/EGL_emulation( 3751): app_time_stats: avg=204.52ms min=9.83ms max=585.32ms count=5
+I/ImeTracker( 3751): com.example.refqo:bbe65b29: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:5e05043a: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+W/RemoteInputConnectionImpl( 3751): requestCursorUpdates on inactive InputConnection
+I/ImeTracker( 3751): com.example.refqo:d7fdc01b: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:8ffcc7e4: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:cf655ec6: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+D/EGL_emulation( 3751): app_time_stats: avg=202.88ms min=39.83ms max=391.46ms count=6
+D/InsetsController( 3751): show(ime(), fromIme=true)
+W/InteractionJankMonitor( 3751): Initializing without READ_DEVICE_CONFIG permission. enabled=true, interval=1, missedFrameThreshold=3, frameTimeThreshold=64, package=com.example.refqo
+D/EGL_emulation( 3751): app_time_stats: avg=1771.35ms min=1771.35ms max=1771.35ms count=1
+W/RemoteInputConnectionImpl( 3751): requestCursorUpdates on inactive InputConnection
+W/RemoteInputConnectionImpl( 3751): getSurroundingText on inactive InputConnection
+D/EGL_emulation( 3751): app_time_stats: avg=357.65ms min=98.26ms max=838.59ms count=3
+I/Choreographer( 3751): Skipped 47 frames!  The application may be doing too much work on its main thread.
+I/ImeTracker( 3751): com.example.refqo:6a79d14b: onShown
+W/RemoteInputConnectionImpl( 3751): getSurroundingText on inactive InputConnection
+W/RemoteInputConnectionImpl( 3751): getSurroundingText on inactive InputConnection
+I/HWUI    ( 3751): Davey! duration=819ms; Flags=0, FrameTimelineVsyncId=14656, IntendedVsync=113248222729, Vsync=114031556031, InputEventId=0, HandleInputStart=114047211094, AnimationStart=114047212636, PerformTraversalsStart=114055335553, DrawStart=114055452594, FrameDeadline=113381556057, FrameInterval=114043872511, FrameStartTime=16666666, SyncQueued=114055648969, SyncStart=114056265136, IssueDrawCommandsStart=114056346511, SwapBuffers=114057189844, FrameCompleted=114067957511, DequeueBufferDuration=2209, QueueBufferDuration=579833, GpuCompleted=114067957511, SwapBuffersCompleted=114058341261, DisplayPresentTime=468470212450, CommandSubmissionCompleted=114057189844, 
+W/RemoteInputConnectionImpl( 3751): getSurroundingText on inactive InputConnection
+W/RemoteInputConnectionImpl( 3751): requestCursorUpdates on inactive InputConnection
+W/RemoteInputConnectionImpl( 3751): requestCursorUpdates on inactive InputConnection
+D/InsetsController( 3751): show(ime(), fromIme=true)
+I/ImeTracker( 3751): com.example.refqo:5e05043a: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+W/WindowOnBackDispatcher( 3751): OnBackInvokedCallback is not enabled for the application.
+W/WindowOnBackDispatcher( 3751): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+D/InsetsController( 3751): hide(ime(), fromIme=true)
+D/EGL_emulation( 3751): app_time_stats: avg=217.56ms min=6.37ms max=724.39ms count=6
+I/ImeTracker( 3751): com.example.refqo:1cbebfdc: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+I/ImeTracker( 3751): com.example.refqo:cf655ec6: onHidden
+D/EGL_emulation( 3751): app_time_stats: avg=146.95ms min=48.28ms max=220.88ms count=8
+I/ImeTracker( 3751): com.example.refqo:eba3b73d: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:bd4bf123: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:4f7e1e95: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:1e941040: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+W/RemoteInputConnectionImpl( 3751): requestCursorUpdates on inactive InputConnection
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+D/InsetsController( 3751): show(ime(), fromIme=true)
+D/EGL_emulation( 3751): app_time_stats: avg=378.29ms min=16.37ms max=1394.07ms count=4
+D/EGL_emulation( 3751): app_time_stats: avg=105.20ms min=34.82ms max=231.71ms count=11
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 80, 14865, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 80, 14879, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 80, 14987, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+V/PerfettoTrigger( 3751): Not triggering com.android.telemetry.interaction-jank-monitor-81 - not enough time since last trigger
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+I/ImeTracker( 3751): com.example.refqo:bd4bf123: onShown
+D/InsetsController( 3751): show(ime(), fromIme=true)
+I/ImeTracker( 3751): com.example.refqo:4f7e1e95: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+D/InsetsController( 3751): show(ime(), fromIme=true)
+I/ImeTracker( 3751): com.example.refqo:1e941040: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+I/ImeTracker( 3751): com.example.refqo:f36d3f0e: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+D/InsetsController( 3751): hide(ime(), fromIme=true)
+D/EGL_emulation( 3751): app_time_stats: avg=220.70ms min=36.78ms max=553.01ms count=7
+D/EGL_emulation( 3751): app_time_stats: avg=256.76ms min=10.38ms max=1499.83ms count=7
+I/ImeTracker( 3751): com.example.refqo:24a4ad52: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+I/ImeTracker( 3751): com.example.refqo:f36d3f0e: onHidden
+D/EGL_emulation( 3751): app_time_stats: avg=167.00ms min=43.20ms max=526.49ms count=6
+I/ImeTracker( 3751): com.example.refqo:fe4bfec9: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:5752ed1d: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:b54d677d: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:fea7090b: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+W/RemoteInputConnectionImpl( 3751): requestCursorUpdates on inactive InputConnection
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+D/InsetsController( 3751): show(ime(), fromIme=true)
+D/EGL_emulation( 3751): app_time_stats: avg=215.50ms min=11.38ms max=1175.93ms count=6
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+I/ImeTracker( 3751): com.example.refqo:5752ed1d: onShown
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+W/m.example.refqo( 3751): ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/talkback/talkback.apk' with 1 weak references
+W/m.example.refqo( 3751): ApkAssets: Deleting an ApkAssets object '/vendor/overlay/EmulatorTalkBackOverlay/EmulatorTalkBackOverlay.apk' with 1 weak references
+D/InsetsController( 3751): show(ime(), fromIme=true)
+I/ImeTracker( 3751): com.example.refqo:b54d677d: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+D/InsetsController( 3751): show(ime(), fromIme=true)
+I/ImeTracker( 3751): com.example.refqo:fea7090b: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+D/EGL_emulation( 3751): app_time_stats: avg=115.16ms min=15.32ms max=280.14ms count=10
+I/ImeTracker( 3751): com.example.refqo:71f20525: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+D/InsetsController( 3751): hide(ime(), fromIme=true)
+D/EGL_emulation( 3751): app_time_stats: avg=126.24ms min=3.88ms max=884.42ms count=9
+D/EGL_emulation( 3751): app_time_stats: avg=153.00ms min=37.54ms max=284.19ms count=7
+I/ImeTracker( 3751): com.example.refqo:b12db6c9: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+I/ImeTracker( 3751): com.example.refqo:71f20525: onHidden
+I/ImeTracker( 3751): com.example.refqo:9bfd629d: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+I/ImeTracker( 3751): com.example.refqo:f8c031fd: onRequestShow at ORIGIN_CLIENT reason SHOW_SOFT_INPUT fromUser false
+D/InputMethodManager( 3751): showSoftInput() view=io.flutter.embedding.android.FlutterView{ec711ce VFE...... .F...... 0,0-1080,2400 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+D/EGL_emulation( 3751): app_time_stats: avg=102.61ms min=37.52ms max=198.64ms count=10
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring on
+D/InsetsController( 3751): show(ime(), fromIme=true)
+D/EGL_emulation( 3751): app_time_stats: avg=124.05ms min=0.71ms max=1021.24ms count=11
+I/ImeTracker( 3751): com.example.refqo:bd2edecb: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT fromUser false
+D/InsetsController( 3751): hide(ime(), fromIme=true)
+I/ImeTracker( 3751): com.example.refqo:f8c031fd: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+D/InputConnectionAdaptor( 3751): The input method toggled cursor monitoring off
+I/ImeTracker( 3751): com.example.refqo:224718c1: onRequestHide at ORIGIN_CLIENT reason HIDE_SOFT_INPUT_ON_ANIMATION_STATE_CHANGED fromUser false
+I/ImeTracker( 3751): com.example.refqo:bd2edecb: onHidden
+D/EGL_emulation( 3751): app_time_stats: avg=185.63ms min=40.57ms max=411.32ms count=6
+D/EGL_emulation( 3751): app_time_stats: avg=73.69ms min=1.56ms max=327.03ms count=14
+E/FrameTracker( 3751): force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.example.refqo>
+D/EGL_emulation( 3751): app_time_stats: avg=255.49ms min=117.09ms max=576.36ms count=5
+D/EGL_emulation( 3751): app_time_stats: avg=1376.22ms min=1376.22ms max=1376.22ms count=1
+I/m.example.refqo( 3751): NativeAlloc concurrent mark compact GC freed 806KB AllocSpace bytes, 8(1024KB) LOS objects, 49% free, 2617KB/5234KB, paused 127us,1.437ms total 137.306ms
+W/m.example.refqo( 3751): ApkAssets: Deleting an ApkAssets object '<empty> and /product/app/talkback/talkback.apk' with 1 weak references
+W/m.example.refqo( 3751): ApkAssets: Deleting an ApkAssets object '/vendor/overlay/EmulatorTalkBackOverlay/EmulatorTalkBackOverlay.apk' with 1 weak references
+D/EGL_emulation( 3751): app_time_stats: avg=265.63ms min=130.81ms max=389.22ms count=4
+D/EGL_emulation( 3751): app_time_stats: avg=129.52ms min=44.57ms max=278.61ms count=8
+E/FrameTracker( 3751): force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.example.refqo>
+D/EGL_emulation( 3751): app_time_stats: avg=126.10ms min=101.25ms max=150.62ms count=8
+D/EGL_emulation( 3751): app_time_stats: avg=82.29ms min=21.63ms max=168.94ms count=13
+E/FrameTracker( 3751): force finish cuj, time out: J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+D/EGL_emulation( 3751): app_time_stats: avg=4042.93ms min=4042.93ms max=4042.93ms count=1
+D/EGL_emulation( 3751): app_time_stats: avg=102.78ms min=29.02ms max=235.24ms count=10
+D/EGL_emulation( 3751): app_time_stats: avg=1033.93ms min=1033.93ms max=1033.93ms count=1
+E/FrameTracker( 3751): force finish cuj, time out: J<IME_INSETS_SHOW_ANIMATION::0@1@com.example.refqo>
+D/EGL_emulation( 3751): app_time_stats: avg=122.70ms min=29.34ms max=414.41ms count=9
+D/EGL_emulation( 3751): app_time_stats: avg=1220.52ms min=1220.52ms max=1220.52ms count=1
+E/FrameTracker( 3751): force finish cuj, time out: J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/WindowOnBackDispatcher( 3751): OnBackInvokedCallback is not enabled for the application.
+W/WindowOnBackDispatcher( 3751): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+D/EGL_emulation( 3751): app_time_stats: avg=164.01ms min=76.68ms max=397.12ms count=7
+D/EGL_emulation( 3751): app_time_stats: avg=120.84ms min=87.61ms max=206.70ms count=9
+E/FrameTracker( 3751): force finish cuj, time out: J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed App frame:UNKNOWN: 88, 18070, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 88, 18070, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 80, 18271, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 65, 18285, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 80, 18300, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 66, 18316, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed App frame:UNKNOWN: 74, 18328, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+W/FrameTracker( 3751): Missed SF frame:UNKNOWN: 74, 18328, 0, CUJ=J<IME_INSETS_HIDE_ANIMATION::1@1@com.example.refqo>
+V/PerfettoTrigger( 3751): Not triggering com.android.telemetry.interaction-jank-monitor-81 - not enough time since last trigger
+D/EGL_emulation( 3751): app_time_stats: avg=106.25ms min=12.66ms max=169.96ms count=10
+D/EGL_emulation( 3751): app_time_stats: avg=3913.20ms min=3913.20ms max=3913.20ms count=1
+D/EGL_emulation( 3751): app_time_stats: avg=171.48ms min=20.26ms max=407.15ms count=8
+D/EGL_emulation( 3751): app_time_stats: avg=1305.42ms min=1305.42ms max=1305.42ms count=1
+D/EGL_emulation( 3751): app_time_stats: avg=199.55ms min=83.35ms max=360.50ms count=6
+D/EGL_emulation( 3751): app_time_stats: avg=1178.47ms min=1178.47ms max=1178.47ms count=1
+D/EGL_emulation( 3751): app_time_stats: avg=96.51ms min=9.81ms max=265.96ms count=12
+D/EGL_emulation( 3751): app_time_stats: avg=70.25ms min=10.98ms max=135.28ms count=15
+D/EGL_emulation( 3751): app_time_stats: avg=92.48ms min=19.34ms max=169.09ms count=11
+D/EGL_emulation( 3751): app_time_stats: avg=91.20ms min=12.83ms max=193.65ms count=12
+D/EGL_emulation( 3751): app_time_stats: avg=3547.56ms min=3547.56ms max=3547.56ms count=1
+D/EGL_emulation( 3751): app_time_stats: avg=125.39ms min=1.08ms max=318.76ms count=9
+I/flutter ( 3751): 00:37 +1: (tearDownAll)
+D/EGL_emulation( 3751): app_time_stats: avg=1384.68ms min=749.71ms max=2019.65ms count=2
+I/flutter ( 3751): 00:37 +2: All tests passed!
+All tests passed.

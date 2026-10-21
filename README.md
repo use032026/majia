@@ -21,6 +21,7 @@
 | Somniloquy（夜间声音笔记） | [`apps/Somniloquy/`](apps/Somniloquy/) | 独立 Flutter MVP，迁移基点 `e443a5cb66e591212e5bd6a74d82cda79038840a` |
 | Almanac（每日反思笺） | [`apps/almanac/`](apps/almanac/) | [`CherryIce/Almanac`](https://github.com/CherryIce/Almanac)，迁移基点 `4021e797b080f81a9c5ac3ecb82eeb06d542ea76` |
 | FilePeek（本地文件检查） | [`apps/filepeek/`](apps/filepeek/) | [`CherryIce/FilePeek`](https://github.com/CherryIce/FilePeek)，迁移基点 `371747c02780c016a8258e9425f7ed6e1ed185ae` |
+| Refqo（家庭耗材补货计划） | [`apps/refqo/`](apps/refqo/) | 独立 Flutter 应用，离线优先、中英文、无账号；共享库存、补货计划和可撤销流水 |
 
 具体功能、平台限制、本地命令和发布缺口以各 Flutter 工程内的 `README.md` 与 `docs/` 为准。
 

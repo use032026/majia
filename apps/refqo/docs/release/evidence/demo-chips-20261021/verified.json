@@ -1,0 +1,11 @@
+{
+  "undo_restored_full_seeded_library": true,
+  "seed_is_idempotent": true,
+  "supplies": 1,
+  "devices": 2,
+  "demo_stock": 1,
+  "ledger_entries_after_undo": 1,
+  "living_last_changed": "2026-09-26",
+  "language": null,
+  "appearance": null
+}

@@ -1,0 +1,20 @@
+{
+  "CFBundleDisplayName": "Refqo",
+  "CFBundleIdentifier": "com.example.refqo",
+  "CFBundleShortVersionString": "1.0.0",
+  "CFBundleVersion": "1",
+  "MinimumOSVersion": "15.0",
+  "DTSDKName": "iphoneos26.5",
+  "CFBundleLocalizations": [
+    "en",
+    "zh-Hans"
+  ],
+  "privacy_manifests": [
+    "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+    "Frameworks/file_selector_ios.framework/file_selector_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+    "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+    "Frameworks/share_plus.framework/share_plus_privacy.bundle/PrivacyInfo.xcprivacy"
+  ],
+  "signed": false,
+  "aot_sha256": "95bb157665aacf48795dfc255fb8276af23d30eb78bc10edc03c728d8c99dff6"
+}

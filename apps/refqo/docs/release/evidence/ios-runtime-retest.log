@@ -1,0 +1,80 @@
+Running Xcode build...                                          
+Xcode build done.                                            9.1s
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:54516/YI6vN8zPBTc=/
+VMServiceFlutterDriver: Isolate found with number: 4970691313071843
+VMServiceFlutterDriver: Isolate 4970691313071843 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+flutter: 00:00 +0: offline shelf purchase replace undo and persistence on device
+VMServiceFlutterDriver: Connected to Flutter application.
+VMServiceFlutterDriver: request_data message is taking a long time to complete...
+flutter: ══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+flutter: The following TestFailure was thrown running a test:
+flutter: Expected: exactly one matching candidate
+flutter:   Actual: _TypeWidgetFinder:<Found 0 widgets with type "CupertinoNavigationBarBackButton": []>
+flutter:    Which: means none were found but one was expected
+flutter: One back button expected on screen
+flutter:
+flutter: When the exception was thrown, this was the stack:
+flutter: #0      fail (package:matcher/src/expect/expect.dart:149:31)
+flutter: #1      _expect (package:matcher/src/expect/expect.dart:144:3)
+flutter: #2      expect (package:matcher/src/expect/expect.dart:56:3)
+flutter: #3      expectSync (package:flutter_test/src/widget_tester.dart:486:18)
+flutter: #4      WidgetTester.pageBack.<anonymous closure> (package:flutter_test/src/widget_tester.dart:1177:7)
+flutter: #7      TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+flutter: #8      WidgetTester.pageBack (package:flutter_test/src/widget_tester.dart:1171:27)
+flutter: #9      main.<anonymous closure> (file:///Users/starburst/Downloads/app-ui-atlas/refqo/integration_test/app_test.dart:71:18)
+flutter: <asynchronous suspension>
+flutter: #10     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+flutter: <asynchronous suspension>
+flutter: #11     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+flutter: <asynchronous suspension>
+flutter: #12     TestWidgetsFlutterBinding._createTestCompletionHandler.<anonymous closure> (package:flutter_test/src/binding.dart:814:12)
+flutter: <asynchronous suspension>
+flutter: (elided 2 frames from dart:async)
+flutter:
+flutter: The test description was:
+flutter:   offline shelf purchase replace undo and persistence on device
+flutter: ════════════════════════════════════════════════════════════════════════════════════════════════════
+flutter: 00:13 +0: offline shelf purchase replace undo and persistence on device [E]
+flutter:   Test failed. See exception logs above.
+  The test description was: offline shelf purchase replace undo and persistence on device
+flutter:
+flutter: 00:13 +0 -1: (tearDownAll)
+flutter: 00:13 +1 -1: Some tests failed.
+Failure Details:
+Failure in method: offline shelf purchase replace undo and persistence on device
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞═════════════════
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TypeWidgetFinder:<Found 0 widgets with type
+"CupertinoNavigationBarBackButton": []>
+   Which: means none were found but one was expected
+One back button expected on screen
+
+When the exception was thrown, this was the stack:
+#0      fail (package:matcher/src/expect/expect.dart:149:31)
+#1      _expect (package:matcher/src/expect/expect.dart:144:3)
+#2      expect (package:matcher/src/expect/expect.dart:56:3)
+#3      expectSync (package:flutter_test/src/widget_tester.dart:486:18)
+#4      WidgetTester.pageBack.<anonymous closure> (package:flutter_test/src/widget_tester.dart:1177:7)
+#7      TestAsyncUtils.guard (package:flutter_test/src/test_async_utils.dart:74:41)
+#8      WidgetTester.pageBack (package:flutter_test/src/widget_tester.dart:1171:27)
+#9      main.<anonymous closure> (file:///Users/starburst/Downloads/app-ui-atlas/refqo/integration_test/app_test.dart:71:18)
+<asynchronous suspension>
+#10     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#11     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+#12     TestWidgetsFlutterBinding._createTestCompletionHandler.<anonymous closure> (package:flutter_test/src/binding.dart:814:12)
+<asynchronous suspension>
+(elided 2 frames from dart:async)
+
+The test description was:
+  offline shelf purchase replace undo and persistence on device
+═════════════════════════════════════════════════════════════════
+
+end of failure 1
+
+
+

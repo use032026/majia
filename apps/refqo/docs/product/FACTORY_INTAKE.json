@@ -1,0 +1,49 @@
+{
+  "app_name": "Refqo",
+  "working_name": "refqo",
+  "target_user": "Households sharing replacement consumables across several appliances",
+  "problem": "Separate maintenance reminders do not show pooled stock and the quantity to buy for upcoming replacements",
+  "product_promise": "Know the exact refill, shared stock and purchase gap before the next household supply run",
+  "core_loop": "Define supply and manual fit notes → link appliances → plan 30/60/90-day demand → receive stock → replace and deduct → undo mistakes → export or restore",
+  "durable_output": "Local supply ledger, pooled purchase plan, portable JSON backup and plain-text shopping list",
+  "scope": "release_candidate",
+  "platform": "Flutter iOS 15+, Android API 24+; compile/target 36; current official upload requirements evaluated separately",
+  "launch_regions": [
+    "English-language regions and China, assumption"
+  ],
+  "languages": [
+    "zh-Hans",
+    "en"
+  ],
+  "language_behavior": "默认跟随系统；匹配支持的系统语言，无法匹配时回退英文；仅持久化用户显式选择，选择跟随系统时清除覆盖",
+  "appearance_behavior": "默认跟随系统 light/dark；仅持久化用户显式选择，选择跟随系统时清除覆盖",
+  "app_icon_direction": "Original folded refill loop in a plum square, reproducible vector source",
+  "launch_experience": "iOS/Android 原生启动页；与首个 Flutter 页面及系统 light/dark 连续；无动态或本地化文案、广告、假进度和人为延时",
+  "onboarding_behavior": "原生启动后显示；首次安装可跳过；完成或跳过后持久化并在后续启动直达首页；可从设置或帮助重新查看且不重置完成状态",
+  "existing_user_onboarding": "新项目无既有用户；改造已发布项目时默认不强制既有用户重新进入引导，除非 PRD 明确要求",
+  "scroll_bottom_inset": "滚动视口使用可用空间；在滚动内容尾部按当前系统底部安全区动态留量，不固定分割页面且不重复计算底部占用",
+  "dialog_style": "默认使用 iOS/Cupertino 风格弹框与操作层级",
+  "monetization": "免费且无 IAP；如有变化必须重新审核",
+  "account_model": "无账号",
+  "backend_model": "离线优先，无应用自有后台",
+  "data_handling": "Local JSON in app support; user-selected system file import and explicit share. No network SDK, account, analytics or ads. OS backup/file providers and destinations may use cloud.",
+  "sensitive_data": "Household device labels and notes may be personal; no health or safety advice",
+  "permissions": [
+    "System file picker on explicit import; no broad storage, camera or notification permission"
+  ],
+  "user_generated_content": false,
+  "minimum_ios_assumption": "iOS15 product baseline, not the required iOS26 upload SDK",
+  "visual_direction": "Warm paper, deep plum ink, apricot accents; shared-stock planning workbench with compact lists and timeline",
+  "reference_products": [
+    "https://apps.apple.com/au/app/hearthio/id6804913721",
+    "https://apps.apple.com/us/app/filterlog/id6763735977",
+    "https://apps.apple.com/us/app/filtro-filter-tracker/id6789993291"
+  ],
+  "learning_records": [],
+  "forbidden_actions": [
+    "不创建或修改生产证书和账号",
+    "不上传 App Store Connect",
+    "不提交审核"
+  ],
+  "name_clearance": "Fylqo rejected after user confirmed existing use. Refqo public exact/Apple/Play queries had no app matches on 2026-10-21. Unpublished reservations and trademark clearance unverified; no store record created."
+}

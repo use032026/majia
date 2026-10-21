@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "run": {
+    "run_id": "af14f309-7cf2-4685-a874-35e06108029d",
+    "project_ref": "refqo",
+    "scope": "release_candidate",
+    "skill_revision": "unknown; installed SKILL.md sha256 6b19da85a9bd560af7d3650656de7d94e64393c6696f7eef3a457e57c0993be9",
+    "project_revision": "source manifest sha256 f22a0af522928460e80a3d24876f709f8398c8f7f09e3a5f13f46959c933ef05",
+    "finished_at": "2026-10-21T11:22:16.852946+08:00",
+    "product_verdict": "local_functionality_passed_store_blocked"
+  },
+  "summary": {
+    "worked": [
+      "Original supply-first pooled forecast implemented without competitor assets",
+      "35 tests, formatting and analyzer passed",
+      "iPhone SE, iPad mini and Android API35 complete core path with36 screenshots passed",
+      "Native iPad share/Files save/restore and dismiss/reopen verified after anchor fix",
+      "Android Debug APK and unsigned main-entry iOS Release archive built, privacy manifests inspected"
+    ],
+    "failed": [
+      "Fylqo public search missed existing use; user correction accepted and all active identity renamed Refqo",
+      "Initial Android build ran out of disk; task-owned caches removed and retry passed",
+      "Flutter unsigned archive command reported missing Team; explicit no-sign Xcode archive passed without account changes",
+      "Native iPad full-screen popover origin made share content invisible; fixed with visible1x1 anchor",
+      "Independent real-IO test fixed120ms timing was flaky; replaced by bounded UI condition waiting"
+    ],
+    "untested": [
+      "Name reservation and trademark rights",
+      "Physical devices, lowest OS versions, Android36/16KB runtime, full accessibility/orientation/provider matrix",
+      "Production identity/signing, real public privacy/support pages, final metadata and privacy forms",
+      "Upload, processing, TestFlight, App Review and Play publication"
+    ]
+  },
+  "lessons": [
+    {
+      "pattern_key": "flutter.share.ipad-popover-origin",
+      "severity": "P1",
+      "symptom": "Native share was presented with only an outside-dismiss region visible; share controls were outside the device viewport",
+      "phase": "Native runtime acceptance after core integration tests",
+      "cause_confidence": "confirmed",
+      "cause": "Both share paths anchored the native popover to the full screen RenderBox",
+      "evidence": [
+        "docs/release/evidence/NATIVE_CHECKS.md",
+        "docs/release/evidence/runtime/native/ipad-share-fixed.png",
+        "docs/release/evidence/runtime/native/ipad-restored-success.png",
+        "test/widget_test.dart"
+      ],
+      "proposed_change": "Candidate only: document a visible small source rect for iPad native sharing and require actual open/dismiss/reopen plus file save before claiming share acceptance",
+      "regression_check": "Anchor invariant widget test plus the observed iPad native share and Files roundtrip; no global Skill changes made"
+    }
+  ]
+}

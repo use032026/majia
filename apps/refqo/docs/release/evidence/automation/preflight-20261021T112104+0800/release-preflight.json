@@ -1,0 +1,850 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-21T11:21:04+08:00",
+  "project": "/Users/starburst/Downloads/app-ui-atlas/refqo",
+  "verdict": "blocked",
+  "git": {
+    "is_repository": false
+  },
+  "archive": {
+    "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive",
+    "exists": true,
+    "app": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app",
+    "info": {
+      "CFBundleIdentifier": "com.example.refqo",
+      "CFBundleShortVersionString": "1.0.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "15.0",
+      "DTXcode": "2650",
+      "DTSDKName": "iphoneos26.5",
+      "CFBundleDevelopmentRegion": "en"
+    },
+    "frameworks": [
+      "App.framework",
+      "Flutter.framework",
+      "file_selector_ios.framework",
+      "integration_test.framework",
+      "path_provider_foundation.framework",
+      "share_plus.framework"
+    ]
+  },
+  "checks": [
+    {
+      "key": "source_traceability",
+      "status": "warning",
+      "summary": "No commit-level Git identity is available.",
+      "evidence": {
+        "is_repository": false
+      },
+      "limitation": null
+    },
+    {
+      "key": "bundle_identity",
+      "status": "blocker",
+      "summary": "Missing or placeholder iOS Bundle ID.",
+      "evidence": {
+        "identifiers": [
+          "com.example.refqo",
+          "com.example.refqo.RunnerTests"
+        ],
+        "placeholders": [
+          "com.example.refqo"
+        ],
+        "expected_bundle_id": "com.example.refqo"
+      },
+      "limitation": null
+    },
+    {
+      "key": "privacy_url",
+      "status": "blocker",
+      "summary": "Privacy Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "support_url",
+      "status": "blocker",
+      "summary": "Support Url: not provided.",
+      "evidence": null,
+      "limitation": null
+    },
+    {
+      "key": "preview_labels",
+      "status": "pass",
+      "summary": "No common MVP/prototype/demo wording was found in the scanned app-facing source types.",
+      "evidence": {
+        "hits": [],
+        "scanned_suffixes": [
+          ".arb",
+          ".dart",
+          ".java",
+          ".json",
+          ".kt",
+          ".m",
+          ".mm",
+          ".plist",
+          ".strings",
+          ".swift",
+          ".txt",
+          ".xcstrings",
+          ".xml",
+          ".yaml",
+          ".yml"
+        ]
+      },
+      "limitation": "This bounded source scan does not inspect remote content, generated store metadata, or every possible asset format."
+    },
+    {
+      "key": "app_icon",
+      "status": "pass",
+      "summary": "1024px AppIcon exists without alpha.",
+      "evidence": {
+        "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "width": 1024,
+        "height": 1024,
+        "has_alpha": false
+      },
+      "limitation": "This does not establish originality, trademark clearance, or complete asset-catalog coverage."
+    },
+    {
+      "key": "archive_info",
+      "status": "pass",
+      "summary": "Archive Info.plist was parsed.",
+      "evidence": {
+        "CFBundleIdentifier": "com.example.refqo",
+        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "15.0",
+        "DTXcode": "2650",
+        "DTSDKName": "iphoneos26.5",
+        "CFBundleDevelopmentRegion": "en"
+      },
+      "limitation": null
+    },
+    {
+      "key": "code_signing_presence",
+      "status": "blocker",
+      "summary": "Archive lacks a validating signature or embedded provisioning profile.",
+      "evidence": {
+        "verify_return_code": 1,
+        "verify_output": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all\nIn architecture: arm64",
+        "details": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app: code object is not signed at all",
+        "embedded_mobileprovision": false
+      },
+      "limitation": "This does not identify the profile as App Store distribution, validate its entitlements or expiry, or prove App Store Connect acceptance."
+    },
+    {
+      "key": "privacy_manifests",
+      "status": "pass",
+      "summary": "Privacy manifests were found and parsed.",
+      "evidence": [
+        {
+          "path": "Frameworks/Flutter.framework/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/file_selector_ios.framework/file_selector_ios_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        },
+        {
+          "path": "Frameworks/share_plus.framework/share_plus_privacy.bundle/PrivacyInfo.xcprivacy",
+          "valid_plist": true
+        }
+      ],
+      "limitation": "Manifest presence does not replace a final Xcode Privacy Report or App Store privacy answers."
+    },
+    {
+      "key": "archive_dependencies",
+      "status": "info",
+      "summary": "Recorded embedded archive frameworks for reviewer inspection.",
+      "evidence": [
+        "App.framework",
+        "Flutter.framework",
+        "file_selector_ios.framework",
+        "integration_test.framework",
+        "path_provider_foundation.framework",
+        "share_plus.framework"
+      ],
+      "limitation": "This is a package inventory, not network or SDK-behavior proof."
+    },
+    {
+      "key": "archive_source_identity",
+      "status": "pass",
+      "summary": "Archive Bundle ID matches the selected source configuration.",
+      "evidence": {
+        "expected": "com.example.refqo",
+        "archive": "com.example.refqo"
+      },
+      "limitation": "Bundle ID equality does not prove that the archive was built from the current commit."
+    },
+    {
+      "key": "archive_source_version",
+      "status": "pass",
+      "summary": "Archive version and build number match the expected Flutter source values.",
+      "evidence": {
+        "expected_version": "1.0.0",
+        "expected_build_number": "1",
+        "archive_version": "1.0.0",
+        "archive_build_number": "1"
+      },
+      "limitation": null
+    },
+    {
+      "key": "screenshots",
+      "status": "warning",
+      "summary": "Screenshots exist but at least one has alpha or is unreadable.",
+      "evidence": [
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/01-onboarding.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/02-empty-plan.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/03-supply-devices.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/04-replace-confirm.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/05-pooled-plan.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/06-sixty-day-plan.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/07-ledger.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/08-settings-zh-dark.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/09-returning-zh-dark.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/10-replay-zh.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/11-plan-large-text.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/12-plan-large-text-end.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/01-onboarding.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/02-empty-plan.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/03-supply-devices.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/04-replace-confirm.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/05-pooled-plan.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/06-sixty-day-plan.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/07-ledger.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/08-settings-zh-dark.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/09-returning-zh-dark.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/10-replay-zh.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/11-plan-large-text.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/12-plan-large-text-end.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/01-onboarding.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/02-empty-plan.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/03-supply-devices.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/04-replace-confirm.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/05-pooled-plan.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/06-sixty-day-plan.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/07-ledger.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/08-settings-zh-dark.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/09-returning-zh-dark.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/10-replay-zh.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/01-onboarding.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/02-empty-plan.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/03-supply-devices.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/04-replace-confirm.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/05-pooled-plan.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/06-sixty-day-plan.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/07-ledger.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/08-settings-zh-dark.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/09-returning-zh-dark.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/10-replay-zh.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/11-plan-large-text.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/12-plan-large-text-end.png",
+          "width": 750,
+          "height": 1334,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/android-cold-onboarding.png",
+          "width": 1080,
+          "height": 2400,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-cold-onboarding.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-restore-preview.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-restored-success.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        },
+        {
+          "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-share-fixed.png",
+          "width": 1488,
+          "height": 2266,
+          "has_alpha": true
+        }
+      ],
+      "limitation": "Current App Store device classes, required counts, content, and final-build provenance still require live review."
+    },
+    {
+      "key": "requested_artifacts",
+      "status": "pass",
+      "summary": "All explicitly requested artifacts exist and will be recorded.",
+      "evidence": {
+        "requested": [
+          "/Users/starburst/Downloads/app-ui-atlas/refqo/build/app/outputs/flutter-apk/app-debug.apk",
+          "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Frameworks/App.framework/App"
+        ],
+        "missing": []
+      },
+      "limitation": null
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/app/outputs/flutter-apk/app-debug.apk",
+      "size_bytes": 101861436,
+      "modified_at": "2026-10-21T11:21:03.050726+08:00",
+      "sha256": "1ebdcc00e0c3b88ca60e891fd03829fc270fc4dbc2eb0a7f5b973c977895194b"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Frameworks/App.framework/App",
+      "size_bytes": 5885344,
+      "modified_at": "2026-10-21T11:15:46+08:00",
+      "sha256": "95bb157665aacf48795dfc255fb8276af23d30eb78bc10edc03c728d8c99dff6"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Runner",
+      "size_bytes": 74128,
+      "modified_at": "2026-10-21T11:15:52.656712+08:00",
+      "sha256": "0a535d236e65b5dd107db982321c597451a9fb94092ecdce4bb1d89fc92e945f"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/01-onboarding.png",
+      "size_bytes": 177515,
+      "modified_at": "2026-10-21T11:09:32.956007+08:00",
+      "sha256": "e212e958d5d51ec13c33cd93b1a4fd5bb5e400d380a58ad37283c496729288d2"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/02-empty-plan.png",
+      "size_bytes": 202487,
+      "modified_at": "2026-10-21T11:09:32.959151+08:00",
+      "sha256": "af753d4db481f5d242adb24dc4e4a2d74a5470640b9e9069fd249d91e930b26b"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/03-supply-devices.png",
+      "size_bytes": 168743,
+      "modified_at": "2026-10-21T11:09:32.960350+08:00",
+      "sha256": "660567a8c6483e469bf0353c1a436756007591051bd539ebd2e80147754ad8c8"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/04-replace-confirm.png",
+      "size_bytes": 209084,
+      "modified_at": "2026-10-21T11:09:32.961552+08:00",
+      "sha256": "50c8a6d29bb484639d1f203d688ec716daefe3484b957da1a8f60d84a4fbf026"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/05-pooled-plan.png",
+      "size_bytes": 171135,
+      "modified_at": "2026-10-21T11:09:32.962512+08:00",
+      "sha256": "54ec4457ac47ac8020437d5d4b62ae809b81153fa14b9e10982de4c244d240a1"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/06-sixty-day-plan.png",
+      "size_bytes": 188406,
+      "modified_at": "2026-10-21T11:09:32.964024+08:00",
+      "sha256": "441ed0a8468254976e07bdfa2121f49a1585c7f150bac896d105c4d42efb2378"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/07-ledger.png",
+      "size_bytes": 132892,
+      "modified_at": "2026-10-21T11:09:32.964746+08:00",
+      "sha256": "bf5f011b8c6670cb3202b234f8e770299bb523948ac4a271970bf026a7dc3431"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/08-settings-zh-dark.png",
+      "size_bytes": 272302,
+      "modified_at": "2026-10-21T11:09:32.965923+08:00",
+      "sha256": "e19c0c54a09e53d9f8431ba08c559b0b9a83778fa515f4b8fb3f1bf65de01dcc"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/09-returning-zh-dark.png",
+      "size_bytes": 179217,
+      "modified_at": "2026-10-21T11:09:32.966605+08:00",
+      "sha256": "a366f9742a16adb2a9be08d802e3d18be34d5b6487f1ccd7f29e72f659e39e8c"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/10-replay-zh.png",
+      "size_bytes": 186705,
+      "modified_at": "2026-10-21T11:09:32.967461+08:00",
+      "sha256": "ed54726647485c25a3f52de42b987ebc25fd238140e5793a0ae44f5d5ac4eec6"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/11-plan-large-text.png",
+      "size_bytes": 174142,
+      "modified_at": "2026-10-21T11:09:32.968280+08:00",
+      "sha256": "20b3bef1ba9b69f50b21b1dd97784ee46565db706903bc9924bd2cd3b71e58c6"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/android-api35/12-plan-large-text-end.png",
+      "size_bytes": 232106,
+      "modified_at": "2026-10-21T11:09:32.969267+08:00",
+      "sha256": "089d62ea45bddc7ca57367bc6be2fa34099da0b57ce224ec5153435373f552d5"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/01-onboarding.png",
+      "size_bytes": 176466,
+      "modified_at": "2026-10-21T11:08:29.736044+08:00",
+      "sha256": "f13f933d8083cd6f55a6117f78ad49951c5e9e75eb83f8aaec956e2631199e47"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/02-empty-plan.png",
+      "size_bytes": 198017,
+      "modified_at": "2026-10-21T11:08:29.741818+08:00",
+      "sha256": "7ce8be1957fdd708fd67ef799ff724be99772f137704bab977238654d76cce24"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/03-supply-devices.png",
+      "size_bytes": 202120,
+      "modified_at": "2026-10-21T11:08:29.744416+08:00",
+      "sha256": "560d2cd0b9a762d173c98db11d3d941dd3640a07d7f48eb4c939b9766b05754c"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/04-replace-confirm.png",
+      "size_bytes": 230710,
+      "modified_at": "2026-10-21T11:08:29.745779+08:00",
+      "sha256": "a57a445d25e933234d7e5079769f9e2b58939cfab4135c71a88520fe9220bb71"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/05-pooled-plan.png",
+      "size_bytes": 201831,
+      "modified_at": "2026-10-21T11:08:29.747936+08:00",
+      "sha256": "da8c6456b0c51c51c26bc9e0ca773f011c154da89123b553186cbde8eefb7f41"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/06-sixty-day-plan.png",
+      "size_bytes": 200504,
+      "modified_at": "2026-10-21T11:08:29.751675+08:00",
+      "sha256": "b20077a70c51c07235c8acd8cf9b64d4ae6b24a929626934400814123678f1b7"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/07-ledger.png",
+      "size_bytes": 151449,
+      "modified_at": "2026-10-21T11:08:29.754109+08:00",
+      "sha256": "ef01cee2c9909ec371fa18aae4ac9ec339c4bdcbefb8d66eeee697de08e63210"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/08-settings-zh-dark.png",
+      "size_bytes": 229763,
+      "modified_at": "2026-10-21T11:08:29.757249+08:00",
+      "sha256": "a3a44dce8a4bf415a05a4eab77e27ab228aa7ade1c0cc972f16649571dbd1fd2"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/09-returning-zh-dark.png",
+      "size_bytes": 196172,
+      "modified_at": "2026-10-21T11:08:29.759748+08:00",
+      "sha256": "3b3a345bbb211cc3e101124628f2b3a05fa8d224687e475212b4cdc473797818"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/10-replay-zh.png",
+      "size_bytes": 174698,
+      "modified_at": "2026-10-21T11:08:29.761806+08:00",
+      "sha256": "54c67423f0d0d679aed0e804aee93511a2a03f3c68cce134a19a207ff02b5560"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/11-plan-large-text.png",
+      "size_bytes": 259202,
+      "modified_at": "2026-10-21T11:08:29.764245+08:00",
+      "sha256": "6e58f33de4ed5e94030805e4f40602b13d3c519ca2a8646612339e3b854e6845"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-ipad/12-plan-large-text-end.png",
+      "size_bytes": 266557,
+      "modified_at": "2026-10-21T11:08:29.766993+08:00",
+      "sha256": "611a661d4f042769a0ded44262fa6f041b9f6f478b70a33cdc0b3277c14af48e"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/01-onboarding.png",
+      "size_bytes": 117254,
+      "modified_at": "2026-10-21T10:58:17.656958+08:00",
+      "sha256": "93279bb67ee51d1b26df78da97012d233a3b7fcbac0fd96e27b7076a0b4b97e6"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/02-empty-plan.png",
+      "size_bytes": 107335,
+      "modified_at": "2026-10-21T10:58:17.659475+08:00",
+      "sha256": "6520060784427b251a4951539a053baf58a656caf1b10fecaaf2676de0a2034e"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/03-supply-devices.png",
+      "size_bytes": 104981,
+      "modified_at": "2026-10-21T10:58:17.660200+08:00",
+      "sha256": "e1611aa99376ec056930685e0104aa0c1e2654de4945edd3e7b49e1a8bdfd26b"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/04-replace-confirm.png",
+      "size_bytes": 114374,
+      "modified_at": "2026-10-21T10:58:17.660768+08:00",
+      "sha256": "d3d6dde6ca7b50a9ec5ce884806d67cc90f41ba67f9e7bc17db69915ef2fb76b"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/05-pooled-plan.png",
+      "size_bytes": 104420,
+      "modified_at": "2026-10-21T10:58:17.661417+08:00",
+      "sha256": "aab4b28442ac0a49cf0ee4acc4030c752efa380285473b5f667a264f94045969"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/06-sixty-day-plan.png",
+      "size_bytes": 98440,
+      "modified_at": "2026-10-21T10:58:17.661916+08:00",
+      "sha256": "267c03509f39851b6f5980c97978dfa5332d43ef65b57cacab22f6c09e60cec2"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/07-ledger.png",
+      "size_bytes": 97103,
+      "modified_at": "2026-10-21T10:58:17.662538+08:00",
+      "sha256": "073955b3405c727c85f79aec2d40f32de6595c1f412668c8f18afb1d94853679"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/08-settings-zh-dark.png",
+      "size_bytes": 97305,
+      "modified_at": "2026-10-21T10:58:17.663033+08:00",
+      "sha256": "5b90b0c966e89c05241493fce630967e3f10c23c05881c2b21365dc762101097"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/09-returning-zh-dark.png",
+      "size_bytes": 102948,
+      "modified_at": "2026-10-21T10:58:17.663587+08:00",
+      "sha256": "1e81cf0a38ed3d761e01de8787caa3f8168e5028fd232d66913b9c519816add9"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se/10-replay-zh.png",
+      "size_bytes": 118066,
+      "modified_at": "2026-10-21T10:58:17.664107+08:00",
+      "sha256": "1bedb878f9aca0820e2f5c7b0ed48b6c68d24aa7b6961f52f6620413324d0578"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/01-onboarding.png",
+      "size_bytes": 117176,
+      "modified_at": "2026-10-21T11:06:35.498948+08:00",
+      "sha256": "a1eeaaab346cdaf1c105b7f97f7fe2f8962a0c59ecd96d265ab5c0e4761d66fc"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/02-empty-plan.png",
+      "size_bytes": 107492,
+      "modified_at": "2026-10-21T11:06:35.500915+08:00",
+      "sha256": "6662bc522131d8d7e7d23c94aaa57b33674b99a7a50bb4ca31d705a1d54a7516"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/03-supply-devices.png",
+      "size_bytes": 104946,
+      "modified_at": "2026-10-21T11:06:35.501854+08:00",
+      "sha256": "45de60345f05ff1d2b73c010921b742e5f025499afae26118aefef26a9a1343a"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/04-replace-confirm.png",
+      "size_bytes": 113322,
+      "modified_at": "2026-10-21T11:06:35.502494+08:00",
+      "sha256": "a5125e0e3a4edb11923b7b67f76fed0392954fbcd6d3e332d834ee6af44c5c8e"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/05-pooled-plan.png",
+      "size_bytes": 104535,
+      "modified_at": "2026-10-21T11:06:35.502991+08:00",
+      "sha256": "5b9ffb69840075e204ca7a5c33ccc9831cca21db46a508e5669fd38805152a3c"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/06-sixty-day-plan.png",
+      "size_bytes": 98743,
+      "modified_at": "2026-10-21T11:06:35.503491+08:00",
+      "sha256": "e756dfafa97bf1c504d055e590ba2f9595fff7bd07cdceaf1b94b8da5dcff6bd"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/07-ledger.png",
+      "size_bytes": 97193,
+      "modified_at": "2026-10-21T11:06:35.503923+08:00",
+      "sha256": "85afbcea8e028f99480d2aecb1643594d6cca379d3f8f1141f0bc34859820ee5"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/08-settings-zh-dark.png",
+      "size_bytes": 97209,
+      "modified_at": "2026-10-21T11:06:35.504410+08:00",
+      "sha256": "069fd7d81b06445971412f597e089df6f247b43cce8a30a2020322488a79d7f7"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/09-returning-zh-dark.png",
+      "size_bytes": 102769,
+      "modified_at": "2026-10-21T11:06:35.504864+08:00",
+      "sha256": "27fe8f6bf4ca40d47e0f5c862176ac5de4d8a1c8fc3dbc59335b3e7ad99adcbf"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/10-replay-zh.png",
+      "size_bytes": 118116,
+      "modified_at": "2026-10-21T11:06:35.505419+08:00",
+      "sha256": "5a29193107fb49feac96c9767741cc79a2b756887cc1ad4a9a897c431b3effe2"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/11-plan-large-text.png",
+      "size_bytes": 111519,
+      "modified_at": "2026-10-21T11:06:35.506020+08:00",
+      "sha256": "9993246509e16736f37dd8d32b8f346a497ac789a809a9bc6e9539239318e1fa"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/ios-se-final/12-plan-large-text-end.png",
+      "size_bytes": 124709,
+      "modified_at": "2026-10-21T11:06:35.506561+08:00",
+      "sha256": "d43beb317a3e412beddbea351886bd030f86e92709a8e8745baa33cf7b9c2f61"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/android-cold-onboarding.png",
+      "size_bytes": 181258,
+      "modified_at": "2026-10-21T11:12:51.134431+08:00",
+      "sha256": "538574fcc4b6de0d8db49c826e1d2f6fdd20bfeff6711a9f3cd7e935e625b417"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-cold-onboarding.png",
+      "size_bytes": 203785,
+      "modified_at": "2026-10-21T11:12:11.936045+08:00",
+      "sha256": "20fc8b7cce11214f15dd65e89922aeaf496261685ef93d6dfb21c0b7ced2515f"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-restore-preview.png",
+      "size_bytes": 313455,
+      "modified_at": "2026-10-21T11:17:13.311892+08:00",
+      "sha256": "445713be9f45ee3ec28af0d3bd0f7deba4d29ca4320663fe8d740b6b2d45ccbc"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-restored-success.png",
+      "size_bytes": 283609,
+      "modified_at": "2026-10-21T11:17:47.736734+08:00",
+      "sha256": "cccf95ffe8e800de0b764750e18005fa3d464caae2dffdc03cce5ed0f475c0c9"
+    },
+    {
+      "path": "/Users/starburst/Downloads/app-ui-atlas/refqo/docs/release/evidence/runtime/native/ipad-share-fixed.png",
+      "size_bytes": 691709,
+      "modified_at": "2026-10-21T11:14:39.756217+08:00",
+      "sha256": "a447b6f8e78f577b79859d0d75d4ac360cf686c31fbfa7ebdd0348d703b60b21"
+    }
+  ]
+}

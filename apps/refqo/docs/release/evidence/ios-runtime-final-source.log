@@ -1,0 +1,14 @@
+Running pod install...                                           1,022ms
+Running Xcode build...                                          
+Xcode build done.                                           15.1s
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:57830/XgIf3RPbb8w=/
+VMServiceFlutterDriver: Isolate found with number: 2063163831363127
+VMServiceFlutterDriver: Isolate 2063163831363127 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+flutter: 00:00 +0: offline shelf purchase replace undo and persistence on device
+VMServiceFlutterDriver: Connected to Flutter application.
+VMServiceFlutterDriver: request_data message is taking a long time to complete...
+flutter: 00:24 +1: (tearDownAll)
+flutter: 00:24 +2: All tests passed!
+All tests passed.

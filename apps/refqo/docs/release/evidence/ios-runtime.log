@@ -1,0 +1,71 @@
+Waiting for another flutter command to release the startup lock...
+Running Xcode build...                                          
+Xcode build done.                                           22.3s
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:54078/jMnogWBwCNA=/
+VMServiceFlutterDriver: Isolate found with number: 8017963173583771
+VMServiceFlutterDriver: Isolate 8017963173583771 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+flutter: 00:00 +0: offline shelf purchase replace undo and persistence on device
+VMServiceFlutterDriver: Connected to Flutter application.
+flutter: ══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+flutter: The following StateError was thrown running a test:
+flutter: Bad state: No element
+flutter:
+flutter: When the exception was thrown, this was the stack:
+flutter: #0      Iterable.last (dart:core/iterable.dart:679:7)
+flutter: #1      _LastFinderMixin.filter (package:flutter_test/src/finders.dart:1359:28)
+flutter: #3      Iterable.single (dart:core/iterable.dart:694:13)
+flutter: #4      WidgetController.element (package:flutter_test/src/controller.dart:864:30)
+flutter: #5      WidgetController.ensureVisible (package:flutter_test/src/controller.dart:2301:32)
+flutter: #6      main.<anonymous closure>.tap (file:///Users/starburst/Downloads/app-ui-atlas/refqo/integration_test/app_test.dart:31:20)
+flutter: #7      main.<anonymous closure> (file:///Users/starburst/Downloads/app-ui-atlas/refqo/integration_test/app_test.dart:37:11)
+flutter: <asynchronous suspension>
+flutter: #8      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+flutter: <asynchronous suspension>
+flutter: #9      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+flutter: <asynchronous suspension>
+flutter: #10     TestWidgetsFlutterBinding._createTestCompletionHandler.<anonymous closure> (package:flutter_test/src/binding.dart:814:12)
+flutter: <asynchronous suspension>
+flutter: (elided one frame from dart:async-patch)
+flutter:
+flutter: The test description was:
+flutter:   offline shelf purchase replace undo and persistence on device
+flutter: ════════════════════════════════════════════════════════════════════════════════════════════════════
+flutter: 00:01 +0: offline shelf purchase replace undo and persistence on device [E]
+flutter:   Test failed. See exception logs above.
+  The test description was: offline shelf purchase replace undo and persistence on device
+flutter:
+flutter: 00:01 +0 -1: (tearDownAll)
+flutter: 00:01 +1 -1: Some tests failed.
+Failure Details:
+Failure in method: offline shelf purchase replace undo and persistence on device
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞═════════════════
+The following StateError was thrown running a test:
+Bad state: No element
+
+When the exception was thrown, this was the stack:
+#0      Iterable.last (dart:core/iterable.dart:679:7)
+#1      _LastFinderMixin.filter (package:flutter_test/src/finders.dart:1359:28)
+#3      Iterable.single (dart:core/iterable.dart:694:13)
+#4      WidgetController.element (package:flutter_test/src/controller.dart:864:30)
+#5      WidgetController.ensureVisible (package:flutter_test/src/controller.dart:2301:32)
+#6      main.<anonymous closure>.tap (file:///Users/starburst/Downloads/app-ui-atlas/refqo/integration_test/app_test.dart:31:20)
+#7      main.<anonymous closure> (file:///Users/starburst/Downloads/app-ui-atlas/refqo/integration_test/app_test.dart:37:11)
+<asynchronous suspension>
+#8      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#9      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1059:5)
+<asynchronous suspension>
+#10     TestWidgetsFlutterBinding._createTestCompletionHandler.<anonymous closure> (package:flutter_test/src/binding.dart:814:12)
+<asynchronous suspension>
+(elided one frame from dart:async-patch)
+
+The test description was:
+  offline shelf purchase replace undo and persistence on device
+═════════════════════════════════════════════════════════════════
+
+end of failure 1
+
+
+
