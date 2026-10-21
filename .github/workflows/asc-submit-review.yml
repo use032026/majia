@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - tripcost-production
+          - tripdelta-production
           - hearthio-production
           - sdpacket-production
           - photo-production

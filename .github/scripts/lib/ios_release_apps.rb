@@ -34,6 +34,14 @@ module MajiaCI
         ],
         "metadata_template" => "apps/tripcost/app-store/metadata.yml"
       },
+      "tripdelta-production" => {
+        "app_key" => "tripdelta",
+        "app_name" => "Trip Delta",
+        "project_directory" => "apps/trip_delta",
+        "container_path" => "apps/trip_delta/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/trip_delta/app-store/metadata.yml"
+      },
       "sdpacket-production" => {
         "app_key" => "sdpacket",
         "app_name" => "KIFXPRO",

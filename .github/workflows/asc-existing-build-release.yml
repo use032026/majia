@@ -11,6 +11,7 @@ on:
           - photo-production
           - hearthio-production
           - tripcost-production
+          - tripdelta-production
           - sdpacket-production
           - plotproof_lab-production
       marketing_version:

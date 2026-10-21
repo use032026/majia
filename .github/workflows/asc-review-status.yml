@@ -10,6 +10,7 @@ on:
         options:
           - almanac-production
           - tripcost-production
+          - tripdelta-production
           - hearthio-production
           - sdpacket-production
           - photo-production
