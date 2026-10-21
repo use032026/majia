@@ -1,0 +1,476 @@
+{
+  "checked_on": "2026-10-21",
+  "method": "Apple Vision OCR, en-US and zh-Hans, accurate recognition; supplemented by visual review",
+  "image_count": 44,
+  "old_brand_matches": 0,
+  "images": [
+    {
+      "brand_lines": [
+        "Fylto",
+        "Check a selected file without changing the original.",
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/ipad/01-json.png",
+      "sha256": "5f1d91f53e7cc735d36f7d367b411971cb288d152afea65c021a974018579152"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/ipad/02-csv.png",
+      "sha256": "09584572d2d9173e91606739d10e0a81638ac1285adde380c3987a7542e98251"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Inspect Files On",
+        "Open JSON, CSV, TXT and LOG from Files.",
+        "Fylto",
+        "Inspect a file",
+        "• Open file",
+        "UTF-8 • Up to 5 MiB per file • No"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/iphone/01-home.png",
+      "sha256": "59aef02c5a63221b3294e1329377ff762b13687a6bd6ddf6cff1eb2855fa315d"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/iphone/02-json.png",
+      "sha256": "2de266f5e32d4a331b876524abfe44f75c9c3669a938636c3b69f2edcf6bcf54"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/iphone/03-csv.png",
+      "sha256": "4b141cd3f00ee97726129225aa7cef6218b4ec71d37e7ab535259524fdbc4646"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/iphone/04-compare.png",
+      "sha256": "6dc7534527b9073153318cd46e1d7d2fdf7587d31113e4b5cb464dcca0dc1cb0"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Fylto inspection report",
+        "File: check.json"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/final/iphone/05-report.png",
+      "sha256": "48feb0ee67e45f46d33d91fb8664a618e8b7ecf1babaffa432e97aa93a21470f"
+    },
+    {
+      "brand_lines": [
+        "• Fylto",
+        "Inspect Files On",
+        "Open JSON, CSV, TXT and LOG from Files.",
+        "Fylto",
+        "Inspect a file",
+        "c Open file",
+        "UTF-8 • Up to 5 Miß per file - No",
+        "Fylto",
+        "Fylto inspection report",
+        "File: check.json",
+        "Fylto",
+        "File contents",
+        "E Fylto",
+        "Fylto",
+        "File contents",
+        "E Fylto",
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/qa/contact-sheet-1206x2622.jpg",
+      "sha256": "cc4876583f9cb39966104c11e68f1ab4b44880970bd502a300df23d33494e9bb"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Check a selected file without changing the original.",
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/qa/contact-sheet-2064x2752.jpg",
+      "sha256": "43889c2b9968efc3ec2d6463e182a397036d1d1d3c61b52504095f8cfc74165f"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Inspect a file",
+        "• Open file",
+        "UTF-8 • Up to 5 MiB per file • No"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/01-home-ios.png",
+      "sha256": "98bbe0591b8d1b9380f73a93ad0699122882c64a6983c6d586ca4b7d2d4807cf"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/02-json-ios.png",
+      "sha256": "632bdeb843a88d5091eeff5baf872cd8850e62b380873ca5454ac562568102b0"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/03-compare-ios.png",
+      "sha256": "876958fff6d8ef938a7f124ee684ab99b57cd395274f10d37e21e4336d096b61"
+    },
+    {
+      "brand_lines": [
+        "Fylto inspection report",
+        "File: check.json"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/04-report-ios.png",
+      "sha256": "ef0175360250322f5bbf513624929840302922a8f394b0f7788a8bf2ae570268"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/05-csv-ios.png",
+      "sha256": "2b005a675e21f7134bd0c33471479c34514d78b4e2a945ed58a7dc3baf2c154f"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/ipad-02-json-ios.png",
+      "sha256": "7f76e0b5650c40187157158159148c1675c9678a5a3793f6469dfb4894fc0658"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/ipad-03-csv-ios.png",
+      "sha256": "5249561c75da923da9d71d05db4173cc829f6e5d10da9cbdbfe237ac01b4d439"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/app-store-previews/source/zh-05-csv-ios.png",
+      "sha256": "9e44b63ddeb6d9330453d5dd9e96142c9b3041196da2b2b798e7b3dafc80b58f"
+    },
+    {
+      "brand_lines": [
+        "Inspect Local Files",
+        "Fylto",
+        "Inspect a file",
+        "• Open file",
+        "UTF-8 • Up to 5 MiB per file • No account or automatic upload"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/en-US/phone/01-home.png",
+      "sha256": "de062b872fe400115bc31c95d15f7f6cf50f75f170a173db7cac06b6b1c72176"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/en-US/phone/02-json.png",
+      "sha256": "2cad28422c89e3f10a76a33fc49d387a7209eeb676bfcc2c742e31107d6111cc"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/en-US/phone/03-csv.png",
+      "sha256": "296339abcb93790fd73a7f2a19d34fd54aab53d5acd9a00416c7204531fdf804"
+    },
+    {
+      "brand_lines": [
+        "Fylto inspection report",
+        "File: check.json"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/en-US/phone/04-report.png",
+      "sha256": "82aa8a14c8244ccdd1fd4523b9c477a0564dbe488e95e54ae5f9155e6051233e"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Know Your Files"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/feature-graphic-en.png",
+      "sha256": "93092fe217b9228acc7eaed995e82643212eee058603ac7f456fa5bcc8ceb7bc"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/feature-graphic-zh.png",
+      "sha256": "9fd77fabd76ba1af3370ffa8728862a2bf541328cf6efaff304aa1f7be54e6e1"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/zh-CN/phone/01-home.png",
+      "sha256": "de2082c5124b9f9a7b2fe64b02cd6cd38d8ce4597582732ad651f691dfd0d670"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/zh-CN/phone/02-json.png",
+      "sha256": "1ed021570412877b966043b3f7beb322ba1e29d50b8fe34b26515d1bf30afb87"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/zh-CN/phone/03-csv.png",
+      "sha256": "0583a0d5a44ba055d6af2bf710e6bdffa8a480505fd80bd890e93d1da0e4bb53"
+    },
+    {
+      "brand_lines": [
+        "Fylto X1#mEÄ"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/final/zh-CN/phone/04-report.png",
+      "sha256": "31433a194e9295700f19bf5d7d1ebc3d36b7895c1cdaf45f25b024a25985c0fd"
+    },
+    {
+      "brand_lines": [],
+      "fylto_recognized": false,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/icon-512.png",
+      "sha256": "9017f40e7d0557d3f15157c249d477b1bbecadc328fe3fbc2b58fb69f1120a3f"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Know Your Files",
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/qa/contact-sheet-1024x500.jpg",
+      "sha256": "7b450246467a8bb82ceece6fd83976fc3a598bd14578cb4b2973677d65f2e856"
+    },
+    {
+      "brand_lines": [
+        "Inspect Local Files",
+        "Fylto",
+        "Inspect a file",
+        "• Open file",
+        "UTF-8 - Up to 5 Miß per file - No account or automatic upload",
+        "Fylto",
+        "Fylto",
+        "File contents",
+        "Fylto",
+        "Fylto",
+        "File contents",
+        "Fylto",
+        "Fylto inspection report",
+        "File: check.json",
+        "Fylto X##S"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/qa/contact-sheet-1080x1920.jpg",
+      "sha256": "e3d54c9052f24181af14e7cd141bffa33b6de9fef8ea163e76c93552573f91d5"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "Inspect a file",
+        "• Open file",
+        "UTF-8 • Up to 5 MiB per file • No account or automatic upload"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/01-home-android.png",
+      "sha256": "72e04b12cbf85ac2628c08325f56888dd0d4c9e1afb87c4b3922d3f029a55b95"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/02-json-android.png",
+      "sha256": "dd00d5bcf7ea4cf19aa9b8cec69c9e93de4b73d7b279856bc2e79655ca61a77a"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/03-csv-android.png",
+      "sha256": "48509663518bd7708bb9684d6158fefec20b5297e0b207dc94077ace74f88b39"
+    },
+    {
+      "brand_lines": [
+        "Fylto inspection report",
+        "File: check.json"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/04-report-android.png",
+      "sha256": "467805365769857c8d31148ac34045452fff8fbaa9d88ade450008a99bde5643"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/zh-01-home-android.png",
+      "sha256": "c7b57570e797662cdcfe1a8ce951a89fdd1df47bcbaa8165f683dac6fba00b6d"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/zh-02-json-android.png",
+      "sha256": "e01bbbfd4e868e9bff095b24e568d74b05196d9aa970c62254dec7ae18074b67"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/zh-03-csv-android.png",
+      "sha256": "3a59f34df7ca521cb1eb4248a8e7aeee6bcb27fedd86396f25450b8914e9949c"
+    },
+    {
+      "brand_lines": [
+        "Fylto X1##&‡•"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/google-play-listing/source/zh-04-report-android.png",
+      "sha256": "5dd41fc9ccd1ac166fbc710a6e4bb8d15e744437018d51b5b930573dd3f13871"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents",
+        "Only the working copy changes. The original file stays intact."
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/ui-qa/csv-editor-ipad.png",
+      "sha256": "c23703a055aef02deeb9ff8b54cccacae39359626a8e498292292c07e42d23af"
+    },
+    {
+      "brand_lines": [],
+      "fylto_recognized": false,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/ui-qa/csv-editor-iphone-keyboard.png",
+      "sha256": "2a0a980cafcd039166df4ab7470bec6a0d1dca775deecd0d45a05b8c628ec7ab"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "The original file stays intact."
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/artifacts/ui-qa/csv-editor-iphone.png",
+      "sha256": "ab530c045f2c574389d7e523d2a069b748c6df5deb44f9f8a82064f5f908eb23"
+    },
+    {
+      "brand_lines": [],
+      "fylto_recognized": false,
+      "old_names": [],
+      "path": "apps/filepeek/website/assets/app-icon.png",
+      "sha256": "3a3c623d6d203c14804fc9cbe757c4e916ddf0fccf1ab48d82aa97b17eb3923e"
+    },
+    {
+      "brand_lines": [
+        "Fylto"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/website/assets/app-preview-zh-ios.png",
+      "sha256": "9e44b63ddeb6d9330453d5dd9e96142c9b3041196da2b2b798e7b3dafc80b58f"
+    },
+    {
+      "brand_lines": [
+        "Fylto",
+        "File contents"
+      ],
+      "fylto_recognized": true,
+      "old_names": [],
+      "path": "apps/filepeek/website/assets/app-preview.png",
+      "sha256": "632bdeb843a88d5091eeff5baf872cd8850e62b380873ca5454ac562568102b0"
+    }
+  ]
+}

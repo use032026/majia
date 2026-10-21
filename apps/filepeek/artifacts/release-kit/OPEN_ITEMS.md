@@ -1,6 +1,6 @@
-# FileRecheck release kit: open items
+# Fylto release kit: open items
 
-The named app is `apps/filepeek`; its displayed product name is FileRecheck. The user confirmed on 2026-10-13 that the following publication facts are **not yet determined**. They remain empty in `release-kit.yml` and intentionally cause six QA errors:
+The named app is `apps/filepeek`; its displayed product name is Fylto. The user confirmed on 2026-10-13 that the following publication facts are **not yet determined**. They remain empty in `release-kit.yml` and intentionally cause six QA errors:
 
 1. Legal operator name.
 2. Real support email, to appear on the product and privacy pages.
@@ -16,6 +16,10 @@ The website and privacy policy are review drafts with visible pre-publication no
 - Confirm final store name and legal rights in target regions, public URL reachability, and complete platform listing fields in the store consoles.
 - Final signed IPA/AAB, physical-device behavior, accessibility, and minimum-version coverage are outside this material-generation run.
 
-## Screenshot provenance
+## Material refresh — 2026-10-21
 
-`artifacts/app-store-previews/source/` contains real FileRecheck runtime captures from iPhone 17 Pro / iOS 26.5 and iPad Pro 13-inch (M5) / iOS 26.5 simulators. `artifacts/google-play-listing/source/` contains real FileRecheck runtime captures from a Pixel 7 API 35 Android emulator in English and Simplified Chinese. All file content shown is from `docs/release/review_samples/`, specifically `check.json`, `compare.json`, and `check.csv`. The final images are derived from these captures with factual text overlays. They are simulator evidence, not physical-device or signed-release evidence.
+All current website product screenshots, App Store and Google Play source/final screenshots, feature graphics, contact sheets and the CSV editor QA images have been refreshed for Fylto. The English full description, Apple keywords and Google Play short description were also updated. App facts and deterministic QA were regenerated.
+
+`CAPTURE_NOTES.md` records current build/device provenance, debugger-loaded repository sample states, counts, dimensions and validation limits. `name-audit.json` records OCR and hashes for 44 images with no recognized old branding. These current screenshots do not rely on the earlier FileRecheck captures.
+
+The six remaining QA errors all concern the previously unconfirmed publication facts above; image/metadata checks passed. This material refresh does not resolve production identities, signing, public contacts/URLs, legal review, physical-device proof or store submission.

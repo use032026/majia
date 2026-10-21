@@ -1,1 +1,1 @@
-file inspector,json validator,csv viewer,log reader,text search,format checker,document compare
+json,csv,txt,log,viewer,validator,formatter,compare,diff,search,editor,inspection,offline,report

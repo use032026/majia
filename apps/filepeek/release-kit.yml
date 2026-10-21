@@ -1,7 +1,7 @@
 schema_version: 2
 
 identity:
-  app_name: "FileRecheck"
+  app_name: "Fylto"
   operator: ""
   bundle_id: "com.example.filerecheck" # Development placeholder; not a release identity.
   android_package: "com.example.filerecheck" # Development placeholder; not a release identity.

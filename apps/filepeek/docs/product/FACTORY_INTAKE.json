@@ -1,5 +1,5 @@
 {
-  "app_name": "FileRecheck",
+  "app_name": "Fylto",
   "working_name": "filerecheck",
   "target_user": "需要在手机上快速检查收到的 JSON、CSV、TXT 或 LOG 文件的开发、测试和支持人员",
   "problem": "临时离开电脑时，用户难以判断一个文件是否有效、找到关键行或字段、比较两版 JSON，并安全地交付检查结果",

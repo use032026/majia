@@ -1,1 +1,1 @@
-Inspect JSON, CSV, text and logs; preview reports and export working copies
+Inspect JSON, CSV, text and logs. Compare files and export reports with Fylto

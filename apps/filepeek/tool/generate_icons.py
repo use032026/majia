@@ -1,4 +1,4 @@
-"""Generate the original FileRecheck icon and platform raster sizes.
+"""Generate the original Fylto icon and platform raster sizes.
 
 Requires Pillow. The source geometry and colors live here so the asset can be
 regenerated without using a store screenshot or competitor artwork.

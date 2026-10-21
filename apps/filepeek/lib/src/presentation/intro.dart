@@ -42,7 +42,7 @@ class LaunchView extends StatelessWidget {
           Image.asset(_iconAsset, width: 152, height: 152),
           const SizedBox(height: 20),
           const Text(
-            'FileRecheck',
+            'Fylto',
             style: TextStyle(
               color: Colors.white,
               fontSize: 30,
@@ -138,7 +138,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                       const SizedBox(width: 9),
                       const Expanded(
                         child: Text(
-                          'FileRecheck',
+                          'Fylto',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

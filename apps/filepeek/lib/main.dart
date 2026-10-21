@@ -435,7 +435,7 @@ class _FileRecheckAppState extends State<FileRecheckApp> {
             report: report,
             zh: zh,
             onExport: (buttonContext) => gateway.shareFile(
-              'filerecheck_report.txt',
+              'fylto_report.txt',
               bytes,
               _shareAnchor(buttonContext),
             ),
@@ -510,7 +510,7 @@ class _FileRecheckAppState extends State<FileRecheckApp> {
       ),
     );
     return MaterialApp(
-      title: 'FileRecheck',
+      title: 'Fylto',
       debugShowCheckedModeBanner: false,
       theme: light,
       darkTheme: dark,
@@ -531,7 +531,7 @@ class _FileRecheckAppState extends State<FileRecheckApp> {
                 uiContext = pageContext;
                 return Scaffold(
                   appBar: AppBar(
-                    title: const Text('FileRecheck'),
+                    title: const Text('Fylto'),
                     actions: [
                       if (document != null) ...[
                         IconButton(

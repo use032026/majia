@@ -10,9 +10,9 @@ Result: FAIL — 6 error(s), 0 warning(s), 17 passed check(s)
 - **ERROR** `manifest.support_email`: Manifest value support_email is missing — `/Users/starburst/majia/apps/filepeek/release-kit.yml`
 - **ERROR** `manifest.production_domain`: Manifest value production_domain is missing — `/Users/starburst/majia/apps/filepeek/release-kit.yml`
 - **ERROR** `manifest.effective_date`: Manifest value effective_date is missing — `/Users/starburst/majia/apps/filepeek/release-kit.yml`
-- **PASS** `description.limit`: Shared description is 1250/4000 characters — `/Users/starburst/majia/apps/filepeek/artifacts/app-store-listing/description-en.txt`
-- **PASS** `keywords.limit`: Apple keywords use 95/100 UTF-8 bytes — `/Users/starburst/majia/apps/filepeek/artifacts/app-store-listing/keywords-en.txt`
-- **PASS** `play_short_description.limit`: Google Play short description is 75/80 characters — `/Users/starburst/majia/apps/filepeek/artifacts/google-play-listing/short-description-en.txt`
+- **PASS** `description.limit`: Shared description is 1353/4000 characters — `/Users/starburst/majia/apps/filepeek/artifacts/app-store-listing/description-en.txt`
+- **PASS** `keywords.limit`: Apple keywords use 96/100 UTF-8 bytes — `/Users/starburst/majia/apps/filepeek/artifacts/app-store-listing/keywords-en.txt`
+- **PASS** `play_short_description.limit`: Google Play short description is 77/80 characters — `/Users/starburst/majia/apps/filepeek/artifacts/google-play-listing/short-description-en.txt`
 - **PASS** `website.locale_content`: index.html contains complete en content — `/Users/starburst/majia/apps/filepeek/website/index.html`
 - **PASS** `website.locale_content`: index.html contains complete zh content — `/Users/starburst/majia/apps/filepeek/website/index.html`
 - **PASS** `website.locale_content`: privacy.html contains complete en content — `/Users/starburst/majia/apps/filepeek/website/privacy.html`

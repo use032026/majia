@@ -513,7 +513,7 @@ class FileRecheckDocument {
   }) {
     final zh = languageCode.toLowerCase().startsWith('zh');
     final buffer = StringBuffer()
-      ..writeln(zh ? 'FileRecheck 文件检查报告' : 'FileRecheck inspection report')
+      ..writeln(zh ? 'Fylto 文件检查报告' : 'Fylto inspection report')
       ..writeln(zh ? '文件：$fileName' : 'File: $fileName')
       ..writeln(
         zh

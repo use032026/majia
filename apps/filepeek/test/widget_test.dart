@@ -237,12 +237,12 @@ void main() {
     await tester.tap(find.text('检查报告'));
     await tester.pumpAndSettle();
     expect(find.text('报告预览'), findsOneWidget);
-    expect(find.text('FileRecheck 文件检查报告'), findsOneWidget);
+    expect(find.text('Fylto 文件检查报告'), findsOneWidget);
     expect(gateway.sharedCount, 0);
     await tester.tap(find.text('导出报告'));
     await tester.pumpAndSettle();
     expect(gateway.sharedCount, 1);
-    expect(gateway.exportedName, 'filerecheck_report.txt');
+    expect(gateway.exportedName, 'fylto_report.txt');
     expect(find.text('报告预览'), findsOneWidget);
     expect(utf8.decode(gateway.exportedBytes!), contains('检查报告'));
   });
@@ -260,7 +260,7 @@ void main() {
     await tester.tap(find.text('Report'));
     await tester.pumpAndSettle();
     expect(find.text('Report preview'), findsOneWidget);
-    expect(find.text('FileRecheck inspection report'), findsOneWidget);
+    expect(find.text('Fylto inspection report'), findsOneWidget);
     expect(find.text('File: sample.json'), findsOneWidget);
     expect(gateway.sharedCount, 0);
 

@@ -10,7 +10,7 @@
         ]
       },
       {
-        "application_label": "FileRecheck",
+        "application_label": "Fylto",
         "package": null,
         "path": "/Users/starburst/majia/apps/filepeek/android/app/src/main/AndroidManifest.xml",
         "permissions": []
@@ -27,7 +27,7 @@
   },
   "app_root": "/Users/starburst/majia/apps/filepeek",
   "dependency_signals": {},
-  "generated_at": "2026-10-13T03:12:38.687419+00:00",
+  "generated_at": "2026-10-21T02:48:06.082432+00:00",
   "ios": {
     "bundle_identifiers": [
       "com.example.filerecheck",
@@ -35,7 +35,7 @@
     ],
     "info_plists": [
       {
-        "display_name": "FileRecheck",
+        "display_name": "Fylto",
         "path": "/Users/starburst/majia/apps/filepeek/ios/Runner/Info.plist",
         "usage_descriptions": {}
       }
