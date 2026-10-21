@@ -241,7 +241,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
 
     %w[
       photo-production hearthio-production tripcost-production sdpacket-production
-      plotproof_lab-production
+      plotproof_lab-production steady-production
     ].each { |environment| assert_includes text, "- #{environment}" }
     assert_includes text, "environment: ${{ inputs.app_environment }}"
     assert_includes text, "marketing_version:"

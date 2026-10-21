@@ -8,7 +8,7 @@ class IOSReleaseAppsTest < Minitest::Test
 
   def test_registry_covers_every_release_environment_and_existing_paths
     expected = %w[
-      hearthio-production photo-production plotproof_lab-production sdpacket-production
+      hearthio-production photo-production plotproof_lab-production sdpacket-production steady-production
       tripcost-production tripdelta-production
     ]
     assert_equal expected, Registry::APPS.keys.sort

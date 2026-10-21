@@ -13,6 +13,7 @@ on:
           - tripcost-production
           - tripdelta-production
           - sdpacket-production
+          - steady-production
           - plotproof_lab-production
       marketing_version:
         description: Existing processed ASC marketing version

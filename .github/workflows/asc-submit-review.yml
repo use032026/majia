@@ -12,6 +12,7 @@ on:
           - tripdelta-production
           - hearthio-production
           - sdpacket-production
+          - steady-production
           - photo-production
           - plotproof_lab-production
       marketing_version:

@@ -42,6 +42,14 @@ module MajiaCI
         "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
         "metadata_template" => "apps/trip_delta/app-store/metadata.yml"
       },
+      "steady-production" => {
+        "app_key" => "steady21",
+        "app_name" => "Steady21",
+        "project_directory" => "apps/steady21",
+        "container_path" => "apps/steady21/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/steady21/app-store/metadata.yml"
+      },
       "sdpacket-production" => {
         "app_key" => "sdpacket",
         "app_name" => "KIFXPRO",
