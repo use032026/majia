@@ -863,30 +863,49 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
   Widget supplies(BuildContext context) => Content(
     key: const PageStorageKey('supplies'),
     children: [
-      Row(
-        children: [
-          Expanded(
-            child: Text(
-              t(
-                '${data!.supplies.length} supplies',
-                '${data!.supplies.length} 种耗材',
-              ),
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final count = Text(
+            t(
+              '${data!.supplies.length} supplies',
+              '${data!.supplies.length} 种耗材',
             ),
-          ),
-          IconButton.filled(
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          );
+          final add = FilledButton.icon(
             onPressed: busy ? null : () => editSupply(context),
-            tooltip: t('Add supply', '添加耗材'),
-            icon: const Icon(CupertinoIcons.plus),
-          ),
-        ],
+            style: FilledButton.styleFrom(
+              minimumSize: const Size(48, 44),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            ),
+            icon: const Icon(CupertinoIcons.plus, size: 18),
+            label: Text(t('Add supply', '添加耗材')),
+          );
+          if (constraints.maxWidth < 280 ||
+              MediaQuery.textScalerOf(context).scale(14) > 20) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [count, const SizedBox(height: 12), add],
+            );
+          }
+          return Row(
+            children: [
+              Expanded(child: count),
+              const SizedBox(width: 12),
+              add,
+            ],
+          );
+        },
       ),
       Text(
         t(
           'Keep different part codes separate. Linking devices never makes parts interchangeable.',
           '不同型号请分别建档。关联设备不代表耗材可以互换。',
+        ),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
       if (data!.supplies.isEmpty)
@@ -902,34 +921,70 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
         ),
       for (final s in data!.supplies)
         Surface(
+          padding: const EdgeInsets.all(14),
           child: InkWell(
             onTap: busy ? null : () => openSupply(context, s.id),
             borderRadius: BorderRadius.circular(10),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    s.name,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            s.name,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            s.code.isEmpty
+                                ? t('No part code', '未填写型号')
+                                : s.code,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  if (s.code.isNotEmpty) Text(s.code),
-                  const SizedBox(height: 12),
-                  Text(
-                    '${s.stock} ${t('in stock', '件库存')}',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w700,
+                    const SizedBox(width: 8),
+                    Icon(
+                      CupertinoIcons.chevron_right,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                  Text(
-                    '${data!.slots.where((e) => e.supplyId == s.id).length} ${t('linked appliances', '个关联设备')}',
-                  ),
-                ],
-              ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: PlanMetric(
+                        label: t('Stock', '库存'),
+                        value: s.stock,
+                        highlight: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: PlanMetric(
+                        label: t('Appliances', '关联设备'),
+                        value: data!.slots
+                            .where((e) => e.supplyId == s.id)
+                            .length,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -1405,14 +1460,69 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 12,
+                    runSpacing: 8,
+                    children: [
+                      Text(
+                        t('${events.length} entries', '${events.length} 条流水'),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (events.isNotEmpty)
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(48, 44),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                          ),
+                          onPressed: busy
+                              ? null
+                              : () async {
+                                  if (await confirm(
+                                    context,
+                                    t('Undo latest entry?', '撤销最新记录？'),
+                                    t(
+                                      'Restore stock and the previous installation date for this transaction.',
+                                      '恢复此操作前的库存与更换日期。',
+                                    ),
+                                  )) {
+                                    await commit(
+                                      undoLast,
+                                      success: (_) => t(
+                                        'Latest entry undone. Stock and installation date restored.',
+                                        '已撤销最新流水，库存与安装日期已恢复。',
+                                      ),
+                                      actionLabel: t('View plan', '查看计划'),
+                                      next: () => goToTab(0),
+                                    );
+                                  }
+                                },
+                          icon: const Icon(
+                            CupertinoIcons.arrow_uturn_left,
+                            size: 18,
+                          ),
+                          label: Text(t('Undo latest entry', '撤销最新记录')),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     t(
                       'Receipts add stock. Replacements deduct it. Undo starts with the latest entry.',
                       '入库增加库存，更换扣减库存；撤销从最新记录开始。',
                     ),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  if (events.isEmpty)
+                  if (events.isEmpty) ...[
+                    const SizedBox(height: 12),
                     EmptyState(
                       icon: CupertinoIcons.clock,
                       title: t('No stock changes yet', '还没有库存变动'),
@@ -1421,35 +1531,9 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                         '首次入库后，流水会出现在这里。',
                       ),
                       action: t('View supplies', '查看耗材'),
-                      onAction: () => goToTab(1),
+                      onAction: busy ? null : () => goToTab(1),
                     ),
-                  if (events.isNotEmpty)
-                    OutlinedButton.icon(
-                      onPressed: busy
-                          ? null
-                          : () async {
-                              if (await confirm(
-                                context,
-                                t('Undo latest entry?', '撤销最新记录？'),
-                                t(
-                                  'Restore stock and the previous installation date for this transaction.',
-                                  '恢复此操作前的库存与更换日期。',
-                                ),
-                              )) {
-                                await commit(
-                                  undoLast,
-                                  success: (_) => t(
-                                    'Latest entry undone. Stock and installation date restored.',
-                                    '已撤销最新流水，库存与安装日期已恢复。',
-                                  ),
-                                  actionLabel: t('View plan', '查看计划'),
-                                  next: () => goToTab(0),
-                                );
-                              }
-                            },
-                      icon: const Icon(CupertinoIcons.arrow_uturn_left),
-                      label: Text(t('Undo latest entry', '撤销最新记录')),
-                    ),
+                  ],
                 ],
               ),
             );
@@ -1457,173 +1541,392 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
           final e = events[events.length - index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Surface(
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  e.type == LedgerType.receipt
-                      ? CupertinoIcons.plus_circle
-                      : CupertinoIcons.arrow_2_squarepath,
-                ),
-                title: Text(
-                  '${e.supplyName} · ${e.type == LedgerType.receipt ? t('Received', '入库') : t('Replaced', '更换')}',
-                ),
-                subtitle: Text(
-                  '${dateLabel(e.createdAt.toLocal())}${e.slotName == null ? '' : '\n${e.slotName}'}',
-                ),
-                trailing: Text(
-                  '${e.type == LedgerType.receipt ? '+' : '−'}${e.units}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
+            child: ledgerEntry(context, e),
           );
         },
       );
     },
   );
+
+  Widget ledgerEntry(BuildContext context, LedgerEntry entry) {
+    final scheme = Theme.of(context).colorScheme;
+    final receipt = entry.type == LedgerType.receipt;
+    final icon = Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: receipt ? scheme.secondaryContainer : scheme.surface,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(
+        receipt
+            ? CupertinoIcons.plus_circle
+            : CupertinoIcons.arrow_2_squarepath,
+        size: 20,
+        color: scheme.primary,
+      ),
+    );
+    final name = Text(
+      entry.supplyName,
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    );
+    final details = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            Text(
+              receipt ? t('Received', '入库') : t('Replaced', '更换'),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: scheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              dateLabel(entry.createdAt.toLocal()),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+        if (entry.slotName != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            entry.slotName!,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+          ),
+        ],
+      ],
+    );
+    final quantity = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: receipt ? scheme.secondaryContainer : scheme.surface,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        '${receipt ? '+' : '−'}${entry.units}',
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: scheme.primary,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+    return Surface(
+      padding: const EdgeInsets.all(14),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 250 ||
+              MediaQuery.textScalerOf(context).scale(14) > 20) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    icon,
+                    const SizedBox(width: 10),
+                    Expanded(child: name),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                details,
+                const SizedBox(height: 10),
+                Align(alignment: Alignment.centerRight, child: quantity),
+              ],
+            );
+          }
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              icon,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [name, const SizedBox(height: 4), details],
+                ),
+              ),
+              const SizedBox(width: 10),
+              quantity,
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   Widget settings(BuildContext context) => Content(
     key: const PageStorageKey('settings'),
     children: [
-      Text(t('Language', '语言'), style: Theme.of(context).textTheme.titleMedium),
-      Wrap(
-        spacing: 8,
-        children: [null, 'en', 'zh']
-            .map(
-              (v) => ChoiceChip(
-                label: Text(
-                  v == null
-                      ? t('System', '跟随系统')
-                      : v == 'en'
-                      ? 'English'
-                      : '简体中文',
-                ),
-                selected: data!.language == v,
-                onSelected: busy
-                    ? null
-                    : (_) => commit(
-                        (d) =>
-                            d.copyWith(language: v, clearLanguage: v == null),
-                      ),
+      Surface(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              t('Language', '语言'),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            preferenceOptions(
+              context,
+              values: const [null, 'en', 'zh'],
+              selected: data!.language,
+              label: (v) => v == null
+                  ? t('System', '跟随系统')
+                  : v == 'en'
+                  ? 'English'
+                  : '简体中文',
+              onSelected: (v) => commit(
+                (d) => d.copyWith(language: v, clearLanguage: v == null),
               ),
-            )
-            .toList(),
-      ),
-      Text(
-        t('Appearance', '外观'),
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      Wrap(
-        spacing: 8,
-        children: [null, 'light', 'dark']
-            .map(
-              (v) => ChoiceChip(
-                label: Text(
-                  v == null
-                      ? t('System', '跟随系统')
-                      : v == 'light'
-                      ? t('Light', '浅色')
-                      : t('Dark', '深色'),
-                ),
-                selected: data!.appearance == v,
-                onSelected: busy
-                    ? null
-                    : (_) => commit(
-                        (d) => d.copyWith(
-                          appearance: v,
-                          clearAppearance: v == null,
-                        ),
-                      ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              t('Appearance', '外观'),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            preferenceOptions(
+              context,
+              values: const [null, 'light', 'dark'],
+              selected: data!.appearance,
+              label: (v) => v == null
+                  ? t('System', '跟随系统')
+                  : v == 'light'
+                  ? t('Light', '浅色')
+                  : t('Dark', '深色'),
+              onSelected: (v) => commit(
+                (d) => d.copyWith(appearance: v, clearAppearance: v == null),
               ),
-            )
-            .toList(),
+            ),
+          ],
+        ),
       ),
-      const Divider(),
-      settingRow(
-        CupertinoIcons.arrow_up_doc,
-        t('Export backup', '导出备份'),
-        t('Full library as a portable JSON file', '完整资料库，JSON 格式'),
-        busy ? null : () => backup(context),
+      Surface(
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            settingRow(
+              context,
+              CupertinoIcons.arrow_up_doc,
+              t('Export backup', '导出备份'),
+              t('Full library as a portable JSON file', '完整资料库，JSON 格式'),
+              busy ? null : () => backup(context),
+            ),
+            const Divider(height: 1, indent: 60, endIndent: 14),
+            settingRow(
+              context,
+              CupertinoIcons.arrow_down_doc,
+              t('Restore backup', '恢复备份'),
+              t('Preview and replace this library', '预览后替换当前资料库'),
+              busy ? null : () => restore(context),
+            ),
+          ],
+        ),
       ),
-      settingRow(
-        CupertinoIcons.arrow_down_doc,
-        t('Restore backup', '恢复备份'),
-        t('Preview and replace this library', '预览后替换当前资料库'),
-        busy ? null : () => restore(context),
-      ),
-      settingRow(
-        CupertinoIcons.play_rectangle,
-        t('Replay introduction', '重新查看引导'),
-        t('Your library stays as it is', '保留当前资料库'),
-        busy ? null : () => update(() => replay = true),
-      ),
-      ExpansionTile(
-        key: const PageStorageKey('privacy-details'),
-        title: Text(t('Privacy and planning limits', '隐私与使用边界')),
-        tilePadding: EdgeInsets.zero,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      Surface(
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            settingRow(
+              context,
+              CupertinoIcons.play_rectangle,
+              t('Replay introduction', '重新查看引导'),
+              t('Your library stays as it is', '保留当前资料库'),
+              busy ? null : () => update(() => replay = true),
+            ),
+            const Divider(height: 1, indent: 60, endIndent: 14),
+            ExpansionTile(
+              key: const PageStorageKey('privacy-details'),
+              title: Text(
+                t('Privacy and planning limits', '隐私与使用边界'),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              leading: settingIcon(context, CupertinoIcons.lock_shield),
+              tilePadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 4,
+              ),
+              minTileHeight: 64,
+              shape: const Border(),
+              collapsedShape: const Border(),
               children: [
-                Text(
-                  t('Your home, your data', '家中资料，由你掌握'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Text(
-                  t(
-                    'No account, ads, analytics or developer server. Your library is stored locally. System backups, file providers and destinations you choose when sharing may store data outside this device. Exported files are readable: share them carefully. Removing this app may remove its library; keep a backup.',
-                    '无需账号，没有广告、统计或开发者服务器。资料保存在本机；系统备份、文件提供方和你选择的分享目标可能将资料存到设备外。导出文件为可读明文，请谨慎分享。卸载可能删除资料库，请保留备份。',
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  t(
-                    'Planning only. No automatic compatibility, safety checks, notifications or product recommendations. Use manufacturer guidance. 1.0.0 (1)',
-                    '仅供计划参考，不自动判断适配或安全性，不发送通知或推荐产品。请遵循厂商说明。1.0.0 (1)',
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                  child: DefaultTextStyle.merge(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      height: 1.5,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t('Your home, your data', '家中资料，由你掌握'),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          t(
+                            'No account, ads, analytics or developer server. Your library is stored locally. System backups, file providers and destinations you choose when sharing may store data outside this device. Exported files are readable: share them carefully. Removing this app may remove its library; keep a backup.',
+                            '无需账号，没有广告、统计或开发者服务器。资料保存在本机；系统备份、文件提供方和你选择的分享目标可能将资料存到设备外。导出文件为可读明文，请谨慎分享。卸载可能删除资料库，请保留备份。',
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          t(
+                            'Planning only. No automatic compatibility, safety checks, notifications or product recommendations. Use manufacturer guidance. 1.0.0 (1)',
+                            '仅供计划参考，不自动判断适配或安全性，不发送通知或推荐产品。请遵循厂商说明。1.0.0 (1)',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      TextButton(
-        onPressed: busy
-            ? null
-            : () async {
-                if (await confirm(
-                  context,
-                  t('Erase local library?', '清除本机资料库？'),
-                  t(
-                    'Delete supplies, appliances, ledger and recovery copies from this app. Exported and system backup copies are outside this action. This cannot be undone.',
-                    '删除本应用中的耗材、设备、流水和恢复副本。已导出及系统备份的副本不在清除范围内。此操作无法撤销。',
-                  ),
-                  destructive: true,
-                )) {
-                  if (context.mounted) await eraseLibrary(context);
-                }
-              },
-        child: Text(t('Erase local library', '清除本机资料库')),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: TextButton.icon(
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.error,
+            minimumSize: const Size(48, 48),
+          ),
+          onPressed: busy
+              ? null
+              : () async {
+                  if (await confirm(
+                    context,
+                    t('Erase local library?', '清除本机资料库？'),
+                    t(
+                      'Delete supplies, appliances, ledger and recovery copies from this app. Exported and system backup copies are outside this action. This cannot be undone.',
+                      '删除本应用中的耗材、设备、流水和恢复副本。已导出及系统备份的副本不在清除范围内。此操作无法撤销。',
+                    ),
+                    destructive: true,
+                  )) {
+                    if (context.mounted) await eraseLibrary(context);
+                  }
+                },
+          icon: const Icon(CupertinoIcons.trash, size: 18),
+          label: Text(t('Erase local library', '清除本机资料库')),
+        ),
       ),
     ],
   );
+
+  Widget preferenceOptions(
+    BuildContext context, {
+    required List<String?> values,
+    required String? selected,
+    required String Function(String?) label,
+    required ValueChanged<String?> onSelected,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    final buttons = [
+      for (final value in values)
+        Semantics(
+          selected: value == selected,
+          child: TextButton(
+            onPressed: busy ? null : () => onSelected(value),
+            style: TextButton.styleFrom(
+              minimumSize: const Size(48, 40),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              backgroundColor: value == selected
+                  ? scheme.secondaryContainer
+                  : Colors.transparent,
+              foregroundColor: value == selected
+                  ? scheme.primary
+                  : scheme.onSurfaceVariant,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              label(value),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: value == selected
+                    ? FontWeight.w700
+                    : FontWeight.w400,
+              ),
+            ),
+          ),
+        ),
+    ];
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (MediaQuery.textScalerOf(context).scale(14) > 20) {
+            return Wrap(spacing: 6, runSpacing: 6, children: buttons);
+          }
+          return Row(
+            children: [for (final button in buttons) Expanded(child: button)],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget settingIcon(BuildContext context, IconData icon) => Container(
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.surface,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+  );
+
   Widget settingRow(
+    BuildContext context,
     IconData icon,
     String title,
     String subtitle,
     VoidCallback? action,
   ) => ListTile(
     enabled: action != null,
-    contentPadding: EdgeInsets.zero,
-    leading: Icon(icon),
-    title: Text(title),
-    subtitle: Text(subtitle),
-    trailing: const Icon(CupertinoIcons.chevron_right),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+    minTileHeight: 64,
+    horizontalTitleGap: 10,
+    leading: settingIcon(context, icon),
+    title: Text(
+      title,
+      style: Theme.of(
+        context,
+      ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+    ),
+    subtitle: Text(
+      subtitle,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
+    ),
+    trailing: Icon(
+      CupertinoIcons.chevron_right,
+      size: 18,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    ),
     onTap: action,
   );
   Future<bool> confirm(
