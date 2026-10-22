@@ -10,9 +10,30 @@ abstract class Repository {
   Future<void> erase(AppData empty);
 }
 
+/// The primary file was erased, but one or more old copies still need cleanup.
+class EraseCleanupException implements Exception {
+  EraseCleanupException(this.committed, this.cause);
+  final AppData committed;
+  final Object cause;
+  @override
+  String toString() => 'ERASE_CLEANUP_PENDING: $cause';
+}
+
 class FileRepository implements Repository {
-  FileRepository(this.directory);
-  final Directory directory;
+  FileRepository(Directory directory, {this.deleteManagedFile})
+    : _directory = directory,
+      _directoryProvider = null;
+  FileRepository.lazy(Future<Directory> Function() provider)
+    : _directoryProvider = provider,
+      deleteManagedFile = null;
+  Directory? _directory;
+  final Future<Directory> Function()? _directoryProvider;
+  final Future<void> Function(File)? deleteManagedFile;
+  Directory get directory => _directory!;
+  Future<void> _prepare() async {
+    _directory ??= await _directoryProvider!();
+  }
+
   bool _recoveryRequired = false;
   bool _writing = false;
   String get primaryPath => '${directory.path}/refqo.json';
@@ -40,6 +61,7 @@ class FileRepository implements Repository {
   @override
   Future<AppData> load() async {
     try {
+      await _prepare();
       if (!await File(primaryPath).exists()) {
         if (await File(previousPath).exists() ||
             await File(_nextPath).exists() ||
@@ -61,7 +83,10 @@ class FileRepository implements Repository {
     }
   }
 
-  Future<AppData> loadPrevious() => _read(previousPath);
+  Future<AppData> loadPrevious() async {
+    await _prepare();
+    return _read(previousPath);
+  }
 
   Future<void> _copyAndFlush(String source, String target) async {
     await File(source).copy(target);
@@ -95,6 +120,7 @@ class FileRepository implements Repository {
     }
     _writing = true;
     try {
+      await _prepare();
       await operation();
     } finally {
       _writing = false;
@@ -127,6 +153,8 @@ class FileRepository implements Repository {
       );
     }
     await _commit(empty, keepPrevious: false);
+    _recoveryRequired = false;
+    Object? cleanupError;
     for (final path in [
       previousPath,
       rejectedPath,
@@ -134,9 +162,19 @@ class FileRepository implements Repository {
       _previousTempPath,
     ]) {
       final file = File(path);
-      if (await file.exists()) await file.delete();
+      try {
+        if (await file.exists()) {
+          if (deleteManagedFile != null) {
+            await deleteManagedFile!(file);
+          } else {
+            await file.delete();
+          }
+        }
+      } catch (e) {
+        cleanupError ??= e;
+      }
     }
-    _recoveryRequired = false;
+    if (cleanupError != null) throw EraseCleanupException(empty, cleanupError);
   });
 }
 

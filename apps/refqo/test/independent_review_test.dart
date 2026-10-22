@@ -114,7 +114,8 @@ void main() {
 Future<void> waitFor(WidgetTester tester, Finder finder) async {
   for (var i = 0; i < 200; i++) {
     await tester.pump();
-    if (finder.evaluate().isNotEmpty) {
+    if (finder.evaluate().isNotEmpty &&
+        find.byType(CircularProgressIndicator).evaluate().isEmpty) {
       await tester.pumpAndSettle();
       return;
     }

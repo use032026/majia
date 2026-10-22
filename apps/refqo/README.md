@@ -33,6 +33,10 @@ The runtime test **erases only this app's QA library** on its selected device an
 - Locale and appearance follow the system until an explicit override. Onboarding can be skipped, persists and is replayable.
 - No background notifications, safety/lifespan recommendations, automatic fit database or online purchases.
 
+## Interaction update — 2026-10-22
+
+System keyboards and Chinese names/notes remain supported. Forms share save feedback, duplicate-submit protection, keyboard centering/restoration and focus navigation. See [optimization acceptance](docs/release/OPTIMIZATION_ACCEPTANCE.md) for the implemented scope, 58-test regression and simulator/runtime evidence limits.
+
 ## Delivery status
 
 See [functional review](docs/release/FUNCTIONAL_REVIEW.md), [UI acceptance](docs/release/UI_ACCEPTANCE.md), [differentiation](docs/product/DIFFERENTIATION.md) and [store preflight](docs/release/APP_STORE_PREFLIGHT.md). Local code/tests are distinct from distribution readiness. `com.example.refqo` is a local identifier; production signing, real developer/support/privacy information and store-name verification are not configured. No upload or submission was performed.

@@ -68,7 +68,7 @@ void main() {
     await tap('Replaced today');
     await tap('Confirm');
     expect((await repo.load()).supplies.single.stock, 1);
-    await tester.tap(find.byType(BackButton));
+    await tester.tap(find.byType(BackButtonIcon));
     await tester.pumpAndSettle();
     await tap('Plan');
     await shot('05-pooled-plan');

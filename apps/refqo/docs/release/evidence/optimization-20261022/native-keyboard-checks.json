@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-22",
+  "environment": "Refqo QA iPhone SE, iOS 18.3 simulator; ordinary final main debug installation",
+  "input_method": "iOS system Simplified Chinese Pinyin; software keys and native candidates clicked through Simulator UI; hardware keys routed through Simulator",
+  "checks": [
+    {
+      "case": "native Chinese composition",
+      "result": "passed",
+      "observed": "nihao displayed composing text and candidate 你好; candidate click produced 你好 in both name and notes; IME confirm ended composition without submitting the form"
+    },
+    {
+      "case": "software long delete",
+      "result": "passed",
+      "observed": "held system delete for 1500 ms removed nihao continuously to empty; subsequent input worked"
+    },
+    {
+      "case": "keyboard scrolling and dismissal",
+      "result": "passed",
+      "observed": "focusing notes scrolled it above the keyboard; hide keyboard restored the form; native screenshot includes system candidate bar"
+    },
+    {
+      "case": "hardware Enter validation",
+      "result": "passed",
+      "observed": "Enter on empty name showed a required-field error; Enter during Pinyin composition confirmed text without submitting; Enter on a valid single-line field saved one record and showed the next-step action"
+    },
+    {
+      "case": "hardware focus and cursor keys",
+      "result": "passed",
+      "observed": "Down from name routed subsequent x to model; Tab routed z to notes; Shift+Tab returned to model; Left then Backspace changed abcd to abd, preserving the field"
+    },
+    {
+      "case": "hardware held Backspace",
+      "result": "passed",
+      "observed": "Right then Backspace held 1800 ms removed abd to empty; a later x remained, confirming release stopped deletion"
+    },
+    {
+      "case": "multiline Enter",
+      "result": "passed",
+      "observed": "system return and hardware Return inserted a newline in notes without submission"
+    },
+    {
+      "case": "process restart persistence",
+      "result": "passed",
+      "observed": "terminated then launched the same installed bundle without reinstalling; two records remained; detail showed name 你好 and notes 你好; real schemaVersion 1 JSON contained the same values"
+    }
+  ],
+  "native_screenshots": [
+    "ios-native-pinyin-candidate.png",
+    "ios-native-chinese-notes.png",
+    "ios-native-after-process-restart.png"
+  ],
+  "limits": [
+    "simulator, not physical device",
+    "Up, complex selection, soft-wrap and repeated-submit boundaries additionally covered by widget tests",
+    "Android and iPad native Chinese candidate selection not manually repeated",
+    "full third-party IME and accessibility matrix not checked"
+  ]
+}
