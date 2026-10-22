@@ -98,7 +98,7 @@ void main() {
       await tester.pageBack();
       await tester.pumpAndSettle();
       await tap(tester, 'Plan');
-      expect(find.textContaining('needed −'), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('needed −')), findsOneWidget);
       await tap(tester, 'Ledger');
       await tap(tester, 'Undo latest entry');
       await tap(tester, 'Cancel');

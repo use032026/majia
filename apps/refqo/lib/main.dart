@@ -391,6 +391,31 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
       appBarTheme: AppBarTheme(
         backgroundColor: scheme.surface,
         surfaceTintColor: Colors.transparent,
+        centerTitle: false,
+        titleSpacing: 16,
+        titleTextStyle: TextStyle(
+          color: scheme.onSurface,
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        height: 68,
+        elevation: 0,
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: scheme.secondaryContainer,
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: 12,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w400,
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          ),
+        ),
       ),
       inputDecorationTheme: const InputDecorationTheme(
         border: OutlineInputBorder(),
@@ -491,7 +516,7 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
               title: Text(titles[tab]),
               actions: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Center(
                     child: Text(
                       'Refqo',
@@ -518,31 +543,42 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                 ),
               ],
             ),
-            bottomNavigationBar: NavigationBar(
-              selectedIndex: tab,
-              onDestinationSelected: busy ? null : goToTab,
-              destinations: [
-                NavigationDestination(
-                  enabled: !busy,
-                  icon: const Icon(CupertinoIcons.bag),
-                  label: t('Plan', '计划'),
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  ),
                 ),
-                NavigationDestination(
-                  enabled: !busy,
-                  icon: const Icon(CupertinoIcons.cube_box),
-                  label: t('Supplies', '耗材'),
-                ),
-                NavigationDestination(
-                  enabled: !busy,
-                  icon: const Icon(CupertinoIcons.clock),
-                  label: t('Ledger', '流水'),
-                ),
-                NavigationDestination(
-                  enabled: !busy,
-                  icon: const Icon(CupertinoIcons.slider_horizontal_3),
-                  label: t('Settings', '设置'),
-                ),
-              ],
+              ),
+              child: NavigationBar(
+                selectedIndex: tab,
+                onDestinationSelected: busy ? null : goToTab,
+                destinations: [
+                  NavigationDestination(
+                    enabled: !busy,
+                    icon: const Icon(CupertinoIcons.bag),
+                    label: t('Plan', '计划'),
+                  ),
+                  NavigationDestination(
+                    enabled: !busy,
+                    icon: const Icon(CupertinoIcons.cube_box),
+                    label: t('Supplies', '耗材'),
+                  ),
+                  NavigationDestination(
+                    enabled: !busy,
+                    icon: const Icon(CupertinoIcons.clock),
+                    label: t('Ledger', '流水'),
+                  ),
+                  NavigationDestination(
+                    enabled: !busy,
+                    icon: const Icon(CupertinoIcons.slider_horizontal_3),
+                    label: t('Settings', '设置'),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -553,48 +589,118 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
   Widget plan(BuildContext context) {
     final plans = this.plans;
     final needs = plans.fold<int>(0, (sum, f) => sum + f.gap);
+    final covered = plans.where((p) => p.slots.isNotEmpty).toList();
+    final scheme = Theme.of(context).colorScheme;
     return Content(
       key: const PageStorageKey('plan'),
       children: [
-        Wrap(
-          spacing: 8,
-          children: [30, 60, 90]
-              .map(
-                (days) => ChoiceChip(
-                  label: Text(t('$days days', '$days 天')),
-                  selected: horizon == days,
-                  onSelected: (_) => update(() => horizon = days),
-                ),
-              )
-              .toList(),
-        ),
         Container(
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(24),
+            color: scheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              for (final days in [30, 60, 90])
+                Expanded(
+                  child: Semantics(
+                    selected: horizon == days,
+                    child: TextButton(
+                      onPressed: busy
+                          ? null
+                          : () => update(() => horizon = days),
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(48, 40),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 10,
+                        ),
+                        backgroundColor: horizon == days
+                            ? scheme.secondaryContainer
+                            : Colors.transparent,
+                        foregroundColor: horizon == days
+                            ? scheme.primary
+                            : scheme.onSurfaceVariant,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        t('$days days', '$days 天'),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: horizon == days
+                              ? FontWeight.w700
+                              : FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          decoration: BoxDecoration(
+            color: scheme.primaryContainer,
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final description = Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    t('To buy in $horizon days', '未来 $horizon 天需补货'),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: scheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    t('Shared stock deducted', '已扣除共享库存'),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: scheme.onPrimaryContainer,
+                    ),
+                  ),
+                ],
+              );
+              final quantity = Text.rich(
+                TextSpan(
+                  text: '$needs',
                   children: [
-                    Text(
-                      t('TO BUY · NEXT $horizon DAYS', '需补货 · 未来 $horizon 天'),
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    TextSpan(
+                      text: t(' units', ' 件'),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: scheme.onPrimaryContainer,
+                      ),
                     ),
-                    Text(
-                      '$needs',
-                      style: Theme.of(context).textTheme.displayMedium
-                          ?.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    Text(t('units after shared stock', '件，已扣除共享库存')),
                   ],
                 ),
-              ),
-              const Icon(CupertinoIcons.bag_badge_plus, size: 42),
-            ],
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  color: scheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w700,
+                ),
+              );
+              if (constraints.maxWidth < 280 ||
+                  MediaQuery.textScalerOf(context).scale(14) > 20 ||
+                  needs > 9999) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [description, const SizedBox(height: 8), quantity],
+                );
+              }
+              return Row(
+                children: [
+                  Expanded(child: description),
+                  const SizedBox(width: 12),
+                  quantity,
+                ],
+              );
+            },
           ),
         ),
         if (data!.slots.isEmpty)
@@ -615,48 +721,115 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                       : openSupply(context, data!.supplies.first.id),
           ),
         if (data!.slots.isNotEmpty)
-          Text(
-            t('YOUR SUPPLY COVERAGE', '耗材覆盖情况'),
-            style: Theme.of(context).textTheme.labelLarge,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  t('Supply coverage', '耗材覆盖情况'),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+              Text(
+                t('${covered.length} supplies', '${covered.length} 种耗材'),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ],
           ),
-        for (final f in plans.where((p) => p.slots.isNotEmpty))
+        for (final f in covered)
           Surface(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    f.supply.name,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  subtitle: Text(
-                    f.supply.code.isEmpty
-                        ? t('No part code', '未填写型号')
-                        : f.supply.code,
-                  ),
-                  trailing: const Icon(CupertinoIcons.chevron_right),
-                  onTap: busy ? null : () => openSupply(context, f.supply.id),
-                ),
-                Text(
-                  t(
-                    '${f.demand} needed − ${f.stock} in stock = ${f.gap} to buy',
-                    '需求 ${f.demand} − 库存 ${f.stock} = 补货 ${f.gap}',
-                  ),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                const Divider(height: 24),
-                for (final s in f.slots)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      '${s.slot.name} · ${s.occurrences} × ${s.slot.units}${s.slot.verified ? '' : t(' · fit unverified', ' · 待核对适配')}',
+            padding: const EdgeInsets.all(14),
+            child: InkWell(
+              onTap: busy ? null : () => openSupply(context, f.supply.id),
+              borderRadius: BorderRadius.circular(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                f.supply.name,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w700),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                f.supply.code.isEmpty
+                                    ? t('No part code', '未填写型号')
+                                    : f.supply.code,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          CupertinoIcons.chevron_right,
+                          size: 18,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ],
                     ),
                   ),
-              ],
+                  const SizedBox(height: 10),
+                  Semantics(
+                    label: t(
+                      '${f.demand} needed − ${f.stock} in stock = ${f.gap} to buy',
+                      '需求 ${f.demand} − 库存 ${f.stock} = 补货 ${f.gap}',
+                    ),
+                    excludeSemantics: true,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: PlanMetric(
+                            label: t('Need', '需求'),
+                            value: f.demand,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: PlanMetric(
+                            label: t('Stock', '库存'),
+                            value: f.stock,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: PlanMetric(
+                            label: t('To buy', '补货'),
+                            value: f.gap,
+                            highlight: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      for (final s in f.slots)
+                        Text(
+                          '${s.slot.name} · ${s.occurrences} × ${s.slot.units}${s.slot.verified ? '' : t(' · fit unverified', ' · 待核对适配')}',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: scheme.onSurfaceVariant),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         if (data!.slots.isNotEmpty)
@@ -1219,16 +1392,16 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
       return ListView.builder(
         key: const PageStorageKey('ledger'),
         padding: EdgeInsets.fromLTRB(
-          math.max(20, (size.maxWidth - 720) / 2),
+          math.max(16, (size.maxWidth - 720) / 2),
           12,
-          math.max(20, (size.maxWidth - 720) / 2),
+          math.max(16, (size.maxWidth - 720) / 2),
           math.max(24, MediaQuery.viewPaddingOf(context).bottom),
         ),
         itemCount: events.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 18),
+              padding: const EdgeInsets.only(bottom: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -1283,7 +1456,7 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
           }
           final e = events[events.length - index];
           return Padding(
-            padding: const EdgeInsets.only(bottom: 18),
+            padding: const EdgeInsets.only(bottom: 12),
             child: Surface(
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -1729,16 +1902,18 @@ class Content extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, size) => SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
-        math.max(20, (size.maxWidth - 720) / 2),
+        math.max(16, (size.maxWidth - 720) / 2),
         12,
-        math.max(20, (size.maxWidth - 720) / 2),
+        math.max(16, (size.maxWidth - 720) / 2),
         math.max(24, MediaQuery.viewPaddingOf(context).bottom),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final c in children)
-            Padding(padding: const EdgeInsets.only(bottom: 18), child: c),
+          for (var i = 0; i < children.length; i++) ...[
+            children[i],
+            if (i < children.length - 1) const SizedBox(height: 12),
+          ],
         ],
       ),
     ),
@@ -1746,18 +1921,71 @@ class Content extends StatelessWidget {
 }
 
 class Surface extends StatelessWidget {
-  const Surface({super.key, required this.child});
+  const Surface({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+  });
   final Widget child;
+  final EdgeInsetsGeometry padding;
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(18),
+    padding: padding,
     decoration: BoxDecoration(
       color: Theme.of(context).colorScheme.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(22),
-      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(
+        color: Theme.of(
+          context,
+        ).colorScheme.outlineVariant.withValues(alpha: 0.65),
+      ),
     ),
     child: child,
   );
+}
+
+class PlanMetric extends StatelessWidget {
+  const PlanMetric({
+    super.key,
+    required this.label,
+    required this.value,
+    this.highlight = false,
+  });
+  final String label;
+  final int value;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+        color: highlight ? scheme.secondaryContainer : scheme.surface,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 6,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: highlight ? scheme.primary : scheme.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            '$value',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: highlight ? scheme.primary : scheme.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class EmptyState extends StatelessWidget {
