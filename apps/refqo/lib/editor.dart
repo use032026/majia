@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'layout.dart';
 
 class _Input {
   _Input(this.controller, this.readOnly, this.lines)
@@ -273,38 +274,95 @@ abstract class EditorState<T extends StatefulWidget> extends State<T>
       });
       return entry;
     });
-    return Focus(
-      canRequestFocus: false,
-      onKeyEvent: (_, event) => _key(input, event),
-      child: TextFormField(
-        key: input.key,
-        controller: controller,
-        focusNode: input.focus,
-        decoration: InputDecoration(labelText: label),
-        maxLength: maxLength,
-        minLines: lines,
-        maxLines: lines,
-        enabled: !saving,
-        readOnly: readOnly,
-        keyboardType:
-            keyboard ??
-            (lines > 1 ? TextInputType.multiline : TextInputType.text),
-        textInputAction: lines > 1
-            ? TextInputAction.newline
-            : TextInputAction.done,
-        // The default completion clears composing text before onSubmitted.
-        // Keep it intact so the shared submit gate can wait for IME commit.
-        onEditingComplete: () {},
-        onFieldSubmitted: (_) {
-          if (lines == 1) _submit?.call();
-        },
-        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        validator:
-            validator ??
-            (required
-                ? (v) => v == null || v.trim().isEmpty ? '$label *' : null
-                : null),
-      ),
+    final scheme = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ExcludeSemantics(
+          child: Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Semantics(
+          label: label,
+          child: Focus(
+            canRequestFocus: false,
+            onKeyEvent: (_, event) => _key(input, event),
+            child: TextFormField(
+              key: input.key,
+              controller: controller,
+              focusNode: input.focus,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: scheme.surface,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: scheme.outlineVariant.withValues(alpha: 0.65),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: scheme.primary, width: 1.5),
+                ),
+                prefixIcon: readOnly
+                    ? const Icon(Icons.lock_outline_rounded, size: 18)
+                    : null,
+              ),
+              style: Theme.of(context).textTheme.bodyMedium,
+              buildCounter:
+                  (
+                    context, {
+                    required currentLength,
+                    required isFocused,
+                    required maxLength,
+                  }) => isFocused
+                  ? Text(
+                      '$currentLength / $maxLength',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    )
+                  : null,
+              maxLength: maxLength,
+              minLines: lines,
+              maxLines: lines,
+              enabled: !saving,
+              readOnly: readOnly,
+              keyboardType:
+                  keyboard ??
+                  (lines > 1 ? TextInputType.multiline : TextInputType.text),
+              textInputAction: lines > 1
+                  ? TextInputAction.newline
+                  : TextInputAction.done,
+              // The default completion clears composing text before onSubmitted.
+              // Keep it intact so the shared submit gate can wait for IME commit.
+              onEditingComplete: () {},
+              onFieldSubmitted: (_) {
+                if (lines == 1) _submit?.call();
+              },
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              validator:
+                  validator ??
+                  (required
+                      ? (v) => v == null || v.trim().isEmpty ? '$label *' : null
+                      : null),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -317,6 +375,10 @@ abstract class EditorState<T extends StatefulWidget> extends State<T>
   }) {
     _submit = onSubmit;
     Widget saveButton(String label) => FilledButton(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(48, 50),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      ),
       onPressed: saving ? null : onSubmit,
       child: saving
           ? Row(
@@ -363,9 +425,9 @@ abstract class EditorState<T extends StatefulWidget> extends State<T>
                           keyboardDismissBehavior:
                               ScrollViewKeyboardDismissBehavior.onDrag,
                           padding: EdgeInsets.fromLTRB(
-                            math.max(20, (size.maxWidth - 720) / 2),
+                            math.max(16, (size.maxWidth - 720) / 2),
                             12 + extra,
-                            math.max(20, (size.maxWidth - 720) / 2),
+                            math.max(16, (size.maxWidth - 720) / 2),
                             math.max(
                                   24,
                                   MediaQuery.viewPaddingOf(context).bottom,
@@ -375,22 +437,30 @@ abstract class EditorState<T extends StatefulWidget> extends State<T>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              for (final child in children)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 18),
-                                  child: child,
-                                ),
+                              for (final child in children) ...[
+                                child,
+                                const SizedBox(height: 12),
+                              ],
                               if (error != null)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 12),
                                   child: Semantics(
                                     liveRegion: true,
-                                    child: Text(
-                                      error!,
-                                      style: TextStyle(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
+                                    child: Surface(
+                                      padding: const EdgeInsets.all(12),
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.errorContainer,
+                                      child: Text(
+                                        error!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onErrorContainer,
+                                            ),
                                       ),
                                     ),
                                   ),

@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'domain.dart';
 import 'editor.dart';
+import 'layout.dart';
 import 'storage.dart';
 
 const paper = Color(0xFFFAF6F0);
@@ -1021,6 +1022,95 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
     );
   }
 
+  Widget stockSummary(
+    BuildContext context,
+    Supply supply,
+    VoidCallback? onReceive,
+  ) {
+    final scheme = Theme.of(context).colorScheme;
+    final stock = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          t('Shared stock', '共享库存'),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: scheme.onPrimaryContainer,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text.rich(
+          TextSpan(
+            text: '${supply.stock}',
+            children: [
+              TextSpan(
+                text: t(' units', ' 件'),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: scheme.onPrimaryContainer,
+                ),
+              ),
+            ],
+          ),
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            color: scheme.onPrimaryContainer,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+    final receive = FilledButton.icon(
+      onPressed: onReceive,
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(48, 44),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      icon: const Icon(CupertinoIcons.plus, size: 18),
+      label: Text(t('Receive', '入库')),
+    );
+    return Surface(
+      color: scheme.primaryContainer,
+      child: LayoutBuilder(
+        builder: (context, size) {
+          if (size.maxWidth < 280 ||
+              supply.stock > 9999 ||
+              MediaQuery.textScalerOf(context).scale(14) > 20) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [stock, const SizedBox(height: 12), receive],
+            );
+          }
+          return Row(
+            children: [
+              Expanded(child: stock),
+              const SizedBox(width: 12),
+              receive,
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget detailValue(BuildContext context, String label, String value) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
+      );
+
   Future<void> openSupply(BuildContext context, String id) async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -1041,6 +1131,7 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                   ),
                 );
               }
+              final slots = data!.slots.where((e) => e.supplyId == id).toList();
               Future<void> refresh(Future<void> Function() action) async {
                 await action();
                 if (context.mounted) {
@@ -1052,7 +1143,7 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                 canPop: !_working,
                 child: Scaffold(
                   appBar: AppBar(
-                    title: Text(s.name),
+                    title: Text(t('Supply details', '耗材详情')),
                     leading: IconButton(
                       tooltip: MaterialLocalizations.of(
                         context,
@@ -1070,100 +1161,163 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                       Expanded(
                         child: Content(
                           children: [
-                            Text(
-                              s.code.isEmpty
+                            ContextCard(
+                              title: s.name,
+                              subtitle: s.code.isEmpty
                                   ? t('No part code saved', '未记录型号')
                                   : s.code,
-                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
-                            Text(
-                              s.notes.isEmpty
-                                  ? t(
-                                      'Add fit notes from the label or manufacturer.',
-                                      '可从标签或厂商说明中添加适配备注。',
-                                    )
-                                  : s.notes,
+                            stockSummary(
+                              context,
+                              s,
+                              busy
+                                  ? null
+                                  : () => refresh(() => receive(context, s)),
+                            ),
+                            AdaptivePair(
+                              first: OutlinedButton.icon(
+                                onPressed: busy
+                                    ? null
+                                    : () =>
+                                          refresh(() => editSupply(context, s)),
+                                icon: const Icon(
+                                  CupertinoIcons.pencil,
+                                  size: 18,
+                                ),
+                                label: Text(t('Edit supply', '编辑耗材')),
+                              ),
+                              second: OutlinedButton.icon(
+                                onPressed: busy
+                                    ? null
+                                    : () => refresh(() => editSlot(context, s)),
+                                icon: const Icon(CupertinoIcons.link, size: 18),
+                                label: Text(t('Link appliance', '关联设备')),
+                              ),
                             ),
                             Surface(
-                              child: Row(
+                              padding: EdgeInsets.zero,
+                              child: ExpansionTile(
+                                title: Text(
+                                  t('Fit / buying notes', '适配与采购备注'),
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                                leading: Icon(
+                                  CupertinoIcons.doc_text,
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                tilePadding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                shape: const Border(),
+                                collapsedShape: const Border(),
+                                childrenPadding: const EdgeInsets.fromLTRB(
+                                  14,
+                                  0,
+                                  14,
+                                  14,
+                                ),
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(t('Shared stock', '共享库存')),
-                                        Text(
-                                          '${s.stock}',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.displaySmall,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  FilledButton(
-                                    onPressed: busy
-                                        ? null
-                                        : () => refresh(
-                                            () => receive(context, s),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      s.notes.isEmpty
+                                          ? t(
+                                              'Add fit notes from the label or manufacturer.',
+                                              '可从标签或厂商说明中添加适配备注。',
+                                            )
+                                          : s.notes,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            height: 1.5,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
                                           ),
-                                    child: Text(t('Receive', '入库')),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            Wrap(
-                              spacing: 8,
+                            Row(
                               children: [
-                                OutlinedButton.icon(
-                                  onPressed: busy
-                                      ? null
-                                      : () => refresh(
-                                          () => editSupply(context, s),
-                                        ),
-                                  icon: const Icon(CupertinoIcons.pencil),
-                                  label: Text(t('Edit supply', '编辑耗材')),
+                                Expanded(
+                                  child: Text(
+                                    t('Linked appliances', '使用此耗材的设备'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                                OutlinedButton.icon(
-                                  onPressed: busy
-                                      ? null
-                                      : () =>
-                                            refresh(() => editSlot(context, s)),
-                                  icon: const Icon(CupertinoIcons.link),
-                                  label: Text(t('Link appliance', '关联设备')),
+                                Text(
+                                  t(
+                                    '${slots.length} linked',
+                                    '${slots.length} 个设备',
+                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
                                 ),
                               ],
                             ),
-                            Text(
-                              t('APPLIANCES USING THIS REFILL', '使用此耗材的设备'),
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                            for (final slot in data!.slots.where(
-                              (e) => e.supplyId == id,
-                            ))
+                            for (final slot in slots)
                               Surface(
+                                padding: const EdgeInsets.all(14),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       slot.name,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleLarge,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                     ),
+                                    const SizedBox(height: 4),
                                     Text(
                                       t(
                                         '${slot.units} unit(s) every ${slot.intervalDays} days',
                                         '每 ${slot.intervalDays} 天使用 ${slot.units} 件',
                                       ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                          ),
                                     ),
-                                    Text(
-                                      '${t('Last changed', '上次更换')}: ${dateLabel(slot.lastChanged)}',
+                                    const SizedBox(height: 10),
+                                    AdaptivePair(
+                                      first: detailValue(
+                                        context,
+                                        t('Last changed', '上次更换'),
+                                        dateLabel(slot.lastChanged),
+                                      ),
+                                      second: detailValue(
+                                        context,
+                                        t('Next due', '下次计划'),
+                                        dateLabel(
+                                          DateTime(
+                                            slot.lastChanged.year,
+                                            slot.lastChanged.month,
+                                            slot.lastChanged.day +
+                                                slot.intervalDays,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    Text(
-                                      '${t('Next due', '下次计划')}: ${dateLabel(DateTime(slot.lastChanged.year, slot.lastChanged.month, slot.lastChanged.day + slot.intervalDays))}',
-                                    ),
+                                    const SizedBox(height: 10),
                                     Text(
                                       slot.verified
                                           ? t('Fit checked by you', '你已核对适配')
@@ -1172,6 +1326,8 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                                               '使用前请核对适配',
                                             ),
                                       style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
                                         color: Theme.of(
                                           context,
                                         ).colorScheme.primary,
@@ -1183,6 +1339,13 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                                       runSpacing: 4,
                                       children: [
                                         FilledButton(
+                                          style: FilledButton.styleFrom(
+                                            minimumSize: const Size(48, 44),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14,
+                                              vertical: 10,
+                                            ),
+                                          ),
                                           onPressed:
                                               busy ||
                                                   s.stock < slot.units ||
@@ -1237,6 +1400,11 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                                           child: Text(t('Edit', '编辑')),
                                         ),
                                         TextButton(
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.error,
+                                          ),
                                           onPressed: busy
                                               ? null
                                               : () => refresh(() async {
@@ -1302,13 +1470,14 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                                   ],
                                 ),
                               ),
-                            if (data!.slots
-                                .where((e) => e.supplyId == id)
-                                .isEmpty)
-                              Text(
-                                t(
-                                  'Link an appliance to include this stock in planning.',
-                                  '关联设备后，此耗材即可纳入计划。',
+                            if (slots.isEmpty)
+                              Surface(
+                                child: FormHint(
+                                  t(
+                                    'Link an appliance to include this stock in planning.',
+                                    '关联设备后，此耗材即可纳入计划。',
+                                  ),
+                                  icon: CupertinoIcons.link,
                                 ),
                               ),
                             if (data!.events.any((e) => e.supplyId == id))
@@ -1323,6 +1492,11 @@ class _RefqoAppState extends State<RefqoApp> with WidgetsBindingObserver {
                                 ),
                               ),
                             TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.error,
+                              ),
                               onPressed: busy
                                   ? null
                                   : () async {
@@ -2223,30 +2397,6 @@ class Content extends StatelessWidget {
   );
 }
 
-class Surface extends StatelessWidget {
-  const Surface({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-  });
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: padding,
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(
-        color: Theme.of(
-          context,
-        ).colorScheme.outlineVariant.withValues(alpha: 0.65),
-      ),
-    ),
-    child: child,
-  );
-}
-
 class PlanMetric extends StatelessWidget {
   const PlanMetric({
     super.key,
@@ -2469,16 +2619,26 @@ class _SupplyEditorState extends EditorState<SupplyEditor> {
         failureMessage: widget.failureMessage,
       ),
       children: [
-        Text(
+        FormHint(
           t('Use Receive to add spare stock after saving.', '保存后通过“入库”添加备件库存。'),
         ),
-        field(name, t('Supply name', '耗材名称'), required: true),
-        field(code, t('Part code / size', '型号 / 尺寸')),
-        field(
-          notes,
-          t('Fit notes / buying notes', '适配 / 采购备注'),
-          maxLength: 400,
-          lines: 3,
+        FormSection(
+          title: t('Supply details', '耗材信息'),
+          children: [
+            field(name, t('Supply name', '耗材名称'), required: true),
+            field(code, t('Part code / size', '型号 / 尺寸')),
+          ],
+        ),
+        FormSection(
+          title: t('Notes', '使用备注'),
+          children: [
+            field(
+              notes,
+              t('Fit notes / buying notes', '适配 / 采购备注'),
+              maxLength: 400,
+              lines: 3,
+            ),
+          ],
         ),
       ],
     );
@@ -2551,61 +2711,86 @@ class _SlotEditorState extends EditorState<SlotEditor> {
         failureMessage: widget.failureMessage,
       ),
       children: [
-        Text(
-          '${t('Uses', '使用耗材')}: ${widget.supply.name} · ${widget.supply.code}',
+        ContextCard(
+          title: widget.supply.name,
+          subtitle:
+              '${t('Uses', '使用耗材')}: ${widget.supply.code.isEmpty ? t('No part code saved', '未记录型号') : widget.supply.code}',
         ),
-        field(name, t('Appliance / location', '设备 / 位置'), required: true),
-        field(
-          interval,
-          t('Interval in days', '周期（天）'),
-          maxLength: 4,
-          keyboard: TextInputType.number,
-          validator: (v) => number(v, 3650),
+        FormSection(
+          title: t('Appliance details', '设备信息'),
+          children: [
+            field(name, t('Appliance / location', '设备 / 位置'), required: true),
+          ],
         ),
-        Text(
-          t(
-            'Use the manufacturer interval. Initial values are not safety advice.',
-            '周期请按厂商说明填写，初始数值不代表安全建议。',
-          ),
-        ),
-        field(
-          units,
-          t('Units per replacement', '每次更换用量'),
-          maxLength: 3,
-          keyboard: TextInputType.number,
-          validator: (v) => number(v, 100),
-        ),
-        field(
-          last,
-          t('Last changed · YYYY-MM-DD', '上次更换 · YYYY-MM-DD'),
-          maxLength: 10,
-          keyboard: TextInputType.datetime,
-          readOnly: widget.hasHistory,
-          validator: (v) {
-            final d = DateTime.tryParse(v ?? '');
-            return d == null ||
-                    dateLabel(d) != v ||
-                    calendarDay(d).isAfter(calendarDay(DateTime.now()))
-                ? t('Enter a valid date, today or earlier', '请输入今天或更早的有效日期')
-                : null;
-          },
-        ),
-        if (widget.hasHistory)
-          Text(
-            t(
-              'Undo the replacement in Ledger to change this protected date.',
-              '日期由流水保护，撤销相关更换记录后可修改。',
+        FormSection(
+          title: t('Replacement schedule', '更换计划'),
+          children: [
+            FormHint(
+              t(
+                'Use the manufacturer interval. Initial values are not safety advice.',
+                '周期请按厂商说明填写，初始数值不代表安全建议。',
+              ),
             ),
-          ),
-        CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          value: verified,
-          onChanged: saving ? null : (v) => setState(() => verified = v!),
-          title: Text(t('I checked this part fits', '我已核对此型号适配')),
-          subtitle: Text(
-            t(
-              'Your manual confirmation; no automatic fit check.',
-              '人工确认记录，不是自动适配判断。',
+            field(
+              interval,
+              t('Interval in days', '周期（天）'),
+              maxLength: 4,
+              keyboard: TextInputType.number,
+              validator: (v) => number(v, 3650),
+            ),
+            field(
+              units,
+              t('Units per replacement', '每次更换用量'),
+              maxLength: 3,
+              keyboard: TextInputType.number,
+              validator: (v) => number(v, 100),
+            ),
+            field(
+              last,
+              t('Last changed · YYYY-MM-DD', '上次更换 · YYYY-MM-DD'),
+              maxLength: 10,
+              keyboard: TextInputType.datetime,
+              readOnly: widget.hasHistory,
+              validator: (v) {
+                final d = DateTime.tryParse(v ?? '');
+                return d == null ||
+                        dateLabel(d) != v ||
+                        calendarDay(d).isAfter(calendarDay(DateTime.now()))
+                    ? t('Enter a valid date, today or earlier', '请输入今天或更早的有效日期')
+                    : null;
+              },
+            ),
+            if (widget.hasHistory)
+              FormHint(
+                t(
+                  'Undo the replacement in Ledger to change this protected date.',
+                  '日期由流水保护，撤销相关更换记录后可修改。',
+                ),
+                icon: Icons.lock_outline_rounded,
+              ),
+          ],
+        ),
+        Surface(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          child: CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 6),
+            value: verified,
+            onChanged: saving ? null : (v) => setState(() => verified = v!),
+            title: Text(
+              t('I checked this part fits', '我已核对此型号适配'),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            subtitle: Text(
+              t(
+                'Your manual confirmation; no automatic fit check.',
+                '人工确认记录，不是自动适配判断。',
+              ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ),
@@ -2653,28 +2838,39 @@ class _ReceiveEditorState extends EditorState<ReceiveEditor> {
         failureMessage: widget.failureMessage,
       ),
       children: [
-        Text(widget.name, style: Theme.of(context).textTheme.headlineSmall),
-        Text(
-          t(
-            'Count usable spare units, not packs or installed units.',
-            '填写可用备件件数，不是包装数；已安装的耗材不计入库存。',
+        ContextCard(
+          title: widget.name,
+          subtitle: t(
+            'Current shared stock: ${widget.currentStock} units',
+            '当前共享库存 ${widget.currentStock} 件',
           ),
         ),
-        field(
-          quantity,
-          t('Units received', '入库件数'),
-          maxLength: 5,
-          keyboard: TextInputType.number,
-          validator: (v) {
-            final n = int.tryParse(v ?? '');
-            if (n == null || n < 1 || n > 99999) {
-              return t('Enter 1–99999', '请输入 1–99999');
-            }
-            if (widget.currentStock + n > 99999) {
-              return t('Total stock cannot exceed 99999', '累计库存不能超过 99999');
-            }
-            return null;
-          },
+        FormSection(
+          title: t('Receive spare units', '备件入库'),
+          children: [
+            FormHint(
+              t(
+                'Count usable spare units, not packs or installed units.',
+                '填写可用备件件数，不是包装数；已安装的耗材不计入库存。',
+              ),
+            ),
+            field(
+              quantity,
+              t('Units received', '入库件数'),
+              maxLength: 5,
+              keyboard: TextInputType.number,
+              validator: (v) {
+                final n = int.tryParse(v ?? '');
+                if (n == null || n < 1 || n > 99999) {
+                  return t('Enter 1–99999', '请输入 1–99999');
+                }
+                if (widget.currentStock + n > 99999) {
+                  return t('Total stock cannot exceed 99999', '累计库存不能超过 99999');
+                }
+                return null;
+              },
+            ),
+          ],
         ),
       ],
     );
