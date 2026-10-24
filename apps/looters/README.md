@@ -24,3 +24,9 @@ fvm flutter run
 - Upload: not performed.
 
 See [the product brief](docs/product/PRODUCT_BRIEF.md), [functional review](docs/release/FUNCTIONAL_REVIEW.md), [App Store preflight](docs/release/APP_STORE_PREFLIGHT.md), and [evidence register](docs/release/EVIDENCE_REGISTER.md).
+
+## Online privacy policy
+
+The iOS privacy-policy button uses the existing HTTPS URL supplied through `PACEJAR_PRIVACY_POLICY_URL`, including the selected language. If no valid URL is supplied, the existing unavailable-link message is shown. Other platforms keep the existing in-app browser route.
+
+On an explicit tap, the app requests the actual policy through an ephemeral `URLSession` and displays that response in its own nonpersistent `WKWebView`. First-network authorization is handled by iOS when required by the device and its current permission state. Loading failures offer retry, copy address, and close; failure to present the native page uses the existing Flutter failure message. No startup request or unrelated probe is added.

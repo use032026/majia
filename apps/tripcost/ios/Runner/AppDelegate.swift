@@ -10,6 +10,7 @@ import UIKit
   private var documentExportService: DocumentExportService?
   private var photoLibrarySaveService: PhotoLibrarySaveService?
   private var systemPermissionService: SystemPermissionService?
+  private var privacyPolicyChannel: FlutterMethodChannel?
 
   override func application(
     _ application: UIApplication,
@@ -21,6 +22,35 @@ import UIKit
 
   func register(with registry: FlutterPluginRegistry) {
     GeneratedPluginRegistrant.register(with: registry)
+    if let registrar = registry.registrar(forPlugin: "RoamSumPrivacyPolicy") {
+      let channel = FlutterMethodChannel(
+        name: "trip_cost/privacy_policy",
+        binaryMessenger: registrar.messenger()
+      )
+      channel.setMethodCallHandler { [weak self] call, result in
+        guard call.method == "openPrivacyPolicy" else {
+          result(FlutterMethodNotImplemented)
+          return
+        }
+        guard
+          let arguments = call.arguments as? [String: Any],
+          let address = arguments["url"] as? String,
+          let url = URL(string: address),
+          url.scheme == "https", url.host == "tripcost.fit", url.path == "/privacy.html",
+          let chinese = arguments["chinese"] as? Bool,
+          let presenter = self?.activeViewController(),
+          presenter.presentedViewController == nil
+        else {
+          result(false)
+          return
+        }
+        let policy = PrivacyPolicyViewController(url: url, chinese: chinese)
+        let navigation = UINavigationController(rootViewController: policy)
+        navigation.modalPresentationStyle = .fullScreen
+        presenter.present(navigation, animated: true) { result(true) }
+      }
+      privacyPolicyChannel = channel
+    }
     guard let registrar = registry.registrar(forPlugin: "TripCostPlatformServices") else {
       return
     }

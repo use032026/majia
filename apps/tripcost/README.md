@@ -62,3 +62,9 @@ RUN_FRANKFURTER_SMOKE=1 \
 ```
 
 连接类型只用于执行“仅 Wi-Fi”策略，不能证明互联网一定可用；实际请求仍通过超时、错误映射、缓存回退和指数退避处理失败。
+
+## Online privacy policy
+
+The iOS privacy-policy button loads the existing `https://tripcost.fit/privacy.html?lang=zh|en` address. Registration follows the existing Scene/plugin lifecycle. Android keeps the existing in-app browser route.
+
+On an explicit tap, the app requests the actual policy through an ephemeral `URLSession` and displays that response in its own nonpersistent `WKWebView`. First-network authorization is handled by iOS when required by the device and its current permission state. Loading failures offer retry, copy address, and close; failure to present the native page uses the existing Flutter failure message. No startup request or unrelated probe is added.

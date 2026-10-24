@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D93EA1C2857D41BDB6420101 /* PrivacyPolicyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D93EA1C2857D41BDB6420102 /* PrivacyPolicyViewController.swift */; };
 		12AA894B37C4049768FDBF0F /* PlatformApis.g.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312F1E25CE9107CB33B452 /* PlatformApis.g.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		26F276B0A3EEB0181328CF6D /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5CCACA01F32910A3FC49D0C /* Pods_Runner.framework */; };
@@ -71,6 +72,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D93EA1C2857D41BDB6420102 /* PrivacyPolicyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyViewController.swift; sourceTree = "<group>"; };
 		072DDBF3303BE3AF00C7400C /* RunnerRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerRelease.entitlements; sourceTree = "<group>"; };
 		0788EAC7303458B300C94B2C /* RunnerProfile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunnerProfile.entitlements; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				D93EA1C2857D41BDB6420102 /* PrivacyPolicyViewController.swift */,
 				D0C8A1000000000000000008 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				2371E2AEC34DC447CCE2DD02 /* Generated */,
@@ -516,6 +519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				D93EA1C2857D41BDB6420101 /* PrivacyPolicyViewController.swift in Sources */,
 				D0C8A1000000000000000007 /* SceneDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				12AA894B37C4049768FDBF0F /* PlatformApis.g.swift in Sources */,

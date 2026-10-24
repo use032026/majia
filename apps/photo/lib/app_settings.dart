@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -178,6 +180,7 @@ class SettingsPage extends StatelessWidget {
                   context,
                   context.l('Privacy Policy'),
                   LegalLinks.privacy(legalLanguage),
+                  privacyPolicy: true,
                 ),
                 const Divider(height: 1, color: Color(0xFFE8E1F0)),
                 _linkTile(
@@ -240,7 +243,28 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _linkTile(BuildContext context, String title, Uri url) => ListTile(
+  Future<bool> _openNativePrivacyPolicy(Uri url) async {
+    try {
+      return await const MethodChannel(
+            'jufu/privacy_policy',
+          ).invokeMethod<bool>('openPrivacyPolicy', {
+            'url': url.toString(),
+            'chinese': url.queryParameters['lang'] == 'zh',
+          }) ??
+          false;
+    } on PlatformException {
+      return false;
+    } on MissingPluginException {
+      return false;
+    }
+  }
+
+  Widget _linkTile(
+    BuildContext context,
+    String title,
+    Uri url, {
+    bool privacyPolicy = false,
+  }) => ListTile(
     title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
     trailing: const Icon(
       Icons.chevron_right_rounded,
@@ -248,7 +272,12 @@ class SettingsPage extends StatelessWidget {
       color: Color(0xFF8D7C9B),
     ),
     onTap: () async {
-      final opened = await launchUrl(url, mode: LaunchMode.externalApplication);
+      final opened =
+          privacyPolicy &&
+              !kIsWeb &&
+              defaultTargetPlatform == TargetPlatform.iOS
+          ? await _openNativePrivacyPolicy(url)
+          : await launchUrl(url, mode: LaunchMode.externalApplication);
       if (!opened && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l('Couldn’t open this page.'))),

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../config/app_links.dart';
@@ -162,11 +164,23 @@ class SettingsScreen extends StatelessWidget {
     }
 
     try {
-      final opened = await launchUrl(
-        uri,
-        mode: LaunchMode.inAppBrowserView,
-        browserConfiguration: const BrowserConfiguration(showTitle: true),
-      );
+      final bool opened;
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+        opened =
+            await const MethodChannel(
+              'pace_jar/privacy_policy',
+            ).invokeMethod<bool>('openPrivacyPolicy', {
+              'url': uri.toString(),
+              'chinese': uri.queryParameters['lang'] == 'zh',
+            }) ??
+            false;
+      } else {
+        opened = await launchUrl(
+          uri,
+          mode: LaunchMode.inAppBrowserView,
+          browserConfiguration: const BrowserConfiguration(showTitle: true),
+        );
+      }
       if (context.mounted && !opened) {
         _showMessage(context, text.get('privacyLinkFailed'));
       }
