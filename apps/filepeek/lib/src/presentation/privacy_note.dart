@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart' show SelectableText;
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+const _privacyPolicyChannel = MethodChannel('com.fylto.lite/privacy_policy');
 
 Uri privacyPolicyUri({required bool chinese}) =>
     Uri.https('fylto1.com', '/privacy.html', {'lang': chinese ? 'zh' : 'en'});
@@ -28,10 +32,17 @@ class _PrivacyNoteDialogState extends State<PrivacyNoteDialog> {
     });
     bool opened;
     try {
-      opened = await launchUrl(
-        privacyPolicyUri(chinese: widget.zh),
-        mode: LaunchMode.inAppBrowserView,
-      );
+      final uri = privacyPolicyUri(chinese: widget.zh);
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+        opened =
+            await _privacyPolicyChannel.invokeMethod<bool>(
+              'openPrivacyPolicy',
+              {'url': uri.toString(), 'chinese': widget.zh},
+            ) ??
+            false;
+      } else {
+        opened = await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+      }
     } catch (_) {
       opened = false;
     }
