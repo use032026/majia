@@ -1,0 +1,208 @@
+{
+  "schema_version": 2,
+  "app_name": "ASTFX",
+  "font_path": "/System/Library/Fonts/STHeiti Medium.ttc",
+  "qa_dir": "qa",
+  "defaults": {
+    "background_top": "#0B6B63",
+    "background_bottom": "#102E2B",
+    "text_color": "#FFFFFF",
+    "muted_text_color": "#C3E8DF"
+  },
+  "store": "app_store",
+  "icon": "../../ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone/en-US/01-repair-queue.png",
+      "output": "final/en-US/iphone/01-repair-queue.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "See issues clearly",
+      "subheadline": "Five checks in one repair queue."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone/en-US/02-repair-detail.png",
+      "output": "final/en-US/iphone/02-repair-detail.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Review every change",
+      "subheadline": "Approve suggestions or keep the original."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone/en-US/03-preview.png",
+      "output": "final/en-US/iphone/03-preview.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Inspect the working copy",
+      "subheadline": "Read full cell values before export."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/iphone/en-US/04-export.png",
+      "output": "final/en-US/iphone/04-export.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Export with context",
+      "subheadline": "Share CSV with a concise quality report."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/ipad/en-US/01-repair-queue.png",
+      "output": "final/en-US/ipad/01-repair-queue.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "See issues clearly",
+      "subheadline": "Five checks in one repair queue."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/ipad/en-US/02-repair-detail.png",
+      "output": "final/en-US/ipad/02-repair-detail.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Review every change",
+      "subheadline": "Approve suggestions or keep the original."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/ipad/en-US/03-preview.png",
+      "output": "final/en-US/ipad/03-preview.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Inspect the working copy",
+      "subheadline": "Read full cell values before export."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "source/ipad/en-US/04-export.png",
+      "output": "final/en-US/ipad/04-export.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Export with context",
+      "subheadline": "Share CSV with a concise quality report."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone/zh-Hans/01-repair-queue.png",
+      "output": "final/zh-Hans/iphone/01-repair-queue.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "看清数据中的问题",
+      "subheadline": "五类检查，集中呈现。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone/zh-Hans/02-repair-detail.png",
+      "output": "final/zh-Hans/iphone/02-repair-detail.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "每处修复，由你决定",
+      "subheadline": "采用建议，或保留原样。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone/zh-Hans/03-preview.png",
+      "output": "final/zh-Hans/iphone/03-preview.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "预览当前工作副本",
+      "subheadline": "导出前，核对单元格内容。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/iphone/zh-Hans/04-export.png",
+      "output": "final/zh-Hans/iphone/04-export.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "导出数据与质量报告",
+      "subheadline": "CSV 附带精简质量报告。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/ipad/zh-Hans/01-repair-queue.png",
+      "output": "final/zh-Hans/ipad/01-repair-queue.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "看清数据中的问题",
+      "subheadline": "五类检查，集中呈现。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/ipad/zh-Hans/02-repair-detail.png",
+      "output": "final/zh-Hans/ipad/02-repair-detail.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "每处修复，由你决定",
+      "subheadline": "采用建议，或保留原样。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/ipad/zh-Hans/03-preview.png",
+      "output": "final/zh-Hans/ipad/03-preview.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "预览当前工作副本",
+      "subheadline": "导出前，核对单元格内容。"
+    },
+    {
+      "kind": "screenshot",
+      "locale": "zh-Hans",
+      "source": "source/ipad/zh-Hans/04-export.png",
+      "output": "final/zh-Hans/ipad/04-export.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "导出数据与质量报告",
+      "subheadline": "CSV 附带精简质量报告。"
+    }
+  ]
+}

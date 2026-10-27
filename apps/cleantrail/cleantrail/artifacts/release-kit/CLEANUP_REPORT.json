@@ -1,0 +1,21 @@
+{
+  "removed_directories": 44,
+  "estimated_removed_bytes": 467263488,
+  "all_targets_absent": true,
+  "protected_files_checked": 6052,
+  "protected_hash_changes": [],
+  "git_cached_content_unchanged": true,
+  "retained": [
+    "iOS simulator app and frameworks",
+    "Android debug APK and output reports",
+    "Mixed intermediate directories containing JAR/SO/logs",
+    "Flutter framework cache",
+    "Project dependency and Gradle state",
+    "Source, existing modifications, website and release materials"
+  ],
+  "task_processes_stopped": [
+    "Local website server 127.0.0.1:8417",
+    "Task Android emulator-5556 Refqo_QA (wm size reset first)"
+  ],
+  "other_runtime_state": "Existing iPhone simulator and other user simulators/emulator retained"
+}

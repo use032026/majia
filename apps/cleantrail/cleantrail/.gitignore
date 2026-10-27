@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local release validation diagnostics; keep deliverable reports versioned.
+/artifacts/release-kit/cleanup-*
+/artifacts/release-kit/generation-baseline.json

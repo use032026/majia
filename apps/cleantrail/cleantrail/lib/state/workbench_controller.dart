@@ -223,8 +223,8 @@ class WorkbenchController extends ChangeNotifier {
         complete: current.openIssues.isEmpty,
         shareOrigin: shareOrigin,
         shareText: chinese
-            ? 'CleanTrail 清洗文件与质量报告'
-            : 'CleanTrail cleaned data and quality report',
+            ? 'ASTFX 清洗文件与质量报告'
+            : 'ASTFX cleaned data and quality report',
       );
     } on Object {
       return ExportOutcome.failed;

@@ -1,0 +1,114 @@
+[
+  {
+    "source": "artifacts/app-store-previews/source/iphone/zh-Hans/02-repair-detail.png",
+    "sha256": "377c8f774551b19988cc5ad7512f367a225fc6dc0d3f8f22ec33fe6c8f86a267",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/zh-Hans/03-preview.png",
+    "sha256": "be9048bba08955a1562f7a3cc037161604c8d4290a329dc58b2c406538fdd69b",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/zh-Hans/01-repair-queue.png",
+    "sha256": "91efe0a724ee1e458cd0b48d86da314d7e4482f3752a8a57c918c19a8ee35b4c",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/zh-Hans/04-export.png",
+    "sha256": "9a62cc81991b1d55b3bc5b76c1c83459cabf60468d96122d8f452e6d5baf1a29",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/en-US/02-repair-detail.png",
+    "sha256": "f0d80f8fcd7869054d23096af753042dfbc97caa936f62ed8cc6ef77245f3d31",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/en-US/03-preview.png",
+    "sha256": "fd79a435b3d2dd738a6623c5055e0d4074737a395630ffeb54439b6dc9dd4198",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/en-US/01-repair-queue.png",
+    "sha256": "3293ddf6515b21d2d818ef7e860d259546606249f7ec5b2c04695e401a6dfa0c",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/iphone/en-US/04-export.png",
+    "sha256": "774ecac96164fe4ea7b34751cf47d1921e82e95239c6cbc3e3fb0d44fa8ef78a",
+    "platform": "iOS 26.2",
+    "device": "iPhone 17 Pro",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/zh-Hans/02-repair-detail.png",
+    "sha256": "36a67ec12aed607e569cf27e3f5d8cc07105a949b1e875dc7def542a4e056ddd",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/zh-Hans/03-preview.png",
+    "sha256": "d74cb86c288edffff9a9dda7174dd708336011ecb53a7f24f9c34fafab528a2d",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/zh-Hans/01-repair-queue.png",
+    "sha256": "437136851c1620883d0aff599a6acc3d327179b3dc84184945b17b34e9b07917",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/zh-Hans/04-export.png",
+    "sha256": "b818da3953dc28519c6335f1bf888d579e436219e421304dbead33c388edb04a",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/en-US/02-repair-detail.png",
+    "sha256": "b560e71357743ff582e81fb99be56e4adbe674ec1af322978f408a0ccfef3372",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/en-US/03-preview.png",
+    "sha256": "b8cfe4443ac47b0ae4749712d72cba747f919451234bcf763080161f963fcf00",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/en-US/01-repair-queue.png",
+    "sha256": "90c7732c4b8494e9ff921e26fcf187bc1adcf08799cf104b9bc59529eaaee322",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  },
+  {
+    "source": "artifacts/app-store-previews/source/ipad/en-US/04-export.png",
+    "sha256": "0d9ede584e8376550865d4652679d99f62b38ba5daaf9b954c5a211b5b8cdb46",
+    "platform": "iOS 26.2",
+    "device": "iPad Pro 13-inch M5",
+    "scene_state": "Built-in quality_sample.csv; six rows and five open issues; no synthesized UI or data"
+  }
+]

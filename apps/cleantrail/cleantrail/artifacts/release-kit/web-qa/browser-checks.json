@@ -1,0 +1,61 @@
+[
+  {
+    "description": "在设备上检查 CSV、TSV、TXT 和 XLSX，逐项确认修复，并导出 CSV 与质量报告。",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "page": "product-zh",
+    "title": "ASTFX — 让表格问题清晰可见。"
+  },
+  {
+    "body": 1477,
+    "description": "ASTFX 隐私政策",
+    "lang": "zh-Hans",
+    "overflow": false,
+    "page": "privacy-zh",
+    "title": "隐私政策 — ASTFX"
+  },
+  {
+    "description": "Privacy Policy for ASTFX",
+    "lang": "en",
+    "overflow": false,
+    "page": "privacy-en",
+    "title": "Privacy Policy — ASTFX"
+  },
+  {
+    "description": "Inspect CSV, TSV, TXT, and XLSX tables on your device. Review each repair and export CSV with a quality report.",
+    "lang": "en",
+    "overflow": false,
+    "page": "product-en",
+    "title": "ASTFX — Clarity in every table."
+  },
+  {
+    "lang": "zh-Hans",
+    "page": "language-persistence",
+    "title": "隐私政策 — ASTFX"
+  },
+  {
+    "lang": "en",
+    "page": "query-priority",
+    "title": "ASTFX — Clarity in every table."
+  },
+  {
+    "images": true,
+    "overflow": false,
+    "page": "mobile-en",
+    "width": 390
+  },
+  {
+    "lang": "zh-Hans",
+    "overflow": false,
+    "page": "mobile-zh",
+    "title": "ASTFX — 让表格问题清晰可见。",
+    "width": 390
+  },
+  {
+    "lang": "zh-Hans",
+    "overflow": false,
+    "page": "privacy-mobile-zh",
+    "title": "隐私政策 — ASTFX",
+    "width": 390
+  }
+]

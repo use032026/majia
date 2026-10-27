@@ -11,7 +11,7 @@ class AppLocalizations {
   bool get isChinese => locale.languageCode == 'zh';
 
   static const _en = <String, String>{
-    'appName': 'CleanTrail',
+    'appName': 'ASTFX',
     'tagline': 'Make every table ready to hand off.',
     'privacyPromise': 'On-device · No account · Source stays untouched',
     'importCsv': 'Import data',
@@ -69,10 +69,10 @@ class AppLocalizations {
     'startInspection': 'Start inspection',
     'privacy': 'Privacy & data',
     'privacyBody':
-        'CleanTrail has no account, analytics, advertising, or cloud service. Imported table content is processed on this device. One project file containing the source snapshot, working copy, and audit actions is stored in the app’s private documents until you remove the project or uninstall the app. The original file is never overwritten. Export bundles are staged in a dedicated temporary directory and offered through the system share sheet. The app deletes them when the sheet returns and retries stale cleanup at the next launch or export. They leave the app only if you choose a destination.',
+        'ASTFX has no account, analytics, advertising, or cloud service. Imported table content is processed on this device. One project file containing the source snapshot, working copy, and audit actions is stored in the app’s private documents until you remove the project or uninstall the app. The original file is never overwritten. Export bundles are staged in a dedicated temporary directory and offered through the system share sheet. The app deletes them when the sheet returns and retries stale cleanup at the next launch or export. They leave the app only if you choose a destination.',
     'deleteConfirmTitle': 'Remove this local project?',
     'deleteConfirmBody':
-        'This removes the saved working copy from CleanTrail. Your original file is never changed.',
+        'This removes the saved working copy from ASTFX. Your original file is never changed.',
     'cancel': 'Cancel',
     'remove': 'Remove',
     'fixed': 'fixed',
@@ -130,9 +130,9 @@ class AppLocalizations {
     'emptyFile': 'The selected file is empty.',
     'invalidCsv': 'The table structure is invalid or has unmatched quotes.',
     'noDataRows': 'The table needs a header and at least one data row.',
-    'tooManyRows': 'CleanTrail supports up to 10,000 data rows per file.',
-    'invalidColumnCount': 'CleanTrail supports 1–100 columns per file.',
-    'tooManyCells': 'CleanTrail supports up to 100,000 cells per file.',
+    'tooManyRows': 'ASTFX supports up to 10,000 data rows per file.',
+    'invalidColumnCount': 'ASTFX supports 1–100 columns per file.',
+    'tooManyCells': 'ASTFX supports up to 100,000 cells per file.',
     'tooManyIssues':
         'More than 500 issues were found. Split the file before reviewing it on a mobile device.',
     'replacementRequired': 'Enter a replacement value first.',
@@ -147,7 +147,7 @@ class AppLocalizations {
   };
 
   static const _zh = <String, String>{
-    'appName': 'CleanTrail',
+    'appName': 'ASTFX',
     'tagline': '让每一份表格都经得起交付。',
     'privacyPromise': '本机处理 · 无需账号 · 原文件不改写',
     'importCsv': '导入数据',
@@ -199,9 +199,9 @@ class AppLocalizations {
     'startInspection': '开始检查',
     'privacy': '隐私与数据',
     'privacyBody':
-        'CleanTrail 不含账号、分析、广告或云服务。导入的表格内容仅在本机处理；包含源数据快照、工作副本和审计操作的一个项目文件会保存在 App 私有目录中，直到你移除项目或卸载 App。原始文件不会被覆盖。导出文件包会暂存在 App 专用临时目录中，经系统分享面板提供；App 会在分享面板返回后删除，并在下次启动或导出时再次清理遗留文件。只有你主动选择目标时，它们才会离开本 App。',
+        'ASTFX 不含账号、分析、广告或云服务。导入的表格内容仅在本机处理；包含源数据快照、工作副本和审计操作的一个项目文件会保存在 App 私有目录中，直到你移除项目或卸载 App。原始文件不会被覆盖。导出文件包会暂存在 App 专用临时目录中，经系统分享面板提供；App 会在分享面板返回后删除，并在下次启动或导出时再次清理遗留文件。只有你主动选择目标时，它们才会离开本 App。',
     'deleteConfirmTitle': '移除这个本地项目？',
-    'deleteConfirmBody': '这会删除 CleanTrail 保存的工作副本。你的原始文件从未被修改。',
+    'deleteConfirmBody': '这会删除 ASTFX 保存的工作副本。你的原始文件从未被修改。',
     'cancel': '取消',
     'remove': '移除',
     'fixed': '已修复',
@@ -251,9 +251,9 @@ class AppLocalizations {
     'emptyFile': '所选文件为空。',
     'invalidCsv': '表格结构无效或引号未闭合。',
     'noDataRows': '表格至少需要表头和一行数据。',
-    'tooManyRows': 'CleanTrail 每个文件最多支持 10,000 行数据。',
-    'invalidColumnCount': 'CleanTrail 每个文件支持 1–100 列。',
-    'tooManyCells': 'CleanTrail 每个文件最多支持 100,000 个单元格。',
+    'tooManyRows': 'ASTFX 每个文件最多支持 10,000 行数据。',
+    'invalidColumnCount': 'ASTFX 每个文件支持 1–100 列。',
+    'tooManyCells': 'ASTFX 每个文件最多支持 100,000 个单元格。',
     'tooManyIssues': '检测到超过 500 个问题。请拆分文件后再在移动设备上检查。',
     'replacementRequired': '请先输入替换值。',
     'importFailed': '导入失败，已有项目保持不变。',

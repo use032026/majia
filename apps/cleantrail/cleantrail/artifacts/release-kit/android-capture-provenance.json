@@ -1,0 +1,90 @@
+[
+  {
+    "source": "artifacts/google-play-listing/source/zh-CN/02-repair-detail.png",
+    "sha256": "451c455e47ec8454977264ce0a18ad8aef4a1ad11e61fb366919754bb2d834d8",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/zh-CN/03-preview.png",
+    "sha256": "c258c3dece72e2402b7d839cb6b15aa5a2caeaf2d6ecb867fd4c3d020510ece4",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/zh-CN/01-repair-queue.png",
+    "sha256": "483fb7a1f72ef69adb3aeeec1b9ae64c9d4dca68888b7454add1906ce8dfe4b0",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/zh-CN/04-export.png",
+    "sha256": "629e084a101fe84f276c48c6e52b2cdcc70308aa01d2f38cd8cbe1bd0b09cce3",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/en-US/02-repair-detail.png",
+    "sha256": "f378605a4b97cc9cab4af1185ba5c53e5124982e31b89425c78a1dbb15373314",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/en-US/03-preview.png",
+    "sha256": "feee986560ec398aa6025f50b6aa2404cf6b8045da0159545b5c668b12597251",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/en-US/01-repair-queue.png",
+    "sha256": "5dae374df7d760d34646f945807f43d3737cda2a51eb67378e00153ae17eec8d",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "artifacts/google-play-listing/source/en-US/04-export.png",
+    "sha256": "39996e3984d89f6df0eaa28e87d3b451a2fc794ada16d82b6f2808b49a2f0718",
+    "platform": "Android 15, API 35",
+    "emulator": "Refqo_QA, emulator-5556",
+    "scene_state": "Built-in quality_sample.csv; six rows, five open issues; no UI or data synthesized",
+    "pixels": [
+      1080,
+      1920
+    ]
+  }
+]

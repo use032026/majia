@@ -1,0 +1,83 @@
+{
+  "app": "ASTFX",
+  "app_root": "/Users/starburst/majia/apps/cleantrail/cleantrail",
+  "generated_date": "2026-10-27",
+  "description_characters": 2464,
+  "keywords_utf8_bytes": 94,
+  "play_short_description_characters": 78,
+  "app_store": {
+    "count": 16,
+    "locales": [
+      "en-US",
+      "zh-Hans"
+    ],
+    "iphone_count": 8,
+    "iphone_size": [
+      1206,
+      2622
+    ],
+    "ipad_count": 8,
+    "ipad_size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB"
+  },
+  "google_play": {
+    "phone_count": 8,
+    "locales": [
+      "en-US",
+      "zh-CN"
+    ],
+    "phone_size": [
+      1080,
+      1920
+    ],
+    "feature_graphics": 2,
+    "feature_size": [
+      1024,
+      500
+    ],
+    "mode": "RGB",
+    "icon_size": [
+      512,
+      512
+    ],
+    "icon_mode": "RGBA"
+  },
+  "visual_review": "All 26 final images decoded at full resolution and reviewed in contact sheets; full-resolution representative images and all source flows inspected; one long Chinese headline shortened after review.",
+  "browser_validation": "9 checks: EN/ZH product/privacy, title/meta/html-lang changes, language memory, query priority, images and 390px mobile layout; no horizontal overflow.",
+  "gate": {
+    "passed": 17,
+    "errors": 3,
+    "warnings": 0,
+    "unresolved": [
+      "operator",
+      "production_domain",
+      "effective_date"
+    ]
+  },
+  "not_performed": [
+    "Website deployment/public URL check",
+    "App Store Connect or Google Play Console mutation",
+    "Distribution-signed build or IPA/AAB upload",
+    "Processing or TestFlight/Play testing",
+    "Review submission",
+    "Physical-device verification",
+    "Legal review"
+  ],
+  "cleanup_report": "CLEANUP_REPORT.json",
+  "archive": "artifacts/ASTFX-release-kit-20261027.zip",
+  "facts_confirmation": {
+    "recorded_date": "2026-10-27",
+    "user_response": "暂无确定",
+    "status": "explicitly_unconfirmed",
+    "legal_operator": "pending",
+    "support_email": "pending",
+    "production_domain": "pending",
+    "privacy_effective_date": "pending",
+    "legacy_email_reference": "15211857631@163.com",
+    "legacy_email_is_confirmed_for_astfx": false,
+    "publication_authorized": false
+  }
+}

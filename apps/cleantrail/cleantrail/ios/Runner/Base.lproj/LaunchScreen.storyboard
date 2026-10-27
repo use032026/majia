@@ -13,16 +13,25 @@
                         <viewControllerLayoutGuide type="top" id="Ydg-fD-yQy"/>
                         <viewControllerLayoutGuide type="bottom" id="xbc-2k-c8Z"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                    <view key="view" contentMode="scaleToFill" clipsSubviews="YES" id="Ze5-6b-2t3">
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
+                            <imageView opaque="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="LaunchBackdrop" translatesAutoresizingMaskIntoConstraints="NO" id="AST-bg-001"/>
+                            <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
+                                <constraints>
+                                    <constraint firstAttribute="height" secondItem="YRO-k0-Ey4" secondAttribute="width" multiplier="25:19" id="AST-ratio-001"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" name="LaunchBackground"/>
                         <constraints>
+                            <constraint firstItem="AST-bg-001" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="AST-bg-leading"/>
+                            <constraint firstItem="AST-bg-001" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="AST-bg-trailing"/>
+                            <constraint firstItem="AST-bg-001" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="AST-bg-top"/>
+                            <constraint firstItem="AST-bg-001" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" id="AST-bg-bottom"/>
+                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="76:195" id="AST-brand-width"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
+                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="358:431" id="4X2-HB-R7a"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -32,9 +41,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="168" height="185"/>
+        <image name="LaunchBackdrop" width="390" height="862"/>
+        <image name="LaunchImage" width="152" height="200"/>
         <namedColor name="LaunchBackground">
-            <color red="0.9568627451" green="0.9411764706" blue="0.9019607843" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

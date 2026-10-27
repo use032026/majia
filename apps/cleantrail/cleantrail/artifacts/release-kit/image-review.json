@@ -1,0 +1,236 @@
+[
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/01-repair-queue.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/02-repair-detail.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/03-preview.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/ipad/04-export.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/01-repair-queue.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/02-repair-detail.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/03-preview.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/en-US/iphone/04-export.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/01-repair-queue.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/02-repair-detail.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/03-preview.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/ipad/04-export.png",
+    "size": [
+      2064,
+      2752
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/01-repair-queue.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/02-repair-detail.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/03-preview.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/app-store-previews/final/zh-Hans/iphone/04-export.png",
+    "size": [
+      1206,
+      2622
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/01-repair-queue.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/02-repair-detail.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/03-preview.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/en-US/phone/04-export.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/feature-graphic-en.png",
+    "size": [
+      1024,
+      500
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/feature-graphic-zh.png",
+    "size": [
+      1024,
+      500
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/01-repair-queue.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/02-repair-detail.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/03-preview.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  },
+  {
+    "path": "artifacts/google-play-listing/final/zh-CN/phone/04-export.png",
+    "size": [
+      1080,
+      1920
+    ],
+    "mode": "RGB",
+    "status": "decoded full resolution; inspected in contact sheet"
+  }
+]

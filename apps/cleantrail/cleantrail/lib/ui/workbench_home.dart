@@ -275,7 +275,7 @@ class _AppMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'CleanTrail',
+      label: context.s.appName,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(11),
         child: Image.asset(

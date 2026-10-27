@@ -1,0 +1,23 @@
+{
+  "figmaFileKey": "xNBA5QWA1f0r7VUrIaLqx5",
+  "lightNode": "124:59",
+  "lightScreenNode": "119:109",
+  "darkNode": "94:215",
+  "iconNode": "129:55",
+  "wordmarkNode": "119:118",
+  "canvas": {
+    "width": 390,
+    "height": 862
+  },
+  "brand": {
+    "width": 152,
+    "height": 200,
+    "centerX": 195,
+    "centerY": 358
+  },
+  "requestedOverrides": [
+    "Omit lower-left line and tagline",
+    "Dark: use reverse mark and white ASTFX wordmark",
+    "Platform icon: opaque square background; OS supplies corner mask"
+  ]
+}

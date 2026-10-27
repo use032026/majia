@@ -1,0 +1,117 @@
+schema_version: 2
+
+identity:
+  app_name: "ASTFX"
+  operator: ""
+  bundle_id: "com.example.cleantrail"
+  android_package: "com.example.cleantrail"
+
+contact:
+  support_email: "15211857631@163.com"
+  production_domain: ""
+
+platforms:
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
+    tablets: auto
+
+listing:
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
+  tone: clear, specific, trustworthy
+
+privacy:
+  effective_date: ""
+  confirmed:
+    - "App display name ASTFX, source version 1.0.0+1"
+    - "No app-operated backend, analytics, ads, or online AI in the inspected implementation"
+    - "System file picker and share sheet; local project and recovery backup"
+  open_questions:
+    - "Legal operator identity"
+    - "Production domain and hosting log practices"
+    - "Privacy effective date"
+    - "Support email monitoring confirmation"
+    - "Store audience and age rating"
+
+website:
+  default_locale: en
+  locales:
+    - en
+    - zh-Hans
+
+screenshots:
+  source_policy: real-runtime-only
+  app_store:
+    locale: en-US
+    locales: [en-US, zh-Hans]
+    scenes:
+      - id: 01-repair-queue
+        source_iphone_en: source/iphone/en-US/01-repair-queue.png
+        source_ipad_en: source/ipad/en-US/01-repair-queue.png
+        source_iphone_zh: source/iphone/zh-Hans/01-repair-queue.png
+        source_ipad_zh: source/ipad/zh-Hans/01-repair-queue.png
+        headline_en: "See issues clearly"
+        headline_zh: "看清数据中的问题"
+      - id: 02-repair-detail
+        source_iphone_en: source/iphone/en-US/02-repair-detail.png
+        source_ipad_en: source/ipad/en-US/02-repair-detail.png
+        source_iphone_zh: source/iphone/zh-Hans/02-repair-detail.png
+        source_ipad_zh: source/ipad/zh-Hans/02-repair-detail.png
+        headline_en: "Review every change"
+        headline_zh: "每处修复，由你决定"
+      - id: 03-preview
+        source_iphone_en: source/iphone/en-US/03-preview.png
+        source_ipad_en: source/ipad/en-US/03-preview.png
+        source_iphone_zh: source/iphone/zh-Hans/03-preview.png
+        source_ipad_zh: source/ipad/zh-Hans/03-preview.png
+        headline_en: "Inspect the working copy"
+        headline_zh: "预览当前工作副本"
+      - id: 04-export
+        source_iphone_en: source/iphone/en-US/04-export.png
+        source_ipad_en: source/ipad/en-US/04-export.png
+        source_iphone_zh: source/iphone/zh-Hans/04-export.png
+        source_ipad_zh: source/ipad/zh-Hans/04-export.png
+        headline_en: "Export with context"
+        headline_zh: "导出数据与质量报告"
+  google_play:
+    locales: [en-US, zh-CN]
+    scenes:
+      - id: 01-repair-queue
+        source_en: source/en-US/01-repair-queue.png
+        source_zh: source/zh-CN/01-repair-queue.png
+        headline_en: "See issues clearly"
+        headline_zh: "看清数据中的问题"
+      - id: 02-repair-detail
+        source_en: source/en-US/02-repair-detail.png
+        source_zh: source/zh-CN/02-repair-detail.png
+        headline_en: "Review every change"
+        headline_zh: "每处修复，由你决定"
+      - id: 03-preview
+        source_en: source/en-US/03-preview.png
+        source_zh: source/zh-CN/03-preview.png
+        headline_en: "Inspect the working copy"
+        headline_zh: "预览当前工作副本"
+      - id: 04-export
+        source_en: source/en-US/04-export.png
+        source_zh: source/zh-CN/04-export.png
+        headline_en: "Export with context"
+        headline_zh: "导出数据与质量报告"
+
+paths:
+  app_root: "apps/cleantrail/cleantrail"
+
+facts_confirmation:
+  recorded_date: "2026-10-27"
+  user_response: "暂无确定"
+  status: explicitly_unconfirmed
+  fields: [operator, support_email, production_domain, effective_date]
+  legacy_email_reference_only: true

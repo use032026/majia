@@ -1,0 +1,501 @@
+{
+  "package": "ASTFX-release-kit-20261027",
+  "generated_date": "2026-10-27",
+  "files": [
+    {
+      "path": "artifacts/app-store-listing/app-icon-1024.png",
+      "bytes": 13807,
+      "sha256": "6f505213bf1dbcf9cb490924146c933f319ddfd3ff4134afe852ef7e4647bb1c"
+    },
+    {
+      "path": "artifacts/app-store-listing/description-en.txt",
+      "bytes": 2465,
+      "sha256": "494237584f9ad585bdbd6526737c3efba7da88183fa3f47a13716847c0b7b740"
+    },
+    {
+      "path": "artifacts/app-store-listing/keywords-en.txt",
+      "bytes": 95,
+      "sha256": "2ba45698b0433b98c3d7a39295448aa6a4e8adaed177ea04e483cfc5f667e597"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/ipad/01-repair-queue.png",
+      "bytes": 243626,
+      "sha256": "f00207c832f1aa692fd5c82240277d509abd3a1c9a2c234d7be80f1251c97ad7"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/ipad/02-repair-detail.png",
+      "bytes": 301804,
+      "sha256": "f21f03bc63c5f8d5b358e0536e7690d81db57f7b7f924f84a596b1aeee6c2d5d"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/ipad/03-preview.png",
+      "bytes": 233871,
+      "sha256": "a7c0cac541310073fd67ab69416a4886bf661cab996aef68218a95ff6f7f45b5"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/ipad/04-export.png",
+      "bytes": 204543,
+      "sha256": "3ddd6f79f560e207c48e23600fc0d289af7aebd170abf0352ad91282b3e60c12"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/iphone/01-repair-queue.png",
+      "bytes": 268970,
+      "sha256": "e5c767d06d2f45a9f75d7940e29e8fccf8859896d67196aa126127711a241d29"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/iphone/02-repair-detail.png",
+      "bytes": 250288,
+      "sha256": "98114cdc197c4683d8f84d2e884ed1a4d1e2ff91f17beb7b4eee5ca65a639d42"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/iphone/03-preview.png",
+      "bytes": 252563,
+      "sha256": "179274ff32ae34a3866563c9331c27e4e7cb0e5154cad51be66026cba7f4551a"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/en-US/iphone/04-export.png",
+      "bytes": 248994,
+      "sha256": "c1f69dc750eff129a25b0b74765ed5b830802a810c614632aecd603615bb91f3"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/ipad/01-repair-queue.png",
+      "bytes": 239743,
+      "sha256": "9803d3e097b177ee2160e18817042bd19fbedafac89443988585f99eb7c01acf"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/ipad/02-repair-detail.png",
+      "bytes": 286157,
+      "sha256": "9831b66aa5104e693b86199c86dd207d846501cf6597379dec3157868b3fcd6a"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/ipad/03-preview.png",
+      "bytes": 229497,
+      "sha256": "8fa287ae731bd2690e292b0bb7af4cd686b8bbd4b26e95f34821a85948d1ba24"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/ipad/04-export.png",
+      "bytes": 205323,
+      "sha256": "627797c26dad68963a95f5475fdcb646e0aee9e0751e331d4bffbf8dfd4bad37"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/iphone/01-repair-queue.png",
+      "bytes": 258011,
+      "sha256": "6af4082f6e4a12df413cdc1c658e4e342125fe626300de5e7eb7281dabdb86f2"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/iphone/02-repair-detail.png",
+      "bytes": 238146,
+      "sha256": "a1129d9c712c40c07cf2d2f714d881e8ad13328a0b2abf7e79d442b8a465618b"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/iphone/03-preview.png",
+      "bytes": 242892,
+      "sha256": "82feb0ee4aed1582139dc867ea806cfc6aa47bd17b88966719c825a2a6ed88bb"
+    },
+    {
+      "path": "artifacts/app-store-previews/final/zh-Hans/iphone/04-export.png",
+      "bytes": 237944,
+      "sha256": "b99b63b12861bb2f02c5813e45cab5fa72bbefade286c58c4e6950887813628b"
+    },
+    {
+      "path": "artifacts/app-store-previews/preview-spec.json",
+      "bytes": 5765,
+      "sha256": "2b55f48b850007f64e471600f3de75594ca53fb7f55970d85a76f4d86620bce0"
+    },
+    {
+      "path": "artifacts/app-store-previews/qa/contact-sheet-1206x2622.jpg",
+      "bytes": 216867,
+      "sha256": "cc100597918f10f3887a90ab765800f1ac8126c757979f27f54414e0e1bc2abd"
+    },
+    {
+      "path": "artifacts/app-store-previews/qa/contact-sheet-2064x2752.jpg",
+      "bytes": 219528,
+      "sha256": "83e9588298890bff078314acde0d28e81064c38ecb3e48c518038ea112ca225c"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/en-US/01-repair-queue.png",
+      "bytes": 249751,
+      "sha256": "90c7732c4b8494e9ff921e26fcf187bc1adcf08799cf104b9bc59529eaaee322"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/en-US/02-repair-detail.png",
+      "bytes": 305536,
+      "sha256": "b560e71357743ff582e81fb99be56e4adbe674ec1af322978f408a0ccfef3372"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/en-US/03-preview.png",
+      "bytes": 228195,
+      "sha256": "b8cfe4443ac47b0ae4749712d72cba747f919451234bcf763080161f963fcf00"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/en-US/04-export.png",
+      "bytes": 201128,
+      "sha256": "0d9ede584e8376550865d4652679d99f62b38ba5daaf9b954c5a211b5b8cdb46"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/zh-Hans/01-repair-queue.png",
+      "bytes": 239401,
+      "sha256": "437136851c1620883d0aff599a6acc3d327179b3dc84184945b17b34e9b07917"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/zh-Hans/02-repair-detail.png",
+      "bytes": 285154,
+      "sha256": "36a67ec12aed607e569cf27e3f5d8cc07105a949b1e875dc7def542a4e056ddd"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/zh-Hans/03-preview.png",
+      "bytes": 225499,
+      "sha256": "d74cb86c288edffff9a9dda7174dd708336011ecb53a7f24f9c34fafab528a2d"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/ipad/zh-Hans/04-export.png",
+      "bytes": 206156,
+      "sha256": "b818da3953dc28519c6335f1bf888d579e436219e421304dbead33c388edb04a"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/en-US/01-repair-queue.png",
+      "bytes": 231016,
+      "sha256": "3293ddf6515b21d2d818ef7e860d259546606249f7ec5b2c04695e401a6dfa0c"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/en-US/02-repair-detail.png",
+      "bytes": 217057,
+      "sha256": "f0d80f8fcd7869054d23096af753042dfbc97caa936f62ed8cc6ef77245f3d31"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/en-US/03-preview.png",
+      "bytes": 210837,
+      "sha256": "fd79a435b3d2dd738a6623c5055e0d4074737a395630ffeb54439b6dc9dd4198"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/en-US/04-export.png",
+      "bytes": 204505,
+      "sha256": "774ecac96164fe4ea7b34751cf47d1921e82e95239c6cbc3e3fb0d44fa8ef78a"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/zh-Hans/01-repair-queue.png",
+      "bytes": 216347,
+      "sha256": "91efe0a724ee1e458cd0b48d86da314d7e4482f3752a8a57c918c19a8ee35b4c"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/zh-Hans/02-repair-detail.png",
+      "bytes": 202192,
+      "sha256": "377c8f774551b19988cc5ad7512f367a225fc6dc0d3f8f22ec33fe6c8f86a267"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/zh-Hans/03-preview.png",
+      "bytes": 206858,
+      "sha256": "be9048bba08955a1562f7a3cc037161604c8d4290a329dc58b2c406538fdd69b"
+    },
+    {
+      "path": "artifacts/app-store-previews/source/iphone/zh-Hans/04-export.png",
+      "bytes": 200277,
+      "sha256": "9a62cc81991b1d55b3bc5b76c1c83459cabf60468d96122d8f452e6d5baf1a29"
+    },
+    {
+      "path": "artifacts/google-play-listing/app-icon-512.png",
+      "bytes": 10186,
+      "sha256": "f971430e614cebc357ef66c4888df22e86a2d913c07b2ff97016a2b8908553b5"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/en-US/phone/01-repair-queue.png",
+      "bytes": 196916,
+      "sha256": "38aa50ff54d9079cc4fe6afa173cae4433e3dd0c1d3790aae24aa8e377d8546d"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/en-US/phone/02-repair-detail.png",
+      "bytes": 179372,
+      "sha256": "de30071aff0ecc55e409e436110c9cefcc1e28f795a41be0c4106887ffc4e86f"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/en-US/phone/03-preview.png",
+      "bytes": 192507,
+      "sha256": "2763884624f2cd0daf3669dc9c3b7f033e6bb566716e2d4ef0c5c7806ffff82f"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/en-US/phone/04-export.png",
+      "bytes": 196473,
+      "sha256": "aa483a370d8e05c573b0b6513f38aeb20b4e760ad2c7b2c7c89f2b67729502f2"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/feature-graphic-en.png",
+      "bytes": 17172,
+      "sha256": "523bb8850f68c858f0c1be9a79ec86db44db5887c0dae6dc0e4812784c5ff1cf"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/feature-graphic-zh.png",
+      "bytes": 23625,
+      "sha256": "0c31f9b4e213d6753e585b697874b39906a62ab2b051e9c9a82bf823d100cb0a"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/zh-CN/phone/01-repair-queue.png",
+      "bytes": 191663,
+      "sha256": "85ce1ff013d908b6cbb312ec80d1c7bb5e7063d28940d7c2cb9f4621780f9359"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/zh-CN/phone/02-repair-detail.png",
+      "bytes": 164227,
+      "sha256": "ae47f0d3fe1c547072fa398a1da245d6eb71ea8ebd381c3cb8356a1b47f982ca"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/zh-CN/phone/03-preview.png",
+      "bytes": 187679,
+      "sha256": "26d08879b93e9a9c3b2eb68529cb2394dcd5268392784a09281ed2f15594e134"
+    },
+    {
+      "path": "artifacts/google-play-listing/final/zh-CN/phone/04-export.png",
+      "bytes": 195641,
+      "sha256": "ab9121eacf503afeb4beb07816824bfad8ef8d73561deffb2bde5d791915be4f"
+    },
+    {
+      "path": "artifacts/google-play-listing/preview-spec.json",
+      "bytes": 2879,
+      "sha256": "4abad1ae930108d5f915b65015f06cf6a6e397a289fb1cdb71503474c099c910"
+    },
+    {
+      "path": "artifacts/google-play-listing/qa/contact-sheet-1024x500.jpg",
+      "bytes": 44017,
+      "sha256": "24c1a0f7fc96604fb0f6234f807b81c1e408eb4f717f89a98fec35400eaa8e00"
+    },
+    {
+      "path": "artifacts/google-play-listing/qa/contact-sheet-1080x1920.jpg",
+      "bytes": 234408,
+      "sha256": "95f5b98fb9f93d3622d4c613c266167d83fe0127db530b0c1de83750cd2ac769"
+    },
+    {
+      "path": "artifacts/google-play-listing/short-description-en.txt",
+      "bytes": 79,
+      "sha256": "e959facf1b01656d3ecef4b48fb2d0c5ba72abdef4e08d1d2da701fa3dd4b5c9"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/01-repair-queue.png",
+      "bytes": 121699,
+      "sha256": "5dae374df7d760d34646f945807f43d3737cda2a51eb67378e00153ae17eec8d"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/01-repair-queue.xml",
+      "bytes": 8647,
+      "sha256": "f51f09f796d87474b08ced37a08850272655085e49b34168c80b6d61ffd3db7c"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/02-repair-detail.png",
+      "bytes": 113082,
+      "sha256": "f378605a4b97cc9cab4af1185ba5c53e5124982e31b89425c78a1dbb15373314"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/02-repair-detail.xml",
+      "bytes": 7072,
+      "sha256": "4557d6fc939885e036b7bedb87f097ac4f1e7b306cd657a8beeef671cb816259"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/03-preview.png",
+      "bytes": 128065,
+      "sha256": "feee986560ec398aa6025f50b6aa2404cf6b8045da0159545b5c668b12597251"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/03-preview.xml",
+      "bytes": 17893,
+      "sha256": "45a14f336d3de577d09ff2c3e2a8aa40330c596d7de569aa832abe1c69536d65"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/04-export.png",
+      "bytes": 126436,
+      "sha256": "39996e3984d89f6df0eaa28e87d3b451a2fc794ada16d82b6f2808b49a2f0718"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/en-US/04-export.xml",
+      "bytes": 7626,
+      "sha256": "afaebcb7f5eacfa1bbf5ef42014d956de003713de06f97fe158ba7b5685c6868"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/01-repair-queue.png",
+      "bytes": 120200,
+      "sha256": "483fb7a1f72ef69adb3aeeec1b9ae64c9d4dca68888b7454add1906ce8dfe4b0"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/01-repair-queue.xml",
+      "bytes": 8690,
+      "sha256": "075bbc29eee569a27e98371c9a87755a7606a74ccbfce36e40ad19b2bc9f9b9b"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/02-repair-detail.png",
+      "bytes": 106379,
+      "sha256": "451c455e47ec8454977264ce0a18ad8aef4a1ad11e61fb366919754bb2d834d8"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/02-repair-detail.xml",
+      "bytes": 7054,
+      "sha256": "2c7f67a92ed38f6437c17a1fa81639921d720a2928bab4542bb30d8039d5377d"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/03-preview.png",
+      "bytes": 127273,
+      "sha256": "c258c3dece72e2402b7d839cb6b15aa5a2caeaf2d6ecb867fd4c3d020510ece4"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/03-preview.xml",
+      "bytes": 17940,
+      "sha256": "cdc2922c0be1448ab30577c5e272dd351bef19db21c3ad6fe04d77ac5d42b141"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/04-export.png",
+      "bytes": 130567,
+      "sha256": "629e084a101fe84f276c48c6e52b2cdcc70308aa01d2f38cd8cbe1bd0b09cce3"
+    },
+    {
+      "path": "artifacts/google-play-listing/source/zh-CN/04-export.xml",
+      "bytes": 7674,
+      "sha256": "b08ea886854794b294b0be01cadb7bb92ac47cd588358ebea450c0aea856549b"
+    },
+    {
+      "path": "artifacts/release-kit/CLEANUP_REPORT.json",
+      "bytes": 756,
+      "sha256": "fc68799b6ffc5726cd7c93cd75451420dec61d803c7f69a1ee809066109a9f55"
+    },
+    {
+      "path": "artifacts/release-kit/DELIVERY_SUMMARY.json",
+      "bytes": 2192,
+      "sha256": "cecc5c360ea0e3ab3f2b39b0072e98cadd1666f3c619892e6c5d4e76688fb36a"
+    },
+    {
+      "path": "artifacts/release-kit/FACTS_EVIDENCE.md",
+      "bytes": 2852,
+      "sha256": "f60b45674db5cb917f03ed44f1e039ba250c3d1820b08ae6b8762e868ebab14f"
+    },
+    {
+      "path": "artifacts/release-kit/OPEN_ITEMS.md",
+      "bytes": 2197,
+      "sha256": "556771a843f2b81b48da5bd5e968d0b508455780553270686d7c86be71a171df"
+    },
+    {
+      "path": "artifacts/release-kit/QA_REPORT.md",
+      "bytes": 3557,
+      "sha256": "fafbebd98e9d012bac11414c0ff61bc7faef8c6d58c2038643e8629c77c5ce19"
+    },
+    {
+      "path": "artifacts/release-kit/README.md",
+      "bytes": 2968,
+      "sha256": "53f3b246aee1afb7222c9ddffd2113a3f64497431eaa1a7a36413f601f6e2283"
+    },
+    {
+      "path": "artifacts/release-kit/android-capture-provenance.json",
+      "bytes": 3198,
+      "sha256": "5b4171209ede9fa0437f574977e634f2291889f584520d9b172bd0e96a86633b"
+    },
+    {
+      "path": "artifacts/release-kit/app-facts.json",
+      "bytes": 2266,
+      "sha256": "59f07cf718cc1cce2c0e2cd1e415964616ad9e6d12f99185b82619120e06d21e"
+    },
+    {
+      "path": "artifacts/release-kit/facts-confirmation.json",
+      "bytes": 377,
+      "sha256": "3674bd921d3dc12813d90247af3965590989a7f2f9e1e6d5094338d1fe9b9a5e"
+    },
+    {
+      "path": "artifacts/release-kit/image-review.json",
+      "bytes": 5720,
+      "sha256": "60f10faaa723f1a080bfcca93aa5d5d3015166b167d5dbf002b04babcedcb4d6"
+    },
+    {
+      "path": "artifacts/release-kit/ios-capture-provenance.json",
+      "bytes": 5498,
+      "sha256": "cdc541bd0617805c33cc16e2ecd678f525ab0ca9b32c08498a9781d532306625"
+    },
+    {
+      "path": "artifacts/release-kit/store-metadata-draft.json",
+      "bytes": 1419,
+      "sha256": "1e0cff3c8b7f589fe02d60e1e40c982c08ddf0773eec9932725ae45658125aa3"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/browser-checks.json",
+      "bytes": 1465,
+      "sha256": "7f243b7fc0a9eb1b458810c075b92812161e6355cd92e1e6301b18847e48b9de"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/privacy-en.png",
+      "bytes": 326344,
+      "sha256": "31fd26bcf83dc91799f61f2292227c76bf0f7c76b1dc2694be2e6371fb44e85c"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/privacy-mobile-zh.png",
+      "bytes": 222889,
+      "sha256": "917fd9aca7811b70a4f94b95c0e81c37c12e4e00cd61e300de40caec291682db"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/privacy-zh.png",
+      "bytes": 243997,
+      "sha256": "890f4693fd876a62b697e1b7acce2b6db7de3b67e95577d72aa8f72027c52395"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/product-en.png",
+      "bytes": 150680,
+      "sha256": "c360661aad465a8d71b3e45c690fd867fabb398b6bb1371e992824420703eea6"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/product-mobile-en.png",
+      "bytes": 153286,
+      "sha256": "a03165e07d64a0fb178b314dbb2ba28bc7a33f55dfd5a7d14cb61b79ab13346a"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/product-mobile-zh.png",
+      "bytes": 131122,
+      "sha256": "d734e8721b9ceb44e75506d3d805c1b36f2460692ea822e3960e7ffcc96a3dff"
+    },
+    {
+      "path": "artifacts/release-kit/web-qa/product-zh.png",
+      "bytes": 138915,
+      "sha256": "aed3ddd6eb056ff535f33fdc716d663fbcf9ae094c68a8a9d682b04745b16a0c"
+    },
+    {
+      "path": "release-kit.yml",
+      "bytes": 3918,
+      "sha256": "a493121b6f200b2058d24ba22da69b586cb922f3049c3670479bf709ccf65b27"
+    },
+    {
+      "path": "website/README.md",
+      "bytes": 1277,
+      "sha256": "6ed8baa704f203203530bab2a9adf44bbf9ee991fb2030a71c15583666efd4b5"
+    },
+    {
+      "path": "website/assets/app-icon.png",
+      "bytes": 11253,
+      "sha256": "05acea44b4429773d0d30986af4aeedf5986a6b8951890858ec537ebae261ec0"
+    },
+    {
+      "path": "website/assets/app-preview-en.png",
+      "bytes": 133749,
+      "sha256": "a0b60bc0214ec54475900dc2c1c1991c965c52158ab1aabaab0c3914c9a73be7"
+    },
+    {
+      "path": "website/assets/app-preview-zh.png",
+      "bytes": 120852,
+      "sha256": "d8e7302fb9d23e61821eca74ded09f9449cd65d9672625d785b03dbbc749adab"
+    },
+    {
+      "path": "website/assets/app-preview.png",
+      "bytes": 133749,
+      "sha256": "a0b60bc0214ec54475900dc2c1c1991c965c52158ab1aabaab0c3914c9a73be7"
+    },
+    {
+      "path": "website/index.html",
+      "bytes": 6365,
+      "sha256": "633337c93cbba5ebd4a5ba32423d1f1e87b2b64fdc96e582547420c1fa149fa3"
+    },
+    {
+      "path": "website/privacy.html",
+      "bytes": 10639,
+      "sha256": "c6f08b29c869a391380cd2e31de185f0ccd1a5a625e82c89dbd732142463e8b7"
+    },
+    {
+      "path": "website/site.js",
+      "bytes": 2137,
+      "sha256": "b60047c21053bcee4f3eb70cf399db339615371f10414cd52ff7cf265a27a7c0"
+    },
+    {
+      "path": "website/styles.css",
+      "bytes": 3784,
+      "sha256": "7bf8adfacaabb5a7ffdfc95dba53ac52991b84728e6142619d165eae0753e57a"
+    }
+  ]
+}

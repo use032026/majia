@@ -98,7 +98,7 @@ class NativeCsvGateway implements CsvGateway {
       await reportFile.writeAsString(report, flush: true);
       final result = await _share(
         ShareParams(
-          title: 'CleanTrail export',
+          title: 'ASTFX export',
           text: shareText,
           sharePositionOrigin: shareOrigin,
           files: [XFile(csvFile.path), XFile(reportFile.path)],

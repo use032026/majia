@@ -1,0 +1,33 @@
+{
+  "upload_enabled": false,
+  "app_display_name": "ASTFX",
+  "source_project": "CleanTrail",
+  "source_version": "1.0.0+1",
+  "platforms": {
+    "iOS": "com.example.cleantrail",
+    "Android": "com.example.cleantrail"
+  },
+  "locales": {
+    "en-US": {
+      "name": "ASTFX",
+      "subtitle": "Review tables on your device",
+      "promotional_text": "Check missing values, duplicate rows, stray spaces, mixed numeric types, and dates. Review each repair and export CSV with a quality report."
+    },
+    "zh-Hans": {
+      "name": "ASTFX",
+      "subtitle": "在设备上逐项检查与修复表格",
+      "promotional_text": "检查缺失值、重复行、多余空格、数字类型混杂及日期格式。每处修复由你确认，导出 CSV 与精简质量报告。"
+    }
+  },
+  "shared_full_description": "../app-store-listing/description-en.txt",
+  "apple_keywords": "../app-store-listing/keywords-en.txt",
+  "google_play_short_description": "../google-play-listing/short-description-en.txt",
+  "marketing_url": null,
+  "privacy_url": null,
+  "support_email": "15211857631@163.com",
+  "operator": null,
+  "privacy_effective_date": null,
+  "status": "User replied 暂无确定 on 2026-10-27; operator, support contact, production domain and privacy effective date remain explicitly unconfirmed. Draft only; no upload.",
+  "support_email_confirmed": false,
+  "facts_confirmation": "facts-confirmation.json"
+}

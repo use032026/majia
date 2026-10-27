@@ -23,7 +23,7 @@ class ExportBuilder {
 
   String _chineseReport(DataProject project) =>
       '''
-# CleanTrail 数据质量报告
+# ASTFX 数据质量报告
 
 - 源文件：${project.fileName}
 - 导入行数：${project.originalRecords.length}
@@ -43,7 +43,7 @@ ${_actions(project, chinese: true)}
 
   String _englishReport(DataProject project) =>
       '''
-# CleanTrail data quality report
+# ASTFX data quality report
 
 - Source file: ${project.fileName}
 - Imported rows: ${project.originalRecords.length}
