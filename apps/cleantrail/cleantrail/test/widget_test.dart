@@ -227,7 +227,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('privacy is reachable and scrollable in the empty workspace', (
+  testWidgets('privacy pushes a scrollable page without a configured URL', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(320, 568);
@@ -253,13 +253,17 @@ void main() {
 
     expect(find.text('Privacy & data'), findsOneWidget);
     expect(find.byType(SingleChildScrollView), findsWidgets);
-    final sheetTheme = Theme.of(
-      tester.element(find.byType(BottomSheet)),
-    ).bottomSheetTheme;
-    expect(sheetTheme.showDragHandle, isTrue);
-    expect(sheetTheme.shape, isA<RoundedRectangleBorder>());
-    expect(find.byType(cupertino.CupertinoButton), findsWidgets);
-    expect(find.text('Close'), findsOneWidget);
+    expect(find.byKey(const Key('privacy-policy-page')), findsOneWidget);
+    expect(find.byType(BottomSheet), findsNothing);
+    expect(
+      find.text('The online privacy policy is not available yet.'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('privacy-policy-retry')), findsNothing);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('privacy-policy-page')), findsNothing);
+    expect(find.byTooltip('More options'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -328,7 +332,7 @@ void main() {
     final dashboard = find.byKey(const Key('project-dashboard'));
     expect(tester.getBottomLeft(dashboard).dy, lessThan(844));
     expect(
-      tester.getBottomLeft(find.byType(NavigationBar)).dy,
+      tester.getBottomLeft(find.byKey(const Key('workbench-tab-bar'))).dy,
       moreOrLessEquals(844),
     );
     final scroll = tester.widget<CustomScrollView>(dashboard);

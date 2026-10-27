@@ -1,0 +1,44 @@
+{
+  "task_id": "ASTFX-PRIVACY-WEB-001",
+  "mode": "implementation",
+  "assigned_role": "Executor",
+  "objective": "Open privacy/data as a configurable in-app WebView page, default URL empty",
+  "files_allowed_to_edit": [
+    "lib/ui/workbench_home.dart",
+    "lib/ui/privacy_policy_page.dart",
+    "lib/app/privacy_policy_config.dart",
+    "lib/app/app_localizations.dart",
+    "pubspec.yaml",
+    "pubspec.lock",
+    "test/widget_test.dart",
+    "test/privacy_policy_test.dart",
+    "README.md",
+    "android/app/src/main/AndroidManifest.xml",
+    "ios/Podfile.lock",
+    "generated plugin registrations required by dependency",
+    "website/privacy.html"
+  ],
+  "constraints": [
+    "Preserve existing uncommitted drawer and tab refinements",
+    "Do not substitute another app URL",
+    "Do not request privacy content on startup or with empty/invalid URL",
+    "No table/project data passed to WebView",
+    "No store upload or website deployment",
+    "Update bilingual policy text to describe the optional online page and Android INTERNET permission accurately"
+  ],
+  "acceptance_criteria": [
+    "Privacy entry closes options drawer then pushes a full page",
+    "Default empty URL creates no WebView or network request",
+    "Valid HTTPS URL includes current language and preserves other parameters",
+    "Loading and failure states support retry and back navigation",
+    "Existing UI flows pass, including small-screen large-text fallback"
+  ],
+  "evidence_required": [
+    "source comparison with almanac",
+    "unit_test",
+    "build",
+    "simulator",
+    "visual"
+  ],
+  "status": "completed"
+}

@@ -47,3 +47,8 @@ app.*.map.json
 # Local release validation diagnostics; keep deliverable reports versioned.
 /artifacts/release-kit/cleanup-*
 /artifacts/release-kit/generation-baseline.json
+
+# Local task baselines; preserve UI screenshots and validation summaries.
+/artifacts/ui-refinement/source-baseline.json
+/artifacts/ui-refinement/cached-baseline.txt
+/artifacts/privacy-web/baseline.json

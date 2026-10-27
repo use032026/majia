@@ -1,0 +1,17 @@
+{
+  "removed_directories": 10,
+  "estimated_removed_bytes": 543293440,
+  "estimated_removed_MiB": 518.12,
+  "all_targets_absent": true,
+  "protected_files_checked": 6237,
+  "protected_content_changes": [],
+  "staging_unchanged": true,
+  "retained": [
+    "Signed simulator app products and necessary logs",
+    "Pods, Flutter package state and shared dependency caches",
+    "Earlier UI refinement scene and evidence",
+    "Screenshots and test evidence",
+    "iPhone 17 Pro app remains running on the empty-URL policy page; other simulators untouched"
+  ],
+  "scope": "Only current privacy-web DerivedData intermediate/index/module caches and regenerated Flutter widget-test assets/cache removed"
+}

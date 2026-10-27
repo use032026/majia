@@ -1,0 +1,21 @@
+{
+  "task_id": "ASTFX-PRIVACY-WEB-001",
+  "verdict": "passed",
+  "findings": [],
+  "evidence_checked": [
+    "Almanac source read: language-specific policy and local fallback; explicit user choice of webview_flutter takes precedence over its native implementation",
+    "Default URL is empty; invalid or empty URL never instantiates WebView",
+    "Valid HTTPS URL retains query parameters, replaces lang only, and passes no project/table information",
+    "Main-frame failure, retry, late page-finished event, and subresource failures checked with recording platform tests",
+    "17 focused tests passed; full Flutter analyzer passed",
+    "iOS simulator build succeeded; deep strict ad-hoc signature verified",
+    "iPhone 17 Pro/iOS 26.2: options drawer opens a separate Chinese privacy page with Back; default empty-state screenshot reviewed",
+    "Android main INTERNET declaration and bilingual policy text updated consistently",
+    "Existing drawer/tab styling and other source preserved"
+  ],
+  "evidence_missing": [
+    "Live loading of the future approved policy URL: URL intentionally remains empty",
+    "Physical-device and Android runtime verification"
+  ],
+  "revision_request": null
+}

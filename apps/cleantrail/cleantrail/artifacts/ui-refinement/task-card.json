@@ -1,0 +1,32 @@
+{
+  "task_id": "ASTFX-UI-001",
+  "mode": "implementation",
+  "assigned_role": "Executor",
+  "objective": "Use a bottom options drawer and refine the workbench tab bar",
+  "files_allowed_to_edit": [
+    "lib/ui/workbench_home.dart",
+    "lib/app/app_localizations.dart",
+    "test/widget_test.dart"
+  ],
+  "constraints": [
+    "Keep language switching, privacy, new-file and remove confirmation behavior",
+    "Do not change data/import/export behavior",
+    "Preserve other simulators and keep this app available for review"
+  ],
+  "acceptance_criteria": [
+    "Options open from the bottom and support safe-area scrolling",
+    "Close drawer before invoking original actions",
+    "Refined navigation has clear selection and accessible touch targets",
+    "Light/dark and EN/ZH remain usable",
+    "Existing focused widget tests pass; simulator screenshots reviewed"
+  ],
+  "evidence_required": [
+    "static",
+    "unit_test",
+    "build",
+    "simulator",
+    "visual"
+  ],
+  "local_test_artifact_dir": "artifacts/ui-refinement",
+  "status": "completed"
+}

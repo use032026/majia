@@ -4,7 +4,7 @@ Offline-first tabular-data quality workbench built with Flutter. It imports CSV,
 
 ## Product boundary
 
-- No account, backend, analytics, ads, cloud sync, or application-owned network flow.
+- No account, backend, analytics, ads, or cloud sync. Table processing stays on-device; the optional online privacy page loads only after the user opens it.
 - The original source file is never overwritten.
 - One source snapshot, working copy, and audit trail are stored in the app-private documents directory. An atomic backup supports recovery from an interrupted write.
 - Export files are staged in a dedicated temporary directory, offered through the system share sheet, and cleaned after sharing and again on the next launch/export.
@@ -30,3 +30,17 @@ flutter test --no-pub --reporter expanded
 The built-in sample exercises every rule without needing an external file. Product, evidence, differentiation, functional-review, and App Store preflight documents live under `docs/`.
 
 The checked-in iOS bundle identifier is the placeholder `com.example.cleantrail`. Replace it with the developer-owned identifier and configure distribution signing before treating any archive as an App Store candidate.
+
+## Privacy page
+
+The options drawer opens **Privacy & data** as a full page. `PRIVACY_POLICY_URL`
+defaults to an empty string. With no valid HTTPS URL, no WebView is created and
+the page shows an unavailable notice plus the local data summary.
+
+Configure the approved URL at build/run time with
+`--dart-define=PRIVACY_POLICY_URL=<approved-https-url>`.
+`webview_flutter` opens it inside the app, preserving existing query parameters
+and setting `lang=en` or `lang=zh` for the current app language. No table content,
+project identifiers, or account information is passed to the page. A loading
+failure offers retry; the app bar returns to the workbench. Android declares
+INTERNET permission for this optional flow; HTTPS needs no iOS ATS exception.

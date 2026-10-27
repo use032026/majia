@@ -1,0 +1,22 @@
+{
+  "removed_directories": 10,
+  "estimated_removed_bytes": 494714880,
+  "estimated_removed_MiB": 471.8,
+  "all_targets_absent": true,
+  "protected_files_checked": 6182,
+  "protected_content_changes": [],
+  "staging_unchanged": true,
+  "retained": [
+    "App products/frameworks and required build logs",
+    "Dependencies and Flutter package configuration",
+    "Simulator runtime and existing sample project",
+    "Screenshots and validation evidence",
+    "Existing website preview service"
+  ],
+  "runtime": "iPhone 17 Pro/iOS 26.2 remains running with the new English options drawer; original light appearance restored",
+  "scope_verified": [
+    "apps/cleantrail/cleantrail/lib/app/app_localizations.dart",
+    "apps/cleantrail/cleantrail/lib/ui/workbench_home.dart",
+    "apps/cleantrail/cleantrail/test/widget_test.dart"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "device": "C4A11F86-0BC9-4F8B-AD9E-A3D7634C90B8",
+  "model": "iPhone 17 Pro",
+  "os": "iOS 26.2",
+  "app": "com.example.cleantrail",
+  "privacy_policy_url": "",
+  "build": "debug simulator ad-hoc signed",
+  "launch": "com.example.cleantrail: 23416"
+}

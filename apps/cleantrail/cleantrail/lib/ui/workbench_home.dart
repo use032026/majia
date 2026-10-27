@@ -8,6 +8,7 @@ import '../data/csv_gateway.dart';
 import '../data/import_decoder.dart';
 import '../domain/data_project.dart';
 import '../state/workbench_controller.dart';
+import 'privacy_policy_page.dart';
 
 class WorkbenchHome extends StatefulWidget {
   const WorkbenchHome({
@@ -55,73 +56,21 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
               ],
             ),
             actions: [
-              PopupMenuButton<String>(
+              IconButton(
                 tooltip: context.s.get('moreOptions'),
-                onSelected: (value) async {
-                  switch (value) {
-                    case 'language':
-                      widget.onLocaleChanged(
-                        context.s.isChinese
-                            ? const Locale('en')
-                            : const Locale('zh'),
-                      );
-                    case 'privacy':
-                      await _showPrivacy(context);
-                    case 'new':
-                      await _confirmNewFile(context);
-                    case 'remove':
-                      await _confirmClear(context);
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'language',
-                    child: Text(context.s.get('language')),
-                  ),
-                  PopupMenuItem(
-                    value: 'privacy',
-                    child: Text(context.s.get('privacy')),
-                  ),
-                  if (project != null) ...[
-                    const PopupMenuDivider(),
-                    PopupMenuItem(
-                      value: 'new',
-                      child: Text(context.s.get('newFile')),
-                    ),
-                    PopupMenuItem(
-                      value: 'remove',
-                      child: Text(context.s.get('remove')),
-                    ),
-                  ],
-                ],
+                onPressed: _showOptions,
+                icon: const Icon(Icons.more_horiz_rounded),
               ),
               const SizedBox(width: 8),
             ],
           ),
           bottomNavigationBar: project == null
               ? null
-              : NavigationBar(
+              : _WorkbenchTabBar(
                   selectedIndex: section,
                   onDestinationSelected: (index) {
                     setState(() => section = index);
                   },
-                  destinations: [
-                    NavigationDestination(
-                      icon: const Icon(Icons.fact_check_outlined),
-                      selectedIcon: const Icon(Icons.fact_check),
-                      label: context.s.get('reviewTab'),
-                    ),
-                    NavigationDestination(
-                      icon: const Icon(Icons.table_chart_outlined),
-                      selectedIcon: const Icon(Icons.table_chart),
-                      label: context.s.get('previewTab'),
-                    ),
-                    NavigationDestination(
-                      icon: const Icon(Icons.ios_share_outlined),
-                      selectedIcon: const Icon(Icons.ios_share),
-                      label: context.s.get('exportTab'),
-                    ),
-                  ],
                 ),
           body: SafeArea(
             top: false,
@@ -159,6 +108,30 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
         );
       },
     );
+  }
+
+  Future<void> _showOptions() async {
+    final action = await showModalBottomSheet<_WorkbenchAction>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) =>
+          _WorkbenchOptionsSheet(hasProject: widget.controller.project != null),
+    );
+    if (!mounted || action == null) return;
+    switch (action) {
+      case _WorkbenchAction.language:
+        widget.onLocaleChanged(
+          context.s.isChinese ? const Locale('en') : const Locale('zh'),
+        );
+      case _WorkbenchAction.privacy:
+        await _showPrivacy(context);
+      case _WorkbenchAction.newFile:
+        await _confirmNewFile(context);
+      case _WorkbenchAction.remove:
+        await _confirmClear(context);
+    }
   }
 
   Future<void> _startImport() async {
@@ -221,44 +194,305 @@ class _WorkbenchHomeState extends State<WorkbenchHome> {
   }
 
   Future<void> _showPrivacy(BuildContext context) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: FractionallySizedBox(
-          heightFactor: 0.78,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 4, 24, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+    await Navigator.of(
+      context,
+    ).push<void>(MaterialPageRoute(builder: (_) => const PrivacyPolicyPage()));
+  }
+}
+
+enum _WorkbenchAction { language, privacy, newFile, remove }
+
+class _WorkbenchOptionsSheet extends StatelessWidget {
+  const _WorkbenchOptionsSheet({required this.hasProject});
+
+  final bool hasProject;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    Widget group(List<Widget> children) => Material(
+      color: scheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(mainAxisSize: MainAxisSize.min, children: children),
+    );
+
+    Widget separator() => Divider(
+      height: 1,
+      indent: 66,
+      endIndent: 18,
+      color: scheme.outlineVariant.withValues(alpha: 0.6),
+    );
+
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        key: const Key('workbench-options-sheet'),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
               children: [
-                Text(
-                  context.s.get('privacy'),
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 14),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Text(
-                      context.s.get('privacyBody'),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyLarge?.copyWith(height: 1.55),
+                  child: Text(
+                    context.s.get('moreOptions'),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.4,
                     ),
                   ),
                 ),
-                const SizedBox(height: 14),
-                cupertino.CupertinoButton.filled(
+                IconButton(
+                  tooltip: context.s.get('close'),
                   onPressed: () => Navigator.pop(context),
-                  borderRadius: BorderRadius.circular(14),
-                  child: Text(context.s.get('close')),
+                  style: IconButton.styleFrom(
+                    backgroundColor: scheme.surfaceContainerHighest.withValues(
+                      alpha: 0.6,
+                    ),
+                  ),
+                  icon: const Icon(Icons.close_rounded, size: 20),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 18),
+            group([
+              _WorkbenchOption(
+                action: _WorkbenchAction.language,
+                icon: Icons.translate_rounded,
+                label: context.s.get('switchLanguage'),
+                subtitle: context.s.get('language'),
+              ),
+              separator(),
+              _WorkbenchOption(
+                action: _WorkbenchAction.privacy,
+                icon: Icons.shield_outlined,
+                label: context.s.get('privacy'),
+              ),
+            ]),
+            if (hasProject) ...[
+              const SizedBox(height: 14),
+              group([
+                _WorkbenchOption(
+                  action: _WorkbenchAction.newFile,
+                  icon: Icons.note_add_outlined,
+                  label: context.s.get('newFile'),
+                ),
+                separator(),
+                _WorkbenchOption(
+                  action: _WorkbenchAction.remove,
+                  icon: Icons.delete_outline_rounded,
+                  label: context.s.get('remove'),
+                  destructive: true,
+                ),
+              ]),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WorkbenchOption extends StatelessWidget {
+  const _WorkbenchOption({
+    required this.action,
+    required this.icon,
+    required this.label,
+    this.subtitle,
+    this.destructive = false,
+  });
+
+  final _WorkbenchAction action;
+  final IconData icon;
+  final String label;
+  final String? subtitle;
+  final bool destructive;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final accent = destructive ? scheme.error : scheme.primary;
+    return InkWell(
+      onTap: () => Navigator.pop(context, action),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.09),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, size: 21, color: accent),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      height: 1.3,
+                      color: destructive ? scheme.error : scheme.onSurface,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              action == _WorkbenchAction.language
+                  ? Icons.swap_horiz_rounded
+                  : Icons.chevron_right_rounded,
+              size: 18,
+              color: scheme.onSurfaceVariant.withValues(alpha: 0.65),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WorkbenchTabBar extends StatelessWidget {
+  const _WorkbenchTabBar({
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final labels = [
+      context.s.get('reviewTab'),
+      context.s.get('previewTab'),
+      context.s.get('exportTab'),
+    ];
+    const icons = [
+      Icons.fact_check_outlined,
+      Icons.table_chart_outlined,
+      Icons.ios_share_outlined,
+    ];
+    const selectedIcons = [
+      Icons.fact_check,
+      Icons.table_chart,
+      Icons.ios_share,
+    ];
+
+    return DecoratedBox(
+      key: const Key('workbench-tab-bar'),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(
+          top: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.55)),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        child: Row(
+          children: List.generate(3, (index) {
+            final selected = index == selectedIndex;
+            final color = selected
+                ? scheme.primary
+                : scheme.onSurfaceVariant.withValues(alpha: 0.8);
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Semantics(
+                  selected: selected,
+                  button: true,
+                  label: labels[index],
+                  onTap: () => onDestinationSelected(index),
+                  child: ExcludeSemantics(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeOutCubic,
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? scheme.primary.withValues(alpha: 0.09)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: selected
+                              ? scheme.primary.withValues(alpha: 0.12)
+                              : Colors.transparent,
+                        ),
+                      ),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () => onDestinationSelected(index),
+                          child: Container(
+                            constraints: const BoxConstraints(minHeight: 58),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 7,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  selected
+                                      ? selectedIcons[index]
+                                      : icons[index],
+                                  size: 22,
+                                  color: color,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  labels[index],
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    fontSize: 11.5,
+                                    height: 1.2,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                    letterSpacing: 0.2,
+                                    color: color,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );
