@@ -1,5 +1,7 @@
 # App Store 预检报告
 
+2026-10-28 配置更新：当前源码的 iOS/Android 包标识已改为 `com.astfx.lite`，运营主体、联系邮箱和隐私生效日已补齐，正式域名已确认为 `https://astfx1.com`。用户提供的隐私政策地址为 `https://astfx1.com/privacy.html?lang=zh`（中文）和 `https://astfx1.com/privacy.html?lang=en`（英文）；应用默认政策地址为 `https://astfx1.com/privacy.html`，按当前语言设置 `lang`。公共可达性与托管日志实践需单独核验。本次仅做静态核对；以下 2026-09-08 构建、archive 和签名证据为历史记录，不能证明新标识已构建或注册。当前发布资料见 `../../release-kit.yml` 与 `../../artifacts/release-kit/OPEN_ITEMS.md`。
+
 审核日期：2026-09-08  
 范围：本地工程、模拟器、无签名 Release archive 与公开 Apple 规则；未登录 App Store Connect、未签名、未上传。  
 结论：`blocked`，不能作为 App Store candidate；本地 MVP 可运行，但以下外部发布条件未满足。

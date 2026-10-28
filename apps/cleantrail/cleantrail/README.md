@@ -29,16 +29,26 @@ flutter test --no-pub --reporter expanded
 
 The built-in sample exercises every rule without needing an external file. Product, evidence, differentiation, functional-review, and App Store preflight documents live under `docs/`.
 
-The checked-in iOS bundle identifier is the placeholder `com.example.cleantrail`. Replace it with the developer-owned identifier and configure distribution signing before treating any archive as an App Store candidate.
+The iOS bundle identifier and Android application ID are `com.astfx.lite`, confirmed by the developer on 2026-10-28. Distribution signing and store registration still need to be configured and verified before treating a build as a store candidate.
+
+## Release contact and policy
+
+- Operator: 独立开发者 (Independent developer).
+- Support and privacy contact: evwascr0317@icloud.com.
+- Privacy policy effective date: 2026-10-28.
+- Production domain: [https://astfx1.com](https://astfx1.com).
+- Privacy policy: [简体中文](https://astfx1.com/privacy.html?lang=zh) / [English](https://astfx1.com/privacy.html?lang=en).
 
 ## Privacy page
 
 The options drawer opens **Privacy & data** as a full page. `PRIVACY_POLICY_URL`
-defaults to an empty string. With no valid HTTPS URL, no WebView is created and
-the page shows an unavailable notice plus the local data summary.
+defaults to `https://astfx1.com/privacy.html`. The page loads in the current app
+language using `?lang=en` or `?lang=zh`.
 
-Configure the approved URL at build/run time with
-`--dart-define=PRIVACY_POLICY_URL=<approved-https-url>`.
+Override the policy URL at build/run time with
+`--dart-define=PRIVACY_POLICY_URL=<approved-https-url>`. If an override is empty
+or is not a valid HTTPS URL, no WebView is created and the page shows an
+unavailable notice plus the local data summary.
 `webview_flutter` opens it inside the app, preserving existing query parameters
 and setting `lang=en` or `lang=zh` for the current app language. No table content,
 project identifiers, or account information is passed to the page. A loading

@@ -1,12 +1,17 @@
 {
-  "recorded_date": "2026-10-27",
-  "user_response": "暂无确定",
-  "status": "explicitly_unconfirmed",
-  "legal_operator": "pending",
-  "support_email": "pending",
-  "production_domain": "pending",
-  "privacy_effective_date": "pending",
-  "legacy_email_reference": "15211857631@163.com",
-  "legacy_email_is_confirmed_for_astfx": false,
-  "publication_authorized": false
+  "recorded_date": "2026-10-28",
+  "source": "User-provided configuration in this chat",
+  "status": "confirmed",
+  "legal_operator": "独立开发者",
+  "operator_en": "Independent developer",
+  "support_email": "evwascr0317@icloud.com",
+  "production_domain": "https://astfx1.com",
+  "production_domain_status": "confirmed",
+  "privacy_effective_date": "2026-10-28",
+  "bundle_id": "com.astfx.lite",
+  "android_package": "com.astfx.lite",
+  "publication_authorized": false,
+  "privacy_url": "https://astfx1.com/privacy.html",
+  "privacy_url_zh": "https://astfx1.com/privacy.html?lang=zh",
+  "privacy_url_en": "https://astfx1.com/privacy.html?lang=en"
 }

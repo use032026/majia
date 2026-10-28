@@ -1,20 +1,29 @@
 # Open items — ASTFX release materials
 
-Generated: 2026-10-27 (Asia/Shanghai). Nothing has been published or uploaded.
+Updated: 2026-10-28 (Asia/Shanghai). The user supplied the published website URLs; this configuration task does not deploy the website or upload to either store.
 
-## Required facts explicitly unconfirmed
+## Confirmed configuration
 
-- **Legal operator:** old site used the generic label “CleanTrail independent developer”; that is not a confirmed legal identity. `identity.operator` remains empty.
-- **Production domain:** no confirmed production domain is present. `contact.production_domain` remains empty. Marketing, support and privacy HTTPS URLs cannot be finalized or checked.
-- **Privacy effective date:** the old draft and old website used different dates. No new effective date is invented; `privacy.effective_date` remains empty. The generated policy explicitly remains a draft dated 2026-10-27.
-- **Support contact:** 15211857631@163.com is retained only as a legacy project reference; the current ASTFX support address and monitoring are unconfirmed.
+- **Operator:** 独立开发者 (Independent developer).
+- **Support and privacy contact:** evwascr0317@icloud.com.
+- **Privacy effective date:** 2026-10-28.
+- **iOS bundle identifier and Android application ID:** com.astfx.lite. Native source configuration and release metadata are aligned; no store registration, signing or new binary is verified by this change.
 
-On 2026-10-27 the user replied “暂无确定” to the combined request for these four facts. This is recorded as explicitly unconfirmed, not approval of the legacy contact or any invented value. No repeat confirmation is required now. New values, when available, must be saved in release-kit.yml and reflected in both policy languages before rerunning the gate. See facts-confirmation.json.
+The user supplied these values on 2026-10-28, superseding the previous pending record. They are saved in release-kit.yml and facts-confirmation.json and reflected in the bilingual website and policy.
+
+## Confirmed production URLs
+
+- **Website:** https://astfx1.com
+- **Chinese privacy policy:** https://astfx1.com/privacy.html?lang=zh
+- **English privacy policy:** https://astfx1.com/privacy.html?lang=en
+- **App default:** https://astfx1.com/privacy.html; the current app language selects `lang=zh` or `lang=en`. `PRIVACY_POLICY_URL` remains an optional build/run override.
+- All three public URLs returned HTTP 200, and the two privacy URLs displayed the matching language, contact and effective date in a desktop browser on 2026-10-28.
+- The live policy still contains the old statement that its domain awaits confirmation. The local bilingual policy source has been corrected; republishing that website source is outside this configuration task.
 
 ## Before actual release, outside this generation request
 
-- Confirm the legal owner, hosting provider and hosting-log practices, child audience and age rating; obtain legal review of the policy draft.
-- The checked-in iOS and Android identifiers are still com.example.cleantrail. Confirm production identifiers and store ownership during a separately authorized packaging task.
+- Confirm hosting provider and hosting-log practices, child audience and age rating; legal review and store ownership/signing checks remain outside this configuration update.
 - Current raw UI captures use iOS 26.2 simulators and an Android 15/API 35 emulator. No physical-device validation is claimed.
 - Imported UI is the app’s own six-row quality_sample.csv. Export screens accurately show unresolved issues and draft status; they do not claim the sample is fully repaired or that an external destination saved a file.
-- No website hosting, App Store Connect/Play Console changes, distribution signing, IPA/AAB upload, processing, TestFlight/internal testing or review submission was performed.
+- This task did not deploy or republish the website, change App Store Connect/Play Console, create a distribution-signed build, upload IPA/AAB, or submit testing/review. Public URL checks do not prove native WebView/device behavior.
+- The 2026-10-27 ZIP, asset inventory and browser screenshots remain historical evidence. They were not regenerated for the 2026-10-28 configuration update and may show the previous contact/date; use the current website source and release-kit.yml for the updated facts.

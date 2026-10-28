@@ -17,6 +17,10 @@ Current display brand: ASTFX. Repository/app root: apps/cleantrail/cleantrail. V
 | No main-manifest camera/photos/mic/location/contact/notification/tracking declarations | ios/Runner/Info.plist; ios/Runner/PrivacyInfo.xcprivacy; android/app/src/main/AndroidManifest.xml |
 | Android debug/profile INTERNET is development configuration | android/app/src/debug/AndroidManifest.xml; android/app/src/profile/AndroidManifest.xml |
 | iPhone + iPad support | TARGETED_DEVICE_FAMILY = 1,2 in Runner.xcodeproj/project.pbxproj |
+| Optional in-app policy page; HTTPS configuration only, language query, no table/project/account parameters | lib/app/privacy_policy_config.dart; lib/ui/privacy_policy_page.dart; Android main-manifest INTERNET permission |
+| Operator: 独立开发者 / Independent developer; support/privacy email: evwascr0317@icloud.com; effective date: 2026-10-28 | User-provided facts on 2026-10-28; release-kit.yml; facts-confirmation.json |
+| iOS/Android source identifier: com.astfx.lite | User-provided identifier on 2026-10-28; ios/Runner.xcodeproj/project.pbxproj; android/app/build.gradle.kts; MainActivity package |
+| Production domain: https://astfx1.com; policy: /privacy.html?lang=zh or ?lang=en | User-confirmed URLs on 2026-10-28; release-kit.yml; lib/app/privacy_policy_config.dart |
 
 Signals in app-facts.json were manually checked against the cited source. They are not a legal or store-policy approval. OS/cloud backups, file providers, sharing destinations and hosting logs are described conditionally rather than attributed to an app-operated server.
 

@@ -2,8 +2,8 @@
 
 ## P0 — 发布前必须完成
 
-1. 由开发者确定并持有生产 Bundle ID、Apple Developer Team 与 App Store 分发配置；替换 `com.example.cleantrail`。
-2. 发布中英文隐私政策和支持页到稳定 HTTPS URL；用真实法律主体与联系方式替换草稿占位。
+1. iOS/Android 包标识已于 2026-10-28 按用户确认改为 `com.astfx.lite`；仍需核验商店注册、Apple Developer Team 与 App Store 分发配置。
+2. 运营主体（独立开发者）、邮箱（evwascr0317@icloud.com）、政策生效日（2026-10-28）及正式域名 `https://astfx1.com` 已确认；中英文政策地址为 `/privacy.html?lang=zh` 与 `/privacy.html?lang=en`，应用默认使用 `https://astfx1.com/privacy.html` 并按当前语言设置 `lang`。仍需核验公共页面可达性、支持页、托管方及日志处理，并填写 ASC 对应 URL。
 3. 在 App Store Connect 创建版本元数据，完成隐私问卷、年龄评级、类别、描述、关键词、版权和 Review Notes。
 4. 用最终签名构建拍摄无 alpha 的 6.9/6.5-inch iPhone 与 13-inch iPad 截图集。
 

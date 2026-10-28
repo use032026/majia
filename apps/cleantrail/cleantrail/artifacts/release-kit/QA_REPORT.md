@@ -2,13 +2,10 @@
 
 Target: `/Users/starburst/majia/apps/cleantrail/cleantrail`
 
-Result: FAIL — 3 error(s), 0 warning(s), 17 passed check(s)
+Result: PASS — 0 error(s), 0 warning(s), 17 passed check(s)
 
 ## Findings
 
-- **ERROR** `manifest.operator`: Manifest value operator is missing — `/Users/starburst/majia/apps/cleantrail/cleantrail/release-kit.yml`
-- **ERROR** `manifest.production_domain`: Manifest value production_domain is missing — `/Users/starburst/majia/apps/cleantrail/cleantrail/release-kit.yml`
-- **ERROR** `manifest.effective_date`: Manifest value effective_date is missing — `/Users/starburst/majia/apps/cleantrail/cleantrail/release-kit.yml`
 - **PASS** `description.limit`: Shared description is 2464/4000 characters — `/Users/starburst/majia/apps/cleantrail/cleantrail/artifacts/app-store-listing/description-en.txt`
 - **PASS** `keywords.limit`: Apple keywords use 94/100 UTF-8 bytes — `/Users/starburst/majia/apps/cleantrail/cleantrail/artifacts/app-store-listing/keywords-en.txt`
 - **PASS** `play_short_description.limit`: Google Play short description is 78/80 characters — `/Users/starburst/majia/apps/cleantrail/cleantrail/artifacts/google-play-listing/short-description-en.txt`
@@ -29,6 +26,8 @@ Result: FAIL — 3 error(s), 0 warning(s), 17 passed check(s)
 
 Passing this report does not prove runtime capture platform or authenticity, visual quality, public hosting, legal review, App Store Connect or Play Console upload, processing, TestFlight or Play testing availability, submission, review, or device behavior.
 
-## User confirmation status
+## Production URL update — 2026-10-28
 
-On 2026-10-27 the user replied “暂无确定”. Operator, support email, production domain and privacy effective date remain explicitly unconfirmed. The legacy email is a repository reference only; its presence satisfies the current format check but does not confirm it as the ASTFX support address. The privacy policy and metadata remain drafts; publishing/upload is not authorized. See facts-confirmation.json.
+The user confirmed https://astfx1.com and its Chinese/English privacy URLs. These are saved in release-kit.yml and store-metadata-draft.json. The app defaults to https://astfx1.com/privacy.html and adds lang=zh or lang=en from its current language; PRIVACY_POLICY_URL remains an override.
+
+20 focused unit/widget tests passed and Flutter analysis passed. Public website and both policy URLs returned HTTP 200 with normal TLS verification; a desktop browser displayed the matching policy languages, contact and effective date. The live policy still has an old pending-domain statement; the local bilingual website source is corrected and has not been republished by this task. Native app build/device behavior and store submission were not validated.

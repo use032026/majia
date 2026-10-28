@@ -10,7 +10,7 @@
 | 首发语言与区域 | 简体中文、英文；具体 App Store 国家或地区尚未确定 |
 | 平台 | Flutter；MVP 生成 iOS 与 Android 目标，App Store 预检单独评估 iOS |
 | 工作名 | CleanTrail / 清迹；尚未完成商标与商店名称可用性检索 |
-| iOS 标识 | `com.example.cleantrail` 仅为占位符，上架前必须替换 |
+| iOS / Android 标识 | `com.astfx.lite`，2026-10-28 用户确认并同步源码；商店注册与分发签名仍待核验 |
 | 最低 iOS | iOS 13.0；最终产品决策待真机矩阵验证 |
 | 变现 | 用户未指定；MVP 假设免费且无 IAP，任何付费方案都需要重新审核 |
 | 账号与后台 | 无账号、无后台、无云同步 |

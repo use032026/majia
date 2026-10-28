@@ -6,16 +6,29 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
+import 'support/recording_webview_platform.dart';
+
 void main() {
-  late _RecordingWebViewPlatform platform;
+  late RecordingWebViewPlatform platform;
 
   setUp(() {
-    platform = _RecordingWebViewPlatform();
+    platform = RecordingWebViewPlatform();
     WebViewPlatform.instance = platform;
   });
 
-  test('privacy URL is empty by default and rejects invalid addresses', () {
-    expect(privacyPolicyUrl, isEmpty);
+  test('privacy URL defaults to the published policy in both languages', () {
+    expect(privacyPolicyUrl, 'https://astfx1.com/privacy.html');
+    expect(
+      privacyPolicyUri(useChinese: true).toString(),
+      'https://astfx1.com/privacy.html?lang=zh',
+    );
+    expect(
+      privacyPolicyUri(useChinese: false).toString(),
+      'https://astfx1.com/privacy.html?lang=en',
+    );
+  });
+
+  test('privacy URL rejects empty and invalid addresses', () {
     for (final value in [
       '',
       '   ',
@@ -47,15 +60,42 @@ void main() {
   testWidgets('empty and invalid URLs never create a native WebView', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(320, 568);
+    tester.view.devicePixelRatio = 1;
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+      tester.platformDispatcher.clearTextScaleFactorTestValue();
+    });
     for (final value in ['', 'not-a-url']) {
       await tester.pumpWidget(_app(value, key: ValueKey(value)));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('privacy-policy-fallback')), findsOneWidget);
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
       expect(find.byKey(const Key('privacy-policy-retry')), findsNothing);
       expect(platform.controllerCreations, 0);
       expect(tester.takeException(), isNull);
     }
   });
+
+  for (final chinese in [false, true]) {
+    testWidgets(
+      'default policy opens in-app in ${chinese ? 'Chinese' : 'English'}',
+      (tester) async {
+        await tester.pumpWidget(_app(null, chinese: chinese));
+        await tester.pumpAndSettle();
+        expect(find.text(chinese ? '隐私与数据' : 'Privacy & data'), findsOneWidget);
+        expect(find.byKey(const Key('recorded-web-document')), findsOneWidget);
+        expect(find.byKey(const Key('privacy-policy-fallback')), findsNothing);
+        expect(
+          platform.controller.requests.single.toString(),
+          'https://astfx1.com/privacy.html?lang=${chinese ? 'zh' : 'en'}',
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets('configured policy opens in-app with the current language', (
     tester,
@@ -138,7 +178,7 @@ void main() {
   });
 }
 
-Widget _app(String url, {bool chinese = false, Key? key}) => MaterialApp(
+Widget _app(String? url, {bool chinese = false, Key? key}) => MaterialApp(
   key: key,
   locale: Locale(chinese ? 'zh' : 'en'),
   supportedLocales: AppLocalizations.supportedLocales,
@@ -148,99 +188,5 @@ Widget _app(String url, {bool chinese = false, Key? key}) => MaterialApp(
     GlobalWidgetsLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
   ],
-  home: PrivacyPolicyPage(url: url),
+  home: url == null ? const PrivacyPolicyPage() : PrivacyPolicyPage(url: url),
 );
-
-class _RecordingWebViewPlatform extends WebViewPlatform {
-  int controllerCreations = 0;
-  late _RecordingController controller;
-  late _RecordingDelegate delegate;
-
-  @override
-  PlatformWebViewController createPlatformWebViewController(
-    PlatformWebViewControllerCreationParams params,
-  ) {
-    controllerCreations++;
-    return controller = _RecordingController(params);
-  }
-
-  @override
-  PlatformNavigationDelegate createPlatformNavigationDelegate(
-    PlatformNavigationDelegateCreationParams params,
-  ) => delegate = _RecordingDelegate(params);
-
-  @override
-  PlatformWebViewWidget createPlatformWebViewWidget(
-    PlatformWebViewWidgetCreationParams params,
-  ) => _RecordingWidget(params);
-}
-
-class _RecordingController extends PlatformWebViewController {
-  _RecordingController(super.params) : super.implementation();
-
-  final requests = <Uri>[];
-  late _RecordingDelegate delegate;
-
-  @override
-  Future<void> setBackgroundColor(Color color) async {}
-
-  @override
-  Future<void> setJavaScriptMode(JavaScriptMode javaScriptMode) async {}
-
-  @override
-  Future<void> setPlatformNavigationDelegate(
-    PlatformNavigationDelegate handler,
-  ) async => delegate = handler as _RecordingDelegate;
-
-  @override
-  Future<void> loadRequest(LoadRequestParams params) async {
-    requests.add(params.uri);
-    delegate.onStarted?.call(params.uri.toString());
-    delegate.onProgress?.call(100);
-    delegate.onFinished?.call(params.uri.toString());
-  }
-}
-
-class _RecordingDelegate extends PlatformNavigationDelegate {
-  _RecordingDelegate(super.params) : super.implementation();
-
-  PageEventCallback? onStarted;
-  PageEventCallback? onFinished;
-  ProgressCallback? onProgress;
-  WebResourceErrorCallback? onResourceError;
-  HttpResponseErrorCallback? onHttpError;
-  NavigationRequestCallback? onNavigation;
-
-  @override
-  Future<void> setOnPageStarted(PageEventCallback callback) async =>
-      onStarted = callback;
-
-  @override
-  Future<void> setOnPageFinished(PageEventCallback callback) async =>
-      onFinished = callback;
-
-  @override
-  Future<void> setOnProgress(ProgressCallback callback) async =>
-      onProgress = callback;
-
-  @override
-  Future<void> setOnWebResourceError(WebResourceErrorCallback callback) async =>
-      onResourceError = callback;
-
-  @override
-  Future<void> setOnHttpError(HttpResponseErrorCallback callback) async =>
-      onHttpError = callback;
-
-  @override
-  Future<void> setOnNavigationRequest(
-    NavigationRequestCallback callback,
-  ) async => onNavigation = callback;
-}
-
-class _RecordingWidget extends PlatformWebViewWidget {
-  _RecordingWidget(super.params) : super.implementation();
-
-  @override
-  Widget build(BuildContext context) =>
-      const SizedBox(key: Key('recorded-web-document'));
-}

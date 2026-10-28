@@ -48,17 +48,15 @@
   "visual_review": "All 26 final images decoded at full resolution and reviewed in contact sheets; full-resolution representative images and all source flows inspected; one long Chinese headline shortened after review.",
   "browser_validation": "9 checks: EN/ZH product/privacy, title/meta/html-lang changes, language memory, query priority, images and 390px mobile layout; no horizontal overflow.",
   "gate": {
+    "checked_date": "2026-10-28",
     "passed": 17,
-    "errors": 3,
+    "errors": 0,
     "warnings": 0,
-    "unresolved": [
-      "operator",
-      "production_domain",
-      "effective_date"
-    ]
+    "unresolved": [],
+    "status": "passed_static_material_checks"
   },
   "not_performed": [
-    "Website deployment/public URL check",
+    "Website deployment or republishing by this task",
     "App Store Connect or Google Play Console mutation",
     "Distribution-signed build or IPA/AAB upload",
     "Processing or TestFlight/Play testing",
@@ -69,15 +67,31 @@
   "cleanup_report": "CLEANUP_REPORT.json",
   "archive": "artifacts/ASTFX-release-kit-20261027.zip",
   "facts_confirmation": {
-    "recorded_date": "2026-10-27",
-    "user_response": "暂无确定",
-    "status": "explicitly_unconfirmed",
-    "legal_operator": "pending",
-    "support_email": "pending",
-    "production_domain": "pending",
-    "privacy_effective_date": "pending",
-    "legacy_email_reference": "15211857631@163.com",
-    "legacy_email_is_confirmed_for_astfx": false,
-    "publication_authorized": false
+    "recorded_date": "2026-10-28",
+    "source": "User-provided configuration in this chat",
+    "status": "confirmed",
+    "legal_operator": "独立开发者",
+    "operator_en": "Independent developer",
+    "support_email": "evwascr0317@icloud.com",
+    "production_domain": "https://astfx1.com",
+    "production_domain_status": "confirmed",
+    "privacy_effective_date": "2026-10-28",
+    "bundle_id": "com.astfx.lite",
+    "android_package": "com.astfx.lite",
+    "publication_authorized": false,
+    "privacy_url": "https://astfx1.com/privacy.html",
+    "privacy_url_zh": "https://astfx1.com/privacy.html?lang=zh",
+    "privacy_url_en": "https://astfx1.com/privacy.html?lang=en"
+  },
+  "configuration_updated_date": "2026-10-28",
+  "archive_status": "Historical 2026-10-27 snapshot; not regenerated for the 2026-10-28 configuration update. Current configuration is in release-kit.yml and the working-tree website/metadata.",
+  "configuration_validation": "Production domain and bilingual policy URLs filled on 2026-10-28. 20 focused unit/widget tests passed, including default EN/ZH WebView requests, menu navigation, empty/invalid URL fallback and retry. Flutter analysis passed. Three public URLs returned HTTP 200 and desktop browser policy languages matched their queries. No native app build or physical-device WebView validation.",
+  "historical_media_validation_date": "2026-10-27",
+  "policy_link_validation": {
+    "evidence_dir": "artifacts/privacy-domain-20261028",
+    "tests_passed": 20,
+    "flutter_analysis": "passed",
+    "http_and_desktop_language_checks": "passed",
+    "cleanup_report": "artifacts/privacy-domain-20261028/cleanup-report.json"
   }
 }

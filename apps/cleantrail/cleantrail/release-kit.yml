@@ -2,13 +2,15 @@ schema_version: 2
 
 identity:
   app_name: "ASTFX"
-  operator: ""
-  bundle_id: "com.example.cleantrail"
-  android_package: "com.example.cleantrail"
+  operator: "独立开发者"
+  bundle_id: "com.astfx.lite"
+  android_package: "com.astfx.lite"
 
 contact:
-  support_email: "15211857631@163.com"
-  production_domain: ""
+  support_email: "evwascr0317@icloud.com"
+  production_domain: "https://astfx1.com"
+  production_domain_status: confirmed
+  marketing_url: "https://astfx1.com"
 
 platforms:
   ios:
@@ -30,16 +32,20 @@ listing:
   tone: clear, specific, trustworthy
 
 privacy:
-  effective_date: ""
+  policy_url: "https://astfx1.com/privacy.html"
+  policy_url_zh: "https://astfx1.com/privacy.html?lang=zh"
+  policy_url_en: "https://astfx1.com/privacy.html?lang=en"
+  effective_date: "2026-10-28"
   confirmed:
     - "App display name ASTFX, source version 1.0.0+1"
     - "No app-operated backend, analytics, ads, or online AI in the inspected implementation"
     - "System file picker and share sheet; local project and recovery backup"
+    - "User confirmed operator: 独立开发者 (Independent developer) on 2026-10-28"
+    - "User confirmed support and privacy contact: evwascr0317@icloud.com"
+    - "User confirmed privacy policy effective date: 2026-10-28"
+    - "User confirmed production domain and bilingual policy URLs: https://astfx1.com"
   open_questions:
-    - "Legal operator identity"
-    - "Production domain and hosting log practices"
-    - "Privacy effective date"
-    - "Support email monitoring confirmation"
+    - "Hosting provider and hosting log practices"
     - "Store audience and age rating"
 
 website:
@@ -110,8 +116,7 @@ paths:
   app_root: "apps/cleantrail/cleantrail"
 
 facts_confirmation:
-  recorded_date: "2026-10-27"
-  user_response: "暂无确定"
-  status: explicitly_unconfirmed
-  fields: [operator, support_email, production_domain, effective_date]
-  legacy_email_reference_only: true
+  recorded_date: "2026-10-28"
+  status: confirmed
+  confirmed_fields: [operator, support_email, effective_date, bundle_id, android_package, production_domain, policy_url_zh, policy_url_en]
+  pending_fields: []

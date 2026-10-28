@@ -8,8 +8,10 @@ import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 import 'support/fake_csv_gateway.dart';
+import 'support/recording_webview_platform.dart';
 
 void main() {
   testWidgets('text import confirms detected format before inspection', (
@@ -227,45 +229,49 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('privacy pushes a scrollable page without a configured URL', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(320, 568);
-    tester.view.devicePixelRatio = 1;
-    tester.platformDispatcher.textScaleFactorTestValue = 2;
-    addTearDown(() {
-      tester.view.resetPhysicalSize();
-      tester.view.resetDevicePixelRatio();
-      tester.platformDispatcher.clearTextScaleFactorTestValue();
-    });
-    final controller = WorkbenchController(
-      engine: const QualityEngine(),
-      store: MemoryProjectStore(),
-      gateway: FakeCsvGateway(),
-    );
-    await tester.pumpWidget(CleanTrailApp(controller: controller));
-    await tester.pumpAndSettle();
+  testWidgets(
+    'privacy opens the published policy and returns to the workbench',
+    (tester) async {
+      final platform = RecordingWebViewPlatform();
+      WebViewPlatform.instance = platform;
+      tester.view.physicalSize = const Size(320, 568);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+        tester.platformDispatcher.clearTextScaleFactorTestValue();
+      });
+      final controller = WorkbenchController(
+        engine: const QualityEngine(),
+        store: MemoryProjectStore(),
+        gateway: FakeCsvGateway(),
+      );
+      await tester.pumpWidget(CleanTrailApp(controller: controller));
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('More options'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Privacy & data'));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('More options'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Privacy & data'));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Privacy & data'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsWidgets);
-    expect(find.byKey(const Key('privacy-policy-page')), findsOneWidget);
-    expect(find.byType(BottomSheet), findsNothing);
-    expect(
-      find.text('The online privacy policy is not available yet.'),
-      findsOneWidget,
-    );
-    expect(find.byKey(const Key('privacy-policy-retry')), findsNothing);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('privacy-policy-page')), findsNothing);
-    expect(find.byTooltip('More options'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
+      expect(find.text('Privacy & data'), findsOneWidget);
+      expect(find.byKey(const Key('privacy-policy-page')), findsOneWidget);
+      expect(find.byType(BottomSheet), findsNothing);
+      expect(find.byKey(const Key('recorded-web-document')), findsOneWidget);
+      expect(find.byKey(const Key('privacy-policy-fallback')), findsNothing);
+      expect(
+        platform.controller.requests.single.toString(),
+        'https://astfx1.com/privacy.html?lang=en',
+      );
+      expect(find.byKey(const Key('privacy-policy-retry')), findsNothing);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('privacy-policy-page')), findsNothing);
+      expect(find.byTooltip('More options'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('dismissing a repair item by tapping the backdrop is safe', (
     tester,

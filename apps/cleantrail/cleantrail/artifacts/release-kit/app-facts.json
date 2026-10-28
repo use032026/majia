@@ -13,7 +13,9 @@
         "application_label": "ASTFX",
         "package": null,
         "path": "/Users/starburst/majia/apps/cleantrail/cleantrail/android/app/src/main/AndroidManifest.xml",
-        "permissions": []
+        "permissions": [
+          "android.permission.INTERNET"
+        ]
       },
       {
         "application_label": null,
@@ -27,11 +29,11 @@
   },
   "app_root": "/Users/starburst/majia/apps/cleantrail/cleantrail",
   "dependency_signals": {},
-  "generated_at": "2026-10-27T03:59:03.316981+00:00",
+  "generated_at": "2026-10-28T07:17:22.450563+00:00",
   "ios": {
     "bundle_identifiers": [
-      "com.example.cleantrail",
-      "com.example.cleantrail.RunnerTests"
+      "com.astfx.lite",
+      "com.astfx.lite.RunnerTests"
     ],
     "info_plists": [
       {
@@ -55,8 +57,15 @@
       "1,2"
     ]
   },
-  "network_host_evidence": [],
-  "network_hosts_observed": [],
+  "network_host_evidence": [
+    {
+      "host": "astfx1.com",
+      "path": "lib/app/privacy_policy_config.dart"
+    }
+  ],
+  "network_hosts_observed": [
+    "astfx1.com"
+  ],
   "pubspec": {
     "dependencies": [
       "csv",
@@ -66,7 +75,8 @@
       "file_selector",
       "flutter_localizations",
       "path_provider",
-      "share_plus"
+      "share_plus",
+      "webview_flutter"
     ],
     "description": "An offline-first CSV quality and repair workbench.",
     "name": "cleantrail",

@@ -1,6 +1,6 @@
 const privacyPolicyUrl = String.fromEnvironment(
   'PRIVACY_POLICY_URL',
-  defaultValue: '',
+  defaultValue: 'https://astfx1.com/privacy.html',
 );
 
 Uri? privacyPolicyUri({

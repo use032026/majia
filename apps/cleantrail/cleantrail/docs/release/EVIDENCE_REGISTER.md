@@ -1,5 +1,7 @@
 # 证据登记
 
+2026-10-28 当前配置说明：源码 iOS/Android 标识已统一为 `com.astfx.lite`；本次没有构建或运行新标识。以下为历史构建证据，其中占位 Bundle ID 的描述仅指当时的 archive。运营主体、邮箱、生效日与正式域名 `https://astfx1.com` 已获用户确认；中英文政策地址分别为 `https://astfx1.com/privacy.html?lang=zh` 与 `https://astfx1.com/privacy.html?lang=en`。应用默认使用 `https://astfx1.com/privacy.html` 并按当前语言设置 `lang`，构建时仍可覆盖 `PRIVACY_POLICY_URL`；这些配置事实本身不证明公共可达性。当前配置见 `../../release-kit.yml`。
+
 记录时间：2026-09-08，Asia/Shanghai。当前目录及其父目录不是 Git repository，因此没有 branch/SHA；以下用路径、时间与 SHA-256 限定证据。
 
 | 层级 | 证据 | 结果 | 证明上限 |

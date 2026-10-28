@@ -1,0 +1,33 @@
+{
+  "checked_date": "2026-10-28",
+  "http_checks": [
+    {
+      "url": "https://astfx1.com",
+      "status": 200,
+      "tls_certificate_verified": true,
+      "content_type": "text/html"
+    },
+    {
+      "url": "https://astfx1.com/privacy.html?lang=zh",
+      "status": 200,
+      "tls_certificate_verified": true,
+      "content_type": "text/html"
+    },
+    {
+      "url": "https://astfx1.com/privacy.html?lang=en",
+      "status": 200,
+      "tls_certificate_verified": true,
+      "content_type": "text/html"
+    }
+  ],
+  "desktop_browser": {
+    "zh": "隐私政策 — ASTFX; 中文 selected; 生效日期 2026 年 10 月 28 日; 独立开发者; evwascr0317@icloud.com",
+    "en": "Privacy Policy — ASTFX; EN selected; October 28, 2026; Independent developer; evwascr0317@icloud.com"
+  },
+  "online_copy_followup": {
+    "old_pending_domain_statement_observed": true,
+    "local_bilingual_source_corrected": true,
+    "website_republished_by_this_task": false
+  },
+  "native_webview_device_validation": "not performed; desktop browser observations are separate from app unit/widget tests"
+}

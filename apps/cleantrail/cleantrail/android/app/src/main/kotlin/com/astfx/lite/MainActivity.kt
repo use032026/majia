@@ -1,4 +1,4 @@
-package com.example.cleantrail
+package com.astfx.lite
 
 import io.flutter.embedding.android.FlutterActivity
 
