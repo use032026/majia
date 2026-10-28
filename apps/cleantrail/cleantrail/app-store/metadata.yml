@@ -1,0 +1,3 @@
+# ASC upload configuration for ASTFX.
+# Store listing fields and App Review submission remain disabled.
+uses_non_exempt_encryption: false

@@ -1,0 +1,134 @@
+name: ASTFX iOS Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      marketing_version:
+        description: Three-component version to build
+        required: true
+        default: "1.0.0"
+        type: string
+      build_number:
+        description: Optional build number; ASC increments it when empty
+        required: false
+        type: string
+      upload_to_asc:
+        description: Upload the signed IPA and wait for ASC processing
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-cleantrail-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    environment: cleantrail-production
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Prepare Environment-backed release inputs
+        id: prepare
+        shell: bash
+        env:
+          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          IOS_SCHEME: ${{ vars.IOS_SCHEME }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          IOS_APPSTORE_PROFILE_BASE64: ${{ secrets.IOS_APPSTORE_PROFILE_BASE64 }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          UPLOAD_TO_ASC: ${{ inputs.upload_to_asc }}
+        run: |
+          ruby .github/scripts/prepare-environment-ios-release.rb \
+            --app-key cleantrail \
+            --app-name "ASTFX" \
+            --project-directory apps/cleantrail/cleantrail \
+            --container-path apps/cleantrail/cleantrail/ios/Runner.xcworkspace \
+            --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"}]' \
+            --marketing-version "$MARKETING_VERSION" \
+            --upload-to-asc "$UPLOAD_TO_ASC" \
+            --auto-create-store-version false \
+            --submit false \
+            --update-asc-text-metadata false \
+            --replace-asc-media false \
+            --metadata-template apps/cleantrail/cleantrail/app-store/metadata.yml \
+            --release-notes-json '{}' \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Normalize distribution P12 for macOS Keychain
+        id: signing
+        shell: bash
+        env:
+          IOS_DISTRIBUTION_P12_BASE64: ${{ secrets.IOS_DISTRIBUTION_P12_BASE64 }}
+          IOS_DISTRIBUTION_P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+        run: |
+          set -euo pipefail
+          umask 077
+          signing_dir="$(mktemp -d "${RUNNER_TEMP}/cleantrail-signing.XXXXXX")"
+          trap 'rm -rf "$signing_dir"' EXIT
+          printf '%s' "$IOS_DISTRIBUTION_P12_BASE64" | base64 -D > "$signing_dir/original.p12"
+          P12_PASSWORD="$IOS_DISTRIBUTION_P12_PASSWORD" \
+            openssl pkcs12 -legacy -in "$signing_dir/original.p12" \
+              -passin env:P12_PASSWORD -nodes -out "$signing_dir/identity.pem"
+          P12_PASSWORD="$IOS_DISTRIBUTION_P12_PASSWORD" \
+            openssl pkcs12 -export -in "$signing_dir/identity.pem" \
+              -out "$signing_dir/compatible.p12" -passout env:P12_PASSWORD \
+              -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1
+          normalized_p12="$(base64 < "$signing_dir/compatible.p12" | tr -d '\n')"
+          echo "::add-mask::${normalized_p12}"
+          echo "p12_base64=${normalized_p12}" >> "$GITHUB_OUTPUT"
+
+      - name: Build, retain, and upload ASTFX
+        id: release
+        uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9
+        with:
+          config_path: ${{ steps.prepare.outputs.config_path }}
+          marketing_version: ${{ inputs.marketing_version }}
+          build_number: ${{ inputs.build_number }}
+          upload_to_asc: ${{ inputs.upload_to_asc }}
+          submit_to_review: "false"
+          update_asc_text_metadata: "false"
+          replace_asc_media: "false"
+          ios_distribution_p12_base64: ${{ steps.signing.outputs.p12_base64 }}
+          ios_distribution_p12_password: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+          ios_profiles_archive_base64: ${{ steps.prepare.outputs.profiles_archive_base64 }}
+          asc_api_key_p8_base64: ${{ steps.prepare.outputs.asc_api_key_p8_base64 }}
+          asc_key_id: ${{ vars.ASC_KEY_ID }}
+          asc_issuer_id: ${{ vars.ASC_ISSUER_ID }}
+
+      - name: Write release evidence summary
+        if: ${{ always() }}
+        shell: bash
+        env:
+          REQUESTED_VERSION: ${{ inputs.marketing_version }}
+          REQUESTED_UPLOAD: ${{ inputs.upload_to_asc }}
+          SOURCE_SHA: ${{ steps.release.outputs.source_sha }}
+          RESOLVED_BUILD_NUMBER: ${{ steps.release.outputs.build_number }}
+          IPA_SHA256: ${{ steps.release.outputs.ipa_sha256 }}
+          ASC_BUILD_ID: ${{ steps.release.outputs.asc_build_id }}
+          ASC_UPLOAD_STATE: ${{ steps.release.outputs.asc_upload_state }}
+          ASC_PROCESSING_STATE: ${{ steps.release.outputs.asc_processing_state }}
+        run: |
+          {
+            echo "## ASTFX iOS release"
+            echo "- Source SHA: ${SOURCE_SHA:-not-built}"
+            echo "- Marketing version: ${REQUESTED_VERSION}"
+            echo "- Build number: ${RESOLVED_BUILD_NUMBER:-not-built}"
+            echo "- Upload requested: ${REQUESTED_UPLOAD}"
+            echo "- IPA SHA-256: ${IPA_SHA256:-not-exported}"
+            echo "- ASC build ID: ${ASC_BUILD_ID:-not-observed}"
+            echo "- ASC upload state: ${ASC_UPLOAD_STATE:-not-observed}"
+            echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-observed}"
+          } >> "$GITHUB_STEP_SUMMARY"
