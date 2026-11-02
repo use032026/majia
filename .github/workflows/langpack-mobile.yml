@@ -1,0 +1,109 @@
+name: LangPack Mobile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/langpack/**'
+      - '.github/workflows/langpack-mobile.yml'
+  pull_request:
+    paths:
+      - 'apps/langpack/**'
+      - '.github/workflows/langpack-mobile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-langpack-mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/langpack
+
+env:
+  FLUTTER_VERSION: '3.35.7'
+
+jobs:
+  validate:
+    name: Analyze and test LangPack
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      # Live translation tests remain opt-in and do not receive credentials.
+      - run: flutter test
+
+  android:
+    name: Android debug APK
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: Install Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - name: Retain debug APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: langpack-android-debug-${{ github.run_number }}-${{ github.run_attempt }}
+          path: apps/langpack/build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  ios:
+    name: iOS simulator app
+    needs: validate
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - run: flutter pub get
+      - run: flutter build ios --simulator --debug --no-codesign
+      - name: Package simulator app
+        env:
+          BUILD_ID: ${{ github.run_number }}-${{ github.run_attempt }}
+        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphonesimulator/Runner.app "build/langpack-ios-simulator-$BUILD_ID.zip"
+      - name: Retain simulator app
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: langpack-ios-simulator-${{ github.run_number }}-${{ github.run_attempt }}
+          path: apps/langpack/build/langpack-ios-simulator-*.zip
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0

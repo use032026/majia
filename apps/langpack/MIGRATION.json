@@ -1,0 +1,899 @@
+{
+  "source_repository": "https://github.com/CherryIce/langpack-prototype",
+  "source_commit": "dfb401cbeabcc5c8233f991d3410472ad28a6011",
+  "import_date": "2026-11-02",
+  "target_repository": "https://github.com/use032026/majia",
+  "target_directory": "apps/langpack",
+  "scope": [
+    "ios",
+    "android"
+  ],
+  "source_preserved": true,
+  "tracked_snapshot_file_count": 109,
+  "files": [
+    {
+      "source_path": "flutter_app/.gitignore",
+      "target_path": ".gitignore",
+      "source_blob": "3820a95c65c3e5983cc66d481e2e68706a750090",
+      "source_sha256": "4a8d984279954e0461e0ffef9b9e7455340a0a762f227c01065a53482a83a4f1",
+      "target_sha256": "9bb5ba5d80c586fc8ff6dc8d2bfe73b722817c25c93e8fa9ece8486fd71814f3",
+      "adapted": true,
+      "adaptation": "Protect app-local evidence and validation cache from accidental commits."
+    },
+    {
+      "source_path": "flutter_app/.metadata",
+      "target_path": ".metadata",
+      "source_blob": "477255d4a06a9110120a512b020e0809353a9828",
+      "source_sha256": "a1a0edc68fd69e0f0f1fd0a8000deb24d6b9824cebc76671b3ba86145df7a4a8",
+      "target_sha256": "7ca1d01660234f5d82979958d504724e19031e95f710c1d2c450ff21193ba2ac",
+      "adapted": true,
+      "adaptation": "Retain only root, Android and iOS platform metadata."
+    },
+    {
+      "source_path": "flutter_app/analysis_options.yaml",
+      "target_path": "analysis_options.yaml",
+      "source_blob": "0d2902135caece481a035652d88970c80e29cc7e",
+      "source_sha256": "e0ea485cfdbc3e12b93efb8679a5ea73ebfe20ea4ca0c473dc594fc2fb274ed5",
+      "target_sha256": "e0ea485cfdbc3e12b93efb8679a5ea73ebfe20ea4ca0c473dc594fc2fb274ed5",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/.gitignore",
+      "target_path": "android/.gitignore",
+      "source_blob": "be3943c96d8eed92e2a329ce8327616d5e7dc440",
+      "source_sha256": "b027c9de1011765c015e5819bf857c0d75bfcd0886fb01721c091159012e50f1",
+      "target_sha256": "b027c9de1011765c015e5819bf857c0d75bfcd0886fb01721c091159012e50f1",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/build.gradle.kts",
+      "target_path": "android/app/build.gradle.kts",
+      "source_blob": "26efd18fca17631d7ea840d5c679c3b9d58a638c",
+      "source_sha256": "d119d517841a341d25a16928c9d56e4e08b3d21139447b2b7add468c0ba461c5",
+      "target_sha256": "d119d517841a341d25a16928c9d56e4e08b3d21139447b2b7add468c0ba461c5",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/debug/AndroidManifest.xml",
+      "target_path": "android/app/src/debug/AndroidManifest.xml",
+      "source_blob": "d16cdf396df31809451a9f56b3326a90c4bd53b5",
+      "source_sha256": "26092959ab0bfc16953408b7e6cca993d6e48e4b763159142f1e33e4ab44ab16",
+      "target_sha256": "26092959ab0bfc16953408b7e6cca993d6e48e4b763159142f1e33e4ab44ab16",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/AndroidManifest.xml",
+      "target_path": "android/app/src/main/AndroidManifest.xml",
+      "source_blob": "5b4cb4206044a2f75f27a7b3e9417c865f673558",
+      "source_sha256": "dec8ff958421f50218bb2119d3848ca91a79f8c8161713b169c210eb8bbac48c",
+      "target_sha256": "dec8ff958421f50218bb2119d3848ca91a79f8c8161713b169c210eb8bbac48c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/kotlin/com/cherryice/langpack/MainActivity.kt",
+      "target_path": "android/app/src/main/kotlin/com/cherryice/langpack/MainActivity.kt",
+      "source_blob": "f9c9f99bb8deedfe5f7955522d6d64ad9f77b4e6",
+      "source_sha256": "14053d8928435b2b890572292535255694adb9418fd7af35457c8a65eb3a76ff",
+      "target_sha256": "14053d8928435b2b890572292535255694adb9418fd7af35457c8a65eb3a76ff",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-hdpi/ic_launcher_foreground.png",
+      "target_path": "android/app/src/main/res/drawable-hdpi/ic_launcher_foreground.png",
+      "source_blob": "9b99fd09ed07eb1e0ed611d9df8563c4fe4148f9",
+      "source_sha256": "e9635d5566050f3046f060979047c38e26b66b0a8174a6347678adcc3baaf9a4",
+      "target_sha256": "e9635d5566050f3046f060979047c38e26b66b0a8174a6347678adcc3baaf9a4",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-hdpi/launch_logo.png",
+      "target_path": "android/app/src/main/res/drawable-hdpi/launch_logo.png",
+      "source_blob": "2006c715be21a2f0b35268f2ef89d38c3fd9e2ef",
+      "source_sha256": "d94b5fb8b3125369eca57d7c5a356e179db3dc840d3fe10551134c647aeda869",
+      "target_sha256": "d94b5fb8b3125369eca57d7c5a356e179db3dc840d3fe10551134c647aeda869",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-mdpi/ic_launcher_foreground.png",
+      "target_path": "android/app/src/main/res/drawable-mdpi/ic_launcher_foreground.png",
+      "source_blob": "eab4058bba8f9b0ad319a0e5c2cd2ed6c00f723c",
+      "source_sha256": "d244958db580e1d896a5b9100762d1e945b56e4d2a6e091984e2bee737a1118c",
+      "target_sha256": "d244958db580e1d896a5b9100762d1e945b56e4d2a6e091984e2bee737a1118c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-mdpi/launch_logo.png",
+      "target_path": "android/app/src/main/res/drawable-mdpi/launch_logo.png",
+      "source_blob": "2d327a56c0b24edea9175e909bad2da794e51254",
+      "source_sha256": "ce05ea03301d547b6336a81cc59541aa12a05a3216960a7359e1c869ee33e8e3",
+      "target_sha256": "ce05ea03301d547b6336a81cc59541aa12a05a3216960a7359e1c869ee33e8e3",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-v21/launch_background.xml",
+      "target_path": "android/app/src/main/res/drawable-v21/launch_background.xml",
+      "source_blob": "becd0c17a3bc0583f44c93a89f800053dd964ad8",
+      "source_sha256": "31833f5e597ca3cbab1e3cb04b532933fb64172111d2c5dc83b8aa9defba3a09",
+      "target_sha256": "31833f5e597ca3cbab1e3cb04b532933fb64172111d2c5dc83b8aa9defba3a09",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-xhdpi/ic_launcher_foreground.png",
+      "target_path": "android/app/src/main/res/drawable-xhdpi/ic_launcher_foreground.png",
+      "source_blob": "77e9c3e2dcd16d5057b9ca264aa9e41d260766d6",
+      "source_sha256": "e00a9f498ad9fdd496987b88479daedf604d66e73a24709b23892fc0de6ecab6",
+      "target_sha256": "e00a9f498ad9fdd496987b88479daedf604d66e73a24709b23892fc0de6ecab6",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-xhdpi/launch_logo.png",
+      "target_path": "android/app/src/main/res/drawable-xhdpi/launch_logo.png",
+      "source_blob": "7b357b02332c41b72a4efe2608012d4061a0e0c0",
+      "source_sha256": "befd8bb4788285b1c763f0ce07e0c384e2bf8f2a807aaa4fb9855006d78a6086",
+      "target_sha256": "befd8bb4788285b1c763f0ce07e0c384e2bf8f2a807aaa4fb9855006d78a6086",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-xxhdpi/ic_launcher_foreground.png",
+      "target_path": "android/app/src/main/res/drawable-xxhdpi/ic_launcher_foreground.png",
+      "source_blob": "a7254bd6df8f34e474261db76bdedcd232b4cd6d",
+      "source_sha256": "c9ed97f3bc72aedfae1c5addcde5a176277697a0e211a003110c681863edd55e",
+      "target_sha256": "c9ed97f3bc72aedfae1c5addcde5a176277697a0e211a003110c681863edd55e",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-xxhdpi/launch_logo.png",
+      "target_path": "android/app/src/main/res/drawable-xxhdpi/launch_logo.png",
+      "source_blob": "8ccf6a0d3fb7b3075cabd86f3097d5176abef54f",
+      "source_sha256": "fb5f3542adc5a11b66dc391dfdd8cd5851cf670765e14335bfb5e0e2a0dff46c",
+      "target_sha256": "fb5f3542adc5a11b66dc391dfdd8cd5851cf670765e14335bfb5e0e2a0dff46c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-xxxhdpi/ic_launcher_foreground.png",
+      "target_path": "android/app/src/main/res/drawable-xxxhdpi/ic_launcher_foreground.png",
+      "source_blob": "c6ba9aa03dd53d3a99fee4663a9cdf8fe4c1cd0c",
+      "source_sha256": "3f4370591b7e4f88dd296cf15c6d3bff41562f6ec09051707efa9b10246250f4",
+      "target_sha256": "3f4370591b7e4f88dd296cf15c6d3bff41562f6ec09051707efa9b10246250f4",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable-xxxhdpi/launch_logo.png",
+      "target_path": "android/app/src/main/res/drawable-xxxhdpi/launch_logo.png",
+      "source_blob": "d56c5bd426dc944e141d5e831de95b1cb7be9047",
+      "source_sha256": "e996c9ae1306e47d52cde2d28eac3a5a26869b755e1adaefd5989b2f638320e6",
+      "target_sha256": "e996c9ae1306e47d52cde2d28eac3a5a26869b755e1adaefd5989b2f638320e6",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable/ic_launcher_monochrome.xml",
+      "target_path": "android/app/src/main/res/drawable/ic_launcher_monochrome.xml",
+      "source_blob": "43165370cc1f4121ebdb69e5bdfa67cd3145ac5c",
+      "source_sha256": "468066725fde8b04e45f7a9e429cc6ebcffd5c64e8d09ca3923c9b67f51ffc2b",
+      "target_sha256": "468066725fde8b04e45f7a9e429cc6ebcffd5c64e8d09ca3923c9b67f51ffc2b",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable/launch_background.xml",
+      "target_path": "android/app/src/main/res/drawable/launch_background.xml",
+      "source_blob": "becd0c17a3bc0583f44c93a89f800053dd964ad8",
+      "source_sha256": "31833f5e597ca3cbab1e3cb04b532933fb64172111d2c5dc83b8aa9defba3a09",
+      "target_sha256": "31833f5e597ca3cbab1e3cb04b532933fb64172111d2c5dc83b8aa9defba3a09",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/drawable/splash_icon.xml",
+      "target_path": "android/app/src/main/res/drawable/splash_icon.xml",
+      "source_blob": "e018a43557d32f2f76e32bddcf56abfbfb114220",
+      "source_sha256": "d789f6e577bafeb69c0b2006a1fd4df524e5a01d6d3cdf4cc867d31735154be6",
+      "target_sha256": "d789f6e577bafeb69c0b2006a1fd4df524e5a01d6d3cdf4cc867d31735154be6",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "target_path": "android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "source_blob": "dbf00ffdfc1a3ef797ae70901b63eb92e14ed1fe",
+      "source_sha256": "5d899d323e38306aa0c7e130ef1c47abe34f13d09fbd890f36c006d09994ac28",
+      "target_sha256": "5d899d323e38306aa0c7e130ef1c47abe34f13d09fbd890f36c006d09994ac28",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-anydpi-v33/ic_launcher.xml",
+      "target_path": "android/app/src/main/res/mipmap-anydpi-v33/ic_launcher.xml",
+      "source_blob": "a2df671f27851cf05ff39eb2820f9764944b007f",
+      "source_sha256": "f0d49304405085a8cecb738b273e12f55aca398f7fa6061f978edfaf50056ff9",
+      "target_sha256": "f0d49304405085a8cecb738b273e12f55aca398f7fa6061f978edfaf50056ff9",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "target_path": "android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "source_blob": "11754a71d15e6143ebad0173ff0403faeb2a729b",
+      "source_sha256": "f077a31101423d9381029cc2d56ea249de4621d0e13b03afd2fcfe72be60031b",
+      "target_sha256": "f077a31101423d9381029cc2d56ea249de4621d0e13b03afd2fcfe72be60031b",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "target_path": "android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "source_blob": "1f3d4a7047dceb043ee1862e54329bf8bbe5c33b",
+      "source_sha256": "4c69178b3001e7f98c326578df137b1565b21a40f1f87822bc9367661e4b40a6",
+      "target_sha256": "4c69178b3001e7f98c326578df137b1565b21a40f1f87822bc9367661e4b40a6",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "target_path": "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "source_blob": "2d327a56c0b24edea9175e909bad2da794e51254",
+      "source_sha256": "ce05ea03301d547b6336a81cc59541aa12a05a3216960a7359e1c869ee33e8e3",
+      "target_sha256": "ce05ea03301d547b6336a81cc59541aa12a05a3216960a7359e1c869ee33e8e3",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "target_path": "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "source_blob": "2006c715be21a2f0b35268f2ef89d38c3fd9e2ef",
+      "source_sha256": "d94b5fb8b3125369eca57d7c5a356e179db3dc840d3fe10551134c647aeda869",
+      "target_sha256": "d94b5fb8b3125369eca57d7c5a356e179db3dc840d3fe10551134c647aeda869",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "target_path": "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "source_blob": "7b357b02332c41b72a4efe2608012d4061a0e0c0",
+      "source_sha256": "befd8bb4788285b1c763f0ce07e0c384e2bf8f2a807aaa4fb9855006d78a6086",
+      "target_sha256": "befd8bb4788285b1c763f0ce07e0c384e2bf8f2a807aaa4fb9855006d78a6086",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/values-night-v31/styles.xml",
+      "target_path": "android/app/src/main/res/values-night-v31/styles.xml",
+      "source_blob": "e275955548daa658f1683d42aeda866da7d6acc7",
+      "source_sha256": "cdfba7871e42041b76bc365f803eca16be610fe55ae348516858b3786e25bc25",
+      "target_sha256": "cdfba7871e42041b76bc365f803eca16be610fe55ae348516858b3786e25bc25",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/values-night/styles.xml",
+      "target_path": "android/app/src/main/res/values-night/styles.xml",
+      "source_blob": "96361f1d52a8350ed46494ff0b1af18e74d912cc",
+      "source_sha256": "59ceb5f18b3c15c51b53589229228f7e20d7c3bce938561cb14c75dab1e27e65",
+      "target_sha256": "59ceb5f18b3c15c51b53589229228f7e20d7c3bce938561cb14c75dab1e27e65",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/values-v31/styles.xml",
+      "target_path": "android/app/src/main/res/values-v31/styles.xml",
+      "source_blob": "e275955548daa658f1683d42aeda866da7d6acc7",
+      "source_sha256": "cdfba7871e42041b76bc365f803eca16be610fe55ae348516858b3786e25bc25",
+      "target_sha256": "cdfba7871e42041b76bc365f803eca16be610fe55ae348516858b3786e25bc25",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/values/colors.xml",
+      "target_path": "android/app/src/main/res/values/colors.xml",
+      "source_blob": "b5f966ab727d3f8f45fcc61991ab771334461492",
+      "source_sha256": "42bbb839c3a287d350b500b49cfa27c46545a6e10dc7eecfd9998e963817a432",
+      "target_sha256": "42bbb839c3a287d350b500b49cfa27c46545a6e10dc7eecfd9998e963817a432",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/main/res/values/styles.xml",
+      "target_path": "android/app/src/main/res/values/styles.xml",
+      "source_blob": "96361f1d52a8350ed46494ff0b1af18e74d912cc",
+      "source_sha256": "59ceb5f18b3c15c51b53589229228f7e20d7c3bce938561cb14c75dab1e27e65",
+      "target_sha256": "59ceb5f18b3c15c51b53589229228f7e20d7c3bce938561cb14c75dab1e27e65",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/app/src/profile/AndroidManifest.xml",
+      "target_path": "android/app/src/profile/AndroidManifest.xml",
+      "source_blob": "399f6981d5d35475eb18e6068ae67cdd7c731978",
+      "source_sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "target_sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/build.gradle.kts",
+      "target_path": "android/build.gradle.kts",
+      "source_blob": "dbee657bb5b9158516486b3a1b47ef8b6fc72a2a",
+      "source_sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "target_sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/gradle.properties",
+      "target_path": "android/gradle.properties",
+      "source_blob": "f018a61817f55e78bb92ce8df2dda423ec570a4a",
+      "source_sha256": "20c411ebbe5162992d16d170656ee19a9ffe0571e6c4d4c5a5314bb06da0a672",
+      "target_sha256": "20c411ebbe5162992d16d170656ee19a9ffe0571e6c4d4c5a5314bb06da0a672",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/gradle/wrapper/gradle-wrapper.properties",
+      "target_path": "android/gradle/wrapper/gradle-wrapper.properties",
+      "source_blob": "ac3b47926ee56b0efc39cbff3c532918abbf953f",
+      "source_sha256": "4f0df93978f8c53f8995c6afcdecd9d290b5df35fa08f236163e8e5df8557c8e",
+      "target_sha256": "4f0df93978f8c53f8995c6afcdecd9d290b5df35fa08f236163e8e5df8557c8e",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/android/settings.gradle.kts",
+      "target_path": "android/settings.gradle.kts",
+      "source_blob": "fb605bc840f7bb713a721358bd422dd94c0755c2",
+      "source_sha256": "f822f8653a25b632ea3334473d8e9964e7d7da73e3ec33448f17e8600834b063",
+      "target_sha256": "f822f8653a25b632ea3334473d8e9964e7d7da73e3ec33448f17e8600834b063",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/assets/brand/app-icon.png",
+      "target_path": "assets/brand/app-icon.png",
+      "source_blob": "2159b375465f542a531c7996ffce7956bf01ae9b",
+      "source_sha256": "ed39a339a33ad822e18ea77a4743be5d234acdb34e9a8805bfd7d29445aed994",
+      "target_sha256": "ed39a339a33ad822e18ea77a4743be5d234acdb34e9a8805bfd7d29445aed994",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/assets/brand/app-icon.svg",
+      "target_path": "assets/brand/app-icon.svg",
+      "source_blob": "c07b3ecc38071f8b414dc149a9621e78c3241026",
+      "source_sha256": "5ee838f7eadabd92d0ce053fd39268f199cf7298ad726f1ff33a5feb65131dba",
+      "target_sha256": "5ee838f7eadabd92d0ce053fd39268f199cf7298ad726f1ff33a5feb65131dba",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/assets/brand/mark.png",
+      "target_path": "assets/brand/mark.png",
+      "source_blob": "0fa8e0d84805cfa68ce39d98477a3657a5d8cc63",
+      "source_sha256": "9038534811b8fe091223e2f8f70c744130ed0b0e738973141af36b4b9f65a06a",
+      "target_sha256": "9038534811b8fe091223e2f8f70c744130ed0b0e738973141af36b4b9f65a06a",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/assets/brand/mark.svg",
+      "target_path": "assets/brand/mark.svg",
+      "source_blob": "b0e88ab20c7e59e3a42d7e01f76c0451f988a685",
+      "source_sha256": "d4a687c4c3754a9ad77ffaf3245110ce8cdd6089048fb7c1aadbc841f1c90b17",
+      "target_sha256": "d4a687c4c3754a9ad77ffaf3245110ce8cdd6089048fb7c1aadbc841f1c90b17",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/.gitignore",
+      "target_path": "ios/.gitignore",
+      "source_blob": "7a7f9873ad7dceb4dc17087fb06c800fa0191376",
+      "source_sha256": "37380775aeb2499662b7aca80f4ac4c95ae827c3ba2bfa179aa3e9af4812c623",
+      "target_sha256": "37380775aeb2499662b7aca80f4ac4c95ae827c3ba2bfa179aa3e9af4812c623",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Flutter/AppFrameworkInfo.plist",
+      "target_path": "ios/Flutter/AppFrameworkInfo.plist",
+      "source_blob": "1dc6cf7652bad3d20b93a4d3e324c3d5dada2345",
+      "source_sha256": "91b8d35bd9c88b43ae0eac8348f9b57d2f3e209a4500e6516b18b459b7e3f2be",
+      "target_sha256": "91b8d35bd9c88b43ae0eac8348f9b57d2f3e209a4500e6516b18b459b7e3f2be",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Flutter/Debug.xcconfig",
+      "target_path": "ios/Flutter/Debug.xcconfig",
+      "source_blob": "ec97fc6f30212d34d53ab17751bcabdfab1891d4",
+      "source_sha256": "690b8a8b1ae15ddd29b241429963e971bbc6720ab22f154cf8cf6b085b6d4925",
+      "target_sha256": "690b8a8b1ae15ddd29b241429963e971bbc6720ab22f154cf8cf6b085b6d4925",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Flutter/Release.xcconfig",
+      "target_path": "ios/Flutter/Release.xcconfig",
+      "source_blob": "c4855bfe2000b73c8a50783b40073676021cbb68",
+      "source_sha256": "75abb819a9de1e0e41c835e7307bc64a506cac25a9a5c0b0d8253fa1c3d5d422",
+      "target_sha256": "75abb819a9de1e0e41c835e7307bc64a506cac25a9a5c0b0d8253fa1c3d5d422",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Podfile",
+      "target_path": "ios/Podfile",
+      "source_blob": "2dbf7d728d818c3c38a7f4d822e4d41946bedc15",
+      "source_sha256": "bf1d448973a5cb5a9c75a8b31d404d77e425329edd362129677081c54f2c5a9f",
+      "target_sha256": "bf1d448973a5cb5a9c75a8b31d404d77e425329edd362129677081c54f2c5a9f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcodeproj/project.pbxproj",
+      "target_path": "ios/Runner.xcodeproj/project.pbxproj",
+      "source_blob": "9f09d6774260d977afc036365a907fdca81e2171",
+      "source_sha256": "b154b3fb7c3b67a8b1519f3240f32a1fd05aa693c3bbcfb9bf8106c888bc2f56",
+      "target_sha256": "b154b3fb7c3b67a8b1519f3240f32a1fd05aa693c3bbcfb9bf8106c888bc2f56",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "target_path": "ios/Runner.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "source_blob": "919434a6254f0e9651f402737811be6634a03e9c",
+      "source_sha256": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f",
+      "target_sha256": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "target_path": "ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "source_blob": "18d981003d68d0546c4804ac2ff47dd97c6e7921",
+      "source_sha256": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "target_sha256": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "target_path": "ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "source_blob": "f9b0d7c5ea15f194be85eb6ee8e6721a87ff4644",
+      "source_sha256": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "target_sha256": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "target_path": "ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme",
+      "source_blob": "e3773d42e24c8bb3b9070fc9d10d62032787035e",
+      "source_sha256": "2dd28b879e66081e28a3324cf2bee7ab2f70be9a3e50e08926b7366dadff7d6e",
+      "target_sha256": "2dd28b879e66081e28a3324cf2bee7ab2f70be9a3e50e08926b7366dadff7d6e",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "target_path": "ios/Runner.xcworkspace/contents.xcworkspacedata",
+      "source_blob": "21a3cc14c74e969ab1548274a8512ebfecc40f78",
+      "source_sha256": "465e6de5660384eb6832e8078920ba6cd5305c445cb29a24a86a2fda4aa6b67e",
+      "target_sha256": "465e6de5660384eb6832e8078920ba6cd5305c445cb29a24a86a2fda4aa6b67e",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "target_path": "ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "source_blob": "18d981003d68d0546c4804ac2ff47dd97c6e7921",
+      "source_sha256": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "target_sha256": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "target_path": "ios/Runner.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings",
+      "source_blob": "f9b0d7c5ea15f194be85eb6ee8e6721a87ff4644",
+      "source_sha256": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "target_sha256": "11b247bc6796892d67c9a821d18604db4dd6a880981b34f38460b9866e6b247f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/AppDelegate.swift",
+      "target_path": "ios/Runner/AppDelegate.swift",
+      "source_blob": "626664468b8914efda0addf1322b12b8c0071710",
+      "source_sha256": "9418c676adebac7e3f04daa80a7db62066e77f9766c804fd3e5e264124a31f80",
+      "target_sha256": "9418c676adebac7e3f04daa80a7db62066e77f9766c804fd3e5e264124a31f80",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "source_blob": "d36b1fab2d9dea668a4f83df94d525897d9e68dd",
+      "source_sha256": "3b1e214f466ffedff74baa5598ad5c4421130eea6bc8d57b8fe23435e8280ae4",
+      "target_sha256": "3b1e214f466ffedff74baa5598ad5c4421130eea6bc8d57b8fe23435e8280ae4",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "source_blob": "a12b3a217ea0a0ae36a4099684fbd4f50bb08743",
+      "source_sha256": "e59b713e2ef8866d5b3acff76b05672d3d100fa3f7f527a44bc806a2af038beb",
+      "target_sha256": "e59b713e2ef8866d5b3acff76b05672d3d100fa3f7f527a44bc806a2af038beb",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "source_blob": "9c8e9f8dd23e43ff6264806933d2282221e04161",
+      "source_sha256": "9dbe55de4a10ea79d4083d1c503828a7249539472069ae9847082074ddf12aed",
+      "target_sha256": "9dbe55de4a10ea79d4083d1c503828a7249539472069ae9847082074ddf12aed",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "source_blob": "d5590eccdc8cf226c94be12775ecf3a253125f0c",
+      "source_sha256": "1a9681ef0e0d2e1e7fdd047b791defddb2da7a92c4c8f957b240a5c565b77bd1",
+      "target_sha256": "1a9681ef0e0d2e1e7fdd047b791defddb2da7a92c4c8f957b240a5c565b77bd1",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "source_blob": "597db6f7a33b73a751324c76d7900ba3ae4ebf87",
+      "source_sha256": "0cbfe6b24ce8917f2c1897bd37e9032a68e3f5a9ee1297ad2ed4a3e48bb255f6",
+      "target_sha256": "0cbfe6b24ce8917f2c1897bd37e9032a68e3f5a9ee1297ad2ed4a3e48bb255f6",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "source_blob": "a4a05440efa67e6736446da9423ecb9fbf7006a8",
+      "source_sha256": "7d200c775aafc91f84f68d7804d3f8fd83600e3f7c5a1c7ca41cc12c65e33f0f",
+      "target_sha256": "7d200c775aafc91f84f68d7804d3f8fd83600e3f7c5a1c7ca41cc12c65e33f0f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "source_blob": "6788bdd1f957b5a1e23f56666bad3b4945ad7901",
+      "source_sha256": "4e78e3411187b24c2be3ff93e0bb4bfbfdda9890c873a7c2632c92ffed891d2c",
+      "target_sha256": "4e78e3411187b24c2be3ff93e0bb4bfbfdda9890c873a7c2632c92ffed891d2c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "source_blob": "cca3308efea4a1825e0cf87bf89f6f4959561ea4",
+      "source_sha256": "3c2b48e81b0fe83975a9522f9757a14670eb33b4b22ddd60098bf0fe89b35d3d",
+      "target_sha256": "3c2b48e81b0fe83975a9522f9757a14670eb33b4b22ddd60098bf0fe89b35d3d",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "source_blob": "d5590eccdc8cf226c94be12775ecf3a253125f0c",
+      "source_sha256": "1a9681ef0e0d2e1e7fdd047b791defddb2da7a92c4c8f957b240a5c565b77bd1",
+      "target_sha256": "1a9681ef0e0d2e1e7fdd047b791defddb2da7a92c4c8f957b240a5c565b77bd1",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "source_blob": "2d4651c356c93a2239cef6ee82d8e9911d7e0612",
+      "source_sha256": "7ba7f38244ee4f701e4025c93210b5dcf61fc65d88a57aa23b051aee4b2d100a",
+      "target_sha256": "7ba7f38244ee4f701e4025c93210b5dcf61fc65d88a57aa23b051aee4b2d100a",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "source_blob": "d32cb8e3ecf1472107352a3b4f30b2db046a103b",
+      "source_sha256": "0093787b54f02789a5ef811c971db6004e0b15f3223c4930f6400dedb59d533a",
+      "target_sha256": "0093787b54f02789a5ef811c971db6004e0b15f3223c4930f6400dedb59d533a",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "source_blob": "d32cb8e3ecf1472107352a3b4f30b2db046a103b",
+      "source_sha256": "0093787b54f02789a5ef811c971db6004e0b15f3223c4930f6400dedb59d533a",
+      "target_sha256": "0093787b54f02789a5ef811c971db6004e0b15f3223c4930f6400dedb59d533a",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "source_blob": "f1643a1a9315b3755d3c5d6dd0626c1bab89bf59",
+      "source_sha256": "57ce5a6251c4aae0010147dbc675a0eccde793365d94fd596206275b3e29c685",
+      "target_sha256": "57ce5a6251c4aae0010147dbc675a0eccde793365d94fd596206275b3e29c685",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "source_blob": "efe580eff3350cab282a9298037a24af5bc27fa4",
+      "source_sha256": "4183c00553728d37e2551f893cc46c0db770f9095189f85cd602cccc74ea0004",
+      "target_sha256": "4183c00553728d37e2551f893cc46c0db770f9095189f85cd602cccc74ea0004",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "source_blob": "4c28ce173c97800ac457ea0817449b8a733dae18",
+      "source_sha256": "f6ca18ee229a75e9feed4cd7e17a13112bd4fd8845b436bb424236386627511c",
+      "target_sha256": "f6ca18ee229a75e9feed4cd7e17a13112bd4fd8845b436bb424236386627511c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "source_blob": "9adc800d7ca1c437c6a7e0ac497f76f9308f4ecc",
+      "source_sha256": "476699d80cacd3b70bb65c90a0ffab7fdca03971c70beed2ff329ee5cb78780f",
+      "target_sha256": "476699d80cacd3b70bb65c90a0ffab7fdca03971c70beed2ff329ee5cb78780f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "target_path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+      "source_blob": "0bedcf2fd46788ae3a01a423467513ff59b5c120",
+      "source_sha256": "ccc7950fd5f5b82067c85f667940a9d59189151460761ece8098ca78daa19469",
+      "target_sha256": "ccc7950fd5f5b82067c85f667940a9d59189151460761ece8098ca78daa19469",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "target_path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png",
+      "source_blob": "2d327a56c0b24edea9175e909bad2da794e51254",
+      "source_sha256": "ce05ea03301d547b6336a81cc59541aa12a05a3216960a7359e1c869ee33e8e3",
+      "target_sha256": "ce05ea03301d547b6336a81cc59541aa12a05a3216960a7359e1c869ee33e8e3",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "target_path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png",
+      "source_blob": "7b357b02332c41b72a4efe2608012d4061a0e0c0",
+      "source_sha256": "befd8bb4788285b1c763f0ce07e0c384e2bf8f2a807aaa4fb9855006d78a6086",
+      "target_sha256": "befd8bb4788285b1c763f0ce07e0c384e2bf8f2a807aaa4fb9855006d78a6086",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "target_path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png",
+      "source_blob": "8ccf6a0d3fb7b3075cabd86f3097d5176abef54f",
+      "source_sha256": "fb5f3542adc5a11b66dc391dfdd8cd5851cf670765e14335bfb5e0e2a0dff46c",
+      "target_sha256": "fb5f3542adc5a11b66dc391dfdd8cd5851cf670765e14335bfb5e0e2a0dff46c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "target_path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md",
+      "source_blob": "89c2725b70f1882be97f5214fafe22d27a0ec01e",
+      "source_sha256": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f",
+      "target_sha256": "a985b626c4f7546a8ba392d135e9226c3547c8e2b46895f5f2bdf40d7b14ef9f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "target_path": "ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "source_blob": "eb3a35463bffdb5a8c2efdee93617e5ff841bbce",
+      "source_sha256": "cc19bed7bf59c32ec015161782a090c38b42a69264b4ca6bab0f9f43bc4d33c3",
+      "target_sha256": "cc19bed7bf59c32ec015161782a090c38b42a69264b4ca6bab0f9f43bc4d33c3",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Base.lproj/Main.storyboard",
+      "target_path": "ios/Runner/Base.lproj/Main.storyboard",
+      "source_blob": "f3c28516fb38e64d88cfcf5fb1791175df078f2f",
+      "source_sha256": "fd367b6c43006d61b730f674970dd48b9f662c8f2264e52ffc1558102a2c9f2d",
+      "target_sha256": "fd367b6c43006d61b730f674970dd48b9f662c8f2264e52ffc1558102a2c9f2d",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Info.plist",
+      "target_path": "ios/Runner/Info.plist",
+      "source_blob": "1b55b8860550db5fb475b62cba1d3090129dcba1",
+      "source_sha256": "962955344f92480e51e8a2b122c1347d0e063568dcfc2643ae2852b0efc23874",
+      "target_sha256": "962955344f92480e51e8a2b122c1347d0e063568dcfc2643ae2852b0efc23874",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/Runner/Runner-Bridging-Header.h",
+      "target_path": "ios/Runner/Runner-Bridging-Header.h",
+      "source_blob": "308a2a560b42f17aaf3c36e4e9c8cd07182fbb7e",
+      "source_sha256": "1a8d11d01d1cc92c650c9c9ed35299240052d4683a15a719a2315ef44185e074",
+      "target_sha256": "1a8d11d01d1cc92c650c9c9ed35299240052d4683a15a719a2315ef44185e074",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/ios/RunnerTests/RunnerTests.swift",
+      "target_path": "ios/RunnerTests/RunnerTests.swift",
+      "source_blob": "86a7c3b1b6119f7dbdb8cec74f1b5b3e076bf949",
+      "source_sha256": "5e8f4908dacea6f29b2a790e4d38bf5fded69096063f9a27a2f21584d62b30c0",
+      "target_sha256": "5e8f4908dacea6f29b2a790e4d38bf5fded69096063f9a27a2f21584d62b30c0",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/controller.dart",
+      "target_path": "lib/controller.dart",
+      "source_blob": "678bed1f881deaa568a74aa53fb972c222ddc027",
+      "source_sha256": "4e6d0912a97ee15663e0b0000129037bd7b4dae2f8d811843633031d6846b9eb",
+      "target_sha256": "4e6d0912a97ee15663e0b0000129037bd7b4dae2f8d811843633031d6846b9eb",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/main.dart",
+      "target_path": "lib/main.dart",
+      "source_blob": "e1155aa26215430e1a0b5793cac2aa979a3089fd",
+      "source_sha256": "7d67c089e5f14d6b0b6a75ac91c0b364601c24cc0794064a9227caa09e93e0ad",
+      "target_sha256": "7d67c089e5f14d6b0b6a75ac91c0b364601c24cc0794064a9227caa09e93e0ad",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/models.dart",
+      "target_path": "lib/models.dart",
+      "source_blob": "49513c7fe7fd8fc729aaff9f904c72180879b476",
+      "source_sha256": "b0d612e52c7ae2dc0f714ee4303506269a37dfc6930f10de70c495d86072914e",
+      "target_sha256": "b0d612e52c7ae2dc0f714ee4303506269a37dfc6930f10de70c495d86072914e",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/services/document_service.dart",
+      "target_path": "lib/services/document_service.dart",
+      "source_blob": "e3e7bd78246d2475dc7e1fb7fbdf353239be7f81",
+      "source_sha256": "af29c184eb485efecb75f079af2eca97baa41f05acb0ed867e40524fb24540b4",
+      "target_sha256": "af29c184eb485efecb75f079af2eca97baa41f05acb0ed867e40524fb24540b4",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/services/export_service.dart",
+      "target_path": "lib/services/export_service.dart",
+      "source_blob": "f193f0608319fdcbb7fbb2aa072255f2120df2f5",
+      "source_sha256": "1ca3893b3e0f970778913f9bc81874ed0f2bfe5990b1e6f2a3f848c554cc993a",
+      "target_sha256": "1ca3893b3e0f970778913f9bc81874ed0f2bfe5990b1e6f2a3f848c554cc993a",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/services/translation_service.dart",
+      "target_path": "lib/services/translation_service.dart",
+      "source_blob": "b8f1eb3b9860e0d623da995cb71c6fbb514ebb72",
+      "source_sha256": "84ee6b51d3d3139fb06d3f460fe651903e8b66ebbb663b1cfb8dcb41e25c51d8",
+      "target_sha256": "84ee6b51d3d3139fb06d3f460fe651903e8b66ebbb663b1cfb8dcb41e25c51d8",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/ui/app.dart",
+      "target_path": "lib/ui/app.dart",
+      "source_blob": "c3fc3b67de4dabb7a1284f556a94e6518c9ae47f",
+      "source_sha256": "a19feae8a3bf42a7c4dc45ff403851e2d5202f7e4c76c1cf74e713b6d5f5f2c7",
+      "target_sha256": "a19feae8a3bf42a7c4dc45ff403851e2d5202f7e4c76c1cf74e713b6d5f5f2c7",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/ui/ios_modals.dart",
+      "target_path": "lib/ui/ios_modals.dart",
+      "source_blob": "c602e3c31e61f6faa171d8c4fb65cee14aa4f362",
+      "source_sha256": "d14feb1659e097d838eadb30da85a4452f272dea9ac2358e0affc874cbfaceaf",
+      "target_sha256": "d14feb1659e097d838eadb30da85a4452f272dea9ac2358e0affc874cbfaceaf",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/ui/onboarding.dart",
+      "target_path": "lib/ui/onboarding.dart",
+      "source_blob": "074de9d3abbb753e028bc2a1c2e30ccfb9b34733",
+      "source_sha256": "70c924ec87e5f8d57998b0fbdc0eb3c01dd8d4d2bed22e02597c567a848caffc",
+      "target_sha256": "70c924ec87e5f8d57998b0fbdc0eb3c01dd8d4d2bed22e02597c567a848caffc",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/ui/privacy_policy.dart",
+      "target_path": "lib/ui/privacy_policy.dart",
+      "source_blob": "a3cacc2f6eb1fba18eac1d7f12dc07fb60142438",
+      "source_sha256": "f3319c25567d50beb361d295a5e886bf13013e11b61526745eff1ec307d66c5f",
+      "target_sha256": "f3319c25567d50beb361d295a5e886bf13013e11b61526745eff1ec307d66c5f",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/ui/settings_detail_page.dart",
+      "target_path": "lib/ui/settings_detail_page.dart",
+      "source_blob": "e6f8d9a19640c1bab5f7dab861dfcc95ecfc66c7",
+      "source_sha256": "8dcf4e2472179fd15f3892f427061e2a94065090c256a78c005796d08b6ff3f3",
+      "target_sha256": "8dcf4e2472179fd15f3892f427061e2a94065090c256a78c005796d08b6ff3f3",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/lib/ui/startup.dart",
+      "target_path": "lib/ui/startup.dart",
+      "source_blob": "ca886754008311fd73e87770d96b6a915fa52d1d",
+      "source_sha256": "598a3528a0495c8ae1599cb5fee224844b548c0347713142b43dfe2fce58dd4c",
+      "target_sha256": "598a3528a0495c8ae1599cb5fee224844b548c0347713142b43dfe2fce58dd4c",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/pubspec.lock",
+      "target_path": "pubspec.lock",
+      "source_blob": "529f06afab2966a0922352dab9cc7417a290c8f4",
+      "source_sha256": "f22e4ea5f8a2026c3760c8f9894781b17cb7f2e3e77bf70c4cf449e798d177d4",
+      "target_sha256": "f22e4ea5f8a2026c3760c8f9894781b17cb7f2e3e77bf70c4cf449e798d177d4",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/pubspec.yaml",
+      "target_path": "pubspec.yaml",
+      "source_blob": "0ed737c4401a57ed50bbd53f70a7f9f3f38d0d4b",
+      "source_sha256": "c547f8c852dce6ac5f154bd2c96acb714b2c943affd230f381e8d243e97ee9db",
+      "target_sha256": "c547f8c852dce6ac5f154bd2c96acb714b2c943affd230f381e8d243e97ee9db",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/controller_test.dart",
+      "target_path": "test/controller_test.dart",
+      "source_blob": "1b450ac3a154164dc941a56e2deab2872d3185c8",
+      "source_sha256": "d9c9a486a97b676f79d0696d36b7eaee4e55ea5c0ebfe777652ec145123529ba",
+      "target_sha256": "d9c9a486a97b676f79d0696d36b7eaee4e55ea5c0ebfe777652ec145123529ba",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/credential_validation_test.dart",
+      "target_path": "test/credential_validation_test.dart",
+      "source_blob": "6bb5ecee2579c9fc89a828f964261ffa98773a3d",
+      "source_sha256": "2a766760eeb6b23398037713f93552a6fcdca97caeb90863c74de6a05a213b3b",
+      "target_sha256": "2a766760eeb6b23398037713f93552a6fcdca97caeb90863c74de6a05a213b3b",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/credential_validation_widget_test.dart",
+      "target_path": "test/credential_validation_widget_test.dart",
+      "source_blob": "d0b0cb9fbd2b45317ef997c66c192fa3b54c4581",
+      "source_sha256": "36a1c13148241229371ca11a979d8a8cb9c43797d352274e7d3ab70fd7e65cf5",
+      "target_sha256": "36a1c13148241229371ca11a979d8a8cb9c43797d352274e7d3ab70fd7e65cf5",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/document_export_test.dart",
+      "target_path": "test/document_export_test.dart",
+      "source_blob": "719af7227aedf4df61457fcef239a263966ab7bd",
+      "source_sha256": "17e809d27ae0ee8a66e71b2b75408d6a1237eed085c57098e714b080444a0f42",
+      "target_sha256": "17e809d27ae0ee8a66e71b2b75408d6a1237eed085c57098e714b080444a0f42",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/domestic_provider_test.dart",
+      "target_path": "test/domestic_provider_test.dart",
+      "source_blob": "098030aa4777e6a655f66b1cb2032dd2de8c90ca",
+      "source_sha256": "a4c6e9aacae702b1d07c7e829a01ab1e4fa93b667d0228e34322372e423220f7",
+      "target_sha256": "a4c6e9aacae702b1d07c7e829a01ab1e4fa93b667d0228e34322372e423220f7",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/domestic_widget_test.dart",
+      "target_path": "test/domestic_widget_test.dart",
+      "source_blob": "106f5920d2f63446c0b0fe22cdf3959baa95d22b",
+      "source_sha256": "462edb3cdf32cabae907dfed1a830e0cddb60a9daaf4ca5da382a775fd31d38b",
+      "target_sha256": "462edb3cdf32cabae907dfed1a830e0cddb60a9daaf4ca5da382a775fd31d38b",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/ios_modals_test.dart",
+      "target_path": "test/ios_modals_test.dart",
+      "source_blob": "02a8ecae5e8dff09ab26ab3eeedc5dc6e69870a7",
+      "source_sha256": "0d7752b950d61e865cb30a1cdf13483795bd09b964a3a5b9e9ba3c673b22cce0",
+      "target_sha256": "0d7752b950d61e865cb30a1cdf13483795bd09b964a3a5b9e9ba3c673b22cce0",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/live_smoke_test.dart",
+      "target_path": "test/live_smoke_test.dart",
+      "source_blob": "3e74635898537da1c69141017ca8c771dab904b3",
+      "source_sha256": "8ae0d3590e43e096a2844ddfe1572923183261c55129d414acf236963a560335",
+      "target_sha256": "e191ab1bf1e437b6c7ae5dd22d36a483639786b73d17308680ae0e127659819c",
+      "adapted": true,
+      "adaptation": "Keep explicit live-test output inside this app instead of a sibling directory."
+    },
+    {
+      "source_path": "flutter_app/test/provider_controller_test.dart",
+      "target_path": "test/provider_controller_test.dart",
+      "source_blob": "fe7dc84dfe37080aac9bfaa63a8b4e798be9f08e",
+      "source_sha256": "284ee3734bb05a1fe9b3cf296f64b3bdf6836ab6e2396437870e46021ee1e748",
+      "target_sha256": "284ee3734bb05a1fe9b3cf296f64b3bdf6836ab6e2396437870e46021ee1e748",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/provider_service_test.dart",
+      "target_path": "test/provider_service_test.dart",
+      "source_blob": "ee85f1bf09eb10c1abf3dec518145d4199551140",
+      "source_sha256": "c72bf8e1aa9f67de6d521a2c279e472be2268209fae7b426c782e1fe37d8e47b",
+      "target_sha256": "c72bf8e1aa9f67de6d521a2c279e472be2268209fae7b426c782e1fe37d8e47b",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/translation_service_test.dart",
+      "target_path": "test/translation_service_test.dart",
+      "source_blob": "748a37d9b39df9477b87d09c0cb240c564fe8df5",
+      "source_sha256": "9da2940583dbe927145a06a42464f291fe21ec080b44b5977031f121b352f448",
+      "target_sha256": "9da2940583dbe927145a06a42464f291fe21ec080b44b5977031f121b352f448",
+      "adapted": false
+    },
+    {
+      "source_path": "flutter_app/test/widget_test.dart",
+      "target_path": "test/widget_test.dart",
+      "source_blob": "659001290793c7bece42c4ce17b0b4cfbec2d39a",
+      "source_sha256": "49a6b9b45325808bb1364545638cb6735115c7d6630a9bb4dc247eb07cb27fce",
+      "target_sha256": "49a6b9b45325808bb1364545638cb6735115c7d6630a9bb4dc247eb07cb27fce",
+      "adapted": false
+    }
+  ],
+  "additional_files": [
+    {
+      "target_path": "ios/Podfile.lock",
+      "source_path": "flutter_app/ios/Podfile.lock",
+      "source_kind": "Local dependency lockfile; ignored by the source checkout global Git rules and not contained in the source commit.",
+      "sha256": "0de6f2f01848c6b43c927b34adbf10274dcdb5f77f635dcaaa799c21685792b1"
+    }
+  ],
+  "maintenance": "The mobile app is maintained independently in this repository; the source repository keeps its complete original multi-platform project. No submodule or local source-checkout dependency is used."
+}
