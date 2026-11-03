@@ -28,6 +28,16 @@ on:
         required: false
         default: "{}"
         type: string
+      update_asc_text_metadata:
+        description: Update text fields declared in the app metadata manifest
+        required: true
+        default: false
+        type: boolean
+      replace_asc_media:
+        description: Replace screenshot and preview collections declared in the app metadata manifest
+        required: true
+        default: false
+        type: boolean
       submit:
         description: Submit the prepared version to App Review
         required: true
@@ -46,7 +56,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     environment: ${{ inputs.app_environment }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - name: Checkout exact source
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -122,6 +132,56 @@ jobs:
             --output asc-existing-build-status.json \
             --github-output "$GITHUB_OUTPUT"
 
+      - name: Snapshot current ASC metadata before changes
+        id: store_snapshot_before
+        if: ${{ inputs.update_asc_text_metadata || inputs.replace_asc_media }}
+        continue-on-error: true
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/scripts/query-asc-store-metadata.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-store-metadata-before.json
+
+      - name: Prepare and verify declared ASC metadata
+        id: store_metadata
+        if: ${{ inputs.update_asc_text_metadata || inputs.replace_asc_media }}
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
+        run: |
+          ruby -r ./.github/runtime-ios-release-system/scripts/lib/asc_client.rb -e '
+            IOSBuild::ASC::Client.prepend(Module.new do
+              private
+              def request(method, path, **options)
+                warn "ASC request: #{method.to_s.upcase} #{URI(path).path}"
+                super
+              end
+            end)
+            load ARGV.shift
+          ' .github/runtime-ios-release-system/scripts/release-app-store.rb \
+            --config "${{ steps.app.outputs.config_path }}" \
+            --phase prepare \
+            --marketing-version "$MARKETING_VERSION" \
+            --key-id "$ASC_KEY_ID" \
+            --issuer-id "$ASC_ISSUER_ID" \
+            --key-path "${{ steps.prepare.outputs.key_path }}" \
+            --submit-to-review false \
+            --update-text-metadata "$UPDATE_ASC_TEXT_METADATA" \
+            --replace-media "$REPLACE_ASC_MEDIA" \
+            --output asc-existing-build-metadata.json \
+            --github-output "$GITHUB_OUTPUT"
+
       - name: Create version and attach existing build
         id: store_version
         shell: bash
@@ -163,6 +223,45 @@ jobs:
             --output asc-existing-build-whats-new.json \
             --github-output "$GITHUB_OUTPUT"
 
+      - name: Read back and verify ASC metadata before submission
+        id: store_snapshot
+        if: ${{ success() && (inputs.update_asc_text_metadata || inputs.replace_asc_media) }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
+        run: |
+          ruby .github/scripts/query-asc-store-metadata.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --expected-build-number "$BUILD_NUMBER" \
+            --verify-manifest "${{ steps.prepare.outputs.metadata_path }}" \
+            --verify-text "$UPDATE_ASC_TEXT_METADATA" \
+            --verify-media "$REPLACE_ASC_MEDIA" \
+            --output asc-store-metadata.json
+
+      - name: Snapshot ASC metadata after release failure
+        if: ${{ always() && failure() && steps.prepare.outcome == 'success' && (inputs.update_asc_text_metadata || inputs.replace_asc_media) }}
+        continue-on-error: true
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          ruby .github/scripts/query-asc-store-metadata.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-store-metadata-after-failure.json
+
       - name: Submit prepared version to App Review
         id: submit_review
         if: ${{ inputs.submit }}
@@ -188,6 +287,10 @@ jobs:
           name: asc-existing-build-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             asc-existing-build-status.json
+            asc-existing-build-metadata.json
+            asc-store-metadata-before.json
+            asc-store-metadata.json
+            asc-store-metadata-after-failure.json
             asc-existing-build-app-store.json
             asc-existing-build-whats-new.json
             asc-review-submission.json
@@ -204,7 +307,13 @@ jobs:
           BUILD_NUMBER: ${{ inputs.build_number }}
           ASC_PROCESSING_STATE: ${{ steps.build_status.outputs.asc_processing_state }}
           APP_STORE_VERSION_STATE: ${{ steps.store_version.outputs.app_store_version_state }}
-          TEXT_METADATA_UPDATED: ${{ steps.whats_new.outputs.asc_whats_new_updated }}
+          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
+          METADATA_PREPARE_OUTCOME: ${{ steps.store_metadata.outcome }}
+          TEXT_METADATA_UPDATED: ${{ steps.store_metadata.outputs.asc_text_metadata_updated }}
+          MEDIA_REPLACED: ${{ steps.store_metadata.outputs.asc_media_replaced }}
+          METADATA_READBACK_OUTCOME: ${{ steps.store_snapshot.outcome }}
+          WHATS_NEW_UPDATED: ${{ steps.whats_new.outputs.asc_whats_new_updated }}
           WHATS_NEW_LOCALES: ${{ steps.whats_new.outputs.asc_whats_new_locales }}
           REVIEW_SUBMITTED: ${{ steps.submit_review.outputs.review_submitted }}
           REVIEW_SUBMISSION_STATE: ${{ steps.submit_review.outputs.review_submission_state }}
@@ -220,7 +329,13 @@ jobs:
             echo "- New IPA upload performed: false"
             echo "- ASC processing state: ${ASC_PROCESSING_STATE:-not-verified}"
             echo "- App Store version state: ${APP_STORE_VERSION_STATE:-not-created}"
-            echo "- What's New updated and verified: ${TEXT_METADATA_UPDATED:-false}"
+            echo "- Text metadata update requested: ${UPDATE_ASC_TEXT_METADATA}"
+            echo "- Media replacement requested: ${REPLACE_ASC_MEDIA}"
+            echo "- Metadata preparation outcome: ${METADATA_PREPARE_OUTCOME:-skipped}"
+            echo "- Text metadata updated and verified: ${TEXT_METADATA_UPDATED:-false}"
+            echo "- Media replaced and verified: ${MEDIA_REPLACED:-false}"
+            echo "- Metadata readback outcome: ${METADATA_READBACK_OUTCOME:-skipped}"
+            echo "- What's New updated and verified: ${WHATS_NEW_UPDATED:-false}"
             echo "- What's New locales: ${WHATS_NEW_LOCALES:-not-updated}"
             echo "- Review submitted: ${REVIEW_SUBMITTED:-false}"
             echo "- Review submission state: ${REVIEW_SUBMISSION_STATE:-not-submitted}"
