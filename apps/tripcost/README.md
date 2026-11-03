@@ -72,10 +72,34 @@ The repository-relative package in `packages/stmini_flutter` contains the exact
 upstream source baseline and a documented native retry patch; see its README and
 `UPSTREAM.json` for provenance.
 
-Initialization and loading happen only after an explicit tap. A main-document
+Initialization and loading happen after an explicit page-opening action, or on
+cold start after the opt-in described below. A main-document
 loading failure shows a Retry button, and the native navigation bar also offers
 Reload. After granting network access or restoring the connection, retry reloads
 the failed address in the same page. The app no longer uses a separate iOS
 privacy WebView or Android browser route. Failure to present the container uses
-the existing Flutter failure message. No startup request or unrelated probe is
-added.
+the existing Flutter failure message. No unrelated network probe is added.
+
+## Opt-in Web startup
+
+On the Settings screen, hold exactly three touch fingers stationary for five
+seconds. Timing starts when the third finger touches. Releasing/cancelling a
+finger, moving beyond the touch tolerance, adding a fourth finger, leaving the
+screen, or backgrounding the app cancels the hold. All fingers must be released
+before another attempt. Normal single-finger scrolling and navigation keep their
+existing behavior.
+
+Activation first saves the independent local preference
+`startup.polymer_web_enabled.v1`, then opens
+`https://h5.globalsmartchoose.com/polymer/h5app/#/` through the existing
+`AppWebLauncher` and `mini_web` container. There is no confirmation or additional
+mode control. A preference-write failure prevents opening and offers Retry.
+
+Once enabled, later cold starts present that same online page while the launch
+mark is still mounted, before navigating to the existing Home/onboarding fallback
+behind the native container. This is an intentional startup-network exception to
+the default tap-only online-page behavior. Closing the container reveals the
+native app; the preference stays enabled. Resuming an already-running app does
+not reopen the page. Presentation failure falls back to native UI and offers
+Retry without disabling the saved mode. Network or document-loading failures
+remain in the native container's existing Retry/Reload UI.

@@ -44,13 +44,18 @@ PaymentMethodModel fixturePaymentMethod() => PaymentMethodModel(
   createdAt: DateTime.utc(2026, 8, 17, 8),
 );
 
-TripModel fixtureTrip({Money? budget, TripStatus status = TripStatus.active}) {
+TripModel fixtureTrip({
+  Money? budget,
+  TripStatus status = TripStatus.active,
+  DateTime? startDate,
+  DateTime? endDate,
+}) {
   return TripModel(
     metadata: fixtureMetadata('trip-1'),
     name: 'Tokyo week',
     destinationCodes: const <String>['JP'],
-    startDate: DateTime.utc(2026, 8, 15),
-    endDate: DateTime.utc(2026, 8, 21),
+    startDate: startDate ?? DateTime.utc(2026, 8, 15),
+    endDate: endDate ?? DateTime.utc(2026, 8, 21),
     homeCurrency: fixtureCny,
     localCurrencies: <Currency>[fixtureJpy],
     totalBudget: budget ?? Money.parse('1000', fixtureCny),

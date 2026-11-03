@@ -21,8 +21,9 @@ final class AppWebLauncher {
         'An absolute HTTPS URL is required.',
       );
     }
-    // Initialize only after an explicit page-opening action. Concurrent opens
-    // share initialization; a failed initialization can be tried again.
+    // Initialize for a page-opening request, including cold start after the
+    // user enabled Web startup. Concurrent opens share initialization; a failed
+    // initialization can be tried again.
     await (_initialization ??= _initialize());
     await StminiFlutter.openWeb(
       uri.toString(),

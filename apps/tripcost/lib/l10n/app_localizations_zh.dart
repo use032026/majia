@@ -1497,6 +1497,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privacyPolicyTitle => '隐私政策';
 
   @override
+  String get webStartupModeSaveFailed => '无法保存网页启动模式，请重试。';
+
+  @override
+  String get webStartupPresentationFailed => '无法打开在线页面，你可以重试。后续启动时仍会自动打开。';
+
+  @override
+  String get webStartupRetry => '重试';
+
+  @override
   String get privacyPolicyLoadFailed => '无法加载隐私政策，请检查网络后重试。';
 
   @override

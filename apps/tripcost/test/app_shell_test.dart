@@ -22,6 +22,7 @@ void main() {
     tester.view.padding = const FakeViewPadding(bottom: 102);
     final database = createIsolatedTestDatabase();
     final rateRequests = FakeRateRequestCounter();
+    final now = DateTime.now().toUtc();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -36,7 +37,12 @@ void main() {
             MemorySettingsRepository(),
           ),
           tripRepositoryProvider.overrideWithValue(
-            MemoryTripRepository([fixtureTrip()]),
+            MemoryTripRepository([
+              fixtureTrip(
+                startDate: now.subtract(const Duration(days: 1)),
+                endDate: now.add(const Duration(days: 5)),
+              ),
+            ]),
           ),
           expenseRepositoryProvider.overrideWithValue(
             MemoryExpenseRepository(),

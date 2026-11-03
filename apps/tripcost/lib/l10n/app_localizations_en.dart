@@ -1571,6 +1571,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicyTitle => 'Privacy policy';
 
   @override
+  String get webStartupModeSaveFailed =>
+      'Web startup mode could not be saved. Try again.';
+
+  @override
+  String get webStartupPresentationFailed =>
+      'The online page could not be opened. You can retry. Automatic opening remains enabled for future launches.';
+
+  @override
+  String get webStartupRetry => 'Retry';
+
+  @override
   String get privacyPolicyLoadFailed =>
       'The privacy policy could not be loaded. Check your connection and try again.';
 
