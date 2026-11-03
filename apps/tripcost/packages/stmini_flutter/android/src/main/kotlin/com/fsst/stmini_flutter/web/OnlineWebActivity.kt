@@ -2,7 +2,6 @@ package com.fsst.stmini_flutter.web
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -15,25 +14,17 @@ import android.util.Log
 import android.view.Gravity
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
-import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.ConsoleMessage
 import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.ScrollView
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import com.fsst.stmini_flutter.BuildConfig
 import org.json.JSONObject
-import java.util.Locale
 
 /** Standalone display owner for an ordinary online Web document. */
 internal class OnlineWebActivity : Activity() {
@@ -99,12 +90,6 @@ internal class OnlineWebActivity : Activity() {
     private lateinit var core: OnlineWebCore
     private var header: FrameLayout? = null
     private var headerTitle: TextView? = null
-    private lateinit var failureView: ScrollView
-    private lateinit var spinner: ProgressBar
-    private var navigationUrl: String? = null
-    private var failedUrl: String? = null
-    private var loadingPage = false
-    private var usesChinese = false
     private var predictiveBackCallback: OnBackInvokedCallback? = null
     private val createdAtMs = SystemClock.elapsedRealtime()
     private var navigationStartedAtMs: Long? = null
@@ -125,7 +110,6 @@ internal class OnlineWebActivity : Activity() {
         root.addView(webView, FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         ))
-        configureFailureView()
         setContentView(root)
         core = OnlineWebCore(webView)
         core.onTitleChanged = { title -> headerTitle?.text = title }
@@ -143,33 +127,12 @@ internal class OnlineWebActivity : Activity() {
             }
         }
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                if (request.url.scheme.equals("mailto", ignoreCase = true)) {
-                    // Keep this user-driven OS hand-off outside Bridge and
-                    // ordinary URL navigation. Iframes never open mail apps.
-                    if (request.isForMainFrame && request.hasGesture()) {
-                        try {
-                            startActivity(Intent(Intent.ACTION_SENDTO, request.url))
-                        } catch (_: ActivityNotFoundException) {
-                            Toast.makeText(this@OnlineWebActivity, text(
-                                "请先设置可用的邮件应用，或复制邮箱地址后联系。",
-                                "Set up a mail app, or copy the email address to contact us."
-                            ), Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    return true
-                }
-                val blocked = OnlineWebCore.NavigationPolicy.blocks(request, allowInsecureHttpNavigation)
-                if (!blocked && request.isForMainFrame) navigationUrl = request.url.toString()
-                return blocked
-            }
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
+                OnlineWebCore.NavigationPolicy.blocks(request, allowInsecureHttpNavigation)
 
             override fun onPageCommitVisible(view: WebView, committedUrl: String) {
                 super.onPageCommitVisible(view, committedUrl)
                 reportTiming("navigation.committed", committedUrl)
-                // WebView may commit its own error document after reporting a
-                // failed main request. It must not hide the native retry UI.
-                if (failedUrl != null) return
                 core.onTopLevelPageCommit(committedUrl)
                 if (visibility.onPageCommitted()) sendPageWillAppear()
             }
@@ -177,40 +140,23 @@ internal class OnlineWebActivity : Activity() {
             override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 navigationStartedAtMs = SystemClock.elapsedRealtime()
-                if (isPermittedUrl(url)) navigationUrl = url
-                failedUrl = null
-                showLoading()
                 reportTiming("navigation.started", url)
             }
 
             override fun onPageFinished(view: WebView, url: String?) {
                 super.onPageFinished(view, url)
                 reportTiming("navigation.finished", url)
-                if (url == navigationUrl) {
-                    loadingPage = false
-                    spinner.visibility = View.GONE
-                }
-                // onPageFinished also follows onReceivedError. Only a fresh
-                // attempt clears failedUrl; this callback never does.
             }
 
             override fun onReceivedError(view: WebView, request: WebResourceRequest, error: android.webkit.WebResourceError) {
                 super.onReceivedError(view, request, error)
-                if (isCurrentMainRequest(request) && error.description?.toString() != "net::ERR_ABORTED") {
-                    showFailure(request.url.toString())
+                if (request.isForMainFrame) {
                     reportTiming(
                         event = "navigation.failed",
                         url = request.url?.toString(),
                         errorCode = error.errorCode,
                         errorDescription = error.description?.toString()
                     )
-                }
-            }
-
-            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
-                super.onReceivedHttpError(view, request, response)
-                if (isCurrentMainRequest(request) && response.statusCode >= 400) {
-                    showFailure(request.url.toString())
                 }
             }
         }
@@ -228,13 +174,6 @@ internal class OnlineWebActivity : Activity() {
     private fun loadIntent(source: Intent): Boolean {
         val url = source.getStringExtra(EXTRA_URL) ?: return false
         allowInsecureHttpNavigation = source.getBooleanExtra(EXTRA_ALLOW_INSECURE_HTTP, false)
-        val language = runCatching { Uri.parse(url).getQueryParameter("lang") }.getOrNull()
-        usesChinese = when (language) {
-            "zh" -> true
-            "en" -> false
-            else -> Locale.getDefault().language == "zh"
-        }
-        updateFailureText()
         visibility.onNewDocument()
         loadedUrlForTest = url
         loadedTitleForTest = source.getStringExtra(EXTRA_TITLE)
@@ -248,7 +187,8 @@ internal class OnlineWebActivity : Activity() {
             onMessage = ::handleBridgeMessage,
             onUnavailable = { /* The document stays usable without a bridge. */ }
         )
-        loadPage(url)
+        reportTiming("navigation.load_requested", url)
+        core.load(url)
         return true
     }
 
@@ -319,12 +259,10 @@ internal class OnlineWebActivity : Activity() {
             header = null
             headerTitle = null
             (webView.layoutParams as FrameLayout.LayoutParams).topMargin = 0
-            (failureView.layoutParams as FrameLayout.LayoutParams).topMargin = 0
             return
         }
         if (header == null) addHeader()
         headerTitle?.text = title.orEmpty()
-        header?.findViewWithTag<ImageButton>("online-web-reload")?.contentDescription = text("重新加载", "Reload")
     }
 
     private fun addHeader() {
@@ -337,14 +275,6 @@ internal class OnlineWebActivity : Activity() {
             setBackgroundColor(0x00000000)
             setOnClickListener { if (!core.goBackIfPossible()) finish() }
         }
-        val reload = ImageButton(this).apply {
-            tag = "online-web-reload"
-            contentDescription = text("重新加载", "Reload")
-            setImageResource(android.R.drawable.ic_popup_sync)
-            imageTintList = ColorStateList.valueOf(Color.BLACK)
-            setBackgroundColor(0x00000000)
-            setOnClickListener { reloadPage() }
-        }
         val label = TextView(this).apply {
             gravity = Gravity.CENTER
             textSize = 16f
@@ -355,102 +285,10 @@ internal class OnlineWebActivity : Activity() {
         bar.addView(label, FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, size, Gravity.CENTER
         ).apply { leftMargin = size; rightMargin = size })
-        bar.addView(reload, FrameLayout.LayoutParams(size, size, Gravity.END or Gravity.CENTER_VERTICAL))
         root.addView(bar, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, size, Gravity.TOP))
         header = bar
         headerTitle = label
         (webView.layoutParams as FrameLayout.LayoutParams).topMargin = size
-        (failureView.layoutParams as FrameLayout.LayoutParams).topMargin = size
-    }
-
-    private fun text(chinese: String, english: String) = if (usesChinese) chinese else english
-
-    private fun configureFailureView() {
-        spinner = ProgressBar(this).apply { visibility = View.GONE }
-        root.addView(spinner, FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER
-        ))
-        val padding = (24 * resources.displayMetrics.density + 0.5f).toInt()
-        val stack = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            setPadding(padding, padding * 2, padding, padding)
-        }
-        stack.addView(TextView(this).apply {
-            tag = "online-web-error-message"
-            gravity = Gravity.CENTER
-            textSize = 17f
-            setTextColor(Color.BLACK)
-        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        stack.addView(Button(this).apply {
-            tag = "online-web-retry"
-            setOnClickListener { reloadPage() }
-        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        stack.addView(Button(this).apply {
-            tag = "online-web-error-back"
-            setOnClickListener { goBackOrFinish() }
-        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-        failureView = ScrollView(this).apply {
-            tag = "online-web-error"
-            visibility = View.GONE
-            setBackgroundColor(Color.WHITE)
-            addView(stack)
-        }
-        root.addView(failureView, FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-        ))
-    }
-
-    private fun updateFailureText() {
-        failureView.findViewWithTag<TextView>("online-web-error-message").text = text(
-            "网页加载失败，请检查网络连接及网络权限后重试。",
-            "Unable to load the page. Check your connection and network access, then retry."
-        )
-        failureView.findViewWithTag<Button>("online-web-retry").text = text("重新加载", "Reload")
-        failureView.findViewWithTag<Button>("online-web-error-back").text = text("返回", "Back")
-    }
-
-    private fun isPermittedUrl(url: String?): Boolean = runCatching {
-        val uri = Uri.parse(url ?: return@runCatching false)
-        !uri.host.isNullOrEmpty() && (uri.scheme == "https" || (allowInsecureHttpNavigation && uri.scheme == "http"))
-    }.getOrDefault(false)
-
-    private fun isCurrentMainRequest(request: WebResourceRequest): Boolean =
-        request.isForMainFrame && request.url.toString() == navigationUrl
-
-    private fun showLoading() {
-        loadingPage = true
-        failureView.visibility = View.GONE
-        webView.visibility = View.VISIBLE
-        spinner.visibility = View.VISIBLE
-    }
-
-    private fun showFailure(url: String) {
-        if (isFinishing || isDestroyed) return
-        failedUrl = url
-        loadingPage = false
-        spinner.visibility = View.GONE
-        webView.visibility = View.INVISIBLE
-        failureView.visibility = View.VISIBLE
-    }
-
-    private fun reloadPage() {
-        val currentTarget = if (loadingPage) navigationUrl else webView.url?.takeIf(::isPermittedUrl)
-        val url = failedUrl ?: currentTarget ?: navigationUrl ?: return
-        loadPage(url)
-    }
-
-    private fun loadPage(url: String) {
-        if (isFinishing || isDestroyed || !isPermittedUrl(url)) return
-        // Update the target before stopping the preceding request. Late
-        // failures for a different URL must not replace this fresh attempt.
-        navigationUrl = url
-        failedUrl = null
-        webView.stopLoading()
-        visibility.onNewDocument()
-        showLoading()
-        reportTiming("navigation.load_requested", url)
-        core.load(url)
     }
 
     @Deprecated("Deprecated in Java")

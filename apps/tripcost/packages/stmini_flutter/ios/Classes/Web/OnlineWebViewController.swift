@@ -21,33 +21,14 @@ final class OnlineWebWeakScriptMessageHandler: NSObject, WKScriptMessageHandler 
 /// WebKit's own history swipe disabled: otherwise its recognizer can consume
 /// the gesture and leave a pushed native page visibly stuck in place.
 final class OnlineWebNavigationController: UINavigationController, UIGestureRecognizerDelegate {
-  private lazy var rootBackGesture: UIScreenEdgePanGestureRecognizer = {
-    let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleRootBackGesture(_:)))
-    gesture.edges = .left
-    gesture.delegate = self
-    return gesture
-  }()
-
   override func viewDidLoad() {
     super.viewDidLoad()
     interactivePopGestureRecognizer?.delegate = self
     interactivePopGestureRecognizer?.isEnabled = true
-    view.addGestureRecognizer(rootBackGesture)
   }
 
   func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-    if gestureRecognizer === rootBackGesture {
-      return viewControllers.count == 1 && isNavigationBarHidden
-    }
-    return viewControllers.count > 1
-  }
-
-  @objc private func handleRootBackGesture(_ gesture: UIScreenEdgePanGestureRecognizer) {
-    guard gesture.state == .ended,
-          gesture.translation(in: view).x > 80 || gesture.velocity(in: view).x > 500,
-          viewControllers.count == 1,
-          isNavigationBarHidden else { return }
-    (topViewController as? OnlineWebPageViewController)?.handleHostBackGesture()
+    viewControllers.count > 1
   }
 }
 
@@ -138,24 +119,6 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private var didNotifyClose = false
   private let createdAt = ProcessInfo.processInfo.systemUptime
   private var navigationStartedAt: TimeInterval?
-  private var activeNavigation: WKNavigation?
-  private var requestedURL: URL?
-  private var failedURL: URL?
-  private var showingFailure = false
-  private let spinner = UIActivityIndicatorView(style: .medium)
-  private let failureScrollView = UIScrollView()
-
-  private var usesChinese: Bool {
-    let language = URLComponents(url: initialURL, resolvingAgainstBaseURL: false)?
-      .queryItems?.first(where: { $0.name == "lang" })?.value
-    if language == "zh" { return true }
-    if language == "en" { return false }
-    return Locale.preferredLanguages.first?.lowercased().hasPrefix("zh") == true
-  }
-
-  private func text(_ chinese: String, _ english: String) -> String {
-    usesChinese ? chinese : english
-  }
 
   var currentURL: URL? { webView?.url ?? initialURL }
 
@@ -212,17 +175,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     owner.onTitleChanged = { [weak self] title in
       self?.navigationItem.title = title
     }
-    view = UIView()
-    view.backgroundColor = .systemBackground
-    webView.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(webView)
-    NSLayoutConstraint.activate([
-      webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-      webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-      webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-      webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-    ])
-    configureFailureView()
+    view = webView
   }
 
   override func viewDidLoad() {
@@ -231,12 +184,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     #if DEBUG
     userContentController.add(messageHandlerProxy, name: Self.debugLogHandlerName)
     #endif
-    if showNavigationBar {
-      navigationItem.rightBarButtonItem = UIBarButtonItem(
-        barButtonSystemItem: .refresh, target: self, action: #selector(reloadPage))
-      navigationItem.rightBarButtonItem?.accessibilityLabel = text("重新加载", "Reload")
-    }
-    loadPage(initialURL)
+    reportTiming("navigation.load_requested", url: initialURL)
+    webView.load(URLRequest(url: initialURL))
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -301,9 +250,6 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     userContentController.removeScriptMessageHandler(forName: Self.debugLogHandlerName)
     #endif
     webView?.navigationDelegate = nil
-    webView?.stopLoading()
-    activeNavigation = nil
-    spinner.stopAnimating()
     owner?.release()
   }
 
@@ -324,29 +270,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     }
   }
 
-  fileprivate func handleHostBackGesture() {
-    if webView?.canGoBack == true {
-      webView.goBack()
-    } else {
-      goBackOrClose()
-    }
-  }
-
   func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-    if let url = navigationAction.request.url, url.scheme?.lowercased() == "mailto" {
-      // Only an explicit link in the top document may hand off to the mail
-      // composer. Never grant subframes or scripted redirects this ability.
-      if navigationAction.navigationType == .linkActivated,
-         navigationAction.sourceFrame.isMainFrame,
-         navigationAction.targetFrame?.isMainFrame != false {
-        UIApplication.shared.open(url, options: [:]) { [weak self] opened in
-          guard !opened else { return }
-          DispatchQueue.main.async { self?.showMailUnavailable() }
-        }
-      }
-      decisionHandler(.cancel)
-      return
-    }
     // A subframe is allowed to render/navigate normally. Bridge authority is
     // separately denied by OnlineWebViewController's `isMainFrame` gate.
     if navigationAction.targetFrame?.isMainFrame == false {
@@ -357,8 +281,11 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       decisionHandler(.cancel)
       return
     }
-    if isPermittedURL(url) {
-      requestedURL = url
+    if url.scheme?.lowercased() == "https" {
+      decisionHandler(.allow)
+      return
+    }
+    if allowInsecureHttpNavigation, url.scheme?.lowercased() == "http", url.host != nil {
       decisionHandler(.allow)
       return
     }
@@ -366,22 +293,13 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    guard !releasedWebResources, navigation === activeNavigation, !showingFailure else { return }
-    spinner.stopAnimating()
-    failedURL = nil
     reportTiming("navigation.finished", url: webView.url)
     if owner.didCommitPage() { sendPageWillAppear() }
   }
 
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-    guard !releasedWebResources else { return }
-    activeNavigation = navigation
-    showingFailure = false
-    failureScrollView.isHidden = true
-    webView.isHidden = false
-    spinner.startAnimating()
     navigationStartedAt = ProcessInfo.processInfo.systemUptime
-    reportTiming("navigation.started", url: requestedURL)
+    reportTiming("navigation.started", url: webView.url)
   }
 
   func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
@@ -389,137 +307,11 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-    reportTiming("navigation.provisional_failed", url: requestedURL, error: error)
-    handleNavigationFailure(error, navigation: navigation)
+    reportTiming("navigation.provisional_failed", url: webView.url, error: error)
   }
 
   func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-    reportTiming("navigation.failed", url: requestedURL, error: error)
-    handleNavigationFailure(error, navigation: navigation)
-  }
-
-  func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-    guard !releasedWebResources else { return }
-    activeNavigation = nil
-    showFailure(url: webView.url ?? requestedURL)
-  }
-
-  func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse,
-               decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-    if navigationResponse.isForMainFrame,
-       let response = navigationResponse.response as? HTTPURLResponse,
-       response.statusCode >= 400 {
-      showFailure(url: response.url)
-      decisionHandler(.cancel)
-      return
-    }
-    decisionHandler(.allow)
-  }
-
-  private func isPermittedURL(_ url: URL) -> Bool {
-    guard let host = url.host, !host.isEmpty else { return false }
-    return url.scheme?.lowercased() == "https" ||
-      (allowInsecureHttpNavigation && url.scheme?.lowercased() == "http")
-  }
-
-  private func configureFailureView() {
-    spinner.hidesWhenStopped = true
-    spinner.translatesAutoresizingMaskIntoConstraints = false
-    view.addSubview(spinner)
-    NSLayoutConstraint.activate([
-      spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-    ])
-
-    let message = UILabel()
-    message.text = text(
-      "网页加载失败，请检查网络连接及网络权限后重试。",
-      "Unable to load the page. Check your connection and network access, then retry.")
-    message.font = .preferredFont(forTextStyle: .body)
-    message.adjustsFontForContentSizeCategory = true
-    message.numberOfLines = 0
-    message.textAlignment = .center
-    let retry = UIButton(type: .system)
-    retry.setTitle(text("重新加载", "Reload"), for: .normal)
-    retry.addTarget(self, action: #selector(reloadPage), for: .touchUpInside)
-    let close = UIButton(type: .system)
-    close.setTitle(text("返回", "Back"), for: .normal)
-    close.addTarget(self, action: #selector(goBackOrClose), for: .touchUpInside)
-    let stack = UIStackView(arrangedSubviews: [message, retry, close])
-    stack.axis = .vertical
-    stack.spacing = 20
-    stack.translatesAutoresizingMaskIntoConstraints = false
-    failureScrollView.translatesAutoresizingMaskIntoConstraints = false
-    failureScrollView.accessibilityIdentifier = "online-web-error"
-    retry.accessibilityIdentifier = "online-web-retry"
-    failureScrollView.isHidden = true
-    failureScrollView.backgroundColor = .systemBackground
-    view.addSubview(failureScrollView)
-    failureScrollView.addSubview(stack)
-    NSLayoutConstraint.activate([
-      failureScrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-      failureScrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-      failureScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-      failureScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      stack.leadingAnchor.constraint(equalTo: failureScrollView.contentLayoutGuide.leadingAnchor, constant: 24),
-      stack.trailingAnchor.constraint(equalTo: failureScrollView.contentLayoutGuide.trailingAnchor, constant: -24),
-      stack.topAnchor.constraint(equalTo: failureScrollView.contentLayoutGuide.topAnchor, constant: 48),
-      stack.bottomAnchor.constraint(equalTo: failureScrollView.contentLayoutGuide.bottomAnchor, constant: -24),
-      stack.widthAnchor.constraint(equalTo: failureScrollView.frameLayoutGuide.widthAnchor, constant: -48),
-    ])
-  }
-
-  @objc private func reloadPage() {
-    // A provisional first load can fail before WKWebView.url is set. Keep the
-    // actual failed address, including its query, rather than reloading nil or
-    // the preceding successful document.
-    let currentTarget = webView.isLoading ? requestedURL : webView.url
-    loadPage(failedURL ?? currentTarget ?? requestedURL ?? initialURL)
-  }
-
-  private func showMailUnavailable() {
-    guard !releasedWebResources, view.window != nil, presentedViewController == nil else { return }
-    let alert = UIAlertController(
-      title: text("无法打开邮件", "Unable to open email"),
-      message: text("请先设置可用的邮件应用，或复制邮箱地址后联系。",
-                    "Set up a mail app, or copy the email address to contact us."),
-      preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: text("好", "OK"), style: .default))
-    present(alert, animated: true)
-  }
-
-  private func loadPage(_ url: URL) {
-    guard !releasedWebResources, isPermittedURL(url) else { return }
-    activeNavigation = nil
-    webView.stopLoading()
-    owner.willLoadReplacementDocument()
-    requestedURL = url
-    failedURL = nil
-    showingFailure = false
-    failureScrollView.isHidden = true
-    webView.isHidden = false
-    spinner.startAnimating()
-    reportTiming("navigation.load_requested", url: url)
-    activeNavigation = webView.load(URLRequest(
-      url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30))
-  }
-
-  private func handleNavigationFailure(_ error: Error, navigation: WKNavigation?) {
-    let failure = error as NSError
-    guard !releasedWebResources, navigation === activeNavigation,
-          !(failure.domain == NSURLErrorDomain && failure.code == NSURLErrorCancelled) else { return }
-    let failingURL = (failure.userInfo[NSURLErrorFailingURLErrorKey] as? URL) ??
-      (failure.userInfo[NSURLErrorFailingURLStringErrorKey] as? String).flatMap(URL.init(string:))
-    showFailure(url: failingURL ?? requestedURL)
-  }
-
-  private func showFailure(url: URL?) {
-    guard !releasedWebResources else { return }
-    failedURL = url.flatMap { isPermittedURL($0) ? $0 : nil } ?? requestedURL ?? initialURL
-    showingFailure = true
-    spinner.stopAnimating()
-    webView.isHidden = true
-    failureScrollView.isHidden = false
+    reportTiming("navigation.failed", url: webView.url, error: error)
   }
 
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {

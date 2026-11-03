@@ -70,20 +70,17 @@ RUN_FRANKFURTER_SMOKE=1 \
 All online pages on iOS and Android use the shared app Web launcher and
 `stmini_flutter`'s `mini_web` container. The privacy-policy button keeps the
 existing `https://tripcost.fit/privacy.html?lang=zh|en` address and app language.
-The repository-relative package in `packages/stmini_flutter` contains the exact
-upstream source baseline and a documented native retry patch; see its README and
-`UPSTREAM.json` for provenance.
+The repository-relative package in `packages/stmini_flutter` is an unchanged
+snapshot of the `mini_web` source at the commit recorded in `UPSTREAM.json`.
 
 Initialization and loading happen after an explicit page-opening action, or on
 cold start after the opt-in described below. The privacy page and Web startup
-page use their own HTML header without an extra native navigation bar. On iOS,
-swipe from the left edge to go back in Web history or close the root page; on
-Android, use the system Back action. A main-document loading failure shows an
-in-page Retry button. After granting network access or restoring the connection,
-retry reloads the failed address in the same page. The app no longer uses a
-separate iOS privacy WebView or Android browser route. Failure to present the
-container uses the existing Flutter failure message. No unrelated network probe
-is added.
+page use their own HTML header without an extra native navigation bar. Pushed
+iOS pages keep the upstream navigation-stack edge gesture; Android uses its
+upstream system Back behavior. Loading failures follow the upstream WebView
+behavior. The app no longer uses a separate iOS privacy WebView or Android
+browser route. Failure to present the container uses the existing Flutter
+failure message. No unrelated network probe is added.
 
 ## Opt-in Web startup
 
@@ -94,9 +91,9 @@ handles H5 `open`, `close`, and `web_notifySessionChanged`: `/web` opens a new
 HTTPS WebView, while an H5 internal route such as `/login` opens a child
 WebView with the route payload in `__mini_open_route`. Login children carry
 `isBack=1`, so a successful login can return to the originating page. H5
-`close` pops that child or closes the root; the native back gesture and Android
-Back action use the same page stack. Session changes notify the other open Web
-pages to refresh their own auth state. Diagnostic `applog` calls are acknowledged.
+`close` pops that child or closes the root. Session changes notify the other
+open Web pages to refresh their own auth state. Diagnostic `applog` calls are
+acknowledged.
 
 The host accepts bridge calls only from a native-verified HTTPS top-level
 document and opens only HTTPS `/web` links. HTTP remains disabled. These are
@@ -124,4 +121,4 @@ the default tap-only online-page behavior. Closing the container reveals the
 native app; the preference stays enabled. Resuming an already-running app does
 not reopen the page. Presentation failure falls back to native UI and offers
 Retry without disabling the saved mode. Network or document-loading failures
-remain in the native container's in-page Retry UI.
+follow the unchanged `mini_web` container behavior.

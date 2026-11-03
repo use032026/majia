@@ -12,25 +12,8 @@ The package supports iOS and Android online pages through `initialize`,
 `openWeb`, `closeWeb`, lifecycle events, and the host bridge. It contains no Mini
 ZIP installer, offline runtime, package resources, or `openMini` API.
 
-The downstream patch adds native loading-failure feedback, an in-page Retry
-button, and a navigation-bar Reload button on both platforms. Retry loads the
-failed document in the existing page, preserving its URL query. Cancellation and
-subresource failures do not become whole-page errors. Network authorization is
-still controlled by the operating system; after granting access, the user can
-retry without leaving the page. No startup request or network probe is added.
-Explicit top-level `mailto:` link taps continue to open the system mail app;
-iframe and script navigation do not receive that permission.
-For a root page whose native navigation bar is hidden, iOS left-edge swipe
-returns within Web history or dismisses the container when no history remains.
-Pushed pages retain the native stack's left-edge pop behavior.
-
-Changes from the recorded snapshot are limited to the two native presentation
-files:
-
-- `ios/Classes/Web/OnlineWebViewController.swift`
-- `android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt`
-
-When updating the snapshot, compare against `UPSTREAM.json` and retain or replace
-the retry patch with an equivalent upstream implementation. Shared Web changes
-submitted upstream must follow that repository's `main`-first synchronization
-contract. This application snapshot does not change either upstream branch.
+No TripCost-specific plugin changes are applied. Navigation, loading failures,
+and external-link handling follow the recorded `mini_web` source exactly. When
+updating the snapshot, update the pinned commit and `UPSTREAM.json` together
+and verify every recorded file against its upstream hash. This application
+snapshot does not change either upstream branch.
