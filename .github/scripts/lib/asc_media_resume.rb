@@ -5,6 +5,20 @@ require "digest"
 module MajiaCI
   # Extends the pinned uploader: retain matching uploads across interrupted runs.
   module ASCMediaResume
+    def replace!(manifest, localizations)
+      @staged_media_collections = []
+      @stage_media_collections = true
+      begin
+        summary = super
+      ensure
+        @stage_media_collections = false
+      end
+      @staged_media_collections.each { |collection| finish_media_collection(**collection) }
+      summary
+    ensure
+      @staged_media_collections = nil
+    end
+
     private
 
     def replace_collection(localization_id, contract, display_type, files)
@@ -40,6 +54,15 @@ module MajiaCI
         @defer_media_processing = false
       end
 
+      collection = { set: set, contract: contract, desired: desired, obsolete: obsolete, display_type: display_type, reused: used.length }
+      if @stage_media_collections
+        @staged_media_collections << collection
+      else
+        finish_media_collection(**collection)
+      end
+    end
+
+    def finish_media_collection(set:, contract:, desired:, obsolete:, display_type:, reused:)
       desired.each do |asset|
         next if media_delivery_state(asset, contract) == "COMPLETE"
 
@@ -56,7 +79,7 @@ module MajiaCI
       unless observed.map { |asset| asset["id"] } == expected.map { |asset| asset["id"] }
         raise IOSBuild::ASC::ReleaseError, "failed to verify ordered resumed #{contract.fetch(:asset_relationship)} replacement"
       end
-      warn "ASC media verified: #{display_type}, #{desired.length} assets (#{used.length} reused)"
+      warn "ASC media verified: #{display_type}, #{desired.length} assets (#{reused} reused)"
     end
 
     def wait_for_processing(asset_id, contract)

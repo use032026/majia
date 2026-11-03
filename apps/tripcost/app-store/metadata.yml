@@ -41,6 +41,7 @@ localizations:
       Exchange rates and cost estimates are for reference only and are not financial or investment advice. Final charges depend on the merchant, card network, issuer, payment provider, and posting date.
   en-US:
     support_url: "https://tripcost.fit"
+    keywords: "travel,budget,currency,converter,expenses,receipt,OCR,DCC,exchange,trip,ledger"
     description: |
       RhinoSmart helps you understand the real cost of travel purchases before and after you pay.
 
@@ -64,6 +65,7 @@ localizations:
       Exchange rates and cost estimates are for reference only and are not financial or investment advice. Final charges depend on the merchant, card network, issuer, payment provider, and posting date.
   zh-Hans:
     support_url: "https://tripcost.fit"
+    keywords: "travel,budget,currency,converter,expenses,receipt,OCR,DCC,exchange,trip,ledger"
     description: |
       RhinoSmart helps you understand the real cost of travel purchases before and after you pay.
 
