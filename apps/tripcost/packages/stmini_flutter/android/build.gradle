@@ -1,0 +1,72 @@
+group 'com.fsst.stmini_flutter'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.9.22'
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.3.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace 'com.fsst.stmini_flutter'
+    compileSdk 34
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        // The reusable container uses only AndroidX/WebView APIs available in
+        // Flutter's current Android host baseline. Do not inherit the main
+        // application's unrelated API 26 product requirement.
+        minSdk 24
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    // mini_web packages the shared online-Web implementation and its theme
+    // only; no local runtime sources or resources remain in this branch.
+    sourceSets {
+        // Android resource sets require their root, not a qualifier child.
+        // The only remaining resource below it is the Web activity theme.
+        main.res.srcDirs = ['src/main/res']
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.lifecycle:lifecycle-process:2.8.4'
+    // `addJavascriptInterface` is visible to every frame in a WebView. The
+    // constrained WebMessageListener API lets the Web bridge bind to an
+    // explicit HTTPS origin instead.
+    implementation 'androidx.webkit:webkit:1.9.0'
+
+    // Keep the security-critical link and package-path contract executable in
+    // the plugin itself. These are local JVM tests; no device is required.
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.12.2'
+}

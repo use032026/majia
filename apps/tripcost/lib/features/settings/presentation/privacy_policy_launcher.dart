@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:trip_cost/core/domain/core_models.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:trip_cost/core/platform/app_web_launcher.dart';
 
 const _privacyPolicyHost = 'tripcost.fit';
 const _privacyPolicyPath = '/privacy.html';
@@ -24,21 +22,7 @@ Uri privacyPolicyUriFor({
   });
 }
 
-Future<void> openPrivacyPolicy(Uri uri) async {
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
-    final opened = await const MethodChannel('trip_cost/privacy_policy')
-        .invokeMethod<bool>('openPrivacyPolicy', {
-          'url': uri.toString(),
-          'chinese': uri.queryParameters['lang'] == 'zh',
-        });
-    if (opened != true) {
-      throw PlatformException(code: 'privacy_policy_unavailable');
-    }
-    return;
-  }
-  await launchUrl(
-    uri,
-    mode: LaunchMode.inAppBrowserView,
-    browserConfiguration: const BrowserConfiguration(showTitle: true),
-  );
-}
+Future<void> openPrivacyPolicy(Uri uri) => appWebLauncher.open(
+  uri,
+  title: uri.queryParameters['lang'] == 'zh' ? '隐私政策' : 'Privacy policy',
+);

@@ -65,6 +65,17 @@ RUN_FRANKFURTER_SMOKE=1 \
 
 ## Online privacy policy
 
-The iOS privacy-policy button loads the existing `https://tripcost.fit/privacy.html?lang=zh|en` address. Registration follows the existing Scene/plugin lifecycle. Android keeps the existing in-app browser route.
+All online pages on iOS and Android use the shared app Web launcher and
+`stmini_flutter`'s `mini_web` container. The privacy-policy button keeps the
+existing `https://tripcost.fit/privacy.html?lang=zh|en` address and app language.
+The repository-relative package in `packages/stmini_flutter` contains the exact
+upstream source baseline and a documented native retry patch; see its README and
+`UPSTREAM.json` for provenance.
 
-On an explicit tap, the app requests the actual policy through an ephemeral `URLSession` and displays that response in its own nonpersistent `WKWebView`. First-network authorization is handled by iOS when required by the device and its current permission state. Loading failures offer retry, copy address, and close; failure to present the native page uses the existing Flutter failure message. No startup request or unrelated probe is added.
+Initialization and loading happen only after an explicit tap. A main-document
+loading failure shows a Retry button, and the native navigation bar also offers
+Reload. After granting network access or restoring the connection, retry reloads
+the failed address in the same page. The app no longer uses a separate iOS
+privacy WebView or Android browser route. Failure to present the container uses
+the existing Flutter failure message. No startup request or unrelated probe is
+added.
