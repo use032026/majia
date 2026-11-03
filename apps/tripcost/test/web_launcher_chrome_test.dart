@@ -25,7 +25,7 @@ void main() {
   });
 
   test(
-    'Web startup and privacy pages do not add a native navigation bar',
+    'privacy shows native navigation while Web startup hides it',
     () async {
       final startup = WebStartupController(
         store: _MemoryWebStartupModeStore(),
@@ -48,9 +48,8 @@ void main() {
       expect(opens, hasLength(2));
       expect(opens[0]['url'], WebStartupController.pageUri.toString());
       expect(opens[1]['url'], 'https://tripcost.fit/privacy.html?lang=zh');
-      for (final open in opens) {
-        expect(open['showNavigationBar'], isFalse);
-      }
+      expect(opens[0]['showNavigationBar'], isFalse);
+      expect(opens[1]['showNavigationBar'], isTrue);
 
       final initialization = calls.firstWhere(
         (call) => call.method == 'initialize',
