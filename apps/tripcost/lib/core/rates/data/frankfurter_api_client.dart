@@ -51,7 +51,7 @@ final class IoFrankfurterHttpTransport implements FrankfurterHttpTransport {
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.set(
         HttpHeaders.userAgentHeader,
-        'TripCost/1.0 Frankfurter-v2-client',
+        'RhinoSmart/1.0 Frankfurter-v2-client',
       );
       final response = await request.close().timeout(timeout);
       final body = await response

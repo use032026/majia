@@ -74,7 +74,7 @@ final class SettingsDataService {
   Future<File> createBackup() async {
     final directory = await _temporaryDirectory();
     final stamp = _clock().toLocal().toIso8601String().replaceAll(':', '-');
-    final file = File(path.join(directory.path, 'tripcost-backup-$stamp.json'));
+    final file = File(path.join(directory.path, 'rhinosmart-backup-$stamp.json'));
     await _backupService.exportTo(file);
     return file;
   }

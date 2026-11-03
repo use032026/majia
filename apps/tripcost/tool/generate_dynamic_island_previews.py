@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Adapt the approved 6.5-inch App Store set to Apple's current iPhone slot."""
+"""Adapt the 6.5-inch App Store composition to the configured 1206x2622 slot."""
 
 from pathlib import Path
 
 from PIL import Image, ImageOps
+
+from generate_app_store_previews import contact_sheet
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +26,7 @@ def main() -> None:
     if not sources:
         raise SystemExit(f"No approved App Store previews found in {SOURCE}")
 
+    outputs = []
     for source in sources:
         with Image.open(source) as image:
             output = ImageOps.fit(
@@ -34,7 +37,9 @@ def main() -> None:
             )
             destination = OUTPUT / source.name
             output.save(destination, format="PNG", optimize=True)
+            outputs.append(destination)
             print(destination.relative_to(ROOT))
+    print(contact_sheet(outputs, OUTPUT.name).relative_to(ROOT))
 
 
 if __name__ == "__main__":

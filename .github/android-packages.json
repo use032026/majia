@@ -74,7 +74,7 @@
       "application_id": "com.steady.lite"
     },
     "tripcost": {
-      "display_name": "RoamSum (TripCost)",
+      "display_name": "RhinoSmart",
       "path": "apps/tripcost",
       "secret_prefix": "TRIPCOST",
       "application_id": "com.tripcost.lite"

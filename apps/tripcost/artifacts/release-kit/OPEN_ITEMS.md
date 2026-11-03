@@ -1,6 +1,6 @@
-# RoamSum release-kit open items
+# RhinoSmart release-kit open items
 
-- Confirm the exact public legal name of the person or entity operating RoamSum. The current website identifies the operator as an independent RoamSum developer.
+- Confirm the exact public legal name of the person or entity operating RhinoSmart. The current website identifies the operator as an independent RhinoSmart developer.
 - Confirm that `djl13333995679@163.com` is the final public support and privacy contact address.
 - Identify the production hosting provider for `tripcost.fit` and update the website-data section if the provider retains access logs.
 - Verify that the production website and privacy-policy URLs are publicly reachable after deployment.

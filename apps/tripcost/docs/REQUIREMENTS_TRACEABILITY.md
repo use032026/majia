@@ -1,4 +1,4 @@
-# TripCost V1.0 需求追踪矩阵
+# RhinoSmart V1.0 需求追踪矩阵
 
 > 基线：`PRODUCT_SPEC.md` v0.2；范围冻结日期：2026-08-17
 

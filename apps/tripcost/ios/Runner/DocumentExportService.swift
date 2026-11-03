@@ -120,7 +120,7 @@ enum ExpensePdfRenderer {
     else {
       throw PdfRenderError.invalidDocument
     }
-    let requestedName = (document["filename"] as? String) ?? "tripcost-expenses.pdf"
+    let requestedName = (document["filename"] as? String) ?? "rhinosmart-expenses.pdf"
     let safeName = safeFilename(requestedName)
     let outputDirectory = FileManager.default.temporaryDirectory
       .appendingPathComponent("tripcost-export-\(UUID().uuidString)", isDirectory: true)

@@ -51,7 +51,7 @@ class LaunchMark extends StatelessWidget {
       width: size,
       height: size,
       filterQuality: FilterQuality.high,
-      semanticLabel: 'RoamSum',
+      semanticLabel: 'RhinoSmart',
     );
   }
 }

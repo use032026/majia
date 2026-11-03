@@ -1,10 +1,10 @@
-# TripCost 隐私、数据流与发布合规清单
+# RhinoSmart 隐私、数据流与发布合规清单
 
 > 适用版本：V1.0；复核日期：2026-09-23
 
 ## 1. 用户可见隐私政策（简体中文）
 
-TripCost 无需注册账户，也不保存完整卡号、CVV、身份证件或银行登录信息。行程、消费、设置和票据图片默认保存在本机；OCR 在本机执行，Apple 平台使用 Apple Vision，Android 使用随 App 分发的 ML Kit 模型，票据原图不会上传。
+RhinoSmart 无需注册账户，也不保存完整卡号、CVV、身份证件或银行登录信息。行程、消费、设置和票据图片默认保存在本机；OCR 在本机执行，Apple 平台使用 Apple Vision，Android 使用随 App 分发的 ML Kit 模型，票据原图不会上传。
 
 Apple 平台启用 iCloud 同步后，行程、消费、支付方式、汇率快照引用和用户设置等结构化数据会发送到用户自己的 CloudKit 私有数据库。票据原图不进入 CloudKit。关闭同步不会删除本地数据。Android 不提供 iCloud 同步。
 
@@ -14,7 +14,7 @@ Apple 平台启用 iCloud 同步后，行程、消费、支付方式、汇率快
 
 ## 2. User-facing privacy policy (English)
 
-TripCost does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device by default. OCR runs on device with Apple Vision on Apple platforms and bundled ML Kit models on Android; original receipt images are not uploaded.
+RhinoSmart does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device by default. OCR runs on device with Apple Vision on Apple platforms and bundled ML Kit models on Android; original receipt images are not uploaded.
 
 When iCloud sync is enabled on Apple platforms, structured data such as trips, expenses, payment methods, rate-snapshot references, and user settings is sent to the user’s private CloudKit database. Original receipt images are excluded. Turning sync off does not delete local data. Android does not offer iCloud sync.
 

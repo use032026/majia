@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>RoamSum</string>
+	<string>RhinoSmart</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,7 +17,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>trip_cost</string>
+	<string>RhinoSmart</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>CFBundlePackageType</key>
@@ -35,7 +35,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Take a photo to recognize prices on this device.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save trip summary images you create in RoamSum to your photo library.</string>
+	<string>Save trip summary images you create in RhinoSmart to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Choose an image to recognize prices on this device.</string>
 	<key>UIApplicationSceneManifest</key>

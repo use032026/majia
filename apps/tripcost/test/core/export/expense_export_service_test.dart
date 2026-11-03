@@ -76,7 +76,7 @@ void main() {
     final file = await service.createPdf(locale: 'zh-Hans');
 
     expect(await file.exists(), isTrue);
-    expect(gateway.pdfDocument!['title'], 'RoamSum 消费导出');
+    expect(gateway.pdfDocument!['title'], 'RhinoSmart 消费导出');
     final rows = gateway.pdfDocument!['rows']! as List<Object?>;
     final row = rows.single! as Map<String, Object?>;
     expect(row['transactionCurrency'], 'JPY');

@@ -29,7 +29,7 @@ class RunnerTests: XCTestCase {
     ]
     let url = try ExpensePdfRenderer.render(document: [
       "filename": "expenses-中文.pdf",
-      "title": "RoamSum 消费导出",
+      "title": "RhinoSmart 消费导出",
       "generatedAt": "2026年8月17日 16:00",
       "labels": labels,
       "rows": Array(repeating: row, count: 30),
@@ -73,7 +73,7 @@ class RunnerTests: XCTestCase {
 
     let url = try ExpensePdfRenderer.render(document: [
       "filename": "long-fields.pdf",
-      "title": "RoamSum 消费导出",
+      "title": "RhinoSmart 消费导出",
       "generatedAt": "2026年8月17日 16:00",
       "labels": labels,
       "rows": [row],

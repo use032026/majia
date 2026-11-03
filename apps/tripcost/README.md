@@ -1,6 +1,6 @@
-# TripCost
+# RhinoSmart
 
-TripCost 是旅行真实消费成本助手 RoamSum 的开发代号。Flutter 主应用支持 iOS 15+ 与 Android 24+；已具备精确金额、Drift、Frankfurter v2 与离线汇率链路、快速换算、支付成本与 DCC，以及行程 CRUD、预算仪表盘、消费账本、实际入账和本地费用校准。历史汇率与支付规则均以快照随消费保存。iCloud 与 Widget 仅在 Apple 平台启用；Android OCR 使用随包分发的本机模型。
+RhinoSmart 是旅行真实消费成本助手（项目目录为 `apps/tripcost`，开发代号为 TripCost）。Flutter 主应用支持 iOS 15+ 与 Android 24+；已具备精确金额、Drift、Frankfurter v2 与离线汇率链路、快速换算、支付成本与 DCC，以及行程 CRUD、预算仪表盘、消费账本、实际入账和本地费用校准。历史汇率与支付规则均以快照随消费保存。iCloud 与 Widget 仅在 Apple 平台启用；Android OCR 使用随包分发的本机模型。
 
 ## 本地启动
 
@@ -27,11 +27,11 @@ flutter run \
 ./tool/generate_pigeon.sh
 ```
 
-提交 schema 与 Dart/Swift 生成产物。正式显示名与 Apple 标识已经冻结；能力、签名材料和人工验收边界见 `docs/IOS_CAPABILITIES.md`。
+提交 schema 与 Dart/Swift 生成产物。中英文显示名统一为 RhinoSmart，Apple 标识保持现有值；能力、签名材料和人工验收边界见 `docs/IOS_CAPABILITIES.md`。
 
 ## iOS 云构建
 
-仓库通过手动触发的 `TripCost iOS Release` GitHub Actions 工作流归档 Runner 和 AppWidget。工作流默认不上传 App Store Connect；生产签名材料只存放在受保护的 `tripcost-production` Environment 中。
+仓库通过手动触发的 `RhinoSmart iOS Release` GitHub Actions 工作流归档 Runner 和 AppWidget。工作流默认不上传 App Store Connect；生产签名材料只存放在受保护的 `tripcost-production` Environment 中。
 
 - 构建配置：`.github/ios-build.yml`
 - 工作流：[`../../.github/workflows/tripcost-ios-release.yml`](../../.github/workflows/tripcost-ios-release.yml)

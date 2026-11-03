@@ -1,4 +1,4 @@
-RoamSum helps you understand the real cost of travel purchases before and after you pay.
+RhinoSmart helps you understand the real cost of travel purchases before and after you pay.
 
 Convert local prices with daily reference exchange rates, then keep working with cached data when a connection is unavailable. Scan a price tag, menu, or receipt with on-device text recognition, or enter an amount manually.
 
@@ -6,7 +6,7 @@ Compare payment methods using the rules that matter to you, including foreign tr
 
 Build trips with multiple destinations, dates, currencies, and budgets. Record expenses in the original currency, preserve the rate and payment-rule snapshot used for each entry, and add the final posted amount later. The ledger shows category totals and helps you see how much of the trip budget remains.
 
-RoamSum also lets you:
+RhinoSmart also lets you:
 
 • Manage reusable payment methods and fee rules
 • Save receipts with their related expenses

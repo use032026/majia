@@ -1,6 +1,6 @@
-# TripCost website
+# RhinoSmart website
 
-Static, dependency-free website for TripCost.
+Static, dependency-free website for RhinoSmart.
 
 ## Files
 
@@ -8,7 +8,7 @@ Static, dependency-free website for TripCost.
 - `privacy.html`: bilingual privacy policy
 - `styles.css`: responsive layout and print styles
 - `site.js`: language preference and mobile navigation
-- `assets/`: web-sized copies of existing TripCost brand artwork
+- `assets/`: web-sized copies of existing RhinoSmart brand artwork
 
 ## Local preview
 
@@ -18,7 +18,7 @@ the files directly also works, but an HTTP preview more closely matches hosting.
 ## Before production publishing
 
 1. Confirm that `djl13333995679@163.com` is the public privacy/support address.
-2. Add the real App Store download link when the listing is available.
+2. Verify that any App Store download link points to the existing live listing.
 3. Name the production hosting provider in the website-data section of
    `privacy.html` if it keeps access logs.
 4. Recheck the policy whenever app permissions, SDKs, sync fields, providers, or

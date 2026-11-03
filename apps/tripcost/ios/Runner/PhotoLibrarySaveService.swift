@@ -78,7 +78,7 @@ final class PhotoLibrarySaveService {
   private func save(_ data: Data, result: @escaping FlutterResult) {
     PHPhotoLibrary.shared().performChanges {
       let options = PHAssetResourceCreationOptions()
-      options.originalFilename = "roamsum-trip-summary-\(UUID().uuidString).png"
+      options.originalFilename = "rhinosmart-trip-summary-\(UUID().uuidString).png"
       options.uniformTypeIdentifier = UTType.png.identifier
       PHAssetCreationRequest.forAsset().addResource(
         with: .photo,

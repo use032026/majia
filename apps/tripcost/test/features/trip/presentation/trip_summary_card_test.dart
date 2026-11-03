@@ -5,7 +5,7 @@ import 'package:trip_cost/features/trip/presentation/widgets/trip_summary_card.d
 void main() {
   testWidgets('renders only aggregate trip summary data', (tester) async {
     const data = TripSummaryCardData(
-      brand: 'ROAMSUM',
+      brand: 'RhinoSmart',
       summaryLabel: 'Trip summary',
       tripName: 'Tokyo week',
       destinations: 'Japan',

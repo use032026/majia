@@ -1,4 +1,4 @@
-# ROAMSUM FLUTTER APP CONFIG: signing material is supplied by the protected
+# RhinoSmart FLUTTER APP CONFIG: signing material is supplied by the protected
 # tripcost-production GitHub Environment.
 schema_version: 2
 
@@ -11,7 +11,7 @@ release:
     - refs/tags/ios-v*
 
 app:
-  name: RoamSum
+  name: RhinoSmart
   team_id: Z353FCBY9T
   asc_app_id: "6803728146"
   primary_bundle_id: com.tripcost.lite

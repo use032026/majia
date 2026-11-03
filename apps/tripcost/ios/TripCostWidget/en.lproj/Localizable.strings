@@ -1,4 +1,4 @@
-"widget_name" = "RoamSum";
+"widget_name" = "RhinoSmart";
 "widget_description" = "See a travel cost snapshot without opening the app.";
 "widget_ready" = "Widget scaffold ready";
 "widget_empty" = "No summary yet";

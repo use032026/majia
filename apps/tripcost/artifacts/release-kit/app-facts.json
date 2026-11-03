@@ -10,7 +10,7 @@
         ]
       },
       {
-        "application_label": "RoamSum",
+        "application_label": "RhinoSmart",
         "package": null,
         "path": "/Users/starburst/majia/apps/tripcost/android/app/src/main/AndroidManifest.xml",
         "permissions": [
@@ -39,7 +39,7 @@
       "shared_preferences"
     ]
   },
-  "generated_at": "2026-10-10T02:39:21.323693+00:00",
+  "generated_at": "2026-11-03T01:50:29.510727+00:00",
   "ios": {
     "bundle_identifiers": [
       "$(APP_RUNNER_BUNDLE_ID)",
@@ -48,11 +48,11 @@
     ],
     "info_plists": [
       {
-        "display_name": "RoamSum",
+        "display_name": "RhinoSmart",
         "path": "/Users/starburst/majia/apps/tripcost/ios/Runner/Info.plist",
         "usage_descriptions": {
           "NSCameraUsageDescription": "Take a photo to recognize prices on this device.",
-          "NSPhotoLibraryAddUsageDescription": "Save trip summary images you create in RoamSum to your photo library.",
+          "NSPhotoLibraryAddUsageDescription": "Save trip summary images you create in RhinoSmart to your photo library.",
           "NSPhotoLibraryUsageDescription": "Choose an image to recognize prices on this device."
         }
       },

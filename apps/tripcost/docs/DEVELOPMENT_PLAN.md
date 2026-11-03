@@ -1,4 +1,4 @@
-# TripCost V1.0 开发步骤计划
+# RhinoSmart V1.0 开发步骤计划
 
 > 计划版本：v1.5  
 > 编制日期：2026-08-17  
@@ -24,7 +24,7 @@
 
 ## 2. 执行前提与边界
 
-1. 正式展示名及 Bundle ID、App Group ID、CloudKit Container ID 已冻结并集中配置；业务代码、路由和数据库表名仍不得硬编码这些平台标识。
+1. 中英文正式展示名均为 RhinoSmart；Bundle ID、App Group ID、CloudKit Container ID 保持现有集中配置；业务代码、路由和数据库表名仍不得硬编码这些平台标识。
 2. iOS 15 是 Runner、Widget Extension 及原生能力的统一最低版本。
 3. Flutter 负责页面、状态、计算、数据库、网络、导出和主要业务逻辑；Swift 仅负责 Vision OCR、CloudKit、App Group/Widget 和系统分享能力。
 4. 本地 Drift/SQLite 是事实源，CloudKit 是增量同步层。无 iCloud 或同步失败不能阻断本地功能。

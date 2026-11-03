@@ -9,26 +9,26 @@
   const pageMetadata = {
     home: {
       zh: {
-        title: "RoamSum — 旅行真实消费成本助手",
+        title: "RhinoSmart — 旅行真实消费成本助手",
         description:
-          "RoamSum 是免费的旅行真实消费成本助手：扫描价格、比较支付成本、识别 DCC 加价，并持续掌握旅行预算。",
+          "RhinoSmart 是免费的旅行真实消费成本助手：扫描价格、比较支付成本、识别 DCC 加价，并持续掌握旅行预算。",
       },
       en: {
-        title: "RoamSum — A True Travel Cost Assistant",
+        title: "RhinoSmart — A True Travel Cost Assistant",
         description:
           "Scan local prices, compare payment costs, spot DCC markups, and keep your travel budget on track.",
       },
     },
     privacy: {
       zh: {
-        title: "RoamSum 隐私政策",
+        title: "RhinoSmart 隐私政策",
         description:
-          "了解 RoamSum 如何在设备本地处理旅行、消费、票据和汇率数据，以及可选的 iCloud 同步。",
+          "了解 RhinoSmart 如何在设备本地处理旅行、消费、票据和汇率数据，以及可选的 iCloud 同步。",
       },
       en: {
-        title: "RoamSum Privacy Policy",
+        title: "RhinoSmart Privacy Policy",
         description:
-          "Learn how RoamSum handles trips, expenses, receipts, and rate data on device, plus optional iCloud sync.",
+          "Learn how RhinoSmart handles trips, expenses, receipts, and rate data on device, plus optional iCloud sync.",
       },
     },
   };

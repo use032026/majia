@@ -1478,7 +1478,7 @@ a {
   color: var(--muted);
 }
 
-.coming-soon-badge {
+.app-store-badge {
   display: flex;
   flex-direction: column;
   min-width: 168px;
@@ -1488,12 +1488,12 @@ a {
   border-radius: 17px;
 }
 
-.coming-soon-badge small {
+.app-store-badge small {
   color: #b9c2d0;
   font-size: 9px;
 }
 
-.coming-soon-badge strong {
+.app-store-badge strong {
   font-size: 19px;
 }
 
@@ -2010,7 +2010,7 @@ body.modal-open {
     height: 105px;
   }
 
-  .coming-soon-badge {
+  .app-store-badge {
     grid-column: 2;
     justify-self: start;
   }
@@ -2347,11 +2347,11 @@ body.modal-open {
   }
 
   .final-cta img,
-  .coming-soon-badge {
+  .app-store-badge {
     justify-self: center;
   }
 
-  .coming-soon-badge {
+  .app-store-badge {
     grid-column: 1;
     align-items: flex-start;
     text-align: left;

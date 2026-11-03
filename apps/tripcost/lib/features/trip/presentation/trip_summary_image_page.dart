@@ -146,7 +146,7 @@ class _TripSummaryImagePageState extends State<TripSummaryImagePage> {
     final categories = widget.summary.categoryTotals.entries.toList()
       ..sort((left, right) => right.value.amount.compareTo(left.value.amount));
     return TripSummaryCardData(
-      brand: 'ROAMSUM',
+      brand: 'RhinoSmart',
       summaryLabel: l10n.tripSummaryImageTitle,
       tripName: widget.trip.name,
       destinations: destinations,

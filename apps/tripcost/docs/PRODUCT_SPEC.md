@@ -1,4 +1,4 @@
-# 旅行真实消费成本 App 产品需求文档（名称待定）
+# RhinoSmart 旅行真实消费成本 App 产品需求文档
 
 > 文档版本：v0.2  
 > 更新日期：2026-08-17  
@@ -7,19 +7,22 @@
 > 语言：简体中文（zh-Hans）/ 英文（en）  
 > 收费策略：全部功能免费，本文不设计订阅、内购或付费墙
 
+> 品牌决策更新：2026-11-03，中英文正式名称统一为 RhinoSmart，App Icon 使用 `assets/branding/rhinosmart_app_icon.png`。本次仅同步品牌决策，其他需求与验收状态沿用下文原有基线。
+
 ## 1. 产品概述
 
 ### 1.1 名称与视觉方向
 
-- 正式中文名：待定
-- 正式英文名：待定
-- 项目代号：TripCost（仅用于开发和文档，不作为上架名称）
+- 正式中文名：RhinoSmart
+- 正式英文名：RhinoSmart
+- 项目代号：TripCost（仅保留用于工程路径与内部兼容标识，不作为用户可见名称）
+- App Icon：使用 `assets/branding/rhinosmart_app_icon.png` 中已确认的蓝底白色标志。
 - 暂定 Slogan：看懂价格，选对支付，控制旅行预算。
 - 视觉方向：接近原生 iOS 的清晰、克制、内容优先风格。
 - Flutter 主界面优先使用 Cupertino 语义和符合 iOS 习惯的导航、弹窗、表单、间距与动效。
 - WidgetKit 扩展使用 SwiftUI，跟随系统浅色/深色、动态字体和辅助功能设置。
 
-正式上架前需要完成名称、图标、主色、商标、App Store 重名和域名检查。业务代码、路由、数据库和原生 Target 不应硬编码项目代号，以降低后续改名成本。
+正式名称与 App Icon 已确认；正式上架前仍需完成主色、商标、App Store 重名和域名检查。业务代码、路由、数据库和原生 Target 不应硬编码项目代号，以降低后续改名成本。
 
 ### 1.2 产品定位
 
@@ -1133,7 +1136,7 @@ App Store 定位不应写成“简洁、快速的汇率转换器”，建议使�
 
 ### 17.1 已确认
 
-1. 正式名称待定；开发阶段使用 TripCost 作为项目代号。
+1. 正式中英文名称均为 RhinoSmart，App Icon 使用已确认的蓝底白色标志；TripCost 仅保留为内部工程代号。
 2. 视觉风格偏原生 iOS，Flutter 主界面使用 Cupertino 语义，原生扩展使用 SwiftUI。
 3. 不限制用户地区；首版支持简体中文和英文。
 4. 市场参考汇率使用 Frankfurter v2 公共 API，并按每日参考汇率定位。
@@ -1147,7 +1150,7 @@ App Store 定位不应写成“简洁、快速的汇率转换器”，建议使�
 
 ### 17.2 创建工程前仍需确定
 
-1. 正式中英文名称、图标、主色和设计稿。
+1. 主色和设计稿需与已确认的 RhinoSmart 名称及 App Icon 保持一致。
 2. Apple Developer Team、Bundle ID、App Group ID 和 CloudKit Container ID。
 3. Riverpod、go_router、Drift、Pigeon 及 PDF 依赖的具体稳定版本；以创建工程时兼容 iOS 15 的版本为准并写入 lockfile。
 4. Frankfurter 公共 API 的实际联网冒烟测试、错误响应样例和缓存 TTL；建议首版默认 6 小时检查一次，但只在数据源出现新日期时替换当前参考汇率。

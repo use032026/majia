@@ -6,7 +6,7 @@ Result: PASS — 0 error(s), 0 warning(s), 18 passed check(s)
 
 ## Findings
 
-- **PASS** `description.limit`: Shared description is 1739/4000 characters — `/Users/starburst/majia/apps/tripcost/artifacts/app-store-listing/description-en.txt`
+- **PASS** `description.limit`: Shared description is 1745/4000 characters — `/Users/starburst/majia/apps/tripcost/artifacts/app-store-listing/description-en.txt`
 - **PASS** `keywords.limit`: Apple keywords use 78/100 UTF-8 bytes — `/Users/starburst/majia/apps/tripcost/artifacts/app-store-listing/keywords-en.txt`
 - **PASS** `play_short_description.limit`: Google Play short description is 67/80 characters — `/Users/starburst/majia/apps/tripcost/artifacts/google-play-listing/short-description-en.txt`
 - **PASS** `website.locale_content`: index.html contains complete en content — `/Users/starburst/majia/apps/tripcost/website/index.html`

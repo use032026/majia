@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'RoamSum'**
+  /// **'RhinoSmart'**
   String get appTitle;
 
   /// No description provided for @homeTab.
@@ -407,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionCameraUnavailableBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow RoamSum to use the camera in Settings, then try again. If access is restricted by Screen Time or device management, change that restriction first.'**
+  /// **'Allow RhinoSmart to use the camera in Settings, then try again. If access is restricted by Screen Time or device management, change that restriction first.'**
   String get permissionCameraUnavailableBody;
 
   /// No description provided for @permissionPhotoLibraryUnavailableTitle.
@@ -419,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionPhotoLibraryUnavailableBody.
   ///
   /// In en, this message translates to:
-  /// **'Allow RoamSum to access photos in Settings, then try again. If access is restricted by Screen Time or device management, change that restriction first.'**
+  /// **'Allow RhinoSmart to access photos in Settings, then try again. If access is restricted by Screen Time or device management, change that restriction first.'**
   String get permissionPhotoLibraryUnavailableBody;
 
   /// No description provided for @permissionOpenSettings.
@@ -2747,7 +2747,7 @@ abstract class AppLocalizations {
   /// No description provided for @tripSummaryImagePermissionDenied.
   ///
   /// In en, this message translates to:
-  /// **'Photos access is off. Allow RoamSum to add photos in Settings, then try again.'**
+  /// **'Photos access is off. Allow RhinoSmart to add photos in Settings, then try again.'**
   String get tripSummaryImagePermissionDenied;
 
   /// No description provided for @tripSummaryImageSaveFailed.
@@ -2909,7 +2909,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyPolicyBody.
   ///
   /// In en, this message translates to:
-  /// **'RoamSum does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device, and receipt originals are not uploaded. On Apple platforms, you may choose to enable structured iCloud sync; Android does not offer iCloud sync. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet. Trip summary images are added to the system photo library only after you tap Save to Photos; any later cloud photo sync follows your system settings.'**
+  /// **'RhinoSmart does not require an account and does not store full card numbers, CVV, identity documents, or banking credentials. Trips, expenses, settings, and receipt images are stored on this device. OCR runs on this device, and receipt originals are not uploaded. On Apple platforms, you may choose to enable structured iCloud sync; Android does not offer iCloud sync. Market reference-rate requests are sent to Frankfurter. Frankfurter states that its API does not collect personal data, while its public service uses Cloudflare and may collect basic analytics information. Exports and backups are generated locally and leave the app only when you choose a destination in the system share sheet. Trip summary images are added to the system photo library only after you tap Save to Photos; any later cloud photo sync follows your system settings.'**
   String get privacyPolicyBody;
 
   /// No description provided for @disclaimerTitle.

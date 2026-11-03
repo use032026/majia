@@ -25,7 +25,7 @@ module MajiaCI
       },
       "tripcost-production" => {
         "app_key" => "tripcost",
-        "app_name" => "RoamSum",
+        "app_name" => "RhinoSmart",
         "project_directory" => "apps/tripcost",
         "container_path" => "apps/tripcost/ios/Runner.xcworkspace",
         "targets" => [

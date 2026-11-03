@@ -22,7 +22,7 @@ import UIKit
 
   func register(with registry: FlutterPluginRegistry) {
     GeneratedPluginRegistrant.register(with: registry)
-    if let registrar = registry.registrar(forPlugin: "RoamSumPrivacyPolicy") {
+    if let registrar = registry.registrar(forPlugin: "RhinoSmartPrivacyPolicy") {
       let channel = FlutterMethodChannel(
         name: "trip_cost/privacy_policy",
         binaryMessenger: registrar.messenger()

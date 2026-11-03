@@ -170,13 +170,13 @@ class MainActivity : FlutterActivity() {
         val values = ContentValues().apply {
             put(
                 MediaStore.Images.Media.DISPLAY_NAME,
-                "roamsum-trip-summary-${System.currentTimeMillis()}.png",
+                "rhinosmart-trip-summary-${System.currentTimeMillis()}.png",
             )
             put(MediaStore.Images.Media.MIME_TYPE, "image/png")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,
-                    Environment.DIRECTORY_PICTURES + "/RoamSum",
+                    Environment.DIRECTORY_PICTURES + "/RhinoSmart",
                 )
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
@@ -281,7 +281,7 @@ class MainActivity : FlutterActivity() {
         }
         val uri = data.data!!
         runCatching {
-            val destination = File(cacheDir, "roamsum-restore-${System.currentTimeMillis()}.json")
+            val destination = File(cacheDir, "rhinosmart-restore-${System.currentTimeMillis()}.json")
             contentResolver.openInputStream(uri)?.use { input ->
                 FileOutputStream(destination).use(input::copyTo)
             } ?: error("Could not read the selected backup.")
@@ -416,12 +416,12 @@ private object ExpensePdfRenderer {
     fun render(cacheDirectory: File, document: Map<String, Any?>): File {
         val rows = document["rows"] as? List<*> ?: error("Expense rows are missing.")
         require(rows.isNotEmpty()) { "Expense rows are empty." }
-        val outputDirectory = File(cacheDirectory, "roamsum-exports").apply { mkdirs() }
+        val outputDirectory = File(cacheDirectory, "rhinosmart-exports").apply { mkdirs() }
         val requestedName = document["filename"]?.toString().orEmpty()
         val safeName = requestedName
             .replace(Regex("[^A-Za-z0-9._-]"), "-")
             .takeIf { it.endsWith(".pdf", ignoreCase = true) }
-            ?: "roamsum-expenses.pdf"
+            ?: "rhinosmart-expenses.pdf"
         val destination = File(outputDirectory, safeName)
         val pdf = PdfDocument()
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -450,7 +450,7 @@ private object ExpensePdfRenderer {
 
         beginPage()
         paint.isFakeBoldText = true
-        drawLine(document["title"]?.toString() ?: "RoamSum expenses", 20f)
+        drawLine(document["title"]?.toString() ?: "RhinoSmart expenses", 20f)
         paint.isFakeBoldText = false
         drawLine(document["generatedAt"]?.toString().orEmpty(), 10f)
         y += 8f

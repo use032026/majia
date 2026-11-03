@@ -29,7 +29,7 @@
 | PlotProof Lab | `PLOTPROOF_LAB` |
 | KIFXPRO | `SDPACKET` |
 | Steady21 | `STEADY21` |
-| RoamSum / TripCost | `TRIPCOST` |
+| RhinoSmart | `TRIPCOST` |
 | Trip Delta | `TRIPDELTA` |
 
 以 Jufu 为例，需要创建：

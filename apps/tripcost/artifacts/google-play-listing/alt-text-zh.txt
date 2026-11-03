@@ -3,4 +3,4 @@
 03-scan.png：选择相机或相册，在设备本地识别价格与票据。
 04-compare.png：并排比较两种支付方式的预计费用、加价、返现和总成本。
 05-ledger.png：在账本中查看当月旅行消费、分类汇总和每笔明细。
-feature-graphic-zh.png：蓝色渐变背景上的 RoamSum 品牌与“付款前先看清成本”文案。
+feature-graphic-zh.png：蓝色渐变背景上的 RhinoSmart 品牌与“付款前先看清成本”文案。

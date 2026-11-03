@@ -1,8 +1,10 @@
-# RoamSum App Review Guideline 2.1 Response Package
+# RhinoSmart App Review Guideline 2.1 Response Package
 
 > Purpose: reply to Apple's "Guideline 2.1 - Information Needed - New App Submission" message and prepare reusable App Review Information notes.
 >
-> Scope: the native RoamSum app submitted from Git `main` commit `883ae5b` (`1.0.0+1`). This document does **not** describe the separate `h5` branch or any Future Invest/trading surface.
+> Scope: this is the current RhinoSmart response draft. Its functional reference baseline is Git `main` commit `883ae5b` (`1.0.0+1`), whose display name was RoamSum. Current-build consistency and physical-device evidence must be checked again before use. This document does **not** describe the separate `h5` branch or any Future Invest/trading surface.
+>
+> Branding refreshed: 2026-11-03. The prior document and neutral OCR sample are archived locally under `.codex-artifacts/branding-completion-20261103/legacy/app-review/`.
 >
 > Status: draft. Replace every `[[...]]` placeholder and complete the physical-device checks before sending. Do not state that a recording, device test, attachment, or service validation was completed unless it actually was.
 
@@ -10,7 +12,7 @@
 
 Use this block for **Reply to App Review**. After replacing the placeholders, paste the same factual content into **App Review Information > Notes** for this and future submissions.
 
-The current ASCII template is 3746 bytes before placeholder replacement. App Review Notes allow 4000 bytes, so recheck the final text after inserting device names and filenames; delete optional wording or an unused device line if necessary.
+Recheck the final UTF-8 byte count after inserting device names and filenames to stay within the App Review Notes limit; delete optional wording or an unused device line if necessary.
 
 <!-- APP_REVIEW_REPLY_BEGIN -->
 
@@ -24,9 +26,9 @@ Attachment: [[RECORDING_FILENAME.mov]]
 Recorded on: [[DEVICE_MODEL]], [[OS_VERSION]]
 Sample image: [[SAMPLE_IMAGE_FILENAME.png]]
 
-The recording begins with launching RoamSum and shows onboarding, setup, camera/photo prompts, on-device OCR, cost comparison, DCC, saving an expense, and the trip budget/ledger.
+The recording begins with launching RhinoSmart and shows onboarding, setup, camera/photo prompts, on-device OCR, cost comparison, DCC, saving an expense, and the trip budget/ledger.
 
-RoamSum has no app account, paid content, IAP/subscription, ads, public UGC, social/report/block flows, or ATT. It does not request location, contacts, microphone, or notifications. Camera/Photos are requested only after the matching scan action. Optional iCloud sync uses the device Apple ID.
+RhinoSmart has no app account, paid content, IAP/subscription, ads, public UGC, social/report/block flows, or ATT. It does not request location, contacts, microphone, or notifications. Camera/Photos are requested only after the matching scan action. Optional iCloud sync uses the device Apple ID.
 
 2. Devices and operating systems tested
 
@@ -41,7 +43,7 @@ All listed devices are physical; Simulator checks are not included.
 
 3. Functions, audience, problem, and value
 
-RoamSum is a free, account-free travel cost assistant for international travelers. It scans prices/receipts with on-device Apple Vision OCR, with manual fallback. It uses dated daily rates, compares user-entered fee/reward rules, estimates DCC cost, tracks trip budgets/expenses, preserves historical snapshots, exports CSV/PDF/backups, optionally syncs structured data with iCloud, and provides a widget. Results are reference estimates, not payment execution or financial advice.
+RhinoSmart is a free, account-free travel cost assistant for international travelers. It scans prices/receipts with on-device Apple Vision OCR, with manual fallback. It uses dated daily rates, compares user-entered fee/reward rules, estimates DCC cost, tracks trip budgets/expenses, preserves historical snapshots, exports CSV/PDF/backups, optionally syncs structured data with iCloud, and provides a widget. Results are reference estimates, not payment execution or financial advice.
 
 4. Setup and access instructions
 
@@ -57,7 +59,7 @@ The same feature set is available in all App Store regions, localized in English
 
 7. Regulated services and protected third-party material
 
-Not applicable. RoamSum does not manage financial accounts, execute payments/exchange, provide trading/investment recommendations, or store card numbers, CVV, banking credentials, or identity documents. Payment methods are private user-entered calculation rules and results are dated estimates. There is no protected third-party material requiring authorization.
+Not applicable. RhinoSmart does not manage financial accounts, execute payments/exchange, provide trading/investment recommendations, or store card numbers, CVV, banking credentials, or identity documents. Payment methods are private user-entered calculation rules and results are dated estimates. There is no protected third-party material requiring authorization.
 
 Support: https://tripcost.fit/
 Privacy Policy: https://tripcost.fit/privacy.html
@@ -98,11 +100,11 @@ Best regards,
 - 将系统语言设为 English，避免审核员需要翻译。
 - 关闭通知预览、勿扰无关来电和其他可能暴露个人信息的内容。
 - 使用虚构行程、虚构支付方式和无敏感信息样例票据。
-- 录屏必须从主屏幕点击 RoamSum 图标、启动 App 开始，不要从 App 已打开的页面开始。
+- 录屏必须从主屏幕点击 RhinoSmart 图标、启动 App 开始，不要从 App 已打开的页面开始。
 
 ### 建议镜头顺序
 
-1. **启动与引导**：从主屏幕点击 RoamSum；展示三页引导和 Quick setup。
+1. **启动与引导**：从主屏幕点击 RhinoSmart；展示三页引导和 Quick setup。
 2. **基础设置**：选择 Home Currency，例如 USD。
 3. **支付方式**：在 Quick setup 或 Settings > Payment Methods 添加两种虚构支付方式。
 4. **创建行程**：Trips > `+`，创建 `App Review Sample Trip`，填写目的地、日期、当地币种和预算。
@@ -122,6 +124,8 @@ Best regards,
 仅用于录屏和审核复现，不包含真实银行卡或个人信息：
 
 ### 样例价格图
+
+可复用的中性 OCR 样例：`artifacts/app-review/rhinosmart-app-review-sample-receipt.png`。图片不包含旧应用名称或图标；文件名已随品牌更新。
 
 在白色背景上清晰显示：
 
@@ -161,16 +165,16 @@ TOTAL JPY 1,200
 - Rate markup: 0.5%
 - Cashback: 0.5%
 
-在视频或说明中明确这些是用户自行输入的计算规则，不是 RoamSum 提供、发行或推荐的金融产品。
+在视频或说明中明确这些是用户自行输入的计算规则，不是 RhinoSmart 提供、发行或推荐的金融产品。
 
 ## 5. App Store Connect 操作顺序
 
-1. 进入 **Apps > RoamSum > App Review**，打开当前 Unresolved Issues。
+1. 进入 **Apps > RhinoSmart > App Review**，打开当前 Unresolved Issues。
 2. 点击 **Resolve > Reply to App Review**。
 3. 粘贴第 1 节英文正文，替换所有占位符。
 4. 点击 **Attach File**，上传真机录屏与样例图。
 5. 返回当前版本的 **App Review Information > Notes**，粘贴同一份事实说明，供本次及未来审核使用。
-6. `Sign-in required` 保持关闭，因为 App 不需要 RoamSum 账号；不要填写虚构账号。
+6. `Sign-in required` 保持关闭，因为 App 不需要 RhinoSmart 账号；不要填写虚构账号。
 7. 检查 Contact Name、国际格式电话号码和邮箱均可联系。
 8. 若只是审核资料问题，可在补全信息后继续使用同一 Build；若真机复核发现崩溃、CloudKit Production 不可用、iPad 阻断问题或上传包与 `main` 不一致，则先修复并提交新 Build。
 
@@ -191,9 +195,9 @@ TOTAL JPY 1,200
 
 ## 7. 事实边界与当前证据
 
-本文件的产品说明来自 `main` 分支的源码和合规文档。当前可静态确认：
+本文件的功能说明以 `883ae5b` 历史源码与合规文档为参考，文案中的当前名称为 RhinoSmart。以下事实须与实际待提交版本重新核对，不能由品牌替换推断本次已验证：
 
-- 无 RoamSum 登录、内购、订阅、广告或公开 UGC。
+- 无 RhinoSmart 登录、内购、订阅、广告或公开 UGC。
 - 相机/相册按用户操作请求；OCR 使用本机 Apple Vision。
 - 结构化 iCloud/CloudKit 同步为可选功能，票据原图不进入 CloudKit。
 - 汇率来自 Frankfurter 公共 API，并可能经过 Cloudflare。

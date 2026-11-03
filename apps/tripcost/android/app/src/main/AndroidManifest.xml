@@ -7,7 +7,7 @@
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
     <application
-        android:label="RoamSum"
+        android:label="RhinoSmart"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

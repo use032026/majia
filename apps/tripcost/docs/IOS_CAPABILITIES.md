@@ -6,7 +6,7 @@
 
 | 项目 | 正式值 | 状态边界 |
 | --- | --- | --- |
-| App 展示名 | RoamSum | 已写入 App 与 Widget 本地化资源；商店元数据仍以 ASC 为准 |
+| App 展示名 | RhinoSmart | 已写入 App 与 Widget 本地化资源；商店元数据仍以 ASC 为准 |
 | Runner Bundle ID | `com.tripcost.lite` | 需在 Apple Developer 中确认 explicit App ID 和能力 |
 | Widget Bundle ID | `com.tripcost.lite.widget` | 需独立的 explicit App ID 和 distribution profile |
 | App Group | `group.com.tripcost.lite` | 需同时关联 Runner 与 Widget |

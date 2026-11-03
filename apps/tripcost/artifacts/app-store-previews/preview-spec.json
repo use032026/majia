@@ -1,0 +1,160 @@
+{
+  "schema_version": 2,
+  "store": "app_store",
+  "app_name": "RhinoSmart",
+  "icon": "../../assets/branding/rhinosmart_app_icon.png",
+  "font_path": "/System/Library/Fonts/SFNS.ttf",
+  "qa_dir": "qa",
+  "renderer": "python3 tool/generate_app_store_previews.py && python3 tool/generate_dynamic_island_previews.py",
+  "provenance": "Existing iOS Flutter-rendered deterministic UI captures reused unchanged; brand overlay regenerated on 2026-11-03. Dynamic Island images adapt the 6.5-inch composition; no new device capture is claimed.",
+  "defaults": {
+    "background_top": "#075FFF",
+    "background_bottom": "#071B52"
+  },
+  "items": [
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/01-plan.png",
+      "output": "final/iphone-6.5/01-plan-every-trip.png",
+      "size": [
+        1242,
+        2688
+      ],
+      "headline": "Plan Every Trip With Confidence",
+      "subheadline": "Routes, budgets, and daily spend \u2014 always in view."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/02-scan.png",
+      "output": "final/iphone-6.5/02-scan-and-understand.png",
+      "size": [
+        1242,
+        2688
+      ],
+      "headline": "Scan Prices. Understand Costs.",
+      "subheadline": "On-device recognition keeps your receipts private."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/03-compare.png",
+      "output": "final/iphone-6.5/03-compare-before-paying.png",
+      "size": [
+        1242,
+        2688
+      ],
+      "headline": "Compare Before You Pay",
+      "subheadline": "See fees, markups, and rewards side by side."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/04-ledger.png",
+      "output": "final/iphone-6.5/04-true-trip-cost.png",
+      "size": [
+        1242,
+        2688
+      ],
+      "headline": "See What Your Trip Really Cost",
+      "subheadline": "Every expense and final charge, all in one place."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/ipad-13/01-plan.png",
+      "output": "final/ipad-13/01-plan-every-trip.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Plan Every Trip With Confidence",
+      "subheadline": "Routes, budgets, and daily spend \u2014 always in view."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/ipad-13/02-scan.png",
+      "output": "final/ipad-13/02-scan-and-understand.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Scan Prices. Understand Costs.",
+      "subheadline": "On-device recognition keeps your receipts private."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/ipad-13/03-compare.png",
+      "output": "final/ipad-13/03-compare-before-paying.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "Compare Before You Pay",
+      "subheadline": "See fees, markups, and rewards side by side."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/ipad-13/04-ledger.png",
+      "output": "final/ipad-13/04-true-trip-cost.png",
+      "size": [
+        2064,
+        2752
+      ],
+      "headline": "See What Your Trip Really Cost",
+      "subheadline": "Every expense and final charge, all in one place."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/01-plan.png",
+      "output": "final/iphone-dynamic-island/01-plan-every-trip.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Plan Every Trip With Confidence",
+      "subheadline": "Routes, budgets, and daily spend \u2014 always in view."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/02-scan.png",
+      "output": "final/iphone-dynamic-island/02-scan-and-understand.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Scan Prices. Understand Costs.",
+      "subheadline": "On-device recognition keeps your receipts private."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/03-compare.png",
+      "output": "final/iphone-dynamic-island/03-compare-before-paying.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "Compare Before You Pay",
+      "subheadline": "See fees, markups, and rewards side by side."
+    },
+    {
+      "kind": "screenshot",
+      "locale": "en-US",
+      "source": "raw/iphone-6.5/04-ledger.png",
+      "output": "final/iphone-dynamic-island/04-true-trip-cost.png",
+      "size": [
+        1206,
+        2622
+      ],
+      "headline": "See What Your Trip Really Cost",
+      "subheadline": "Every expense and final charge, all in one place."
+    }
+  ]
+}

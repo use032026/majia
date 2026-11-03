@@ -7,7 +7,7 @@
 | 应用 | Flutter 工程 | 来源 |
 | --- | --- | --- |
 | Jufu（`photo`） | [`apps/photo/`](apps/photo/) | [`CherryIce/photo`](https://github.com/CherryIce/photo)，迁移基点 `295a625059f8f4102d194029ba9bc58c68e87eb6` |
-| RoamSum（`tripcost`） | [`apps/tripcost/`](apps/tripcost/) | [`CherryIce/TripCost`](https://github.com/CherryIce/TripCost)，迁移基点 `5e8e2975d0967a31691529ef603e22e0f1cb63cb` |
+| RhinoSmart（`tripcost`） | [`apps/tripcost/`](apps/tripcost/) | [`CherryIce/TripCost`](https://github.com/CherryIce/TripCost)，迁移基点 `5e8e2975d0967a31691529ef603e22e0f1cb63cb` |
 | Trip Delta（旅程差额） | [`apps/trip_delta/`](apps/trip_delta/) | 独立 Flutter MVP，离线优先、中英文、无账号 |
 | LAURUS（源项目 `donesome` / `Hearthio`） | [`apps/donesome/Hearthio/`](apps/donesome/Hearthio/) | [`CherryIce/Donesome`](https://github.com/CherryIce/Donesome)，迁移基点 `ccc86d05c66935005d0db25a4c50224a07633119` |
 | CleanTrail（清迹） | [`apps/cleantrail/cleantrail/`](apps/cleantrail/cleantrail/) | [`CherryIce/Cleantrail`](https://github.com/CherryIce/Cleantrail)，迁移基点 `487c079c9f9b336dcedb586b80f9cca862c7a896` |
@@ -33,7 +33,7 @@
 | 应用 | 工作流 | GitHub Environment | 签名 Targets | ASC 状态查询 |
 | --- | --- | --- | --- | --- |
 | Jufu | [`Photo iOS Release`](.github/workflows/photo-ios-ci.yml) | `photo-production` | `Runner` | 支持 |
-| RoamSum | [`TripCost iOS Release`](.github/workflows/tripcost-ios-release.yml) | `tripcost-production` | `Runner`、`AppWidget` | 支持 |
+| RhinoSmart | [`RhinoSmart iOS Release`](.github/workflows/tripcost-ios-release.yml) | `tripcost-production` | `Runner`、`AppWidget` | 支持 |
 | LAURUS | [`Hearthio iOS Release`](.github/workflows/donesome-ios-release.yml) | `hearthio-production` | `Runner` | 支持 |
 | KIFXPRO | [`KIFXPRO iOS Release`](.github/workflows/sdpacket-ios-release.yml) | `sdpacket-production` | `Runner` | 支持 |
 | PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
@@ -51,7 +51,7 @@
 - `update_asc_text_metadata` 和 `replace_asc_media` 只有在自动创建商店版本时才能启用，并且只处理应用 `app-store/metadata.yml` 中明确声明的字段或媒体集合。
 - 非空 `release_notes_json` 要求 `update_asc_text_metadata=true`。`whats_new` 不再交给外部构建 action 直接创建 locale：仓库脚本会优先使用已有版本 locale；仅有一个请求 locale 时，才允许安全映射到应用主 locale 或唯一现有 locale。脚本只 PATCH `whatsNew`，不会创建 App Info locale，并会读取 ASC 结果进行逐项校验。
 - 模板中的其他文本字段，例如名称、描述、关键词、版权、IDFA 和审核信息，仍由构建 action 处理；`whats_new` 会从交给 action 的临时 manifest 中移除，避免两条写入路径冲突。
-- 当前元数据模板默认只声明出口合规字段；名称、描述、更新说明和媒体示例仍为注释，启用开关不会修改未声明的内容。
+- 大部分元数据模板默认只声明出口合规字段；RhinoSmart 模板另已声明中英文名称 `RhinoSmart`。描述、更新说明和媒体示例仍为注释，启用开关不会修改未声明的内容；元数据上传开关默认关闭。
 
 工作流存在不代表某次运行已经成功。签名构建、IPA 产物、ASC 接收、处理完成、TestFlight 可用和 App Review 状态是不同的证据层级，应以对应运行的 Job Summary、Artifacts 和 App Store Connect 状态为准。
 

@@ -1,12 +1,15 @@
-# ASC metadata patch manifest for RoamSum.
-# Nothing except export compliance is changed until the corresponding workflow
-# switch is enabled. Uncomment only fields and collections that should change.
+# ASC metadata patch manifest for RhinoSmart.
+# The bilingual name change is prepared locally. Publishing still requires the
+# workflow's explicit metadata switch; other fields and media remain opt-in.
 uses_non_exempt_encryption: false
 
-# app_info_localizations:
-#   en-US:
-#     name: "RoamSum"
-#     subtitle: "New subtitle"
+app_info_localizations:
+  en-US:
+    name: "RhinoSmart"
+  zh-Hans:
+    name: "RhinoSmart"
+
+# Optional subtitle and version metadata:
 #
 # localizations:
 #   en-US:

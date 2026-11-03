@@ -63,8 +63,8 @@ final class PrivacyPolicyViewController: UIViewController, WKNavigationDelegate 
 
     let message = UILabel()
     message.text = text(
-      "网页加载失败。请检查网络连接和 RoamSum 的网络授权后重试，或复制网址到浏览器打开。",
-      "Unable to load the page. Check your connection and RoamSum's network access, then retry or copy the address to your browser."
+      "网页加载失败。请检查网络连接和 RhinoSmart 的网络授权后重试，或复制网址到浏览器打开。",
+      "Unable to load the page. Check your connection and RhinoSmart's network access, then retry or copy the address to your browser."
     )
     message.font = .preferredFont(forTextStyle: .body)
     message.adjustsFontForContentSizeCategory = true

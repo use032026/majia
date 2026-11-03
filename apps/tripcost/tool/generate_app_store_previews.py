@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Compose TripCost App Store screenshots from real rendered app surfaces."""
+"""Compose RhinoSmart App Store screenshots from real rendered app surfaces."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
@@ -12,13 +13,12 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts" / "app-store-previews"
 FONT_PATH = Path("/System/Library/Fonts/SFNS.ttf")
-APP_ICON = ROOT / "assets" / "branding" / "tripcost_app_icon_v1.png"
+APP_ICON = ROOT / "assets" / "branding" / "rhinosmart_app_icon.png"
 
 
 @dataclass(frozen=True)
 class Layout:
     canvas_size: tuple[int, int]
-    background: Path
     raw_dir: Path
     final_dir: Path
     brand_y: int
@@ -75,7 +75,6 @@ PREVIEWS = (
 
 IPHONE = Layout(
     canvas_size=(1242, 2688),
-    background=ARTIFACTS / "backgrounds" / "iphone-brand-background.png",
     raw_dir=ARTIFACTS / "raw" / "iphone-6.5",
     final_dir=ARTIFACTS / "final" / "iphone-6.5",
     brand_y=84,
@@ -109,7 +108,6 @@ IPHONE = Layout(
 
 IPAD = Layout(
     canvas_size=(2064, 2752),
-    background=ARTIFACTS / "backgrounds" / "ipad-brand-background.png",
     raw_dir=ARTIFACTS / "raw" / "ipad-13",
     final_dir=ARTIFACTS / "final" / "ipad-13",
     brand_y=96,
@@ -177,6 +175,31 @@ def add_top_contrast(canvas: Image.Image, fade_height: int) -> None:
     canvas.alpha_composite(overlay)
 
 
+def brand_background(size: tuple[int, int]) -> Image.Image:
+    """Draw the blue brand field without external generated-background files."""
+    width, height = size
+    top = (7, 95, 255)
+    bottom = (7, 27, 82)
+    canvas = Image.new("RGB", size)
+    draw = ImageDraw.Draw(canvas)
+    for y in range(height):
+        ratio = y / max(1, height - 1)
+        color = tuple(round(a * (1 - ratio) + b * ratio) for a, b in zip(top, bottom))
+        draw.line((0, y, width, y), fill=color)
+    canvas = canvas.convert("RGBA")
+    decoration = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(decoration)
+    for inset in range(0, 4):
+        offset = round(width * inset * 0.075)
+        draw.ellipse(
+            (round(width * 0.60) + offset, -round(width * 0.62) - offset,
+             round(width * 1.58) + offset, round(width * 0.36) + offset),
+            outline=(207, 232, 255, 24), width=max(2, width // 440),
+        )
+    canvas.alpha_composite(decoration)
+    return canvas
+
+
 def add_brand(canvas: Image.Image, layout: Layout) -> None:
     x = round(canvas.width * 0.066)
     icon = rounded_asset(
@@ -203,7 +226,7 @@ def add_brand(canvas: Image.Image, layout: Layout) -> None:
     draw.text(
         (x + layout.brand_icon + round(layout.brand_icon * 0.25),
          layout.brand_y + round(layout.brand_icon * 0.19)),
-        "RoamSum",
+        "RhinoSmart",
         font=brand_font,
         fill=(255, 255, 255, 255),
     )
@@ -304,13 +327,7 @@ def screenshot_panel(
 
 
 def compose(layout: Layout, preview: Preview) -> Path:
-    background = Image.open(layout.background).convert("RGB")
-    canvas = ImageOps.fit(
-        background,
-        layout.canvas_size,
-        method=Image.Resampling.LANCZOS,
-        centering=(0.5, 0.5),
-    ).convert("RGBA")
+    canvas = brand_background(layout.canvas_size)
     add_top_contrast(canvas, 760 if canvas.width < 1500 else 820)
     add_brand(canvas, layout)
     add_copy(canvas, layout, preview)
@@ -336,6 +353,57 @@ def compose(layout: Layout, preview: Preview) -> Path:
     return output
 
 
+def contact_sheet(paths: list[Path], name: str) -> Path:
+    """Keep one review sheet for each established App Store output group."""
+    gap = 18
+    thumb_width = 320 if name == "ipad-13" else 260
+    size = Image.open(paths[0]).size
+    thumb_height = round(size[1] * thumb_width / size[0])
+    sheet = Image.new("RGB", (len(paths) * (thumb_width + gap) + gap,
+                              thumb_height + gap * 2), "#E8EFED")
+    for index, path in enumerate(paths):
+        with Image.open(path) as source:
+            thumbnail = source.convert("RGB").resize(
+                (thumb_width, thumb_height), Image.Resampling.LANCZOS
+            )
+        sheet.paste(thumbnail, (gap + index * (thumb_width + gap), gap))
+    output = ARTIFACTS / "qa" / f"contact-sheet-{name}.jpg"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    sheet.save(output, quality=92, optimize=True)
+    return output
+
+
+def write_preview_manifest() -> None:
+    """Document real inputs and stable outputs for the specialized compositor."""
+    items = []
+    layouts = (("iphone-6.5", IPHONE), ("ipad-13", IPAD),
+               ("iphone-dynamic-island", IPHONE))
+    for name, layout in layouts:
+        for preview in PREVIEWS:
+            items.append({
+                "kind": "screenshot",
+                "locale": "en-US",
+                "source": str((layout.raw_dir / preview.source).relative_to(ARTIFACTS)),
+                "output": f"final/{name}/{preview.output}",
+                "size": [1206, 2622] if name == "iphone-dynamic-island" else list(layout.canvas_size),
+                "headline": preview.title.replace("\n", " "),
+                "subheadline": preview.subtitle,
+            })
+    manifest = {
+        "schema_version": 2,
+        "store": "app_store",
+        "app_name": "RhinoSmart",
+        "icon": "../../assets/branding/rhinosmart_app_icon.png",
+        "font_path": str(FONT_PATH),
+        "qa_dir": "qa",
+        "renderer": "python3 tool/generate_app_store_previews.py && python3 tool/generate_dynamic_island_previews.py",
+        "provenance": "Existing iOS Flutter-rendered deterministic UI captures reused unchanged; brand overlay regenerated on 2026-11-03. Dynamic Island images adapt the 6.5-inch composition; no new device capture is claimed.",
+        "defaults": {"background_top": "#075FFF", "background_bottom": "#071B52"},
+        "items": items,
+    }
+    (ARTIFACTS / "preview-spec.json").write_text(json.dumps(manifest, indent=2) + "\n")
+
+
 def main() -> None:
     outputs = [
         compose(layout, preview)
@@ -344,6 +412,10 @@ def main() -> None:
     ]
     for output in outputs:
         print(output.relative_to(ROOT))
+    for layout in (IPHONE, IPAD):
+        paths = [layout.final_dir / preview.output for preview in PREVIEWS]
+        print(contact_sheet(paths, layout.final_dir.name).relative_to(ROOT))
+    write_preview_manifest()
 
 
 if __name__ == "__main__":

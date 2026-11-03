@@ -1,4 +1,4 @@
-name: TripCost iOS Release
+name: RhinoSmart iOS Release
 
 on:
   workflow_dispatch:
@@ -90,7 +90,7 @@ jobs:
         run: |
           ruby .github/scripts/prepare-environment-ios-release.rb \
             --app-key tripcost \
-            --app-name RoamSum \
+            --app-name RhinoSmart \
             --project-directory apps/tripcost \
             --container-path apps/tripcost/ios/Runner.xcworkspace \
             --targets-json '[{"suffix":"","target":"Runner","profile_alias":"app"},{"suffix":".widget","target":"AppWidget","profile_alias":"widget"}]' \
@@ -104,7 +104,7 @@ jobs:
             --release-notes-json "$RELEASE_NOTES_JSON" \
             --github-output "$GITHUB_OUTPUT"
 
-      - name: Build, retain, and optionally release TripCost
+      - name: Build, retain, and optionally release RhinoSmart
         id: release
         uses: CherryIce/ios-multi-app-cloud-build-system/.github/actions/build-upload@b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9
         with:
@@ -202,7 +202,7 @@ jobs:
           ASC_MEDIA_REPLACED: ${{ steps.release.outputs.asc_media_replaced }}
         run: |
           {
-            echo "## TripCost iOS release"
+            echo "## RhinoSmart iOS release"
             echo "- Marketing version: ${REQUESTED_VERSION}"
             echo "- Build number: ${RESOLVED_BUILD_NUMBER:-not-built}"
             echo "- Upload requested: ${REQUESTED_UPLOAD}"
