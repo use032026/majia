@@ -161,6 +161,9 @@ jobs:
           REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
         run: |
           ruby -r ./.github/runtime-ios-release-system/scripts/lib/asc_client.rb -e '
+            require "./.github/runtime-ios-release-system/scripts/lib/app_store_media"
+            require "./.github/scripts/lib/asc_media_resume"
+            IOSBuild::ASC::AppStoreMedia.prepend(MajiaCI::ASCMediaResume)
             IOSBuild::ASC::Client.prepend(Module.new do
               private
               def request(method, path, **options)
