@@ -13,6 +13,8 @@ flutter run -d <ios-simulator-id>
 
 Android 使用正式包名 `com.tripcost.lite`。云端 APK/AAB 由仓库根目录的 `Android Package` 工作流生成；没有 `TRIPCOST_ANDROID_*` 正式签名 Secrets 时，只能以 `sign_release=false` 生成内部验证包。
 
+iOS 本地 Xcode 16.2 构建将 `connectivity_plus` 固定在 6.1.x；7.3.x 的 iOS 源码引用了该 SDK 尚未提供的 `NWPath.isUltraConstrained`，升级依赖前需先核对 Xcode SDK。
+
 环境参数通过 `--dart-define` 注入：
 
 ```bash
