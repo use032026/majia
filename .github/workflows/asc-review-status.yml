@@ -21,6 +21,11 @@ on:
         description: Optional App Store version, for example 1.0.0; leave empty for the latest iOS version
         required: false
         type: string
+      include_store_metadata:
+        description: Include a read-only metadata and media snapshot; requires an exact marketing version
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -55,10 +60,32 @@ jobs:
             --output asc-review-status.json \
             --github-summary "$GITHUB_STEP_SUMMARY"
 
+      - name: Query read-only ASC store metadata and media
+        if: ${{ inputs.include_store_metadata }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+        run: |
+          if [[ -z "${MARKETING_VERSION//[[:space:]]/}" ]]; then
+            echo "::error::include_store_metadata=true requires an exact marketing_version"
+            exit 1
+          fi
+          ruby .github/scripts/query-asc-store-metadata.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --output asc-store-metadata.json
+
       - name: Retain ASC status snapshot
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: asc-review-status-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: asc-review-status.json
+          path: |
+            asc-review-status.json
+            asc-store-metadata.json
           if-no-files-found: error
           retention-days: 30
