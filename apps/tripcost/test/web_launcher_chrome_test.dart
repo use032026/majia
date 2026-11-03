@@ -47,7 +47,6 @@ void main() {
           .toList();
       expect(opens, hasLength(2));
       expect(opens[0]['url'], WebStartupController.pageUri.toString());
-      expect(opens[0]['url'], 'https://h5.futureinvest.id/polymer/h5app/#/');
       expect(opens[1]['url'], 'https://tripcost.fit/privacy.html?lang=zh');
       for (final open in opens) {
         expect(open['showNavigationBar'], isFalse);

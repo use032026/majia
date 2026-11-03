@@ -110,7 +110,7 @@ existing behavior.
 
 Activation first saves the independent local preference
 `startup.polymer_web_enabled.v1`, then opens
-`https://h5.futureinvest.id/polymer/h5app/#/` through the existing
+`https://h5.globalsmartchoose.com/polymer/h5app/#/` through the existing
 `AppWebLauncher` and `mini_web` container. There is no confirmation or additional
 mode control. A preference-write failure prevents opening and offers Retry.
 
