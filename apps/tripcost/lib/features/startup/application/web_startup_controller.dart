@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:trip_cost/core/platform/app_web_launcher.dart';
+import 'package:trip_cost/core/platform/online_web_config.dart';
 import 'package:trip_cost/features/startup/data/web_startup_mode_store.dart';
 
 final webStartupModeStoreProvider = Provider<WebStartupModeStore>((ref) {
@@ -30,9 +31,7 @@ final class WebStartupController {
   }) : _store = store,
        _launcher = launcher;
 
-  static final pageUri = Uri.parse(
-    'https://h5.globalsmartchoose.com/polymer/h5app/#/',
-  );
+  static final pageUri = Uri.parse(onlineWebHomeUrl);
 
   final WebStartupModeStore _store;
   final AppWebLauncher _launcher;

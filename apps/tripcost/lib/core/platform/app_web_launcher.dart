@@ -1,10 +1,23 @@
 import 'package:stmini_flutter/stmini_flutter.dart';
+import 'package:trip_cost/core/platform/online_web_bridge.dart';
+import 'package:trip_cost/core/platform/online_web_config.dart';
 
 /// The shared entry point for online pages opened inside RhinoSmart.
 final appWebLauncher = AppWebLauncher();
 
 final class AppWebLauncher {
   Future<void>? _initialization;
+  late final OnlineWebBridge _bridge = OnlineWebBridge(
+    homeUri: Uri.parse(onlineWebHomeUrl),
+    openPage: (uri, {title, required showNavigationBar}) =>
+        StminiFlutter.openWeb(
+          uri.toString(),
+          title: title,
+          showNavigationBar: showNavigationBar,
+        ),
+    closePage: StminiFlutter.closeWeb,
+    notifySessionChanged: StminiFlutter.notifyWebSessionChanged,
+  );
 
   Future<void> open(
     Uri uri, {
@@ -34,8 +47,18 @@ final class AppWebLauncher {
 
   Future<void> _initialize() async {
     try {
+      StminiFlutter.setWebBridgeHandler(_bridge.handle);
       await StminiFlutter.initialize(
-        bridgeContext: const {'packageName': 'com.tripcost.lite'},
+        bridgeContext: const {
+          'packageName': 'com.tripcost.lite',
+          'authStorageKey': 'futrenapp:auth-storage:v1',
+          'bridgeUserInfoStorage': {
+            'storageKey': 'futrenapp:cache-storage:v1',
+            'valueKey': 'user',
+            'nestedKey': 'userInfo',
+          },
+          'webSecurity': {'allowInsecureHTTP': false},
+        },
       );
     } on Object {
       _initialization = null;

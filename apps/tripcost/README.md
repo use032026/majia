@@ -85,6 +85,23 @@ is added.
 
 ## Opt-in Web startup
 
+TripCost's `AppWebLauncher` registers the host handler before initializing the
+`mini_web` runtime. The plugin handles `getUserInfo`, `getToken`, and Web
+storage requests using the shared auth and profile storage keys. The host
+handles H5 `open`, `close`, and `web_notifySessionChanged`: `/web` opens a new
+HTTPS WebView, while an H5 internal route such as `/login` opens a child
+WebView with the route payload in `__mini_open_route`. Login children carry
+`isBack=1`, so a successful login can return to the originating page. H5
+`close` pops that child or closes the root; the native back gesture and Android
+Back action use the same page stack. Session changes notify the other open Web
+pages to refresh their own auth state. Diagnostic `applog` calls are acknowledged.
+
+The host accepts bridge calls only from a native-verified HTTPS top-level
+document and opens only HTTPS `/web` links. HTTP remains disabled. These are
+ordinary Web capabilities on iOS and Android; TripCost does not enable Mini
+package updates or Mini package page-stack APIs. The startup URL and privacy
+policy URL are unchanged.
+
 On the Settings screen, hold exactly three touch fingers stationary for five
 seconds. Timing starts when the third finger touches. Releasing/cancelling a
 finger, moving beyond the touch tolerance, adding a fourth finger, leaving the
