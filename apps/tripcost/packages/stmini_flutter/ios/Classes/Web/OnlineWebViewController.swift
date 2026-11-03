@@ -21,14 +21,33 @@ final class OnlineWebWeakScriptMessageHandler: NSObject, WKScriptMessageHandler 
 /// WebKit's own history swipe disabled: otherwise its recognizer can consume
 /// the gesture and leave a pushed native page visibly stuck in place.
 final class OnlineWebNavigationController: UINavigationController, UIGestureRecognizerDelegate {
+  private lazy var rootBackGesture: UIScreenEdgePanGestureRecognizer = {
+    let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleRootBackGesture(_:)))
+    gesture.edges = .left
+    gesture.delegate = self
+    return gesture
+  }()
+
   override func viewDidLoad() {
     super.viewDidLoad()
     interactivePopGestureRecognizer?.delegate = self
     interactivePopGestureRecognizer?.isEnabled = true
+    view.addGestureRecognizer(rootBackGesture)
   }
 
   func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-    viewControllers.count > 1
+    if gestureRecognizer === rootBackGesture {
+      return viewControllers.count == 1 && isNavigationBarHidden
+    }
+    return viewControllers.count > 1
+  }
+
+  @objc private func handleRootBackGesture(_ gesture: UIScreenEdgePanGestureRecognizer) {
+    guard gesture.state == .ended,
+          gesture.translation(in: view).x > 80 || gesture.velocity(in: view).x > 500,
+          viewControllers.count == 1,
+          isNavigationBarHidden else { return }
+    (topViewController as? OnlineWebPageViewController)?.handleHostBackGesture()
   }
 }
 
@@ -302,6 +321,14 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       reportTiming("navigation.back_tapped", url: webView.url)
       reportStack("back_tapped")
       navigation.popViewController(animated: true)
+    }
+  }
+
+  fileprivate func handleHostBackGesture() {
+    if webView?.canGoBack == true {
+      webView.goBack()
+    } else {
+      goBackOrClose()
     }
   }
 

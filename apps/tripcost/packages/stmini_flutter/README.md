@@ -20,6 +20,9 @@ still controlled by the operating system; after granting access, the user can
 retry without leaving the page. No startup request or network probe is added.
 Explicit top-level `mailto:` link taps continue to open the system mail app;
 iframe and script navigation do not receive that permission.
+For a root page whose native navigation bar is hidden, iOS left-edge swipe
+returns within Web history or dismisses the container when no history remains.
+Pushed pages retain the native stack's left-edge pop behavior.
 
 Changes from the recorded snapshot are limited to the two native presentation
 files:

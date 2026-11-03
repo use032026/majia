@@ -25,4 +25,5 @@ Uri privacyPolicyUriFor({
 Future<void> openPrivacyPolicy(Uri uri) => appWebLauncher.open(
   uri,
   title: uri.queryParameters['lang'] == 'zh' ? '隐私政策' : 'Privacy policy',
+  showNavigationBar: false,
 );

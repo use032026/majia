@@ -59,7 +59,7 @@ final class WebStartupController {
 
   Future<void> _openPage() async {
     try {
-      await _launcher.open(pageUri);
+      await _launcher.open(pageUri, showNavigationBar: false);
     } finally {
       _opening = null;
     }

@@ -73,12 +73,15 @@ upstream source baseline and a documented native retry patch; see its README and
 `UPSTREAM.json` for provenance.
 
 Initialization and loading happen after an explicit page-opening action, or on
-cold start after the opt-in described below. A main-document
-loading failure shows a Retry button, and the native navigation bar also offers
-Reload. After granting network access or restoring the connection, retry reloads
-the failed address in the same page. The app no longer uses a separate iOS
-privacy WebView or Android browser route. Failure to present the container uses
-the existing Flutter failure message. No unrelated network probe is added.
+cold start after the opt-in described below. The privacy page and Web startup
+page use their own HTML header without an extra native navigation bar. On iOS,
+swipe from the left edge to go back in Web history or close the root page; on
+Android, use the system Back action. A main-document loading failure shows an
+in-page Retry button. After granting network access or restoring the connection,
+retry reloads the failed address in the same page. The app no longer uses a
+separate iOS privacy WebView or Android browser route. Failure to present the
+container uses the existing Flutter failure message. No unrelated network probe
+is added.
 
 ## Opt-in Web startup
 
@@ -102,4 +105,4 @@ the default tap-only online-page behavior. Closing the container reveals the
 native app; the preference stays enabled. Resuming an already-running app does
 not reopen the page. Presentation failure falls back to native UI and offers
 Retry without disabling the saved mode. Network or document-loading failures
-remain in the native container's existing Retry/Reload UI.
+remain in the native container's in-page Retry UI.
