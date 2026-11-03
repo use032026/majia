@@ -74,10 +74,11 @@ The repository-relative package in `packages/stmini_flutter` is an unchanged
 snapshot of the `mini_web` source at the commit recorded in `UPSTREAM.json`.
 
 Initialization and loading happen after an explicit page-opening action, or on
-cold start after the opt-in described below. The privacy page and Web startup
-page use their own HTML header without an extra native navigation bar. Pushed
-iOS pages keep the upstream navigation-stack edge gesture; Android uses its
-upstream system Back behavior. Loading failures follow the upstream WebView
+cold start after the opt-in described below. Web startup hides the native
+navigation bar. The privacy page shows it so a root iOS WebView has a close
+button and an Android WebView has a back button; its page content may also
+show its own HTML header. Pushed iOS pages keep the upstream navigation-stack
+edge gesture. Loading failures follow the upstream WebView
 behavior. The app no longer uses a separate iOS privacy WebView or Android
 browser route. Failure to present the container uses the existing Flutter
 failure message. No unrelated network probe is added.

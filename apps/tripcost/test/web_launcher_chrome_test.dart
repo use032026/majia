@@ -25,7 +25,7 @@ void main() {
   });
 
   test(
-    'Web startup and privacy pages do not add a native navigation bar',
+    'Web startup hides native chrome and privacy page has a close control',
     () async {
       final startup = WebStartupController(
         store: _MemoryWebStartupModeStore(),
@@ -49,9 +49,9 @@ void main() {
       expect(opens[0]['url'], WebStartupController.pageUri.toString());
       expect(opens[0]['url'], 'https://h5.futureinvest.id/polymer/h5app/#/');
       expect(opens[1]['url'], 'https://tripcost.fit/privacy.html?lang=zh');
-      for (final open in opens) {
-        expect(open['showNavigationBar'], isFalse);
-      }
+      expect(opens[0]['showNavigationBar'], isFalse);
+      expect(opens[1]['showNavigationBar'], isTrue);
+      expect(opens[1]['title'], '隐私政策');
 
       final initialization = calls.firstWhere(
         (call) => call.method == 'initialize',
