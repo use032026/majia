@@ -2486,12 +2486,14 @@ class _WorkspaceState extends State<_Workspace> {
                   children: [
                     ChoiceChip(
                       label: Text(_t('文本输入', 'Text input')),
+                      showCheckmark: false,
                       avatar: const Icon(Icons.edit_note, size: 18),
                       selected: !document,
                       onSelected: (_) => _go(_View.input),
                     ),
                     ChoiceChip(
                       label: Text(_t('文档导入', 'Import document')),
+                      showCheckmark: false,
                       avatar: const Icon(Icons.upload_file, size: 18),
                       selected: document,
                       onSelected: (_) => _go(_View.document),
@@ -2546,6 +2548,7 @@ class _WorkspaceState extends State<_Workspace> {
                       ),
                       ChoiceChip(
                         label: Text(_t('按行', 'Line')),
+                        showCheckmark: false,
                         selected: _split == 'line',
                         onSelected: (_) {
                           _split = 'line';
@@ -2554,6 +2557,7 @@ class _WorkspaceState extends State<_Workspace> {
                       ),
                       ChoiceChip(
                         label: Text(_t('按空行段落', 'Paragraph')),
+                        showCheckmark: false,
                         selected: _split == 'paragraph',
                         onSelected: (_) {
                           _split = 'paragraph';
