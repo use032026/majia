@@ -5048,6 +5048,11 @@ class _WorkspaceState extends State<_Workspace> {
         key: ValueKey('email-${c.settings.email}'),
         initialValue: c.settings.email,
         readOnly: true,
+        // Read-only iOS fields have no TextInputConnection for native menus.
+        contextMenuBuilder: (context, editableTextState) =>
+            AdaptiveTextSelectionToolbar.editableText(
+              editableTextState: editableTextState,
+            ),
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           labelText: _t(
@@ -5642,6 +5647,10 @@ class _WorkspaceState extends State<_Workspace> {
                         ? defaultBackupServiceOrigin
                         : c.settings.apiBaseUrl,
                     readOnly: true,
+                    contextMenuBuilder: (context, editableTextState) =>
+                        AdaptiveTextSelectionToolbar.editableText(
+                          editableTextState: editableTextState,
+                        ),
                     keyboardType: TextInputType.url,
                     decoration: InputDecoration(
                       labelText: _t('翻译代理服务', 'Translation proxy'),
