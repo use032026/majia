@@ -7,6 +7,14 @@ module MajiaCI
     module_function
 
     APPS = {
+      "almanac-production" => {
+        "app_key" => "almanac",
+        "app_name" => "Deynu",
+        "project_directory" => "apps/almanac",
+        "container_path" => "apps/almanac/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/almanac/app-store/metadata.yml"
+      },
       "photo-production" => {
         "app_key" => "photo",
         "app_name" => "Jufu",

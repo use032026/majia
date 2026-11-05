@@ -8,6 +8,7 @@ on:
         required: true
         type: choice
         options:
+          - almanac-production
           - photo-production
           - hearthio-production
           - tripcost-production
