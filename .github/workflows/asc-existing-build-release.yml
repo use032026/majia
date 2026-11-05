@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - almanac-production
+          - filepeek-production
           - photo-production
           - hearthio-production
           - tripcost-production

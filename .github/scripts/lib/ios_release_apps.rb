@@ -15,6 +15,14 @@ module MajiaCI
         "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
         "metadata_template" => "apps/almanac/app-store/metadata.yml"
       },
+      "filepeek-production" => {
+        "app_key" => "filepeek",
+        "app_name" => "Fylto",
+        "project_directory" => "apps/filepeek",
+        "container_path" => "apps/filepeek/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/filepeek/app-store/metadata.yml"
+      },
       "photo-production" => {
         "app_key" => "photo",
         "app_name" => "Jufu",
