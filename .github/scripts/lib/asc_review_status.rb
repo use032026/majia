@@ -84,6 +84,7 @@ module MajiaCI
           "platform" => version_attributes["platform"],
           "version_string" => version_attributes["versionString"],
           "app_version_state" => version_attributes["appVersionState"],
+          "release_type" => version_attributes["releaseType"],
           "review_stage" => review_stage(version_attributes["appVersionState"]),
           "created_date" => version_attributes["createdDate"]
         },
@@ -106,6 +107,7 @@ module MajiaCI
         "- App: #{display(app['name'])} (`#{display(app['bundle_id'])}`)",
         "- Marketing version: #{display(version['version_string'])}",
         "- App Store version state: `#{display(version['app_version_state'])}`",
+        "- Release type: `#{display(version['release_type'])}`",
         "- Review stage: `#{display(version['review_stage'])}`",
         "- Review submission state: `#{display(submission['state'])}`",
         "- Review item state: `#{display(submission['item_state'])}`",
@@ -158,7 +160,7 @@ module MajiaCI
     def resolve_version(client, app_id, marketing_version)
       query = {
         "filter[platform]" => "IOS",
-        "fields[appStoreVersions]" => "platform,versionString,appVersionState,createdDate",
+        "fields[appStoreVersions]" => "platform,versionString,appVersionState,releaseType,createdDate",
         "limit" => "200"
       }
       query["filter[versionString]"] = marketing_version unless marketing_version.empty?

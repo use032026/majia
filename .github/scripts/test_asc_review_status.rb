@@ -136,6 +136,12 @@ class ASCReviewStatusTest < Minitest::Test
     )
 
     assert_equal "IN_REVIEW", summary.dig("version", "app_version_state")
+    assert_equal "MANUAL", summary.dig("version", "release_type")
+    assert_includes Status.markdown(summary), "- Release type: `MANUAL`"
+    version_query = client.calls.find do |_method, path, _query|
+      path == "/v1/apps/#{APP_ID}/appStoreVersions"
+    end.last
+    assert_includes version_query.fetch("fields[appStoreVersions]").split(","), "releaseType"
     assert_equal "IN_REVIEW", summary.dig("version", "review_stage")
     assert_equal "42", summary.dig("build", "version")
     assert_equal "VALID", summary.dig("build", "processing_state")
@@ -240,6 +246,7 @@ class ASCReviewStatusTest < Minitest::Test
         "platform" => "IOS",
         "versionString" => number,
         "appVersionState" => state,
+        "releaseType" => "MANUAL",
         "createdDate" => created_date
       }
     }
