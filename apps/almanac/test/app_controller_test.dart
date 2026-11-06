@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:almanac/src/app_controller.dart';
+import 'package:almanac/src/domain/almanac_content.dart';
 import 'package:almanac/src/domain/almanac_models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -190,6 +191,78 @@ void main() {
       isTrue,
     );
   });
+
+  test('today leaf takes priority over a stored future-dated leaf', () async {
+    const seed = 'future-date-seed';
+    const generator = AlmanacGenerator();
+    final today = generator.generate(date: now, installationSeed: seed);
+    final future = generator.generate(
+      date: now.add(const Duration(days: 1)),
+      installationSeed: seed,
+    );
+    final data = AlmanacData.initial(
+      seed,
+    ).copyWith(leaves: {future.dateKey: future, today.dateKey: today});
+    final store = MemoryStateStore(value: jsonEncode(data.toJson()));
+    final controller = AppController(
+      store: store,
+      seedFactory: () => 'unused',
+      clock: () => now,
+    );
+    await controller.load();
+
+    expect(controller.todayLeaf.toJson(), today.toJson());
+    expect(store.writeCount, 0);
+  });
+
+  test(
+    'midnight save failure keeps the latest leaf from unordered history',
+    () async {
+      const seed = 'unordered-history-seed';
+      const generator = AlmanacGenerator();
+      final latest = generator.generate(date: now, installationSeed: seed);
+      final oldest = generator.generate(
+        date: now.subtract(const Duration(days: 2)),
+        installationSeed: seed,
+      );
+      final middle = generator.generate(
+        date: now.subtract(const Duration(days: 1)),
+        installationSeed: seed,
+      );
+      final data = AlmanacData.initial(seed).copyWith(
+        leaves: {
+          oldest.dateKey: oldest,
+          latest.dateKey: latest,
+          middle.dateKey: middle,
+        },
+      );
+      final stored = jsonEncode(data.toJson());
+      final store = MemoryStateStore(value: stored);
+      var current = now;
+      final controller = AppController(
+        store: store,
+        seedFactory: () => 'unused',
+        clock: () => current,
+      );
+      await controller.load();
+      current = now.add(const Duration(days: 1));
+      store.failWrite = true;
+
+      expect(controller.hasCurrentDateLeaf, isFalse);
+      expect(controller.todayLeaf.toJson(), latest.toJson());
+      expect(await controller.refreshForCurrentDate(), isFalse);
+      expect(controller.hasSaveFailure, isTrue);
+      expect(controller.todayLeaf.toJson(), latest.toJson());
+      expect(controller.data!.leaves, hasLength(3));
+      expect(store.value, stored);
+
+      store.failWrite = false;
+      expect(await controller.refreshForCurrentDate(), isTrue);
+      expect(controller.todayLeaf.dateKey, formatDateKey(current));
+      expect(controller.data!.leaves, hasLength(4));
+      expect(controller.hasSaveFailure, isFalse);
+    },
+  );
 
   test('stale pre-midnight selections are rejected without throwing', () async {
     final store = MemoryStateStore();

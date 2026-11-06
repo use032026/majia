@@ -171,7 +171,7 @@ module MajiaCI
 
     def build_config(
       app_name:, team_id:, bundle_id:, scheme:, project_directory:, container_path:,
-      targets:, upload_to_asc:, auto_create_store_version:, metadata_path:
+      targets:, upload_to_asc:, auto_create_store_version:, metadata_path:, automatic_release: true
     )
       {
         "schema_version" => 2,
@@ -230,7 +230,7 @@ module MajiaCI
         "app_store" => {
           "enabled" => auto_create_store_version,
           "metadata_path" => metadata_path,
-          "automatic_release" => true
+          "automatic_release" => automatic_release
         },
         "artifacts" => {
           "retention_days" => 30,

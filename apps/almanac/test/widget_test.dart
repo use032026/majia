@@ -425,12 +425,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(controller.data!.themeMode, AppThemeMode.dark);
     expect(
+      Theme.of(tester.element(find.byType(Scaffold).last)).brightness,
+      Brightness.dark,
+    );
+    expect(
       find.descendant(
         of: find.byKey(const Key('theme_dark')),
         matching: find.byIcon(Icons.radio_button_checked),
       ),
       findsOneWidget,
     );
+
+    final leafBefore = controller.todayLeaf.toJson();
+    await tester.ensureVisible(find.byKey(const Key('locale_en')));
+    await tester.tap(find.byKey(const Key('locale_en')));
+    await tester.pumpAndSettle();
+    expect(find.text('Language'), findsOneWidget);
+    expect(
+      Theme.of(tester.element(find.byType(Scaffold).last)).brightness,
+      Brightness.dark,
+    );
+
+    await tester.ensureVisible(find.byKey(const Key('theme_light')));
+    await tester.tap(find.byKey(const Key('theme_light')));
+    await tester.pumpAndSettle();
+    expect(
+      Theme.of(tester.element(find.byType(Scaffold).last)).brightness,
+      Brightness.light,
+    );
+    expect(controller.todayLeaf.toJson(), leafBefore);
   });
 
   testWidgets(

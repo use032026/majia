@@ -8,6 +8,7 @@ require "optparse"
 require "pathname"
 require "tmpdir"
 require_relative "lib/environment_ios_release"
+require_relative "lib/ios_release_apps"
 
 options = {}
 OptionParser.new do |parser|
@@ -171,6 +172,7 @@ begin
   end
 
   app_key = options.fetch(:app_key)
+  automatic_release = MajiaCI::IOSReleaseApps.automatic_release_for(app_key)
   config_path = ".github/runtime-#{app_key}-ios-build.yml"
   metadata_path = ".github/runtime-#{app_key}-app-store-metadata.yml"
   config = MajiaCI::EnvironmentIOSRelease.build_config(
@@ -183,7 +185,8 @@ begin
     targets: targets,
     upload_to_asc: upload_to_asc,
     auto_create_store_version: auto_create,
-    metadata_path: metadata_path
+    metadata_path: metadata_path,
+    automatic_release: automatic_release
   )
   File.open(config_path, "w", 0o600) do |file|
     file.write(MajiaCI::EnvironmentIOSRelease.dump_yaml(config))
@@ -225,7 +228,7 @@ begin
     "external_update_text_metadata=#{external_update_text_metadata}",
     "sync_whats_new=#{sync_whats_new}",
     "replace_asc_media=#{replace_media}",
-    "automatic_release=true"
+    "automatic_release=#{automatic_release}"
   ].join(" ")
 rescue MajiaCI::ReleaseInputError, Errno::ENOENT, Errno::EACCES => e
   warn e.message

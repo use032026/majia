@@ -2,14 +2,17 @@
 
 require "minitest/autorun"
 require "openssl"
+require "tempfile"
 require "yaml"
 require_relative "lib/environment_ios_release"
+require_relative "lib/ios_release_apps"
 
 class EnvironmentIOSReleaseTest < Minitest::Test
   Release = MajiaCI::EnvironmentIOSRelease
 
   def test_two_component_versions_require_explicit_opt_in
     assert Release.valid_marketing_version?("1.0.0")
+    assert Release.valid_marketing_version?("1.0.1")
     refute Release.valid_marketing_version?("1.0")
     assert Release.valid_marketing_version?("1.0", allow_two_components: true)
     assert Release.valid_marketing_version?("1.0.0", allow_two_components: true)
@@ -57,7 +60,10 @@ class EnvironmentIOSReleaseTest < Minitest::Test
   end
 
   def test_metadata_merges_only_explicit_release_notes_into_the_template
-    template = File.join(Dir.pwd, "apps/tripcost/app-store/metadata.yml")
+    fixture = Tempfile.new(["ios-release-metadata", ".yml"])
+    fixture.write("uses_non_exempt_encryption: false\n")
+    fixture.flush
+    template = fixture.path
     metadata = Release.build_metadata(
       template_path: template,
       release_notes_json: '{"en-US":"Bug fixes.","zh-Hans":"问题修复。"}',
@@ -84,6 +90,8 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       update_text_metadata: false
     )
     assert_nil untouched["localizations"]
+  ensure
+    fixture&.close!
   end
 
   def test_metadata_switches_require_store_version_automation
@@ -144,6 +152,32 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal true, config.dig("app_store", "automatic_release")
     assert_equal "processing_complete", config.dig("upload", "wait_level")
     assert_equal "com.example.roamsum.widget", config.dig("app", "bundle_ids", 1, "bundle_id")
+  end
+
+  def test_deynu_build_and_existing_build_configs_require_manual_release
+    app = MajiaCI::IOSReleaseApps.fetch("almanac-production")
+    [
+      MajiaCI::IOSReleaseApps.automatic_release_for(app.fetch("app_key")),
+      app.fetch("automatic_release", true)
+    ].each do |automatic_release|
+      config = Release.build_config(
+        app_name: app.fetch("app_name"),
+        team_id: "ABCDE12345",
+        bundle_id: "com.example.deynu",
+        scheme: "Runner",
+        project_directory: app.fetch("project_directory"),
+        container_path: app.fetch("container_path"),
+        targets: Release.parse_targets(MajiaCI::IOSReleaseApps.targets_json(app)),
+        upload_to_asc: true,
+        auto_create_store_version: true,
+        metadata_path: ".github/runtime-almanac-app-store-metadata.yml",
+        automatic_release: automatic_release
+      )
+
+      assert_equal true, config.dig("app_store", "enabled")
+      assert_equal false, config.dig("app_store", "automatic_release")
+      assert_equal "asc_increment", config.dig("versioning", "build_number_strategy")
+    end
   end
 
   def test_all_release_workflows_expose_independent_release_switches_and_pin_expected_action_commits

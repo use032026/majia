@@ -40,4 +40,16 @@ class IOSReleaseAppsTest < Minitest::Test
     end
     assert_includes error.message, "unsupported app environment"
   end
+
+  def test_deynu_requires_manual_release_without_changing_other_apps
+    assert_equal false, Registry.fetch("almanac-production").fetch("automatic_release")
+    assert_equal false, Registry.automatic_release_for("almanac")
+    Registry::APPS.each_value do |app|
+      next if app.fetch("app_key") == "almanac"
+
+      assert_equal true, Registry.automatic_release_for(app.fetch("app_key"))
+      assert_equal true, app.fetch("automatic_release", true)
+    end
+    assert_equal true, Registry.automatic_release_for("cleantrail")
+  end
 end

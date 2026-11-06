@@ -10,6 +10,7 @@ module MajiaCI
       "almanac-production" => {
         "app_key" => "almanac",
         "app_name" => "Deynu",
+        "automatic_release" => false,
         "project_directory" => "apps/almanac",
         "container_path" => "apps/almanac/ios/Runner.xcworkspace",
         "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
@@ -92,6 +93,11 @@ module MajiaCI
 
     def targets_json(app)
       JSON.generate(app.fetch("targets"))
+    end
+
+    def automatic_release_for(app_key)
+      app = APPS.values.find { |entry| entry.fetch("app_key") == app_key }
+      app ? app.fetch("automatic_release", true) : true
     end
   end
 end

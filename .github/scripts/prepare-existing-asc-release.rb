@@ -125,7 +125,8 @@ begin
     targets: targets,
     upload_to_asc: true,
     auto_create_store_version: true,
-    metadata_path: metadata_relative
+    metadata_path: metadata_relative,
+    automatic_release: app.fetch("automatic_release", true)
   )
 
   write_private_file(config_path, release.dump_yaml(config))
@@ -146,7 +147,8 @@ begin
     "environment=#{options.fetch(:app_environment)}",
     "bundle_id=#{bundle_id}",
     "version=#{options.fetch(:marketing_version)}",
-    "sync_whats_new=#{sync_whats_new}"
+    "sync_whats_new=#{sync_whats_new}",
+    "automatic_release=#{config.dig('app_store', 'automatic_release')}"
   ].join(" ")
 rescue MajiaCI::ReleaseInputError, ArgumentError, KeyError, Errno::ENOENT, Errno::EACCES => e
   warn e.message

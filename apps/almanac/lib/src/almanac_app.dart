@@ -12,6 +12,9 @@ class AlmanacApp extends StatelessWidget {
 
   final AppController controller;
 
+  static final ThemeData _lightTheme = buildLightTheme();
+  static final ThemeData _darkTheme = buildDarkTheme();
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -27,8 +30,8 @@ class AlmanacApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          theme: buildLightTheme(),
-          darkTheme: buildDarkTheme(),
+          theme: _lightTheme,
+          darkTheme: _darkTheme,
           themeMode: controller.flutterThemeMode,
           home: Builder(
             builder: (context) => _homeFor(Localizations.localeOf(context)),
