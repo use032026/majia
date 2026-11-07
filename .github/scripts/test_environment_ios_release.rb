@@ -154,7 +154,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
     assert_equal "com.example.roamsum.widget", config.dig("app", "bundle_ids", 1, "bundle_id")
   end
 
-  def test_deynu_build_and_existing_build_configs_require_manual_release
+  def test_deynu_build_and_existing_build_configs_enable_automatic_release
     app = MajiaCI::IOSReleaseApps.fetch("almanac-production")
     [
       MajiaCI::IOSReleaseApps.automatic_release_for(app.fetch("app_key")),
@@ -175,7 +175,7 @@ class EnvironmentIOSReleaseTest < Minitest::Test
       )
 
       assert_equal true, config.dig("app_store", "enabled")
-      assert_equal false, config.dig("app_store", "automatic_release")
+      assert_equal true, config.dig("app_store", "automatic_release")
       assert_equal "asc_increment", config.dig("versioning", "build_number_strategy")
     end
   end

@@ -10,7 +10,7 @@ module MajiaCI
       "almanac-production" => {
         "app_key" => "almanac",
         "app_name" => "Deynu",
-        "automatic_release" => false,
+        "automatic_release" => true,
         "project_directory" => "apps/almanac",
         "container_path" => "apps/almanac/ios/Runner.xcworkspace",
         "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],

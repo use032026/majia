@@ -5,6 +5,69 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   const generator = AlmanacGenerator();
 
+  test('all prompt IDs resolve without losing bilingual content or side', () {
+    expect(
+      promptBank.map((prompt) => prompt.id).toSet(),
+      hasLength(promptBank.length),
+    );
+    for (final prompt in promptBank) {
+      final resolved = promptById(prompt.id);
+      expect(resolved.id, prompt.id);
+      expect(resolved.side, prompt.side);
+      expect(resolved.domain, prompt.domain);
+      expect(resolved.text(useChinese: true), prompt.zh);
+      expect(resolved.text(useChinese: false), prompt.en);
+    }
+  });
+
+  test('unknown prompt lookup retains its StateError contract', () {
+    for (final id in ['', 'removed-prompt']) {
+      expect(
+        () => promptById(id),
+        throwsA(
+          isA<StateError>().having(
+            (error) => error.message,
+            'message',
+            'No element',
+          ),
+        ),
+      );
+    }
+  });
+
+  test(
+    'leaf validation rejects unknown IDs and prompts from the wrong side',
+    () {
+      final original = generator.generate(
+        date: DateTime(2026, 10, 10),
+        installationSeed: 'validation-seed',
+      );
+      for (final side in PromptSide.values) {
+        final key = side == PromptSide.suitable
+            ? 'suitablePromptIds'
+            : 'avoidPromptIds';
+        final wrongSideId = promptBank
+            .firstWhere((prompt) => prompt.side != side)
+            .id;
+        for (final id in ['removed-prompt', wrongSideId]) {
+          final json = original.toJson();
+          json[key] = [id, ...(json[key]! as List<String>).skip(1)];
+          final leaf = DailyLeaf.fromJson(json);
+          expect(
+            () => validateLeafContent(leaf),
+            throwsA(
+              isA<FormatException>().having(
+                (error) => error.message,
+                'message',
+                'Unknown or invalid ${side.name} prompt: $id',
+              ),
+            ),
+          );
+        }
+      }
+    },
+  );
+
   test('same installation and date produces stable content', () {
     final date = DateTime(2026, 10, 10, 8);
     final first = generator.generate(date: date, installationSeed: 'seed-a');

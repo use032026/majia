@@ -51,4 +51,6 @@ flutter test
 
 ## 发布边界
 
-当前源码与本地质量门禁完成，但不是可上传的商店候选：Bundle/Application ID 仍为占位值，iOS Archive 未签名，Android release 使用 Debug 证书，公开隐私/支持 URL 与开发者主体尚未提供。本项目没有执行任何上传或审核提交。
+iOS 已接入 `Deynu iOS Release` 签名构建/上传流程和 `ASC Existing Build Release` 复用构建送审流程，使用 `almanac-production` Environment。构建来源、版本、构建号及 App Store Connect 处理/审核状态以对应运行证据为准；本地测试通过不替代签名包、设备验证或商店结果。
+
+新版本按当前发布配置在审核通过后自动发布。修改源码配置不会公开发布仍待手动发布的历史版本；这类历史版本必须另行核实并取得发布授权。商店更新说明仅使用已存在的 App Store 语言，不因 App 支持中英文而自动新建商店语言，也不默认覆盖描述或截图。旧预检文档和运行截图保留为历史证据，不代表当前发布状态。
