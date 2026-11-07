@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - almanac-production
+          - cleantrail-production
           - filepeek-production
           - photo-production
           - hearthio-production
@@ -55,7 +56,11 @@ concurrency:
 
 jobs:
   store_release:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: >-
+      ${{ (github.ref == 'refs/heads/main' && inputs.app_environment != 'cleantrail-production') ||
+          (github.ref == 'refs/heads/codex/cleantrail-asc-1.0.2' &&
+           inputs.app_environment == 'cleantrail-production' && inputs.marketing_version == '1.0.2' &&
+           inputs.submit && !inputs.update_asc_text_metadata && !inputs.replace_asc_media) }}
     environment: ${{ inputs.app_environment }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -134,6 +139,42 @@ jobs:
             --output asc-existing-build-status.json \
             --github-output "$GITHUB_OUTPUT"
 
+      - name: Verify CleanTrail submission scope
+        if: ${{ inputs.app_environment == 'cleantrail-production' }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
+        run: |
+          ruby -r ./.github/scripts/lib/asc_review_status - <<'RUBY'
+          build = JSON.parse(File.read("asc-existing-build-status.json"))
+          unless ENV.fetch("IOS_BUNDLE_ID") == "com.astfx.lite" && build.fetch("app_id") == "6827824646" &&
+                 build.fetch("marketing_version") == "1.0.2" && build.fetch("build_number") == ENV.fetch("BUILD_NUMBER") &&
+                 build.fetch("processing_state") == "VALID" && !build.fetch("asc_build_id").empty?
+            abort "CleanTrail ASC app or processed 1.0.2 build does not match the requested submission"
+          end
+          unless JSON.parse(ENV.fetch("RELEASE_NOTES_JSON")) == { "en-US" => "fix some bugs" }
+            abort "CleanTrail 1.0.2 release notes must match the requested text"
+          end
+
+          key = MajiaCI::ASCReviewStatus.normalize_private_key(ENV.fetch("ASC_API_KEY_P8"))
+          client = MajiaCI::ASCClient.new(key: key, key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"))
+          app_path = "/v1/apps/#{build.fetch('app_id')}"
+          version = client.paginate("#{app_path}/appStoreVersions", { "filter[platform]" => "IOS", "filter[versionString]" => "1.0.2" }).first
+          client.paginate("#{app_path}/reviewSubmissions", { "filter[platform]" => "IOS" }).each do |draft|
+            next unless draft.dig("attributes", "state") == "READY_FOR_REVIEW"
+
+            items = client.paginate("/v1/reviewSubmissions/#{draft.fetch('id')}/items")
+            unless items.all? { |item| version && item.dig("relationships", "appStoreVersion", "data", "id") == version.fetch("id") }
+              abort "An ASC review draft contains items outside CleanTrail iOS 1.0.2"
+            end
+          end
+          RUBY
+
       - name: Snapshot current ASC metadata before changes
         id: store_snapshot_before
         if: ${{ inputs.update_asc_text_metadata || inputs.replace_asc_media }}
@@ -210,6 +251,32 @@ jobs:
             --replace-media false \
             --output asc-existing-build-app-store.json \
             --github-output "$GITHUB_OUTPUT"
+
+      - name: Verify attached CleanTrail build
+        if: ${{ inputs.app_environment == 'cleantrail-production' }}
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          ruby -r ./.github/scripts/lib/asc_review_status - <<'RUBY'
+          expected = JSON.parse(File.read("asc-existing-build-status.json"))
+          asc = MajiaCI::ASCReviewStatus
+          key = asc.normalize_private_key(ENV.fetch("ASC_API_KEY_P8"))
+          client = MajiaCI::ASCClient.new(key: key, key_id: ENV.fetch("ASC_KEY_ID"), issuer_id: ENV.fetch("ASC_ISSUER_ID"))
+          version = asc.resolve_version(client, expected.fetch("app_id"), expected.fetch("marketing_version"))
+          abort "ASC returned the wrong CleanTrail version" unless version.dig("attributes", "versionString") == expected.fetch("marketing_version")
+
+          version_id = version.fetch("id")
+          build = asc.resolve_build(client, version_id)
+          unless build && build.fetch("id") == expected.fetch("asc_build_id") &&
+                 build.dig("attributes", "processingState") == "VALID"
+            abort "CleanTrail App Store version is not attached to the exact validated cloud build"
+          end
+          details = client.get("/v1/appStoreVersions/#{version_id}", { "fields[appStoreVersions]" => "releaseType" })
+          abort "CleanTrail release must be manual" unless details.dig("data", "attributes", "releaseType") == "MANUAL"
+          RUBY
 
       - name: Update and verify What's New only
         id: whats_new

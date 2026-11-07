@@ -8,7 +8,7 @@ class IOSReleaseAppsTest < Minitest::Test
 
   def test_registry_covers_every_release_environment_and_existing_paths
     expected = %w[
-      almanac-production filepeek-production hearthio-production photo-production plotproof_lab-production
+      almanac-production cleantrail-production filepeek-production hearthio-production photo-production plotproof_lab-production
       sdpacket-production steady-production
       tripcost-production tripdelta-production
     ]
@@ -45,11 +45,16 @@ class IOSReleaseAppsTest < Minitest::Test
     assert_equal true, Registry.fetch("almanac-production").fetch("automatic_release")
     assert_equal true, Registry.automatic_release_for("almanac")
     Registry::APPS.each_value do |app|
-      next if app.fetch("app_key") == "almanac"
+      next if %w[almanac cleantrail].include?(app.fetch("app_key"))
 
       assert_equal true, Registry.automatic_release_for(app.fetch("app_key"))
       assert_equal true, app.fetch("automatic_release", true)
     end
-    assert_equal true, Registry.automatic_release_for("cleantrail")
+  end
+
+  def test_cleantrail_uses_manual_release
+    app = Registry.fetch("cleantrail-production")
+    assert_equal false, app.fetch("automatic_release")
+    assert_equal false, Registry.automatic_release_for(app.fetch("app_key"))
   end
 end

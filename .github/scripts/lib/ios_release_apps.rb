@@ -16,6 +16,15 @@ module MajiaCI
         "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
         "metadata_template" => "apps/almanac/app-store/metadata.yml"
       },
+      "cleantrail-production" => {
+        "app_key" => "cleantrail",
+        "app_name" => "ASTFX",
+        "project_directory" => "apps/cleantrail/cleantrail",
+        "container_path" => "apps/cleantrail/cleantrail/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/cleantrail/cleantrail/app-store/metadata.yml",
+        "automatic_release" => false
+      },
       "filepeek-production" => {
         "app_key" => "filepeek",
         "app_name" => "Fylto",
