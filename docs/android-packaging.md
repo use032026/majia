@@ -24,6 +24,7 @@
 | CleanTrail | `CLEANTRAIL` |
 | Fylto (apps/filepeek) | `FILEPEEK` |
 | LAURUS / Hearthio | `HEARTHIO` |
+| 译包 LangPack | `LANGPACK` |
 | looters | `LOOTERS` |
 | Jufu | `PHOTO` |
 | PlotProof Lab | `PLOTPROOF_LAB` |
@@ -47,6 +48,8 @@ PHOTO_ANDROID_KEY_PASSWORD
 
 ## 当前范围
 
-已覆盖 14 个已有 Android 工程的 Flutter 应用。`PhotoReport` 当前没有 Android 工程，因此不能由此工作流打包。TripCost 已使用 `com.tripcost.lite` 接入；未配置 `TRIPCOST_ANDROID_*` Secrets 前，只能用 `sign_release=false` 生成内部验证包。
+已覆盖 15 个已有 Android 工程的 Flutter 应用。`PhotoReport` 当前没有 Android 工程，因此不能由此工作流打包。TripCost 已使用 `com.tripcost.lite` 接入；未配置 `TRIPCOST_ANDROID_*` Secrets 前，只能用 `sign_release=false` 生成内部验证包。
+
+LangPack 选择 `app=langpack`，包名为 `com.cherryice.langpack`，仅从 `LANGPACK_ANDROID_*` 四项 Repository Secrets 生成本应用的签名配置。正式打包保持 `sign_release=true`，缺少任一凭据即失败。配置步骤见 [LangPack 正式打包接入](../apps/langpack/README.md#正式打包接入)。
 
 许多现有工程仍使用 `com.example.*` 占位 Application ID。工作流可以构建，但这类应用在注册正式包名、配置 Play Console 和验证签名身份之前，不应视作可发布的商店构建。

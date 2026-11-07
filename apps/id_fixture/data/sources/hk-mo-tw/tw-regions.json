@@ -1,0 +1,41 @@
+{
+  "accessed_date": "2026-11-05",
+  "current_source_url": "https://ilhhr.e-land.gov.tw/cp.aspx?n=3515",
+  "historical_source_url": "https://www.htaiping.taichung.gov.tw/media/371529/662813505431.pdf",
+  "meaning": "Number allocation region prefix, not current residence or identity proof",
+  "current_count": 22,
+  "current": [
+    {"prefix":"A","name_zh":"臺北市","name_en":"Taipei City"},
+    {"prefix":"B","name_zh":"臺中市","name_en":"Taichung City"},
+    {"prefix":"C","name_zh":"基隆市","name_en":"Keelung City"},
+    {"prefix":"D","name_zh":"臺南市","name_en":"Tainan City"},
+    {"prefix":"E","name_zh":"高雄市","name_en":"Kaohsiung City"},
+    {"prefix":"F","name_zh":"新北市","name_en":"New Taipei City"},
+    {"prefix":"G","name_zh":"宜蘭縣","name_en":"Yilan County"},
+    {"prefix":"H","name_zh":"桃園市","name_en":"Taoyuan City"},
+    {"prefix":"I","name_zh":"嘉義市","name_en":"Chiayi City"},
+    {"prefix":"J","name_zh":"新竹縣","name_en":"Hsinchu County"},
+    {"prefix":"K","name_zh":"苗栗縣","name_en":"Miaoli County"},
+    {"prefix":"M","name_zh":"南投縣","name_en":"Nantou County"},
+    {"prefix":"N","name_zh":"彰化縣","name_en":"Changhua County"},
+    {"prefix":"O","name_zh":"新竹市","name_en":"Hsinchu City"},
+    {"prefix":"P","name_zh":"雲林縣","name_en":"Yunlin County"},
+    {"prefix":"Q","name_zh":"嘉義縣","name_en":"Chiayi County"},
+    {"prefix":"T","name_zh":"屏東縣","name_en":"Pingtung County"},
+    {"prefix":"U","name_zh":"花蓮縣","name_en":"Hualien County"},
+    {"prefix":"V","name_zh":"臺東縣","name_en":"Taitung County"},
+    {"prefix":"W","name_zh":"金門縣","name_en":"Kinmen County"},
+    {"prefix":"X","name_zh":"澎湖縣","name_en":"Penghu County"},
+    {"prefix":"Z","name_zh":"連江縣","name_en":"Lienchiang County"}
+  ],
+  "additional_historical": [
+    {"prefix":"L","name_zh":"原臺中縣","name_en":"Former Taichung County","current_successor":"B","default_generation":false},
+    {"prefix":"R","name_zh":"原臺南縣","name_en":"Former Tainan County","current_successor":"D","default_generation":false},
+    {"prefix":"S","name_zh":"原高雄縣","name_en":"Former Kaohsiung County","current_successor":"E","default_generation":false},
+    {"prefix":"Y","name_zh":"原陽明山管理局","name_en":"Former Yangmingshan Administration Bureau","current_successor":null,"default_generation":false}
+  ],
+  "renamed_same_prefix": [
+    {"prefix":"F","historical_name_zh":"臺北縣","current_name_zh":"新北市"},
+    {"prefix":"H","historical_name_zh":"桃園縣","current_name_zh":"桃園市"}
+  ]
+}

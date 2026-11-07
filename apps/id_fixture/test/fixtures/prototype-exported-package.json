@@ -1,0 +1,173 @@
+{
+  "schema": "id-fixture-package",
+  "schemaVersion": 1,
+  "engineVersion": "1.0.0",
+  "prng": "fnv1a32-seeded-mulberry32-v1",
+  "profileId": "cn-id-demo",
+  "profileVersion": "gb11643-1999-demo-2022-v1",
+  "dataHash": "sha256:d4f79e09d7b2a746842b72357ed8bd438ef640eab9f318afd21f56d7452d07c1",
+  "synthetic": true,
+  "issuanceChecked": false,
+  "config": {
+    "profileId": "cn-id-demo",
+    "count": 3,
+    "seed": "sample-01",
+    "mode": "checksum",
+    "birthDate": "2000-01-01",
+    "sex": "any",
+    "addressCode": "110101"
+  },
+  "cases": [
+    {
+      "value": "110101200001019730",
+      "checks": [
+        {
+          "id": "length",
+          "status": "pass",
+          "labelZh": "长度符合规则",
+          "labelEn": "Length matches the rule"
+        },
+        {
+          "id": "charset",
+          "status": "pass",
+          "labelZh": "字符组成符合规则",
+          "labelEn": "Character structure matches the rule"
+        },
+        {
+          "id": "address",
+          "status": "pass",
+          "labelZh": "属于本演示地区快照",
+          "labelEn": "Included in this demo code snapshot"
+        },
+        {
+          "id": "date",
+          "status": "pass",
+          "labelZh": "出生日期为有效日历日期",
+          "labelEn": "Birth date is a valid calendar date"
+        },
+        {
+          "id": "sequence",
+          "status": "pass",
+          "labelZh": "演示顺序码001–999",
+          "labelEn": "Demo sequence is 001–999"
+        },
+        {
+          "id": "checksum",
+          "status": "fail",
+          "labelZh": "MOD 11-2校验位",
+          "labelEn": "MOD 11-2 check character"
+        },
+        {
+          "id": "issuance",
+          "status": "unknown",
+          "labelZh": "真实签发、持有人及有效状态",
+          "labelEn": "Actual issuance, holder and validity"
+        }
+      ],
+      "expectedFailureIds": [
+        "checksum"
+      ]
+    },
+    {
+      "value": "110101200001016230",
+      "checks": [
+        {
+          "id": "length",
+          "status": "pass",
+          "labelZh": "长度符合规则",
+          "labelEn": "Length matches the rule"
+        },
+        {
+          "id": "charset",
+          "status": "pass",
+          "labelZh": "字符组成符合规则",
+          "labelEn": "Character structure matches the rule"
+        },
+        {
+          "id": "address",
+          "status": "pass",
+          "labelZh": "属于本演示地区快照",
+          "labelEn": "Included in this demo code snapshot"
+        },
+        {
+          "id": "date",
+          "status": "pass",
+          "labelZh": "出生日期为有效日历日期",
+          "labelEn": "Birth date is a valid calendar date"
+        },
+        {
+          "id": "sequence",
+          "status": "pass",
+          "labelZh": "演示顺序码001–999",
+          "labelEn": "Demo sequence is 001–999"
+        },
+        {
+          "id": "checksum",
+          "status": "fail",
+          "labelZh": "MOD 11-2校验位",
+          "labelEn": "MOD 11-2 check character"
+        },
+        {
+          "id": "issuance",
+          "status": "unknown",
+          "labelZh": "真实签发、持有人及有效状态",
+          "labelEn": "Actual issuance, holder and validity"
+        }
+      ],
+      "expectedFailureIds": [
+        "checksum"
+      ]
+    },
+    {
+      "value": "110101200001019470",
+      "checks": [
+        {
+          "id": "length",
+          "status": "pass",
+          "labelZh": "长度符合规则",
+          "labelEn": "Length matches the rule"
+        },
+        {
+          "id": "charset",
+          "status": "pass",
+          "labelZh": "字符组成符合规则",
+          "labelEn": "Character structure matches the rule"
+        },
+        {
+          "id": "address",
+          "status": "pass",
+          "labelZh": "属于本演示地区快照",
+          "labelEn": "Included in this demo code snapshot"
+        },
+        {
+          "id": "date",
+          "status": "pass",
+          "labelZh": "出生日期为有效日历日期",
+          "labelEn": "Birth date is a valid calendar date"
+        },
+        {
+          "id": "sequence",
+          "status": "pass",
+          "labelZh": "演示顺序码001–999",
+          "labelEn": "Demo sequence is 001–999"
+        },
+        {
+          "id": "checksum",
+          "status": "fail",
+          "labelZh": "MOD 11-2校验位",
+          "labelEn": "MOD 11-2 check character"
+        },
+        {
+          "id": "issuance",
+          "status": "unknown",
+          "labelZh": "真实签发、持有人及有效状态",
+          "labelEn": "Actual issuance, holder and validity"
+        }
+      ],
+      "expectedFailureIds": [
+        "checksum"
+      ]
+    }
+  ],
+  "exportedAt": "2026-11-04T06:32:02.861Z"
+}

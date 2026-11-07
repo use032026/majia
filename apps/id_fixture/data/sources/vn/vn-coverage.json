@@ -1,0 +1,1208 @@
+{
+  "schemaVersion": 1,
+  "country": "VN",
+  "asOf": "2026-11-05",
+  "document": "Vietnam citizen personal identification number / căn cước",
+  "recommendedCapability": {
+    "enabledForFormatFixtures": true,
+    "labelZh": "越南个人身份编号 · 12位公开结构",
+    "assurance": "format_only",
+    "newIssuanceConformity": "not_established",
+    "neverIssuedGuarantee": false,
+    "realIdentityVerified": false,
+    "codeSystemLabelZh": "历史公开出生登记地编码（63个）；当前34省仅用于筛选"
+  },
+  "legalStatus": {
+    "current12DigitBasis": {
+      "citation": "Law 26/2023/QH15 Article 12",
+      "url": "https://vanban.chinhphu.vn/?classid=1&docid=209628&pageid=27160",
+      "publishedDate": "2023-11-27",
+      "effectiveDate": "2024-07-01"
+    },
+    "historicalCodingCircular": {
+      "id": "59/2021/TT-BCA",
+      "effectiveFrom": "2021-07-01",
+      "repealedFrom": "2024-07-01",
+      "repealedBy": "17/2024/TT-BCA Article 16.2(a)"
+    },
+    "reviewedCurrentCirculars": [
+      "17/2024/TT-BCA",
+      "53/2025/TT-BCA Article 3",
+      "118/2026/TT-BCA"
+    ],
+    "finding": "Reviewed 2024/2025/2026 texts update administrative names, authorities and forms; no replacement public identity-number prefix table was found in those texts. Do not infer that QD19/2025 administrative codes are current identity prefixes.",
+    "currentAdministrativeOperationDate": "2025-07-01"
+  },
+  "rules": {
+    "length": 12,
+    "charset": "ASCII digits 0-9",
+    "storage": "string; preserve leading zeroes",
+    "segments": [
+      {
+        "start": 1,
+        "end": 3,
+        "name": "published birthplace code",
+        "sourceIds": [
+          "legacy-rules-ministry-2022",
+          "circular-59-2021"
+        ]
+      },
+      {
+        "start": 4,
+        "end": 4,
+        "name": "encoded century and sex",
+        "sourceIds": [
+          "legacy-rules-ministry-2022"
+        ]
+      },
+      {
+        "start": 5,
+        "end": 6,
+        "name": "last two digits of birth year",
+        "sourceIds": [
+          "legacy-rules-ministry-2022"
+        ]
+      },
+      {
+        "start": 7,
+        "end": 12,
+        "name": "six-digit random segment",
+        "sourceIds": [
+          "legacy-rules-ministry-2022"
+        ]
+      }
+    ],
+    "centurySex": [
+      {
+        "fromYear": 1900,
+        "toYear": 1999,
+        "maleCode": "0",
+        "femaleCode": "1"
+      },
+      {
+        "fromYear": 2000,
+        "toYear": 2099,
+        "maleCode": "2",
+        "femaleCode": "3"
+      },
+      {
+        "fromYear": 2100,
+        "toYear": 2199,
+        "maleCode": "4",
+        "femaleCode": "5"
+      },
+      {
+        "fromYear": 2200,
+        "toYear": 2299,
+        "maleCode": "6",
+        "femaleCode": "7"
+      },
+      {
+        "fromYear": 2300,
+        "toYear": 2399,
+        "maleCode": "8",
+        "femaleCode": "9"
+      }
+    ],
+    "birthYearPolicy": {
+      "publishedRepresentableFrom": 1900,
+      "publishedRepresentableTo": 2399,
+      "suggestedOrdinaryFixtureMax": "current year; future-year cases only when explicitly requested",
+      "unknownSexOrYear": "do not guess; reject unsupported input or use an explicit malformed-case fixture"
+    },
+    "randomSegment": {
+      "digits": 6,
+      "formatRange": "000000-999999",
+      "allocationAndReservedRanges": "not established from public sources",
+      "sampleUniqueness": "only within the generated batch; not against government records"
+    },
+    "checksum": {
+      "algorithm": null,
+      "status": "No independent check digit is specified by the inspected public structure; do not add a checksum or label checksum passed."
+    },
+    "birthDateGranularity": "year only; month and day are not encoded"
+  },
+  "currentProvinces34": [
+    {
+      "adminCode": "01",
+      "nameVi": "Hà Nội",
+      "legacyBirthplaceCodes": [
+        "001"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "04",
+      "nameVi": "Cao Bằng",
+      "legacyBirthplaceCodes": [
+        "004"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "08",
+      "nameVi": "Tuyên Quang",
+      "legacyBirthplaceCodes": [
+        "002",
+        "008"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.1",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "11",
+      "nameVi": "Điện Biên",
+      "legacyBirthplaceCodes": [
+        "011"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "12",
+      "nameVi": "Lai Châu",
+      "legacyBirthplaceCodes": [
+        "012"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "14",
+      "nameVi": "Sơn La",
+      "legacyBirthplaceCodes": [
+        "014"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "15",
+      "nameVi": "Lào Cai",
+      "legacyBirthplaceCodes": [
+        "010",
+        "015"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.2",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "19",
+      "nameVi": "Thái Nguyên",
+      "legacyBirthplaceCodes": [
+        "006",
+        "019"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.3",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "20",
+      "nameVi": "Lạng Sơn",
+      "legacyBirthplaceCodes": [
+        "020"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "22",
+      "nameVi": "Quảng Ninh",
+      "legacyBirthplaceCodes": [
+        "022"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "24",
+      "nameVi": "Bắc Ninh",
+      "legacyBirthplaceCodes": [
+        "024",
+        "027"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.5",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "25",
+      "nameVi": "Phú Thọ",
+      "legacyBirthplaceCodes": [
+        "017",
+        "025",
+        "026"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.4",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "31",
+      "nameVi": "Hải Phòng",
+      "legacyBirthplaceCodes": [
+        "030",
+        "031"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.7",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "33",
+      "nameVi": "Hưng Yên",
+      "legacyBirthplaceCodes": [
+        "033",
+        "034"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.6",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "37",
+      "nameVi": "Ninh Bình",
+      "legacyBirthplaceCodes": [
+        "035",
+        "036",
+        "037"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.8",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "38",
+      "nameVi": "Thanh Hóa",
+      "legacyBirthplaceCodes": [
+        "038"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "40",
+      "nameVi": "Nghệ An",
+      "legacyBirthplaceCodes": [
+        "040"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "42",
+      "nameVi": "Hà Tĩnh",
+      "legacyBirthplaceCodes": [
+        "042"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "44",
+      "nameVi": "Quảng Trị",
+      "legacyBirthplaceCodes": [
+        "044",
+        "045"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.9",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "46",
+      "nameVi": "Huế",
+      "legacyBirthplaceCodes": [
+        "046"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.24",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "48",
+      "nameVi": "Đà Nẵng",
+      "legacyBirthplaceCodes": [
+        "048",
+        "049"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.10",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "51",
+      "nameVi": "Quảng Ngãi",
+      "legacyBirthplaceCodes": [
+        "051",
+        "062"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.11",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "52",
+      "nameVi": "Gia Lai",
+      "legacyBirthplaceCodes": [
+        "052",
+        "064"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.12",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "56",
+      "nameVi": "Khánh Hòa",
+      "legacyBirthplaceCodes": [
+        "056",
+        "058"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.13",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "66",
+      "nameVi": "Đắk Lắk",
+      "legacyBirthplaceCodes": [
+        "054",
+        "066"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.15",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "68",
+      "nameVi": "Lâm Đồng",
+      "legacyBirthplaceCodes": [
+        "060",
+        "067",
+        "068"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.14",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "75",
+      "nameVi": "Đồng Nai",
+      "legacyBirthplaceCodes": [
+        "070",
+        "075"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.17",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "79",
+      "nameVi": "Hồ Chí Minh",
+      "legacyBirthplaceCodes": [
+        "074",
+        "077",
+        "079"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.16",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "80",
+      "nameVi": "Tây Ninh",
+      "legacyBirthplaceCodes": [
+        "072",
+        "080"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.18",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "82",
+      "nameVi": "Đồng Tháp",
+      "legacyBirthplaceCodes": [
+        "082",
+        "087"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.21",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "86",
+      "nameVi": "Vĩnh Long",
+      "legacyBirthplaceCodes": [
+        "083",
+        "084",
+        "086"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.20",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "91",
+      "nameVi": "An Giang",
+      "legacyBirthplaceCodes": [
+        "089",
+        "091"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.23",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "92",
+      "nameVi": "Cần Thơ",
+      "legacyBirthplaceCodes": [
+        "092",
+        "093",
+        "094"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.19",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    },
+    {
+      "adminCode": "96",
+      "nameVi": "Cà Mau",
+      "legacyBirthplaceCodes": [
+        "095",
+        "096"
+      ],
+      "adminCodeSourceId": "province-decision-19-2025",
+      "membershipSourceId": "province-resolution-202-2025",
+      "membershipArticle": "1.22",
+      "isIdentityPrefix": false,
+      "selectionMeaning": "current administrative area navigation; choose one legacy encoding birthplace within it"
+    }
+  ],
+  "legacyBirthplaces63": [
+    {
+      "code": "001",
+      "nameVi": "Hà Nội",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "01"
+    },
+    {
+      "code": "002",
+      "nameVi": "Hà Giang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "08"
+    },
+    {
+      "code": "004",
+      "nameVi": "Cao Bằng",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "04"
+    },
+    {
+      "code": "006",
+      "nameVi": "Bắc Kạn",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "19"
+    },
+    {
+      "code": "008",
+      "nameVi": "Tuyên Quang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "08"
+    },
+    {
+      "code": "010",
+      "nameVi": "Lào Cai",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "15"
+    },
+    {
+      "code": "011",
+      "nameVi": "Điện Biên",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "11"
+    },
+    {
+      "code": "012",
+      "nameVi": "Lai Châu",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "12"
+    },
+    {
+      "code": "014",
+      "nameVi": "Sơn La",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "14"
+    },
+    {
+      "code": "015",
+      "nameVi": "Yên Bái",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "15"
+    },
+    {
+      "code": "017",
+      "nameVi": "Hòa Bình",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "25"
+    },
+    {
+      "code": "019",
+      "nameVi": "Thái Nguyên",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "19"
+    },
+    {
+      "code": "020",
+      "nameVi": "Lạng Sơn",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "20"
+    },
+    {
+      "code": "022",
+      "nameVi": "Quảng Ninh",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "22"
+    },
+    {
+      "code": "024",
+      "nameVi": "Bắc Giang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "24"
+    },
+    {
+      "code": "025",
+      "nameVi": "Phú Thọ",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "25"
+    },
+    {
+      "code": "026",
+      "nameVi": "Vĩnh Phúc",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "25"
+    },
+    {
+      "code": "027",
+      "nameVi": "Bắc Ninh",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "24"
+    },
+    {
+      "code": "030",
+      "nameVi": "Hải Dương",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "31"
+    },
+    {
+      "code": "031",
+      "nameVi": "Hải Phòng",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "31"
+    },
+    {
+      "code": "033",
+      "nameVi": "Hưng Yên",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "33"
+    },
+    {
+      "code": "034",
+      "nameVi": "Thái Bình",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "33"
+    },
+    {
+      "code": "035",
+      "nameVi": "Hà Nam",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "37"
+    },
+    {
+      "code": "036",
+      "nameVi": "Nam Định",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "37"
+    },
+    {
+      "code": "037",
+      "nameVi": "Ninh Bình",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "37"
+    },
+    {
+      "code": "038",
+      "nameVi": "Thanh Hóa",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "38"
+    },
+    {
+      "code": "040",
+      "nameVi": "Nghệ An",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "40"
+    },
+    {
+      "code": "042",
+      "nameVi": "Hà Tĩnh",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "42"
+    },
+    {
+      "code": "044",
+      "nameVi": "Quảng Bình",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "44"
+    },
+    {
+      "code": "045",
+      "nameVi": "Quảng Trị",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "44"
+    },
+    {
+      "code": "046",
+      "nameVi": "Thừa Thiên Huế",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "46"
+    },
+    {
+      "code": "048",
+      "nameVi": "Đà Nẵng",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "48"
+    },
+    {
+      "code": "049",
+      "nameVi": "Quảng Nam",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "48"
+    },
+    {
+      "code": "051",
+      "nameVi": "Quảng Ngãi",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "51"
+    },
+    {
+      "code": "052",
+      "nameVi": "Bình Định",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "52"
+    },
+    {
+      "code": "054",
+      "nameVi": "Phú Yên",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "66"
+    },
+    {
+      "code": "056",
+      "nameVi": "Khánh Hòa",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "56"
+    },
+    {
+      "code": "058",
+      "nameVi": "Ninh Thuận",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "56"
+    },
+    {
+      "code": "060",
+      "nameVi": "Bình Thuận",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "68"
+    },
+    {
+      "code": "062",
+      "nameVi": "Kon Tum",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "51"
+    },
+    {
+      "code": "064",
+      "nameVi": "Gia Lai",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "52"
+    },
+    {
+      "code": "066",
+      "nameVi": "Đắk Lắk",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "66"
+    },
+    {
+      "code": "067",
+      "nameVi": "Đắk Nông",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "68"
+    },
+    {
+      "code": "068",
+      "nameVi": "Lâm Đồng",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "68"
+    },
+    {
+      "code": "070",
+      "nameVi": "Bình Phước",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "75"
+    },
+    {
+      "code": "072",
+      "nameVi": "Tây Ninh",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "80"
+    },
+    {
+      "code": "074",
+      "nameVi": "Bình Dương",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "79"
+    },
+    {
+      "code": "075",
+      "nameVi": "Đồng Nai",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "75"
+    },
+    {
+      "code": "077",
+      "nameVi": "Bà Rịa - Vũng Tàu",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "79"
+    },
+    {
+      "code": "079",
+      "nameVi": "Hồ Chí Minh",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "79"
+    },
+    {
+      "code": "080",
+      "nameVi": "Long An",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "80"
+    },
+    {
+      "code": "082",
+      "nameVi": "Tiền Giang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "82"
+    },
+    {
+      "code": "083",
+      "nameVi": "Bến Tre",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "86"
+    },
+    {
+      "code": "084",
+      "nameVi": "Trà Vinh",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "86"
+    },
+    {
+      "code": "086",
+      "nameVi": "Vĩnh Long",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "86"
+    },
+    {
+      "code": "087",
+      "nameVi": "Đồng Tháp",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "82"
+    },
+    {
+      "code": "089",
+      "nameVi": "An Giang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "91"
+    },
+    {
+      "code": "091",
+      "nameVi": "Kiên Giang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "91"
+    },
+    {
+      "code": "092",
+      "nameVi": "Cần Thơ",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "92"
+    },
+    {
+      "code": "093",
+      "nameVi": "Hậu Giang",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "92"
+    },
+    {
+      "code": "094",
+      "nameVi": "Sóc Trăng",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "92"
+    },
+    {
+      "code": "095",
+      "nameVi": "Bạc Liêu",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "96"
+    },
+    {
+      "code": "096",
+      "nameVi": "Cà Mau",
+      "sourceId": "legacy-rules-ministry-2022",
+      "codeSystem": "VN-public-birthplace-63",
+      "status": "published_legacy_birthplace_code",
+      "currentProvinceAdminCode": "96"
+    }
+  ],
+  "validationScope": {
+    "check": [
+      "exact ASCII digit length",
+      "membership in selected version of birthplace code list",
+      "published century/sex digit correspondence",
+      "encoded year matches requested year",
+      "batch duplicate detection"
+    ],
+    "doNotClaim": [
+      "official issuance",
+      "current issuer allocation",
+      "name-number match",
+      "identity or KYC validity",
+      "exclusion of real persons",
+      "all current personal details derivable from digits"
+    ]
+  },
+  "knownSourceConflict": {
+    "sourceId": "legacy-rules-government-2023",
+    "field": "Bắc Giang",
+    "publishedValue": "023",
+    "chosenValue": "024",
+    "resolution": "Use Ministry of Culture official 2022 table; indexed Ha Tinh police table also says 024. The government tutorial has an apparent typo. Do not silently ingest it."
+  },
+  "mappingCaveats": [
+    "The 34-area to 63-code association is administrative navigation, not an official identity-prefix conversion table.",
+    "Huế current label refers to the former Thừa Thiên Huế area; QH175/2024 created the centrally governed city from the whole former province, effective 2025-01-01.",
+    "Domestic territory coverage does not include foreign birthplace country-code cases.",
+    "Existing identities may retain code-derived historical details after legal corrections; source 58/2026 amendment explanation must not be replaced by strict identity-truth checks."
+  ],
+  "sources": [
+    {
+      "id": "circular-59-2021",
+      "url": "https://congbao.chinhphu.vn/van-ban/thong-tu-so-59-2021-tt-bca-33937/36135.htm",
+      "publishedDate": "2021-05-15",
+      "effectiveDate": "2021-07-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "circular-59-2021.html",
+      "sha256": "88913f21c9631b65a10b99c88fc51a3d72d942b2da1267d37deb9b7cdee9b69e"
+    },
+    {
+      "id": "circular-17-2024",
+      "url": "https://congbao.chinhphu.vn/van-ban/thong-tu-so-17-2024-tt-bca-42016/50405.htm",
+      "publishedDate": "2024-05-15",
+      "effectiveDate": "2024-07-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "circular-17-2024.html",
+      "sha256": "0e20ba5a8c4f93705090c803a29cd263423eed950e445528cb36af7fb01a65c9"
+    },
+    {
+      "id": "circular-53-2025",
+      "url": "https://vanban.chinhphu.vn/?classid=1&docid=214548&orggroupid=4&pageid=27160",
+      "publishedDate": "2025-07-01",
+      "effectiveDate": "2025-07-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "circular-53-2025.html",
+      "sha256": "68b17c757c71d3d34dc454b9285be8b8487838465a764f2c50876f57fa484336"
+    },
+    {
+      "id": "circular-118-2026",
+      "url": "https://congbao.chinhphu.vn/van-ban/thong-tu-so-118-2026-tt-bca-470080.htm",
+      "publishedDate": "2026-06-29",
+      "effectiveDate": "2026-07-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "circular-118-2026.html",
+      "sha256": "0796a14b39badc60b4b5978ecb4641ac3f71bbd63ed6296131f81a847ce76639"
+    },
+    {
+      "id": "decree-70-2024",
+      "url": "https://vanban.chinhphu.vn/?classid=1&docid=210497&orggroupid=2&pageid=27160",
+      "publishedDate": "2024-06-25",
+      "effectiveDate": "2024-07-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "decree-70-2024.html",
+      "sha256": "cf5c43afc0902fe99ce792eb9e8fc78ac19b101a5549e40fac677cd9cfb64db2"
+    },
+    {
+      "id": "province-resolution-202-2025",
+      "url": "https://xaydungchinhsach.chinhphu.vn/toan-van-nghi-quyet-so-202-2025-qh15-ve-sap-xep-don-vi-hanh-chinh-cap-tinh-119250612174148722.htm",
+      "publishedDate": "2025-06-12",
+      "effectiveDate": "2025-06-12",
+      "accessedDate": "2026-11-05",
+      "artifact": "province-resolution-202-2025.html",
+      "sha256": "0f1320a5b63ca590d19ba3df64138e05507ba08886ff22ed4cf1cf10a76eacb7"
+    },
+    {
+      "id": "province-decision-19-2025",
+      "url": "https://datafiles.chinhphu.vn/cpp/files/vbpq/2025/7/19ttg.signed.pdf",
+      "publishedDate": "2025-06-30",
+      "effectiveDate": "2025-07-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "province-decision-19-2025.pdf",
+      "sha256": "2fd391335947affbfb86fa2b9438f0fdca90694e80887e205266542c3236aea1"
+    },
+    {
+      "id": "legacy-rules-government-2023",
+      "url": "https://xaydungchinhsach.chinhphu.vn/cach-nho-12-so-can-cuoc-cong-dan-gan-chip-cuc-de-119220914161814354.htm",
+      "publishedDate": "2023-01-12",
+      "effectiveDate": null,
+      "accessedDate": "2026-11-05",
+      "artifact": "legacy-rules-government-2023.html",
+      "sha256": "9f203c735520109d3941f79dd776a8bb13563938b3d067741556064630c5454f"
+    },
+    {
+      "id": "legacy-rules-ministry-2022",
+      "url": "https://bvhttdl.gov.vn/huong-dan-kiem-tra-ma-dinh-danh-ca-nhan-co-bi-sai-thong-tin-hay-khong-va-cach-xu-ly-20220825110731501.htm",
+      "publishedDate": "2022-08-25",
+      "effectiveDate": null,
+      "accessedDate": "2026-11-05",
+      "artifact": "legacy-rules-ministry-2022.html",
+      "sha256": "7ec3df3f4cc6561e39683d154dc4a8cc49cd18eb845367dcae958cc9c68063f0"
+    },
+    {
+      "id": "correction-rules-police-2026",
+      "url": "https://bocongan.gov.vn/bai-viet/quy-dinh-moi-lien-quan-den-thi-hanh-luat-can-cuoc-gop-phan-don-gian-hoa-thu-tuc-hanh-chinh-cho-nguoi-dan-1778569520",
+      "publishedDate": "2026-05-12",
+      "effectiveDate": null,
+      "accessedDate": "2026-11-05",
+      "artifact": "correction-rules-police-2026.html",
+      "sha256": "2d4d249febb0b4557910716e704b9133517e57572d5529dd0d47475a8609d544"
+    },
+    {
+      "id": "hue-resolution-175-2024",
+      "url": "https://vanban.chinhphu.vn/?classid=1&docid=211916&orggroupid=1&pageid=27160",
+      "publishedDate": "2024-11-30",
+      "effectiveDate": "2025-01-01",
+      "accessedDate": "2026-11-05",
+      "artifact": "hue-resolution-175-2024.html",
+      "sha256": "555a04ed05b8e1c0645b5bb3c442aded10a73ed15711fdcb11110f99c2779805"
+    }
+  ],
+  "dataChecks": {
+    "currentProvinceCount": 34,
+    "legacyBirthplaceCount": 63,
+    "eachLegacyBelongsToExactlyOneCurrentProvince": true,
+    "noInvented023Code": true,
+    "newlySynthesizedIdentityNumbersInEvidence": 0
+  }
+}

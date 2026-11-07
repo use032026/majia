@@ -84,6 +84,7 @@ module MajiaCI
           "platform" => version_attributes["platform"],
           "version_string" => version_attributes["versionString"],
           "app_version_state" => version_attributes["appVersionState"],
+          "release_type" => version_attributes["releaseType"],
           "review_stage" => review_stage(version_attributes["appVersionState"]),
           "created_date" => version_attributes["createdDate"]
         },
@@ -106,6 +107,7 @@ module MajiaCI
         "- App: #{display(app['name'])} (`#{display(app['bundle_id'])}`)",
         "- Marketing version: #{display(version['version_string'])}",
         "- App Store version state: `#{display(version['app_version_state'])}`",
+        "- Release type: `#{display(version['release_type'])}`",
         "- Review stage: `#{display(version['review_stage'])}`",
         "- Review submission state: `#{display(submission['state'])}`",
         "- Review item state: `#{display(submission['item_state'])}`",
@@ -158,7 +160,7 @@ module MajiaCI
     def resolve_version(client, app_id, marketing_version)
       query = {
         "filter[platform]" => "IOS",
-        "fields[appStoreVersions]" => "platform,versionString,appVersionState,createdDate",
+        "fields[appStoreVersions]" => "platform,versionString,appVersionState,releaseType,createdDate",
         "limit" => "200"
       }
       query["filter[versionString]"] = marketing_version unless marketing_version.empty?
@@ -272,6 +274,10 @@ module MajiaCI
       request_document(:post, path, payload: payload)
     end
 
+    def post_created(path, payload)
+      request_document(:post, path, payload: payload, expected_status: 201)
+    end
+
     def patch(path, payload)
       request_document(:patch, path, payload: payload)
     end
@@ -300,7 +306,7 @@ module MajiaCI
 
     private
 
-    def request_document(method, target, query: nil, payload: nil)
+    def request_document(method, target, query: nil, payload: nil, expected_status: nil)
       uri = target.start_with?("https://") ? URI(target) : URI("#{ASCReviewStatus::API_ORIGIN}#{target}")
       unless uri.scheme == "https" && uri.host == "api.appstoreconnect.apple.com"
         raise ASCStatusError, "ASC returned an unsafe pagination URL"
@@ -321,14 +327,25 @@ module MajiaCI
       end
       response = Net::HTTP.start(
         uri.host, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30
-      ) { |http| http.request(request) }
+      ) do |http|
+        http.max_retries = 0 if expected_status
+        http.request(request)
+      end
       document = response.body.to_s.empty? ? {} : JSON.parse(response.body)
-      return document if response.is_a?(Net::HTTPSuccess)
+      if response.is_a?(Net::HTTPSuccess)
+        if expected_status && response.code.to_i != expected_status
+          raise ASCStatusError, "ASC expected HTTP #{expected_status}; observed #{response.code}"
+        end
+        return document
+      end
 
       details = Array(document["errors"]).map do |error|
         [error["code"], error["title"], error["detail"]].compact.join(": ")
       end.reject(&:empty?).join("; ")
       details = "HTTP #{response.code}" if details.empty?
+      if expected_status
+        raise ASCStatusError, "ASC request failed: HTTP #{response.code}: #{details}"
+      end
       raise ASCStatusError, "ASC request failed: #{details}"
     rescue JSON::ParserError => e
       raise ASCStatusError, "ASC returned invalid JSON: #{e.message}"

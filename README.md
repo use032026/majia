@@ -23,6 +23,7 @@
 | FilePeek（本地文件检查） | [`apps/filepeek/`](apps/filepeek/) | [`CherryIce/FilePeek`](https://github.com/CherryIce/FilePeek)，迁移基点 `371747c02780c016a8258e9425f7ed6e1ed185ae` |
 | Refqo（家庭耗材补货计划） | [`apps/refqo/`](apps/refqo/) | 独立 Flutter 应用，离线优先、中英文、无账号；共享库存、补货计划和可撤销流水 |
 | 译包 LangPack | [`apps/langpack/`](apps/langpack/) | [`CherryIce/langpack-prototype`](https://github.com/CherryIce/langpack-prototype) 的 iOS / Android 独立快照，迁移基点 `dfb401cbeabcc5c8233f991d3410472ad28a6011`；源仓库完整保留 |
+| ID Fixture（证号实验室） | [`apps/id_fixture/`](apps/id_fixture/) | [`CherryIce/ID-Fixture`](https://github.com/CherryIce/ID-Fixture/commit/3033487c62a7f74de666485dd26fffbe8de6c78e) 的 iOS / Android 独立快照，版本 `1.1.0+2` |
 
 具体功能、平台限制、本地命令和发布缺口以各 Flutter 工程内的 `README.md` 与 `docs/` 为准。
 
@@ -39,6 +40,7 @@
 | PlotProof Lab | [`PlotProof Lab iOS Release`](.github/workflows/plotproof-lab-ios-release.yml) | `plotproof_lab-production` | `Runner` | 支持 |
 | Steady21 | [`Steady21 iOS Release`](.github/workflows/steady21-ios-release.yml) | `steady-production` | `Runner` | 构建上传时回查 |
 | Trip Delta | [`TripDelta iOS Release`](.github/workflows/tripdelta-ios-release.yml) | `tripdelta-production` | `Runner` | 构建上传时回查 |
+| 译包 LangPack | [`LangPack iOS Release`](.github/workflows/langpack-ios-release.yml) | `langpack-production` | `Runner` | 构建上传时回查 |
 
 `CleanTrail`、`PhotoReport`、`PaceJar`、`Diary`、`ReaderEdit`、`Somniloquy`、`Almanac` 和 `FilePeek` 当前没有仓库级 iOS 发布工作流；各自 README 中的本地构建或预检结果不能视为签名 IPA、ASC 上传或 TestFlight 证据。
 
@@ -97,8 +99,8 @@
 
 ## 其他自动化
 
-- [`LangPack Mobile`](.github/workflows/langpack-mobile.yml) 为 `apps/langpack/` 提供静态检查、模拟服务测试、Android Debug APK 和无签名 iOS 模拟器构建。仅处理 LangPack 的变更，不使用生产签名、不上传 ASC；正式签名发布需另行配置。
-- [`Android Package`](.github/workflows/android-package.yml) 是 11 个已接入 Android Flutter 工程共用的手动打包入口；FilePeek 尚未接入。该工作流不使用 GitHub Environment，按应用前缀读取 Repository Secrets 中的独立签名凭据，并保留 APK/AAB Artifact。打包入口见 [`docs/android-packaging.md`](docs/android-packaging.md)，已有/新建马甲的完整接入指南见 [`docs/android-majia-configuration.md`](docs/android-majia-configuration.md)。
+- [`LangPack Mobile`](.github/workflows/langpack-mobile.yml) 为 `apps/langpack/` 提供静态检查、模拟服务测试、Android Debug APK 和无签名 iOS 模拟器构建。仅处理 LangPack 的变更，不使用生产签名、不上传 ASC。正式打包使用独立的 [`LangPack iOS Release`](.github/workflows/langpack-ios-release.yml) 和通用 Android 入口；签名配置及运行步骤见 [`apps/langpack/README.md`](apps/langpack/README.md#正式打包接入)。
+- [`Android Package`](.github/workflows/android-package.yml) 是 15 个已接入 Android Flutter 工程共用的手动打包入口，包含 LangPack（`app=langpack`，独立 `LANGPACK_ANDROID_*` 凭据）。该工作流不使用 GitHub Environment，按应用前缀读取 Repository Secrets 中的独立签名凭据，并保留 APK/AAB Artifact。打包入口见 [`docs/android-packaging.md`](docs/android-packaging.md)，已有/新建马甲的完整接入指南见 [`docs/android-majia-configuration.md`](docs/android-majia-configuration.md)。
 - [`ASC Submit Review`](.github/workflows/asc-submit-review.yml) 使用与构建发布流程相同的仓库内提交脚本，可独立提交现有版本；结果会写入 Job Summary 并保留 30 天 JSON 证据。已提交版本会作为幂等 no-op 返回。
 - [`ASC Existing Build Release`](.github/workflows/asc-existing-build-release.yml) 为五个生产 Environment 创建或复用商店版本并关联已处理构建，可选更新说明和提交审核，不重新打包或上传 IPA。
 - [`ASC Review Status`](.github/workflows/asc-review-status.yml) 是只读查询，可按版本获取五个生产 Environment 对应应用的 ASC 处理、TestFlight 与审核状态，并保留 30 天 JSON 快照。

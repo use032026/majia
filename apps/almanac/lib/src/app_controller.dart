@@ -41,9 +41,10 @@ class AppController extends ChangeNotifier {
   DailyLeaf get todayLeaf {
     final today = _data!.leaves[todayKey];
     if (today != null) return today;
-    final ordered = _data!.leaves.values.toList()
-      ..sort((left, right) => right.dateKey.compareTo(left.dateKey));
-    return ordered.first;
+    return _data!.leaves.values.reduce(
+      (latest, leaf) =>
+          leaf.dateKey.compareTo(latest.dateKey) > 0 ? leaf : latest,
+    );
   }
 
   List<DailyLeaf> get archivedLeaves {

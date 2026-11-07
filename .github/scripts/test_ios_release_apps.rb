@@ -8,7 +8,8 @@ class IOSReleaseAppsTest < Minitest::Test
 
   def test_registry_covers_every_release_environment_and_existing_paths
     expected = %w[
-      hearthio-production photo-production plotproof_lab-production sdpacket-production steady-production
+      almanac-production filepeek-production hearthio-production photo-production plotproof_lab-production
+      sdpacket-production steady-production
       tripcost-production tripdelta-production
     ]
     assert_equal expected, Registry::APPS.keys.sort
@@ -38,5 +39,17 @@ class IOSReleaseAppsTest < Minitest::Test
       Registry.fetch("unknown-production", error_class: ArgumentError)
     end
     assert_includes error.message, "unsupported app environment"
+  end
+
+  def test_deynu_uses_automatic_release_without_changing_other_apps
+    assert_equal true, Registry.fetch("almanac-production").fetch("automatic_release")
+    assert_equal true, Registry.automatic_release_for("almanac")
+    Registry::APPS.each_value do |app|
+      next if app.fetch("app_key") == "almanac"
+
+      assert_equal true, Registry.automatic_release_for(app.fetch("app_key"))
+      assert_equal true, app.fetch("automatic_release", true)
+    end
+    assert_equal true, Registry.automatic_release_for("cleantrail")
   end
 end

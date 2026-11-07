@@ -173,25 +173,27 @@ const List<PromptItem> promptBank = <PromptItem>[
   ),
 ];
 
+final Map<String, PromptItem> _promptsById =
+    Map<String, PromptItem>.unmodifiable({
+      for (final prompt in promptBank) prompt.id: prompt,
+    });
+
 PromptItem promptById(String id) =>
-    promptBank.firstWhere((prompt) => prompt.id == id);
+    _promptsById[id] ?? (throw StateError('No element'));
 
 void validateLeafContent(DailyLeaf leaf) {
-  final known = <String, PromptItem>{
-    for (final item in promptBank) item.id: item,
-  };
   if (leaf.suitablePromptIds.length != 3 || leaf.avoidPromptIds.length != 3) {
     throw const FormatException(
       'A daily leaf must contain three prompts per side',
     );
   }
   for (final id in leaf.suitablePromptIds) {
-    if (known[id]?.side != PromptSide.suitable) {
+    if (_promptsById[id]?.side != PromptSide.suitable) {
       throw FormatException('Unknown or invalid suitable prompt: $id');
     }
   }
   for (final id in leaf.avoidPromptIds) {
-    if (known[id]?.side != PromptSide.avoid) {
+    if (_promptsById[id]?.side != PromptSide.avoid) {
       throw FormatException('Unknown or invalid avoid prompt: $id');
     }
   }

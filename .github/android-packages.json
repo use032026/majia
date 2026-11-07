@@ -43,6 +43,12 @@
       "secret_prefix": "HEARTHIO",
       "application_id": "com.example.hearthio"
     },
+    "langpack": {
+      "display_name": "LangPack",
+      "path": "apps/langpack",
+      "secret_prefix": "LANGPACK",
+      "application_id": "com.cherryice.langpack"
+    },
     "looters": {
       "display_name": "looters",
       "path": "apps/looters",

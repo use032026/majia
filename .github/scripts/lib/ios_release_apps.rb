@@ -7,6 +7,23 @@ module MajiaCI
     module_function
 
     APPS = {
+      "almanac-production" => {
+        "app_key" => "almanac",
+        "app_name" => "Deynu",
+        "automatic_release" => true,
+        "project_directory" => "apps/almanac",
+        "container_path" => "apps/almanac/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/almanac/app-store/metadata.yml"
+      },
+      "filepeek-production" => {
+        "app_key" => "filepeek",
+        "app_name" => "Fylto",
+        "project_directory" => "apps/filepeek",
+        "container_path" => "apps/filepeek/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/filepeek/app-store/metadata.yml"
+      },
       "photo-production" => {
         "app_key" => "photo",
         "app_name" => "Jufu",
@@ -76,6 +93,11 @@ module MajiaCI
 
     def targets_json(app)
       JSON.generate(app.fetch("targets"))
+    end
+
+    def automatic_release_for(app_key)
+      app = APPS.values.find { |entry| entry.fetch("app_key") == app_key }
+      app ? app.fetch("automatic_release", true) : true
     end
   end
 end

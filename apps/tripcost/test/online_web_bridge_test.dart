@@ -6,7 +6,7 @@ import 'package:trip_cost/core/platform/online_web_bridge.dart';
 import 'package:trip_cost/core/platform/online_web_config.dart';
 
 void main() {
-  const origin = 'https://h5.futureinvest.id';
+  const origin = 'https://h5.globalsmartchoose.com';
   late List<({Uri uri, String? title, bool showNavigationBar})> opens;
   late int closes;
   late List<String> reasons;
@@ -110,7 +110,7 @@ void main() {
       (await request(
         'open',
         params: {'router': '/login'},
-        requestOrigin: 'http://h5.futureinvest.id',
+        requestOrigin: 'http://h5.globalsmartchoose.com',
       ))['code'],
       '0',
     );

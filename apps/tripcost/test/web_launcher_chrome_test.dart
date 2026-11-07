@@ -25,7 +25,7 @@ void main() {
   });
 
   test(
-    'Web startup hides native chrome and privacy page has a close control',
+    'privacy shows native navigation and localized title while Web startup hides it',
     () async {
       final startup = WebStartupController(
         store: _MemoryWebStartupModeStore(),
@@ -47,7 +47,6 @@ void main() {
           .toList();
       expect(opens, hasLength(2));
       expect(opens[0]['url'], WebStartupController.pageUri.toString());
-      expect(opens[0]['url'], 'https://h5.futureinvest.id/polymer/h5app/#/');
       expect(opens[1]['url'], 'https://tripcost.fit/privacy.html?lang=zh');
       expect(opens[0]['showNavigationBar'], isFalse);
       expect(opens[1]['showNavigationBar'], isTrue);
