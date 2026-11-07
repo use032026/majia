@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-11-05",
+  "baselineEligibleRegionCount": 2848,
+  "withReportedXionganPrefixCount": 2849,
+  "records": [
+    {
+      "code": "133100",
+      "name": "雄安新区",
+      "provinceCode": "130000",
+      "provinceName": "河北省",
+      "type": "official_reported_identity_prefix",
+      "sourceLevel": null,
+      "eligible": true,
+      "issuanceStatus": "reported_in_use_on_2023-11-01; current_allocation_unknown",
+      "sourceUrl": "https://www.xiongan.gov.cn/2023-11/01/c_1212295926.htm",
+      "sourceDate": "2023-11-01",
+      "sourceFile": "xiongan-address-code-133100.html",
+      "note": "Official report states newborn ID coding in the whole new area uses 133100; existing residents retain original ID numbers. Not in the MCA county catalogue. Do not reclassify as a county."
+    },
+    {
+      "code": "620201",
+      "name": "嘉峪关历史身份号码前缀参考",
+      "provinceCode": "620000",
+      "provinceName": "甘肃省",
+      "type": "observed_identity_prefix_not_current_county",
+      "eligible": false,
+      "issuanceStatus": "masked_official_usage_observed; current_allocation_unknown",
+      "sourceUrl": "https://www.jyg.gov.cn/rsj/xwdt/tzgg/art/2026/art_6aa70dc090ad45d88e1ba99f5ece25fe.html",
+      "note": "Official page contains masked IDs beginning 620201; supports observed use only, not a claim that 620200 is an ID allocation prefix."
+    }
+  ]
+}

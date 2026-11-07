@@ -1,0 +1,3 @@
+# Preserve the exact bytes of copied rule inputs and the Windows wrapper.
+data/sources/** -text
+android/gradlew.bat -text whitespace=cr-at-eol

@@ -23,6 +23,7 @@
 | FilePeek（本地文件检查） | [`apps/filepeek/`](apps/filepeek/) | [`CherryIce/FilePeek`](https://github.com/CherryIce/FilePeek)，迁移基点 `371747c02780c016a8258e9425f7ed6e1ed185ae` |
 | Refqo（家庭耗材补货计划） | [`apps/refqo/`](apps/refqo/) | 独立 Flutter 应用，离线优先、中英文、无账号；共享库存、补货计划和可撤销流水 |
 | 译包 LangPack | [`apps/langpack/`](apps/langpack/) | [`CherryIce/langpack-prototype`](https://github.com/CherryIce/langpack-prototype) 的 iOS / Android 独立快照，迁移基点 `dfb401cbeabcc5c8233f991d3410472ad28a6011`；源仓库完整保留 |
+| ID Fixture（证号实验室） | [`apps/id_fixture/`](apps/id_fixture/) | [`CherryIce/ID-Fixture`](https://github.com/CherryIce/ID-Fixture/commit/3033487c62a7f74de666485dd26fffbe8de6c78e) 的 iOS / Android 独立快照，版本 `1.1.0+2` |
 
 具体功能、平台限制、本地命令和发布缺口以各 Flutter 工程内的 `README.md` 与 `docs/` 为准。
 
