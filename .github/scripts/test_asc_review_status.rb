@@ -69,6 +69,62 @@ class ASCReviewStatusTest < Minitest::Test
     )
   end
 
+  def test_post_created_accepts_only_201_and_disables_http_retry
+    [201, 200].each do |code|
+      response = (code == 201 ? Net::HTTPCreated : Net::HTTPOK).new("1.1", code.to_s, "OK")
+      response.body = JSON.generate("data" => { "type" => "appStoreVersionReleaseRequests", "id" => "release-1" })
+      response.instance_variable_set(:@read, true)
+      with_fake_http(response) do |client, http|
+        if code == 201
+          assert_equal "release-1", client.post_created("/v1/appStoreVersionReleaseRequests", {}).dig("data", "id")
+        else
+          error = assert_raises(MajiaCI::ASCStatusError) do
+            client.post_created("/v1/appStoreVersionReleaseRequests", {})
+          end
+          assert_includes error.message, "expected HTTP 201"
+        end
+        assert_equal 0, http.max_retries
+        assert_equal 1, http.requests.length
+        assert_equal "POST", http.requests.first.method
+      end
+    end
+  end
+
+  def test_post_created_timeout_does_not_retry
+    with_fake_http(Timeout::Error.new("simulated timeout")) do |client, http|
+      assert_raises(MajiaCI::ASCStatusError) do
+        client.post_created("/v1/appStoreVersionReleaseRequests", {})
+      end
+      assert_equal 0, http.max_retries
+      assert_equal 1, http.requests.length
+    end
+  end
+
+  def test_post_created_forbidden_is_reported_without_retry
+    response = Net::HTTPForbidden.new("1.1", "403", "Forbidden")
+    response.body = JSON.generate("errors" => [{ "code" => "FORBIDDEN", "title" => "Not authorized" }])
+    response.instance_variable_set(:@read, true)
+    with_fake_http(response) do |client, http|
+      error = assert_raises(MajiaCI::ASCStatusError) do
+        client.post_created("/v1/appStoreVersionReleaseRequests", {})
+      end
+      assert_includes error.message, "HTTP 403"
+      assert_equal 0, http.max_retries
+      assert_equal 1, http.requests.length
+    end
+  end
+
+  def test_get_keeps_its_existing_transport_retry_setting
+    response = Net::HTTPOK.new("1.1", "200", "OK")
+    response.body = JSON.generate("data" => { "id" => "version-1" })
+    response.instance_variable_set(:@read, true)
+    with_fake_http(response) do |client, http|
+      assert_equal "version-1", client.get("/v1/appStoreVersions/version-1").dig("data", "id")
+      assert_equal 1, http.max_retries
+      assert_equal "GET", http.requests.first.method
+    end
+  end
+
   def test_private_key_normalization_accepts_all_supported_secret_representations
     pem = OpenSSL::PKey::EC.generate("prime256v1").to_pem
     representations = [
@@ -214,6 +270,27 @@ class ASCReviewStatusTest < Minitest::Test
   end
 
   private
+
+  def with_fake_http(response)
+    http = Struct.new(:result, :max_retries, :requests) do
+      def request(value)
+        requests << value
+        raise result if result.is_a?(Exception)
+
+        result
+      end
+    end.new(response, 1, [])
+    client = MajiaCI::ASCClient.new(
+      key: OpenSSL::PKey::EC.generate("prime256v1"),
+      key_id: "ABCDEF1234",
+      issuer_id: "12345678-1234-1234-1234-1234567890ab"
+    )
+    original_start = Net::HTTP.method(:start)
+    Net::HTTP.define_singleton_method(:start) { |*_arguments, **_options, &block| block.call(http) }
+    yield client, http
+  ensure
+    Net::HTTP.define_singleton_method(:start, original_start) if original_start
+  end
 
   def base64url_decode(value)
     Base64.urlsafe_decode64(value.ljust((value.length + 3) / 4 * 4, "="))

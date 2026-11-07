@@ -274,6 +274,10 @@ module MajiaCI
       request_document(:post, path, payload: payload)
     end
 
+    def post_created(path, payload)
+      request_document(:post, path, payload: payload, expected_status: 201)
+    end
+
     def patch(path, payload)
       request_document(:patch, path, payload: payload)
     end
@@ -302,7 +306,7 @@ module MajiaCI
 
     private
 
-    def request_document(method, target, query: nil, payload: nil)
+    def request_document(method, target, query: nil, payload: nil, expected_status: nil)
       uri = target.start_with?("https://") ? URI(target) : URI("#{ASCReviewStatus::API_ORIGIN}#{target}")
       unless uri.scheme == "https" && uri.host == "api.appstoreconnect.apple.com"
         raise ASCStatusError, "ASC returned an unsafe pagination URL"
@@ -323,14 +327,25 @@ module MajiaCI
       end
       response = Net::HTTP.start(
         uri.host, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30
-      ) { |http| http.request(request) }
+      ) do |http|
+        http.max_retries = 0 if expected_status
+        http.request(request)
+      end
       document = response.body.to_s.empty? ? {} : JSON.parse(response.body)
-      return document if response.is_a?(Net::HTTPSuccess)
+      if response.is_a?(Net::HTTPSuccess)
+        if expected_status && response.code.to_i != expected_status
+          raise ASCStatusError, "ASC expected HTTP #{expected_status}; observed #{response.code}"
+        end
+        return document
+      end
 
       details = Array(document["errors"]).map do |error|
         [error["code"], error["title"], error["detail"]].compact.join(": ")
       end.reject(&:empty?).join("; ")
       details = "HTTP #{response.code}" if details.empty?
+      if expected_status
+        raise ASCStatusError, "ASC request failed: HTTP #{response.code}: #{details}"
+      end
       raise ASCStatusError, "ASC request failed: #{details}"
     rescue JSON::ParserError => e
       raise ASCStatusError, "ASC returned invalid JSON: #{e.message}"
