@@ -135,15 +135,21 @@ class _PhotoEditorPageState extends State<PhotoEditorPage> {
     );
     if (file == null) return;
     final codec = await ui.instantiateImageCodec(await file.readAsBytes());
-    final frame = await codec.getNextFrame();
-    final image = frame.image;
-    if (!mounted) return;
-    setState(() {
-      _photo = file;
-      _sourceRatio = image.width / image.height;
-    });
-    image.dispose();
-    codec.dispose();
+    try {
+      final frame = await codec.getNextFrame();
+      final image = frame.image;
+      try {
+        if (!mounted) return;
+        setState(() {
+          _photo = file;
+          _sourceRatio = image.width / image.height;
+        });
+      } finally {
+        image.dispose();
+      }
+    } finally {
+      codec.dispose();
+    }
   }
 
   void _reset() {
