@@ -7,6 +7,11 @@ import 'domain/almanac_content.dart';
 import 'domain/almanac_models.dart';
 
 class AppController extends ChangeNotifier {
+  static final RegExp _markdownLineBreaks = RegExp(r'[\r\n]+');
+  static final RegExp _markdownSpecialCharacters = RegExp(
+    r'([\\`*_{}\[\]()#+\-.!|>])',
+  );
+
   AppController({
     required StateStore store,
     required String Function() seedFactory,
@@ -272,9 +277,9 @@ class AppController extends ChangeNotifier {
   }
 
   String _markdownInline(String value) {
-    final singleLine = value.replaceAll(RegExp(r'[\r\n]+'), ' ').trim();
+    final singleLine = value.replaceAll(_markdownLineBreaks, ' ').trim();
     return singleLine.replaceAllMapped(
-      RegExp(r'([\\`*_{}\[\]()#+\-.!|>])'),
+      _markdownSpecialCharacters,
       (match) => '\\${match.group(1)}',
     );
   }
