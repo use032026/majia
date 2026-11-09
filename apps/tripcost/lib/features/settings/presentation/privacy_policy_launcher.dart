@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:trip_cost/core/domain/core_models.dart';
-import 'package:trip_cost/core/platform/app_web_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const _privacyPolicyHost = 'tripcost.fit';
 const _privacyPolicyPath = '/privacy.html';
@@ -22,8 +22,8 @@ Uri privacyPolicyUriFor({
   });
 }
 
-Future<void> openPrivacyPolicy(Uri uri) => appWebLauncher.open(
-  uri,
-  title: uri.queryParameters['lang'] == 'zh' ? '隐私政策' : 'Privacy policy',
-  showNavigationBar: true,
-);
+Future<void> openPrivacyPolicy(Uri uri) async {
+  if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+    throw StateError('Could not open the privacy policy.');
+  }
+}

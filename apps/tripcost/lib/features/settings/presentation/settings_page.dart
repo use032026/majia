@@ -7,23 +7,13 @@ import 'package:trip_cost/features/payment_method/presentation/payment_methods_p
 import 'package:trip_cost/features/settings/application/general_settings_controller.dart';
 import 'package:trip_cost/features/settings/application/sync_settings_controller.dart';
 import 'package:trip_cost/features/settings/presentation/settings_detail_pages.dart';
-import 'package:trip_cost/features/startup/application/web_startup_controller.dart';
 import 'package:trip_cost/l10n/app_localizations.dart';
-import 'package:trip_cost/shared/widgets/three_finger_hold_region.dart';
 
-class SettingsPage extends ConsumerStatefulWidget {
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
-  ConsumerState<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends ConsumerState<SettingsPage> {
-  final _holdKey = GlobalKey<ThreeFingerHoldRegionState>();
-  bool _openingWeb = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context);
     final settingsState = ref.watch(generalSettingsControllerProvider);
     final supportsICloud = defaultTargetPlatform == TargetPlatform.iOS;
@@ -33,165 +23,108 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     final settings = settingsState.value;
     final sync = syncState?.value;
 
-    return ThreeFingerHoldRegion(
-      key: _holdKey,
-      enabled: !_openingWeb,
-      onActivated: _enableWebStartup,
-      child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          border: null,
-          middle: Text(localizations.settingsTitle),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: ListView(
-            key: const Key('settings-category-list'),
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.medium,
-              AppSpacing.large,
-              AppSpacing.medium,
-              AppSpacing.large,
-            ),
-            children: <Widget>[
-              _SettingsCategoryGroup(
-                title: localizations.settingsSectionCommon,
-                children: <Widget>[
-                  _SettingsCategoryRow(
-                    key: const Key('settings-category-payment-methods'),
-                    icon: CupertinoIcons.creditcard,
-                    title: localizations.paymentMethodsTitle,
-                    subtitle: localizations.settingsPaymentMethodsSummary,
-                    onPressed: () =>
-                        _pushRoot(context, const PaymentMethodsPage()),
-                  ),
-                  _SettingsCategoryRow(
-                    key: const Key('settings-category-currency-rates'),
-                    icon: CupertinoIcons.money_dollar_circle,
-                    title: localizations.rateSettingsTitle,
-                    subtitle: settings == null
-                        ? '—'
-                        : '${settings.defaultCurrency.code} · '
-                              '${localizations.refreshEveryHours(settings.refreshInterval.inHours)}',
-                    onPressed: () => _pushRoot(
-                      context,
-                      const CurrencyAndRatesSettingsPage(),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 26),
-              _SettingsCategoryGroup(
-                title: localizations.settingsSectionDataDevices,
-                children: <Widget>[
-                  if (supportsICloud)
-                    _SettingsCategoryRow(
-                      key: const Key('settings-category-icloud-sync'),
-                      icon: CupertinoIcons.cloud,
-                      title: localizations.syncTitle,
-                      subtitle: sync == null
-                          ? '—'
-                          : sync.enabled
-                          ? localizations.syncStatusEnabledShort
-                          : localizations.syncStatusDisabledShort,
-                      onPressed: () =>
-                          _pushRoot(context, const CloudSyncSettingsPage()),
-                    ),
-                  _SettingsCategoryRow(
-                    key: const Key('settings-category-data'),
-                    icon: CupertinoIcons.archivebox,
-                    title: localizations.dataTitle,
-                    subtitle: localizations.settingsDataSummary,
-                    onPressed: () =>
-                        _pushRoot(context, const DataSettingsPage()),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 26),
-              _SettingsCategoryGroup(
-                title: localizations.settingsSectionGeneral,
-                children: <Widget>[
-                  _SettingsCategoryRow(
-                    key: const Key('settings-category-language'),
-                    icon: CupertinoIcons.globe,
-                    title: localizations.languageTitle,
-                    subtitle: _languageLabel(
-                      localizations,
-                      settings?.languageMode,
-                    ),
-                    onPressed: () =>
-                        _pushRoot(context, const LanguageSettingsPage()),
-                  ),
-                  _SettingsCategoryRow(
-                    key: const Key('settings-category-privacy'),
-                    icon: CupertinoIcons.lock_shield,
-                    title: localizations.privacyTitle,
-                    subtitle: localizations.settingsPrivacySummary,
-                    onPressed: () =>
-                        _pushRoot(context, const PrivacySettingsPage()),
-                  ),
-                ],
-              ),
-            ],
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        border: null,
+        middle: Text(localizations.settingsTitle),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: ListView(
+          key: const Key('settings-category-list'),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.medium,
+            AppSpacing.large,
+            AppSpacing.medium,
+            AppSpacing.large,
           ),
+          children: <Widget>[
+            _SettingsCategoryGroup(
+              title: localizations.settingsSectionCommon,
+              children: <Widget>[
+                _SettingsCategoryRow(
+                  key: const Key('settings-category-payment-methods'),
+                  icon: CupertinoIcons.creditcard,
+                  title: localizations.paymentMethodsTitle,
+                  subtitle: localizations.settingsPaymentMethodsSummary,
+                  onPressed: () =>
+                      _pushRoot(context, const PaymentMethodsPage()),
+                ),
+                _SettingsCategoryRow(
+                  key: const Key('settings-category-currency-rates'),
+                  icon: CupertinoIcons.money_dollar_circle,
+                  title: localizations.rateSettingsTitle,
+                  subtitle: settings == null
+                      ? '—'
+                      : '${settings.defaultCurrency.code} · '
+                            '${localizations.refreshEveryHours(settings.refreshInterval.inHours)}',
+                  onPressed: () =>
+                      _pushRoot(context, const CurrencyAndRatesSettingsPage()),
+                ),
+              ],
+            ),
+            const SizedBox(height: 26),
+            _SettingsCategoryGroup(
+              title: localizations.settingsSectionDataDevices,
+              children: <Widget>[
+                if (supportsICloud)
+                  _SettingsCategoryRow(
+                    key: const Key('settings-category-icloud-sync'),
+                    icon: CupertinoIcons.cloud,
+                    title: localizations.syncTitle,
+                    subtitle: sync == null
+                        ? '—'
+                        : sync.enabled
+                        ? localizations.syncStatusEnabledShort
+                        : localizations.syncStatusDisabledShort,
+                    onPressed: () =>
+                        _pushRoot(context, const CloudSyncSettingsPage()),
+                  ),
+                _SettingsCategoryRow(
+                  key: const Key('settings-category-data'),
+                  icon: CupertinoIcons.archivebox,
+                  title: localizations.dataTitle,
+                  subtitle: localizations.settingsDataSummary,
+                  onPressed: () => _pushRoot(context, const DataSettingsPage()),
+                ),
+              ],
+            ),
+            const SizedBox(height: 26),
+            _SettingsCategoryGroup(
+              title: localizations.settingsSectionGeneral,
+              children: <Widget>[
+                _SettingsCategoryRow(
+                  key: const Key('settings-category-language'),
+                  icon: CupertinoIcons.globe,
+                  title: localizations.languageTitle,
+                  subtitle: _languageLabel(
+                    localizations,
+                    settings?.languageMode,
+                  ),
+                  onPressed: () =>
+                      _pushRoot(context, const LanguageSettingsPage()),
+                ),
+                _SettingsCategoryRow(
+                  key: const Key('settings-category-privacy'),
+                  icon: CupertinoIcons.lock_shield,
+                  title: localizations.privacyTitle,
+                  subtitle: localizations.settingsPrivacySummary,
+                  onPressed: () =>
+                      _pushRoot(context, const PrivacySettingsPage()),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _pushRoot(BuildContext context, Widget page) {
-    _holdKey.currentState?.cancel();
+  static Future<void> _pushRoot(BuildContext context, Widget page) {
     return Navigator.of(
       context,
       rootNavigator: true,
     ).push<void>(CupertinoPageRoute<void>(builder: (context) => page));
-  }
-
-  Future<void> _enableWebStartup() async {
-    if (_openingWeb) return;
-    setState(() => _openingWeb = true);
-    final controller = ref.read(webStartupControllerProvider);
-    var needsSave = true;
-    try {
-      while (mounted) {
-        try {
-          if (needsSave) {
-            await controller.enableAndOpen();
-          } else {
-            await controller.open();
-          }
-          return;
-        } on Object catch (error) {
-          if (!mounted) return;
-          needsSave = error is WebStartupModeSaveException;
-          final localizations = AppLocalizations.of(context);
-          final retry = await showCupertinoDialog<bool>(
-            context: context,
-            builder: (context) => CupertinoAlertDialog(
-              key: const Key('web-startup-error'),
-              content: Text(
-                needsSave
-                    ? localizations.webStartupModeSaveFailed
-                    : localizations.webStartupPresentationFailed,
-              ),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(localizations.commonDone),
-                ),
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: Text(localizations.webStartupRetry),
-                ),
-              ],
-            ),
-          );
-          if (retry != true) return;
-        }
-      }
-    } finally {
-      if (mounted) setState(() => _openingWeb = false);
-    }
   }
 
   static String _languageLabel(

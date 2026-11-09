@@ -2900,24 +2900,6 @@ abstract class AppLocalizations {
   /// **'Privacy policy'**
   String get privacyPolicyTitle;
 
-  /// No description provided for @webStartupModeSaveFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Web startup mode could not be saved. Try again.'**
-  String get webStartupModeSaveFailed;
-
-  /// No description provided for @webStartupPresentationFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'The online page could not be opened. You can retry. Automatic opening remains enabled for future launches.'**
-  String get webStartupPresentationFailed;
-
-  /// No description provided for @webStartupRetry.
-  ///
-  /// In en, this message translates to:
-  /// **'Retry'**
-  String get webStartupRetry;
-
   /// No description provided for @privacyPolicyLoadFailed.
   ///
   /// In en, this message translates to:

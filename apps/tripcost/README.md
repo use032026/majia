@@ -67,59 +67,7 @@ RUN_FRANKFURTER_SMOKE=1 \
 
 ## Online privacy policy
 
-All online pages on iOS and Android use the shared app Web launcher and
-`stmini_flutter`'s `mini_web` container. The privacy-policy button keeps the
-existing `https://tripcost.fit/privacy.html?lang=zh|en` address and app language.
-The repository-relative package in `packages/stmini_flutter` is an unchanged
-snapshot of the `mini_web` source at the commit recorded in `UPSTREAM.json`.
-
-Initialization and loading happen after an explicit page-opening action, or on
-cold start after the opt-in described below. Web startup hides the native
-navigation bar. The privacy page shows it so a root iOS WebView has a close
-button and an Android WebView has a back button; its page content may also
-show its own HTML header. Pushed iOS pages keep the upstream navigation-stack
-edge gesture. Loading failures follow the upstream WebView
-behavior. The app no longer uses a separate iOS privacy WebView or Android
-browser route. Failure to present the container uses the existing Flutter
-failure message. No unrelated network probe is added.
-
-## Opt-in Web startup
-
-TripCost's `AppWebLauncher` registers the host handler before initializing the
-`mini_web` runtime. The plugin handles `getUserInfo`, `getToken`, and Web
-storage requests using the shared auth and profile storage keys. The host
-handles H5 `open`, `close`, and `web_notifySessionChanged`: `/web` opens a new
-HTTPS WebView, while an H5 internal route such as `/login` opens a child
-WebView with the route payload in `__mini_open_route`. Login children carry
-`isBack=1`, so a successful login can return to the originating page. H5
-`close` pops that child or closes the root. Session changes notify the other
-open Web pages to refresh their own auth state. Diagnostic `applog` calls are
-acknowledged.
-
-The host accepts bridge calls only from a native-verified HTTPS top-level
-document and opens only HTTPS `/web` links. HTTP remains disabled. These are
-ordinary Web capabilities on iOS and Android; TripCost does not enable Mini
-package updates or Mini package page-stack APIs. The startup URL and privacy
-policy URL are unchanged.
-
-On the Settings screen, hold exactly three touch fingers stationary for five
-seconds. Timing starts when the third finger touches. Releasing/cancelling a
-finger, moving beyond the touch tolerance, adding a fourth finger, leaving the
-screen, or backgrounding the app cancels the hold. All fingers must be released
-before another attempt. Normal single-finger scrolling and navigation keep their
-existing behavior.
-
-Activation first saves the independent local preference
-`startup.polymer_web_enabled.v1`, then opens
-`https://h5.globalsmartchoose.com/polymer/h5app/#/` through the existing
-`AppWebLauncher` and `mini_web` container. There is no confirmation or additional
-mode control. A preference-write failure prevents opening and offers Retry.
-
-Once enabled, later cold starts present that same online page while the launch
-mark is still mounted, before navigating to the existing Home/onboarding fallback
-behind the native container. This is an intentional startup-network exception to
-the default tap-only online-page behavior. Closing the container reveals the
-native app; the preference stays enabled. Resuming an already-running app does
-not reopen the page. Presentation failure falls back to native UI and offers
-Retry without disabling the saved mode. Network or document-loading failures
-follow the unchanged `mini_web` container behavior.
+In Settings → Privacy and about, tap Privacy policy to open
+`https://tripcost.fit/privacy.html?lang=zh|en` in the device's default browser.
+The URL follows the selected app language, or the system language when the app
+follows the system.

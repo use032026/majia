@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,52 +13,88 @@ import '../../../helpers/isolated_test_database.dart';
 import '../../../helpers/m4_fakes.dart';
 
 void main() {
-  testWidgets('privacy notices open pages with the existing localized text', (
-    tester,
-  ) async {
-    final database = createIsolatedTestDatabase();
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          appDatabaseProvider.overrideWithValue(database),
-          settingsRepositoryProvider.overrideWithValue(
-            MemorySettingsRepository(),
-          ),
-        ],
-        child: CupertinoApp(
-          locale: const Locale('en'),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: const PrivacySettingsPage(),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    for (final kind in ['disclaimer', 'permissions']) {
-      await tester.tap(find.byKey(Key('privacy-$kind-row')));
-      await tester.pumpAndSettle();
-
-      final page = find.byKey(Key('privacy-$kind-page'));
-      expect(page, findsOneWidget);
-      expect(find.byType(CupertinoPopupSurface), findsNothing);
-      final localizations = AppLocalizations.of(tester.element(page));
-      expect(
-        tester.widget<Text>(find.byKey(Key('privacy-$kind-body'))).data,
-        kind == 'disclaimer'
-            ? localizations.disclaimerBody
-            : localizations.permissionsBody,
+  testWidgets(
+    'privacy settings open the policy in the browser and local notices in the app',
+    (tester) async {
+      const browserChannel = MethodChannel('plugins.flutter.io/url_launcher');
+      final browserCalls = <MethodCall>[];
+      var browserAvailable = true;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        browserChannel,
+        (call) async {
+          browserCalls.add(call);
+          return browserAvailable;
+        },
       );
-
-      await tester.pageBack();
+      final database = createIsolatedTestDatabase();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(database),
+            settingsRepositoryProvider.overrideWithValue(
+              MemorySettingsRepository(),
+            ),
+          ],
+          child: CupertinoApp(
+            locale: const Locale('en'),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const PrivacySettingsPage(),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
-      expect(find.byKey(const Key('privacy-settings-list')), findsOneWidget);
-    }
-  });
+
+      final privacyPolicy = find.text('Privacy policy');
+      await tester.tap(privacyPolicy);
+      await tester.pumpAndSettle();
+      final launch = browserCalls.single;
+      expect(launch.method, 'launch');
+      expect(
+        launch.arguments,
+        containsPair('url', 'https://tripcost.fit/privacy.html?lang=en'),
+      );
+      expect(launch.arguments, containsPair('useSafariVC', false));
+      expect(launch.arguments, containsPair('useWebView', false));
+      expect(find.byType(CupertinoAlertDialog), findsNothing);
+
+      browserAvailable = false;
+      await tester.tap(privacyPolicy);
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          'The privacy policy could not be loaded. Check your connection and try again.',
+        ),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Done'));
+      await tester.pumpAndSettle();
+
+      for (final kind in ['disclaimer', 'permissions']) {
+        await tester.tap(find.byKey(Key('privacy-$kind-row')));
+        await tester.pumpAndSettle();
+
+        final page = find.byKey(Key('privacy-$kind-page'));
+        expect(page, findsOneWidget);
+        expect(find.byType(CupertinoPopupSurface), findsNothing);
+        final localizations = AppLocalizations.of(tester.element(page));
+        expect(
+          tester.widget<Text>(find.byKey(Key('privacy-$kind-body'))).data,
+          kind == 'disclaimer'
+              ? localizations.disclaimerBody
+              : localizations.permissionsBody,
+        );
+
+        await tester.pageBack();
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('privacy-settings-list')), findsOneWidget);
+      }
+    },
+  );
 
   testWidgets('Android settings omit the Apple-only iCloud category', (
     tester,
