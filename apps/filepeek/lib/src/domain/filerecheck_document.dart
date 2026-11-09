@@ -106,6 +106,23 @@ class JsonDifference {
 }
 
 class FileRecheckDocument {
+  static final RegExp _errorLogPattern = RegExp(
+    r'\b(FATAL|ERROR|ERR)\b',
+    caseSensitive: false,
+  );
+  static final RegExp _warningLogPattern = RegExp(
+    r'\b(WARN|WARNING)\b',
+    caseSensitive: false,
+  );
+  static final RegExp _infoLogPattern = RegExp(
+    r'\b(INFO|NOTICE)\b',
+    caseSensitive: false,
+  );
+  static final RegExp _debugLogPattern = RegExp(
+    r'\b(DEBUG|TRACE)\b',
+    caseSensitive: false,
+  );
+
   FileRecheckDocument._(
     this.fileName,
     this.kind,
@@ -249,16 +266,16 @@ class FileRecheckDocument {
   }
 
   static LogSeverity _logSeverity(String text) {
-    if (RegExp(r'\b(FATAL|ERROR|ERR)\b', caseSensitive: false).hasMatch(text)) {
+    if (_errorLogPattern.hasMatch(text)) {
       return LogSeverity.error;
     }
-    if (RegExp(r'\b(WARN|WARNING)\b', caseSensitive: false).hasMatch(text)) {
+    if (_warningLogPattern.hasMatch(text)) {
       return LogSeverity.warning;
     }
-    if (RegExp(r'\b(INFO|NOTICE)\b', caseSensitive: false).hasMatch(text)) {
+    if (_infoLogPattern.hasMatch(text)) {
       return LogSeverity.info;
     }
-    if (RegExp(r'\b(DEBUG|TRACE)\b', caseSensitive: false).hasMatch(text)) {
+    if (_debugLogPattern.hasMatch(text)) {
       return LogSeverity.debug;
     }
     return LogSeverity.none;
