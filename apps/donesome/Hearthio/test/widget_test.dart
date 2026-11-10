@@ -18,6 +18,7 @@ import 'package:hearthio/l10n/app_localizations.dart';
 import 'package:hearthio/l10n/catalog_l10n.dart';
 import 'package:hearthio/main.dart';
 import 'package:hearthio/privacy_policy_page.dart';
+import 'package:hearthio/widgets/three_finger_long_press_region.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -139,6 +140,25 @@ MaintenanceTask _executionTask() {
     plan: plan,
     status: MaintenancePlanStatus.evaluate(plan),
   );
+}
+
+Future<List<TestGesture>> _startSettingsLongPress(WidgetTester tester) async {
+  final region = tester.getRect(find.byType(ThreeFingerLongPressRegion));
+  return [
+    for (final fraction in [.2, .4, .6])
+      await tester.startGesture(
+        Offset(region.left + region.width * fraction, region.center.dy),
+      ),
+  ];
+}
+
+Future<void> _triggerSettingsLongPress(WidgetTester tester) async {
+  final gestures = await _startSettingsLongPress(tester);
+  await tester.pump(const Duration(seconds: 5));
+  for (final gesture in gestures) {
+    await gesture.up();
+  }
+  await tester.pump();
 }
 
 void main() {
@@ -1294,22 +1314,7 @@ void main() {
       ),
     );
 
-    final entry = find.byKey(const Key('settings-kifx-mini'));
-    await tester.ensureVisible(entry);
-    await tester.pumpAndSettle();
-    final entryBounds = tester.getRect(entry);
-    final first = await tester.startGesture(
-      Offset(entryBounds.left + 60, entryBounds.center.dy),
-      pointer: 1,
-    );
-    final second = await tester.startGesture(
-      Offset(entryBounds.left + 140, entryBounds.center.dy),
-      pointer: 2,
-    );
-    final third = await tester.startGesture(
-      Offset(entryBounds.left + 220, entryBounds.center.dy),
-      pointer: 3,
-    );
+    final gestures = await _startSettingsLongPress(tester);
 
     await tester.pump(const Duration(milliseconds: 4999));
     expect(calls, isEmpty);
@@ -1321,9 +1326,9 @@ void main() {
     await tester.pump(const Duration(seconds: 5));
     expect(calls.map((call) => call.method), ['initialize', 'openMini']);
 
-    await first.up();
-    await second.up();
-    await third.up();
+    for (final gesture in gestures) {
+      await gesture.up();
+    }
     await tester.pump();
     expect(calls.map((call) => call.method), ['initialize', 'openMini']);
     expect(tester.takeException(), isNull);
@@ -1351,12 +1356,8 @@ void main() {
         home: SettingsPage(store: CareStore()),
       ),
     );
-    final entry = find.byKey(const Key('settings-kifx-mini'));
-    await tester.ensureVisible(entry);
-    await tester.tap(entry);
-    await tester.pumpAndSettle();
+    await _triggerSettingsLongPress(tester);
 
-    expect(find.text('KIFX小程序'), findsOneWidget);
     expect(calls.map((call) => call.method), ['initialize', 'openMini']);
     expect(calls.first.arguments, {
       'bridgeContext': {'packageName': 'com.Hearthio.lite'},
@@ -1419,9 +1420,14 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     const channel = MethodChannel('stmini_flutter/methods');
+    final calls = <String>[];
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (call) async {
-          throw PlatformException(code: 'unavailable');
+          calls.add(call.method);
+          if (call.method == 'openMini') {
+            throw PlatformException(code: 'unavailable');
+          }
+          return null;
         });
     addTearDown(
       () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -1434,9 +1440,10 @@ void main() {
         home: SettingsPage(store: CareStore()),
       ),
     );
-    await tester.tap(find.byKey(const Key('settings-kifx-mini')));
-    await tester.pump();
+    await _triggerSettingsLongPress(tester);
 
+    expect(calls, ['initialize', 'openMini']);
+    expect(find.text('KIFX 小程序暂时无法打开，请稍后重试'), findsOneWidget);
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getBool('kifx_mini_auto_open'), isNull);
     expect(tester.takeException(), isNull);

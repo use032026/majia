@@ -74,6 +74,7 @@ class CareBackupCodec {
   static const maxSingleFileBytes = 20 * 1024 * 1024;
   static const maxTotalExpandedBytes = 100 * 1024 * 1024;
   static const maxDataFileBytes = 5 * 1024 * 1024;
+  static final _unsafeBasenameCharacters = RegExp(r'[^A-Za-z0-9._-]');
 
   static Uint8List encode({
     required List<CareItem> items,
@@ -297,7 +298,7 @@ class CareBackupCodec {
   static String _safeBasename(String path) {
     final normalized = path.replaceAll('\\', '/');
     final name = normalized.split('/').last;
-    final safe = name.replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+    final safe = name.replaceAll(_unsafeBasenameCharacters, '_');
     return safe.isEmpty || safe == '.' || safe == '..' ? 'photo.bin' : safe;
   }
 }

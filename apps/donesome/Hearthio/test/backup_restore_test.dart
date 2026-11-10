@@ -35,7 +35,7 @@ void main() {
       brand: '',
       model: '',
       notes: '',
-      photos: const ['/device/photo.jpg'],
+      photos: const ['/device/水 filter#.jpg'],
       plans: [
         MaintenancePlan(
           id: 'filter',
@@ -68,7 +68,7 @@ void main() {
     final bytes = CareBackupCodec.encode(
       items: [item],
       photoBytesByPath: const {
-        '/device/photo.jpg': [1, 2, 3],
+        '/device/水 filter#.jpg': [1, 2, 3],
         '/record/before.jpg': [4, 5, 6],
         '/record/after.jpg': [7, 8, 9],
       },
@@ -77,7 +77,7 @@ void main() {
 
     expect(decoded.items.single.plans, hasLength(2));
     expect(decoded.items.single.records.single.planId, 'filter');
-    expect(decoded.items.single.photos.single, startsWith('photos/'));
+    expect(decoded.items.single.photos.single, 'photos/0___filter_.jpg');
     expect(
       decoded.items.single.records.single.beforePhotos.single,
       startsWith('photos/'),
