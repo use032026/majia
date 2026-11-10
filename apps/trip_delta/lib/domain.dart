@@ -6,14 +6,16 @@ enum BudgetCategory { stay, transport, food, experiences, other }
 
 const supportedCurrencies = ['CNY', 'USD', 'EUR', 'JPY', 'GBP'];
 
+final _wholeAmountPattern = RegExp(r'^\d{1,7}$');
+final _decimalAmountPattern = RegExp(r'^\d{1,7}(?:\.\d{1,2})?$');
+final _ratePattern = RegExp(r'^\d{1,4}(?:\.\d{1,6})?$');
+
 int currencyDigits(String currency) => currency == 'JPY' ? 0 : 2;
 
 int? parseMinor(String raw, String currency) {
   final value = raw.trim();
   final digits = currencyDigits(currency);
-  final pattern = digits == 0
-      ? RegExp(r'^\d{1,7}$')
-      : RegExp(r'^\d{1,7}(?:\.\d{1,2})?$');
+  final pattern = digits == 0 ? _wholeAmountPattern : _decimalAmountPattern;
   if (!pattern.hasMatch(value)) return null;
   final parts = value.split('.');
   final whole = int.parse(parts.first);
@@ -27,7 +29,7 @@ int? parseMinor(String raw, String currency) {
 
 double? parseRate(String raw) {
   final value = raw.trim();
-  if (!RegExp(r'^\d{1,4}(?:\.\d{1,6})?$').hasMatch(value)) return null;
+  if (!_ratePattern.hasMatch(value)) return null;
   final result = double.tryParse(value);
   if (result == null || result <= 0 || result > 1000) return null;
   return result;

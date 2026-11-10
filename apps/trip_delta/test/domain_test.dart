@@ -11,7 +11,12 @@ void main() {
     expect(parseMinor('1200.5', 'JPY'), isNull);
     expect(parseMinor('1000000', 'JPY'), 1000000);
     expect(parseMinor('1000001', 'JPY'), isNull);
+    expect(parseMinor(' 1000000.00 ', 'CNY'), 100000000);
+    expect(parseMinor('1000000.01', 'CNY'), isNull);
     expect(parseRate('0.052345'), closeTo(0.052345, 0.0000001));
+    expect(parseRate(' 1000.000000 '), 1000);
+    expect(parseRate('1000.000001'), isNull);
+    expect(parseRate('0.0523456'), isNull);
     expect(parseRate('0'), isNull);
     expect(
       convertMinor(
