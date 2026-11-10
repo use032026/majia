@@ -1767,8 +1767,7 @@ class _ObservationLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final entries = [...experiment.entries]
-      ..sort((a, b) => b.date.compareTo(a.date));
+    final entryCount = experiment.entries.length;
     final scheme = Theme.of(context).colorScheme;
     return Material(
       color: scheme.surfaceContainer,
@@ -1815,11 +1814,11 @@ class _ObservationLink extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      entries.isEmpty
+                      entryCount == 0
                           ? copy.noEntries
                           : copy.t(
-                              '已有 ${entries.length} 个观察日',
-                              '${entries.length} ${entries.length == 1 ? 'day' : 'days'} recorded',
+                              '已有 $entryCount 个观察日',
+                              '$entryCount ${entryCount == 1 ? 'day' : 'days'} recorded',
                             ),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,

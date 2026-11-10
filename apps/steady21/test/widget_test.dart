@@ -478,11 +478,22 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('练习节奏'), findsOneWidget);
+      expect(find.text('已有 2 个观察日'), findsOneWidget);
       expect(find.text('晚上临时有事'), findsNothing);
       await tester.tap(find.byKey(const Key('observationLink-observations')));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('observationListPage')), findsOneWidget);
+      expect(
+        tester
+            .getTopLeft(find.byKey(const Key('observationDate-2026-09-22')))
+            .dy,
+        lessThan(
+          tester
+              .getTopLeft(find.byKey(const Key('observationDate-2026-09-21')))
+              .dy,
+        ),
+      );
       expect(
         find.byKey(const Key('observationDate-2026-09-22')),
         findsOneWidget,
