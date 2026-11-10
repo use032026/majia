@@ -96,6 +96,90 @@ module MajiaCI
       }
     end
 
+    def build_inventory(client:, bundle_id:, marketing_version:, checked_at: Time.now.utc)
+      unless marketing_version.match?(VERSION_PATTERN)
+        raise ASCStatusError, "build inventory requires an exact marketing version"
+      end
+
+      app = resolve_app(client, bundle_id)
+      raise ASCStatusError, "ASC app bundle ID did not match" unless app.dig("attributes", "bundleId") == bundle_id
+
+      app_id = inventory_id(app)
+      app_path = "/v1/apps/#{app_id}"
+      uploads = client.paginate(
+        "#{app_path}/buildUploads",
+        { "fields[buildUploads]" => "cfBundleShortVersionString,cfBundleVersion,state,platform,createdDate,uploadedDate",
+          "limit" => "200" }
+      ).filter_map do |upload|
+        attributes = upload.fetch("attributes")
+        next unless inventory_field(upload, "platform") == "IOS" &&
+                    inventory_field(upload, "cfBundleShortVersionString") == marketing_version
+
+        state = attributes["state"]
+        state_code = state["state"] if state.is_a?(Hash)
+        unless state_code.is_a?(String) && state_code.match?(/\A[A-Z][A-Z_]*\z/)
+          raise ASCStatusError, "ASC build inventory response has invalid upload state"
+        end
+
+        {
+          "id" => inventory_id(upload),
+          "version" => inventory_field(upload, "cfBundleVersion"),
+          "state" => state_code,
+          "created_date" => attributes["createdDate"],
+          "uploaded_date" => attributes["uploadedDate"]
+        }
+      end
+
+      versions = client.paginate(
+        "#{app_path}/preReleaseVersions",
+        { "fields[preReleaseVersions]" => "platform,version", "limit" => "200" }
+      ).select do |version|
+        inventory_field(version, "platform") == "IOS" && inventory_field(version, "version") == marketing_version
+      end
+      builds = versions.flat_map do |version|
+        client.paginate(
+          "/v1/preReleaseVersions/#{inventory_id(version)}/builds",
+          { "fields[builds]" => "version,processingState,uploadedDate,expired", "limit" => "200" }
+        ).map do |build|
+          inventory_id(build)
+          inventory_field(build, "version")
+          inventory_field(build, "processingState")
+          raise ASCStatusError, "ASC build is missing its expiry status" unless [true, false].include?(build.dig("attributes", "expired"))
+
+          summarize_build(build)
+        end
+      end
+
+      {
+        "schema_version" => 1,
+        "checked_at" => checked_at.utc.iso8601,
+        "app" => { "id" => app_id, "bundle_id" => bundle_id },
+        "platform" => "IOS",
+        "marketing_version" => marketing_version,
+        "build_uploads" => uploads,
+        "prerelease_builds" => builds,
+        "evidence_boundary" => "Read-only ASC inventory. Empty results do not rule out uploads not yet visible to ASC."
+      }
+    rescue KeyError
+      raise ASCStatusError, "ASC build inventory response is missing required fields"
+    end
+
+    def inventory_field(resource, field)
+      value = resource.dig("attributes", field)
+      raise ASCStatusError, "ASC build inventory response has invalid #{field}" unless value.is_a?(String) && !value.empty?
+
+      value
+    end
+    private_class_method :inventory_field
+
+    def inventory_id(resource)
+      id = resource["id"]
+      raise ASCStatusError, "ASC build inventory response has invalid resource ID" unless id.is_a?(String) && id.match?(/\A[A-Za-z0-9_-]+\z/)
+
+      id
+    end
+    private_class_method :inventory_id
+
     def markdown(summary)
       app = summary.fetch("app")
       version = summary.fetch("version")

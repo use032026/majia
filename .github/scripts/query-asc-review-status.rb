@@ -9,6 +9,7 @@ options = { marketing_version: "" }
 OptionParser.new do |parser|
   parser.on("--bundle-id BUNDLE_ID") { |value| options[:bundle_id] = value }
   parser.on("--marketing-version VERSION") { |value| options[:marketing_version] = value }
+  parser.on("--build-inventory") { options[:build_inventory] = true }
   parser.on("--output PATH") { |value| options[:output] = value }
   parser.on("--github-summary PATH") { |value| options[:github_summary] = value }
 end.parse!
@@ -35,6 +36,31 @@ begin
   )
   key = MajiaCI::ASCReviewStatus.normalize_private_key(required_environment("ASC_API_KEY_P8"))
   client = MajiaCI::ASCReadClient.new(key: key, key_id: key_id, issuer_id: issuer_id)
+  if options[:build_inventory]
+    inventory = MajiaCI::ASCReviewStatus.build_inventory(
+      client: client,
+      bundle_id: options.fetch(:bundle_id),
+      marketing_version: options.fetch(:marketing_version)
+    )
+    File.open(options.fetch(:output), "w", 0o600) do |file|
+      file.puts(JSON.pretty_generate(inventory))
+    end
+    File.open(options.fetch(:github_summary), "a", 0o600) do |file|
+      file.puts(
+        "## ASC build inventory",
+        "",
+        "- Marketing version: #{inventory.fetch('marketing_version')}",
+        "- Build uploads: #{inventory.fetch('build_uploads').length}",
+        "- Prerelease builds: #{inventory.fetch('prerelease_builds').length}",
+        "- Checked at: #{inventory.fetch('checked_at')}",
+        "",
+        "> #{inventory.fetch('evidence_boundary')}"
+      )
+    end
+    puts "ASC build inventory queried"
+    exit 0
+  end
+
   summary = MajiaCI::ASCReviewStatus.build_status(
     client: client,
     bundle_id: options.fetch(:bundle_id),

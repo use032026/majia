@@ -348,3 +348,148 @@ class ASCReviewStatusTest < Minitest::Test
     }
   end
 end
+
+class ASCBuildInventoryTest < Minitest::Test
+  Bundle = "com.example.app"
+  Status = MajiaCI::ASCReviewStatus
+
+  class PageClient < MajiaCI::ASCReadClient
+    attr_reader :calls
+
+    def initialize(pages)
+      @pages = pages
+      @calls = []
+    end
+
+    def get(path, query = nil)
+      @calls << [path, query]
+      page = @pages.fetch(path)
+      raise page if page.is_a?(Exception)
+
+      page
+    end
+  end
+
+  def test_exact_ios_inventory_walks_pages_without_an_app_store_version
+    client = inventory_client(
+      "/v1/apps/app-1/buildUploads" => page([
+        upload("upload-1", "1.0.2", "PROCESSING"),
+        upload("other-version", "1.0.1", "COMPLETE"),
+        upload("other-platform", "1.0.2", "COMPLETE", platform: "MAC_OS")
+      ], next_page: "/uploads-page-2"),
+      "/uploads-page-2" => page([
+        upload("upload-2", "1.0.2", "FAILED"),
+        upload("upload-3", "1.0.2", "COMPLETE")
+      ]),
+      "/v1/apps/app-1/preReleaseVersions" => page([
+        resource("beta-old", "version" => "1.0.1", "platform" => "IOS")
+      ], next_page: "/betas-page-2"),
+      "/betas-page-2" => page([
+        resource("beta-mac", "version" => "1.0.2", "platform" => "MAC_OS"),
+        resource("beta-ios", "version" => "1.0.2", "platform" => "IOS")
+      ]),
+      "/v1/preReleaseVersions/beta-ios/builds" => page([
+        build("build-1", "1", "VALID", false)
+      ], next_page: "/builds-page-2"),
+      "/builds-page-2" => page([
+        build("build-2", "2", "FAILED", true)
+      ])
+    )
+
+    inventory = fetch_inventory(client)
+    assert_equal "1.0.2", inventory["marketing_version"]
+    assert_equal %w[PROCESSING FAILED COMPLETE], inventory["build_uploads"].map { |upload| upload["state"] }
+    assert_equal %w[VALID FAILED], inventory["prerelease_builds"].map { |build| build["processing_state"] }
+    assert_equal [false, true], inventory["prerelease_builds"].map { |build| build["expired"] }
+    assert_equal({ "id" => "app-1", "bundle_id" => Bundle }, inventory["app"])
+    refute_includes JSON.generate(inventory), "private Apple diagnostics"
+    refute client.calls.any? { |path, _| path.include?("appStoreVersions") }
+    upload_query = client.calls.assoc("/v1/apps/app-1/buildUploads").last
+    refute upload_query.keys.any? { |key| key.start_with?("filter[") }
+    assert_includes client.calls, ["/uploads-page-2", nil]
+    assert_includes client.calls, ["/betas-page-2", nil]
+    assert_includes client.calls, ["/builds-page-2", nil]
+  end
+
+  def test_no_uploads_or_prerelease_versions_returns_observed_empty_arrays
+    inventory = fetch_inventory(inventory_client)
+    assert_empty inventory["build_uploads"]
+    assert_empty inventory["prerelease_builds"]
+    assert_match(/not yet visible/, inventory["evidence_boundary"])
+  end
+
+  def test_second_page_failure_does_not_return_partial_inventory
+    client = inventory_client(
+      "/v1/apps/app-1/buildUploads" => page([upload("upload-1", "1.0.2", "PROCESSING")], next_page: "/failed"),
+      "/failed" => MajiaCI::ASCStatusError.new("ASC request failed: HTTP 403")
+    )
+
+    assert_raises(MajiaCI::ASCStatusError) { fetch_inventory(client) }
+  end
+
+  def test_incomplete_upload_resource_fails_closed
+    client = inventory_client(
+      "/v1/apps/app-1/buildUploads" => page([
+        resource("upload-1", "platform" => "IOS", "cfBundleShortVersionString" => "1.0.2")
+      ])
+    )
+
+    assert_raises(MajiaCI::ASCStatusError) { fetch_inventory(client) }
+  end
+
+  def test_upload_state_without_a_state_code_fails_closed
+    malformed = upload("upload-1", "1.0.2", "FAILED")
+    malformed.fetch("attributes")["state"] = { "errors" => [{ "description" => "private Apple diagnostics" }] }
+    client = inventory_client("/v1/apps/app-1/buildUploads" => page([malformed]))
+
+    error = assert_raises(MajiaCI::ASCStatusError) { fetch_inventory(client) }
+    refute_includes error.message, "private Apple diagnostics"
+  end
+
+  def test_requires_exact_version_before_request
+    client = inventory_client
+    assert_raises(MajiaCI::ASCStatusError) do
+      Status.build_inventory(client: client, bundle_id: Bundle, marketing_version: "")
+    end
+    assert_empty client.calls
+  end
+
+  private
+
+  def fetch_inventory(client)
+    Status.build_inventory(client: client, bundle_id: Bundle, marketing_version: "1.0.2")
+  end
+
+  def inventory_client(overrides = {})
+    PageClient.new({
+      "/v1/apps" => page([resource("app-1", "bundleId" => Bundle)]),
+      "/v1/apps/app-1/buildUploads" => page([]),
+      "/v1/apps/app-1/preReleaseVersions" => page([])
+    }.merge(overrides))
+  end
+
+  def page(data, next_page: nil)
+    { "data" => data, "links" => { "next" => next_page } }
+  end
+
+  def resource(id, attributes)
+    { "id" => id, "attributes" => attributes }
+  end
+
+  def upload(id, version, state, platform: "IOS")
+    resource(id, {
+      "cfBundleShortVersionString" => version,
+      "cfBundleVersion" => "1",
+      "state" => {
+        "state" => state,
+        "errors" => [{ "description" => "private Apple diagnostics" }],
+        "warnings" => [{ "description" => "private Apple diagnostics" }]
+      },
+      "platform" => platform
+    })
+  end
+
+  def build(id, version, state, expired)
+    resource(id, "version" => version, "processingState" => state, "expired" => expired)
+  end
+end
