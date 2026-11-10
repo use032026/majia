@@ -80,6 +80,25 @@ void main() {
     expect(second.seedFingerprint, first.seedFingerprint);
   });
 
+  test('generation keeps the published prompt order across calls', () {
+    final date = DateTime.utc(2024, 1, 1);
+    final first = generator.generate(date: date, installationSeed: 'seed-a');
+    generator.generate(date: date, installationSeed: 'seed-b');
+    final again = generator.generate(date: date, installationSeed: 'seed-a');
+
+    expect(first.suitablePromptIds, [
+      's-three-lines',
+      's-walk-slowly',
+      's-prepare-tomorrow',
+    ]);
+    expect(first.avoidPromptIds, [
+      'a-chase-perfect',
+      'a-late-push',
+      'a-keep-clutter',
+    ]);
+    expect(again.toJson(), first.toJson());
+  });
+
   test('365 generated days satisfy content constraints in both languages', () {
     final fingerprints = <String>{};
     for (var offset = 0; offset < 365; offset++) {

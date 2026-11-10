@@ -330,6 +330,13 @@ const Map<String, List<List<String>>> _verseEn = <String, List<List<String>>>{
 class AlmanacGenerator {
   const AlmanacGenerator();
 
+  static final _promptsBySide = <PromptSide, List<PromptItem>>{
+    for (final side in PromptSide.values)
+      side: List<PromptItem>.unmodifiable(
+        promptBank.where((item) => item.side == side),
+      ),
+  };
+
   DailyLeaf generate({
     required DateTime date,
     required String installationSeed,
@@ -356,7 +363,7 @@ class AlmanacGenerator {
   }
 
   List<PromptItem> _pickPrompts(PromptSide side, int seed) {
-    final source = promptBank.where((item) => item.side == side).toList();
+    final source = List<PromptItem>.of(_promptsBySide[side]!);
     final random = _DeterministicRandom(seed);
     for (var index = source.length - 1; index > 0; index--) {
       final swapIndex = random.nextInt(index + 1);

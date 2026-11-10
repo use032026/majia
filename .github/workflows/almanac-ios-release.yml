@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       marketing_version:
-        description: Version to build, such as 1.0.4
+        description: Version to build, such as 1.0.5
         required: true
-        default: "1.0.4"
+        default: "1.0.5"
         type: string
       build_number:
         description: Optional build number; ASC increments it when empty
