@@ -32,6 +32,11 @@ on:
         description: Run only the read-only iOS upload and prerelease build inventory for this exact version
         required: false
         type: string
+      include_review_diagnostics:
+        description: Run only the sanitized review diagnostics for the exact marketing version
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -52,7 +57,7 @@ jobs:
           persist-credentials: false
 
       - name: Query read-only ASC review status
-        if: ${{ inputs.build_inventory_version == '' }}
+        if: ${{ inputs.build_inventory_version == '' && !inputs.include_review_diagnostics }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -68,7 +73,7 @@ jobs:
             --github-summary "$GITHUB_STEP_SUMMARY"
 
       - name: Query read-only ASC store metadata and media
-        if: ${{ inputs.build_inventory_version == '' && inputs.include_store_metadata }}
+        if: ${{ inputs.build_inventory_version == '' && !inputs.include_review_diagnostics && inputs.include_store_metadata }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -87,7 +92,7 @@ jobs:
             --output asc-store-metadata.json
 
       - name: Query read-only ASC build inventory
-        if: ${{ inputs.build_inventory_version != '' }}
+        if: ${{ inputs.build_inventory_version != '' && !inputs.include_review_diagnostics }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -109,8 +114,31 @@ jobs:
             --output asc-build-inventory.json \
             --github-summary "$GITHUB_STEP_SUMMARY"
 
+      - name: Query read-only ASC review diagnostics
+        if: ${{ inputs.include_review_diagnostics }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          INVENTORY_VERSION: ${{ inputs.build_inventory_version }}
+          INCLUDE_STORE_METADATA: ${{ inputs.include_store_metadata }}
+        run: |
+          if [[ -n "$INVENTORY_VERSION" || "$INCLUDE_STORE_METADATA" == "true" ]]; then
+            echo "::error::Review diagnostics cannot be combined with build inventory or store metadata"
+            exit 1
+          fi
+          ruby .github/scripts/query-asc-review-status.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --marketing-version "$MARKETING_VERSION" \
+            --review-diagnostics \
+            --output asc-review-diagnostics.json \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
       - name: Retain ASC status snapshot
-        if: ${{ always() && (inputs.build_inventory_version == '' || success()) }}
+        if: ${{ always() && (inputs.include_review_diagnostics || inputs.build_inventory_version == '' || success()) }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: asc-review-status-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -118,5 +146,6 @@ jobs:
             asc-review-status.json
             asc-store-metadata.json
             asc-build-inventory.json
+            asc-review-diagnostics.json
           if-no-files-found: error
           retention-days: 30
