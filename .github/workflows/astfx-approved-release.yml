@@ -1,0 +1,57 @@
+name: ASTFX Release Approved 1.0.2
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_approved_1_0_2:
+        description: Publish the exact approved ASTFX 1.0.2 build 1; false only checks state
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-cleantrail-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release_approved:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment: cleantrail-production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout reviewed release tooling
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check and release the exact approved ASTFX 1.0.2 once
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          EXECUTE_RELEASE: ${{ inputs.release_approved_1_0_2 }}
+        run: |
+          set -euo pipefail
+          release_command=(ruby .github/scripts/release-astfx-approved.rb
+            --output astfx-approved-release.json
+            --github-output "$GITHUB_OUTPUT"
+            --github-summary "$GITHUB_STEP_SUMMARY")
+          if [[ "$EXECUTE_RELEASE" == "true" ]]; then
+            release_command+=(--execute)
+          fi
+          "${release_command[@]}"
+
+      - name: Retain redacted release request evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: astfx-approved-release-${{ github.run_id }}-${{ github.run_attempt }}
+          path: astfx-approved-release.json
+          if-no-files-found: warn
+          retention-days: 30
