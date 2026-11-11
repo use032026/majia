@@ -20,6 +20,7 @@ abstract class FileGateway {
 
 class SystemFileGateway implements FileGateway {
   static const maxBytes = 5 * 1024 * 1024;
+  Future<void>? _cleanup;
 
   @override
   Future<ImportedFile?> pickFile() async {
@@ -59,9 +60,16 @@ class SystemFileGateway implements FileGateway {
   }
 
   @override
-  Future<void> clearOldExports() async {
+  Future<void> clearOldExports() {
+    return _cleanup ??= _clearOldExports().whenComplete(() {
+      _cleanup = null;
+    });
+  }
+
+  Future<void> _clearOldExports() async {
     final dir = await _exportsDir();
-    for (final item in dir.listSync()) {
+    final items = await dir.list().toList();
+    for (final item in items) {
       try {
         await item.delete(recursive: true);
       } on FileSystemException {
@@ -72,6 +80,14 @@ class SystemFileGateway implements FileGateway {
 
   @override
   Future<void> shareFile(String fileName, Uint8List bytes, Rect anchor) async {
+    final cleanup = _cleanup;
+    if (cleanup != null) {
+      try {
+        await cleanup;
+      } catch (_) {
+        // Temporary cleanup must not prevent a user-initiated share.
+      }
+    }
     final dir = await _exportsDir();
     final safeName = fileName.replaceAll(RegExp(r'[/\\\x00-\x1F\x7F]'), '_');
     final shareDir = await dir.createTemp('share_');
