@@ -74,7 +74,11 @@ void main() {
       },
     );
     final decoded = CareBackupCodec.decode(bytes);
+    final dataFile = ZipDecoder().decodeBytes(bytes).findFile('data.json')!;
+    final dataText = utf8.decode(dataFile.content);
 
+    expect(dataText, contains('净水器'));
+    expect(dataText, contains('PP 棉滤芯'));
     expect(decoded.items.single.plans, hasLength(2));
     expect(decoded.items.single.records.single.planId, 'filter');
     expect(decoded.items.single.photos.single, 'photos/0___filter_.jpg');

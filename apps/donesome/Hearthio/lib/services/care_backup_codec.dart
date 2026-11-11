@@ -111,14 +111,15 @@ class CareBackupCodec {
         .toList(growable: false);
     final data = CareDataEnvelope(items: backupItems, spaces: spaces).encode();
     CareDataEnvelope.decode(data);
-    if (utf8.encode(data).length > maxDataFileBytes) {
+    final dataBytes = utf8.encode(data);
+    if (dataBytes.length > maxDataFileBytes) {
       throw const CareBackupException('备份数据超过大小限制');
     }
-    expandedBytes += utf8.encode(data).length;
+    expandedBytes += dataBytes.length;
     if (expandedBytes > maxTotalExpandedBytes) {
       throw const CareBackupException('备份解压后超过大小限制');
     }
-    archive.add(ArchiveFile.string('data.json', data));
+    archive.add(ArchiveFile.bytes('data.json', dataBytes));
     for (final entry in archivePaths.entries) {
       final bytes = photoBytesByPath[entry.key]!;
       archive.add(ArchiveFile.bytes(entry.value, bytes));
