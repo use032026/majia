@@ -524,6 +524,69 @@ void main() {
     },
   );
 
+  testWidgets(
+    'long observation history builds visible dates and opens the oldest',
+    (tester) async {
+      final start = DateTime(2026, 1, 1);
+      final experiment = Experiment(
+        id: 'long-observations',
+        title: '晚饭后阅读',
+        cue: '晚饭后',
+        fullAction: '读十页',
+        minimumAction: '读一页',
+        targetDays: 21,
+        startedAt: start,
+        entries: [
+          for (var offset = 0; offset < 120; offset++)
+            DailyEntry(
+              date: localDateKey(start.add(Duration(days: offset))),
+              kind: EntryKind.full,
+              note: offset == 0 ? '第一天的记录' : '',
+            ),
+        ],
+      );
+      await _pump(
+        tester,
+        _controller(snapshot: AppSnapshot(experiments: [experiment])),
+      );
+      await tester.tap(find.byKey(const Key('journeyTab')));
+      await tester.pumpAndSettle();
+      final journeyScroll = find
+          .descendant(
+            of: find.byKey(const Key('journeyScroll')),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final link = find.byKey(const Key('observationLink-long-observations'));
+      await tester.scrollUntilVisible(link, 160, scrollable: journeyScroll);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(link);
+      await tester.tap(link);
+      await tester.pumpAndSettle();
+
+      final oldest = find.byKey(const Key('observationDate-2026-01-01'));
+      expect(
+        find.byKey(const Key('observationDate-2026-04-30')),
+        findsOneWidget,
+      );
+      expect(oldest, findsNothing);
+      final observationScroll = find.descendant(
+        of: find.byKey(const Key('observationListPage')),
+        matching: find.byType(Scrollable),
+      );
+      await tester.scrollUntilVisible(
+        oldest,
+        450,
+        scrollable: observationScroll,
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(oldest);
+      await tester.tap(oldest);
+      await tester.pumpAndSettle();
+      expect(find.text('第一天的记录'), findsOneWidget);
+    },
+  );
+
   testWidgets('English streak tiles remain equal height when labels wrap', (
     tester,
   ) async {

@@ -1864,37 +1864,44 @@ class _ObservationListPage extends StatelessWidget {
         title: Text(copy.entries),
       ),
       body: ContentFrame(
-        child: ListView(
+        child: ListView.builder(
           key: const Key('observationListPage'),
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-          children: [
-            Text(
-              experiment.title,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              copy.t(
-                '${entries.length} 个有记录的日期',
-                '${entries.length} dates with observations',
-              ),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 18),
-            if (entries.isEmpty)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(22),
-                  child: Text(copy.noEntries),
-                ),
-              )
-            else
-              ...entries.map(
-                (entry) => Padding(
+          itemCount: 4 + (entries.isEmpty ? 1 : entries.length),
+          itemBuilder: (context, index) {
+            switch (index) {
+              case 0:
+                return Text(
+                  experiment.title,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                );
+              case 1:
+                return const SizedBox(height: 5);
+              case 2:
+                return Text(
+                  copy.t(
+                    '${entries.length} 个有记录的日期',
+                    '${entries.length} dates with observations',
+                  ),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                );
+              case 3:
+                return const SizedBox(height: 18);
+              default:
+                if (entries.isEmpty) {
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(22),
+                      child: Text(copy.noEntries),
+                    ),
+                  );
+                }
+                final entry = entries[index - 4];
+                return Padding(
                   padding: const EdgeInsets.only(bottom: 9),
                   child: Card(
                     child: InkWell(
@@ -1953,9 +1960,9 @@ class _ObservationListPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              ),
-          ],
+                );
+            }
+          },
         ),
       ),
     );
