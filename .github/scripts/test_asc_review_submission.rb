@@ -108,6 +108,31 @@ class ASCReviewSubmissionTest < Minitest::Test
 
     assert_equal "IN_REVIEW", summary.dig("review_submission", "state")
     refute client.calls.any? { |method, _path, _argument| method == :post }
+    items_query = client.calls.find { |method, path, _argument| method == :paginate && path.end_with?("/items") }
+    assert_equal "appStoreVersion", items_query.last["include"]
+  end
+
+  def test_submits_directly_linked_ready_draft_without_adding_version_again
+    client = prepared_client(version_state: "READY_FOR_REVIEW")
+    submission = review_submission("submission-1", "READY_FOR_REVIEW")
+    submission["relationships"] = {
+      "appStoreVersionForReview" => { "data" => { "type" => "appStoreVersions", "id" => VERSION_ID } }
+    }
+    client.enqueue(:paginate, "/v1/apps/#{APP_ID}/reviewSubmissions", [submission])
+    client.enqueue(:patch, "/v1/reviewSubmissions/submission-1", {})
+    client.enqueue(
+      :get,
+      "/v1/reviewSubmissions/submission-1",
+      { "data" => review_submission("submission-1", "WAITING_FOR_REVIEW") }
+    )
+
+    summary = Submission.submit(client: client, bundle_id: "com.example.app", marketing_version: "1.0.0")
+
+    assert_equal "submission-1", summary.dig("review_submission", "id")
+    assert_equal "WAITING_FOR_REVIEW", summary.dig("review_submission", "state")
+    submissions_query = client.calls.find { |method, path, _argument| method == :paginate && path.end_with?("/reviewSubmissions") }
+    assert_equal "appStoreVersionForReview", submissions_query.last["include"]
+    refute client.calls.any? { |method, path, _argument| method == :post || path.end_with?("/items") }
   end
 
   def test_already_submitted_version_is_an_idempotent_no_op

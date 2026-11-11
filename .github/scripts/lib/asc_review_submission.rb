@@ -109,7 +109,7 @@ module MajiaCI
       submissions = review_submissions(client, app_id)
       target = submissions.find do |submission|
         submission.dig("attributes", "state") == "READY_FOR_REVIEW" &&
-          submission_contains_version?(client, submission.fetch("id"), version_id)
+          submission_contains_version?(client, submission, version_id)
       end
       return submit_review(client, target) if target
 
@@ -130,15 +130,28 @@ module MajiaCI
     def review_submissions(client, app_id)
       client.paginate(
         "/v1/apps/#{app_id}/reviewSubmissions",
-        { "filter[platform]" => "IOS", "limit" => "200" }
+        {
+          "filter[platform]" => "IOS",
+          "fields[reviewSubmissions]" => "platform,state,appStoreVersionForReview",
+          "include" => "appStoreVersionForReview",
+          "fields[appStoreVersions]" => "versionString",
+          "limit" => "200"
+        }
       )
     end
     private_class_method :review_submissions
 
-    def submission_contains_version?(client, submission_id, version_id)
+    def submission_contains_version?(client, submission, version_id)
+      return true if submission.dig("relationships", "appStoreVersionForReview", "data", "id") == version_id
+
       client.paginate(
-        "/v1/reviewSubmissions/#{submission_id}/items",
-        { "limit" => "200" }
+        "/v1/reviewSubmissions/#{submission.fetch('id')}/items",
+        {
+          "fields[reviewSubmissionItems]" => "state,appStoreVersion",
+          "include" => "appStoreVersion",
+          "fields[appStoreVersions]" => "versionString",
+          "limit" => "200"
+        }
       ).any? do |item|
         item.dig("relationships", "appStoreVersion", "data", "id") == version_id
       end
