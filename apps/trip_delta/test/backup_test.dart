@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show MethodChannel;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:trip_delta/backup.dart';
 import 'package:trip_delta/domain.dart';
 
 void main() {
+  final binding = TestWidgetsFlutterBinding.ensureInitialized();
+  const pickerChannel = MethodChannel('miguelruivo.flutter.plugins.filepicker');
   final trip = Trip(
     id: 'trip-1',
     title: 'Kyoto',
@@ -67,4 +71,39 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test(
+    'system picker applies the backup limit to actual returned bytes',
+    () async {
+      final messenger = binding.defaultBinaryMessenger;
+      addTearDown(
+        () => messenger.setMockMethodCallHandler(pickerChannel, null),
+      );
+      void picked({String? path, Uint8List? bytes}) {
+        messenger.setMockMethodCallHandler(pickerChannel, (_) async {
+          return [
+            {'name': 'backup.json', 'size': 1, 'path': path, 'bytes': bytes},
+          ];
+        });
+      }
+
+      final gateway = SystemBackupGateway();
+      messenger.setMockMethodCallHandler(pickerChannel, (_) async => null);
+      expect(await gateway.pick(), isNull);
+
+      picked(bytes: Uint8List(maxBackupBytes));
+      expect(await gateway.pick(), hasLength(maxBackupBytes));
+      picked(bytes: Uint8List(maxBackupBytes + 1));
+      await expectLater(gateway.pick(), throwsFormatException);
+
+      final directory = await Directory.systemTemp.createTemp('trip-backup-');
+      addTearDown(() => directory.delete(recursive: true));
+      final file = File('${directory.path}/backup.json');
+      await file.writeAsBytes(Uint8List(maxBackupBytes));
+      picked(path: file.path);
+      expect(await gateway.pick(), hasLength(maxBackupBytes));
+      await file.writeAsBytes([0], mode: FileMode.append);
+      await expectLater(gateway.pick(), throwsFormatException);
+    },
+  );
 }

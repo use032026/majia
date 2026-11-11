@@ -102,10 +102,20 @@ class SystemBackupGateway implements BackupGateway {
       if (await file.length() > maxBackupBytes) {
         throw const FormatException('Backup is too large');
       }
-      return file.readAsBytes();
+      final bytes = BytesBuilder(copy: false);
+      await for (final chunk in file.openRead(0, maxBackupBytes + 1)) {
+        bytes.add(chunk);
+      }
+      if (bytes.length > maxBackupBytes) {
+        throw const FormatException('Backup is too large');
+      }
+      return bytes.takeBytes();
     }
     final bytes = selected.bytes;
     if (bytes == null) throw const FormatException('Backup cannot be read');
+    if (bytes.length > maxBackupBytes) {
+      throw const FormatException('Backup is too large');
+    }
     return bytes;
   }
 }
