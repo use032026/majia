@@ -94,6 +94,35 @@ void main() {
     expect(repaired.fixedCount, 1);
   });
 
+  test(
+    'mixed dates preserve format order and reject invalid calendar days',
+    () {
+      final project = engine.importCsv(
+        fileName: 'mixed-dates.csv',
+        source:
+            'date,value\n'
+            '2024-02-29,1\n'
+            '2024/2/29,2\n'
+            '02/3/2024,3\n'
+            '3-02-2024,4\n'
+            '2023-02-29,5\n',
+      );
+      final dateIssues = project.issues.where(
+        (item) => item.kind == IssueKind.inconsistentDate,
+      );
+
+      expect(
+        {for (final issue in dateIssues) issue.originalValue: issue.suggestion},
+        {
+          '2024/2/29': '2024-02-29',
+          '02/3/2024': '2024-02-03',
+          '3-02-2024': '2024-02-03',
+          '2023-02-29': null,
+        },
+      );
+    },
+  );
+
   test('empty replacement cannot falsely resolve a missing value', () {
     final project = engine.importCsv(
       fileName: 'missing.csv',

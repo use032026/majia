@@ -17,6 +17,11 @@ class QualityEngine {
   static const maxCells = 100000;
   static const maxIssues = 500;
 
+  static final _isoDatePattern = RegExp(r'^(\d{4})-(\d{1,2})-(\d{1,2})$');
+  static final _slashYmdPattern = RegExp(r'^(\d{4})/(\d{1,2})/(\d{1,2})$');
+  static final _slashMdyPattern = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})$');
+  static final _dashDmyPattern = RegExp(r'^(\d{1,2})-(\d{1,2})-(\d{4})$');
+
   DataProject importCsv({
     required String fileName,
     required String source,
@@ -348,13 +353,13 @@ class QualityEngine {
       header.contains('时间');
 
   (DateTime, String)? _parseDate(String value) {
-    final iso = RegExp(r'^(\d{4})-(\d{1,2})-(\d{1,2})$').firstMatch(value);
+    final iso = _isoDatePattern.firstMatch(value);
     if (iso != null) return _safeDate(iso, 1, 2, 3, 'iso');
-    final slashYmd = RegExp(r'^(\d{4})/(\d{1,2})/(\d{1,2})$').firstMatch(value);
+    final slashYmd = _slashYmdPattern.firstMatch(value);
     if (slashYmd != null) return _safeDate(slashYmd, 1, 2, 3, 'slashYmd');
-    final slashMdy = RegExp(r'^(\d{1,2})/(\d{1,2})/(\d{4})$').firstMatch(value);
+    final slashMdy = _slashMdyPattern.firstMatch(value);
     if (slashMdy != null) return _safeDate(slashMdy, 3, 1, 2, 'slashMdy');
-    final dashDmy = RegExp(r'^(\d{1,2})-(\d{1,2})-(\d{4})$').firstMatch(value);
+    final dashDmy = _dashDmyPattern.firstMatch(value);
     if (dashDmy != null) return _safeDate(dashDmy, 3, 2, 1, 'dashDmy');
     return null;
   }
