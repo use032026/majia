@@ -10,6 +10,54 @@ import 'test_support.dart';
 void main() {
   final now = DateTime(2026, 10, 10, 9, 30);
 
+  test(
+    'save actions keep the same date when the clock crosses midnight',
+    () async {
+      final beforeMidnight = DateTime(2026, 10, 10, 23, 59, 59);
+      final afterMidnight = DateTime(2026, 10, 11);
+      final store = MemoryStateStore();
+      var ticks = 0;
+      final controller = AppController(
+        store: store,
+        seedFactory: () => 'midnight-save-seed',
+        clock: () => ticks++ == 0 ? beforeMidnight : afterMidnight,
+      );
+      await controller.load();
+      final leaf = controller.data!.leaves['2026-10-10']!;
+
+      ticks = 0;
+      expect(
+        await controller.sealToday(
+          suitableId: leaf.suitablePromptIds.first,
+          avoidId: leaf.avoidPromptIds.first,
+          intention: 'Keep the original day',
+        ),
+        isTrue,
+      );
+      expect(controller.data!.leaves.keys, ['2026-10-10']);
+      expect(controller.data!.leaves['2026-10-10']!.sealedAt, beforeMidnight);
+
+      ticks = 0;
+      expect(
+        await controller.reflectToday(ReflectionOutcome.practiced),
+        isTrue,
+      );
+      final reflected = controller.data!.leaves['2026-10-10']!;
+      expect(reflected.reflectedAt, beforeMidnight);
+      expect(reflected.outcome, ReflectionOutcome.practiced);
+      expect(controller.data!.leaves.keys, ['2026-10-10']);
+
+      ticks = 0;
+      expect(await controller.clearRecords(), isTrue);
+      final stored = AlmanacData.fromJson(
+        jsonDecode(store.value!) as Map<String, Object?>,
+      );
+      expect(stored.leaves.keys, ['2026-10-10']);
+      expect(stored.leaves.values.single.dateKey, '2026-10-10');
+      expect(stored.leaves.values.single.isSealed, isFalse);
+    },
+  );
+
   test('first load creates and persists a stable daily leaf', () async {
     final store = MemoryStateStore();
     final controller = AppController(

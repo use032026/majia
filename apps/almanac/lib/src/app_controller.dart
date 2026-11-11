@@ -158,8 +158,9 @@ class AppController extends ChangeNotifier {
   Future<bool> setThemeMode(AppThemeMode mode) =>
       _commit(_data!.copyWith(themeMode: mode));
 
-  Future<bool> refreshForCurrentDate() async {
-    final now = _clock();
+  Future<bool> refreshForCurrentDate() => _refreshForDate(_clock());
+
+  Future<bool> _refreshForDate(DateTime now) async {
     final key = formatDateKey(now);
     if (_data!.leaves.containsKey(key)) return true;
     final leaves = Map<String, DailyLeaf>.from(_data!.leaves);
@@ -180,11 +181,13 @@ class AppController extends ChangeNotifier {
     required String avoidId,
     required String intention,
   }) async {
-    if (!hasCurrentDateLeaf) {
-      await refreshForCurrentDate();
+    final now = _clock();
+    final key = formatDateKey(now);
+    final leaf = _data!.leaves[key];
+    if (leaf == null) {
+      await _refreshForDate(now);
       return false;
     }
-    final leaf = todayLeaf;
     if (!leaf.suitablePromptIds.contains(suitableId) ||
         !leaf.avoidPromptIds.contains(avoidId)) {
       throw ArgumentError('Selections must come from today’s prompts');
@@ -194,11 +197,11 @@ class AppController extends ChangeNotifier {
       throw ArgumentError('Intention is longer than 140 characters');
     }
     final leaves = Map<String, DailyLeaf>.from(_data!.leaves);
-    leaves[todayKey] = leaf.copyWith(
+    leaves[key] = leaf.copyWith(
       selectedSuitableId: suitableId,
       selectedAvoidId: avoidId,
       intention: normalized,
-      sealedAt: _clock(),
+      sealedAt: now,
     );
     final saved = await _commit(_data!.copyWith(leaves: leaves));
     if (saved && _dayChangedNotice) {
@@ -209,11 +212,15 @@ class AppController extends ChangeNotifier {
   }
 
   Future<bool> reflectToday(ReflectionOutcome outcome) async {
-    if (!hasCurrentDateLeaf && !await refreshForCurrentDate()) return false;
-    final leaf = todayLeaf;
-    if (!leaf.isSealed) return false;
+    final now = _clock();
+    final key = formatDateKey(now);
+    if (!_data!.leaves.containsKey(key) && !await _refreshForDate(now)) {
+      return false;
+    }
+    final leaf = _data!.leaves[key];
+    if (leaf == null || !leaf.isSealed) return false;
     final leaves = Map<String, DailyLeaf>.from(_data!.leaves);
-    leaves[todayKey] = leaf.copyWith(outcome: outcome, reflectedAt: _clock());
+    leaves[key] = leaf.copyWith(outcome: outcome, reflectedAt: now);
     return _commit(_data!.copyWith(leaves: leaves));
   }
 
@@ -223,7 +230,9 @@ class AppController extends ChangeNotifier {
       installationSeed: _data!.installationSeed,
     );
     return _commit(
-      _data!.copyWith(leaves: <String, DailyLeaf>{todayKey: freshToday}),
+      _data!.copyWith(
+        leaves: <String, DailyLeaf>{freshToday.dateKey: freshToday},
+      ),
     );
   }
 
