@@ -7,9 +7,8 @@ import 'domain/almanac_content.dart';
 import 'domain/almanac_models.dart';
 
 class AppController extends ChangeNotifier {
-  static final RegExp _markdownLineBreaks = RegExp(r'[\r\n]+');
-  static final RegExp _markdownSpecialCharacters = RegExp(
-    r'([\\`*_{}\[\]()#+\-.!|>])',
+  static final RegExp _markdownInlinePattern = RegExp(
+    r'[\r\n]+|([\\`*_{}\[\]()#+\-.!|>])',
   );
 
   AppController({
@@ -285,13 +284,11 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  String _markdownInline(String value) {
-    final singleLine = value.replaceAll(_markdownLineBreaks, ' ').trim();
-    return singleLine.replaceAllMapped(
-      _markdownSpecialCharacters,
-      (match) => '\\${match.group(1)}',
-    );
-  }
+  String _markdownInline(String value) =>
+      value.replaceAllMapped(_markdownInlinePattern, (match) {
+        final special = match.group(1);
+        return special == null ? ' ' : '\\$special';
+      }).trim();
 
   Future<bool> _commit(AlmanacData next) async {
     if (_isBusy) return false;

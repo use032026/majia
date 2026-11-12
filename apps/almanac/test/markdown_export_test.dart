@@ -90,6 +90,11 @@ void main() {
       intention: '👩🏽‍💻 e\u0301 家庭👨‍👩‍👧‍👦\r\n🪷',
       inline: '👩🏽‍💻 e\u0301 家庭👨‍👩‍👧‍👦 🪷',
     ),
+    (
+      name: 'adjacent line breaks and Markdown characters',
+      intention: '\r\n *a*\r\n#b\\\n_中_ \r',
+      inline: r'\*a\* \#b\\ \_中\_',
+    ),
     (name: 'empty intention', intention: '', inline: null),
     (name: 'missing intention', intention: null, inline: null),
     (name: 'whitespace-only intention', intention: ' \t\r\n ', inline: ''),
