@@ -734,6 +734,44 @@ void main() {
     expect(find.byKey(const Key('expense_stay-entry')), findsOneWidget);
   });
 
+  test(
+    'recent expenses keep newest dates and newest insertion first on ties',
+    () {
+      Expense entry(String id, int day) => Expense(
+        id: id,
+        title: id,
+        category: BudgetCategory.food,
+        amountMinor: 100,
+        currency: 'CNY',
+        rate: 1,
+        bookedMinor: 100,
+        recordedAt: DateTime(2026, 10, day),
+      );
+      final expenses = [
+        entry('early-insertion', 2),
+        entry('old-date', 1),
+        entry('late-insertion', 2),
+        entry('new-date', 3),
+      ];
+      final trip = Trip(
+        id: 'expense-order',
+        title: 'Expense order',
+        baseCurrency: 'CNY',
+        budgets: const {},
+        stage: TripStage.active,
+        createdAt: DateTime(2026, 10, 1),
+        expenses: expenses,
+      );
+      expect(recentTripExpenses(trip).map((expense) => expense.id), [
+        'new-date',
+        'late-insertion',
+        'early-insertion',
+        'old-date',
+      ]);
+      expect(trip.expenses, expenses);
+    },
+  );
+
   testWidgets('detail keeps three recent entries and links to full records', (
     tester,
   ) async {

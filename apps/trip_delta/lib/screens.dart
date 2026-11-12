@@ -1698,10 +1698,10 @@ class TripDetailPage extends StatelessWidget {
 }
 
 List<Expense> recentTripExpenses(Trip trip) {
-  final indexed = trip.expenses.reversed.toList().asMap().entries.toList()
+  final indexed = trip.expenses.asMap().entries.toList()
     ..sort((a, b) {
       final byDate = b.value.recordedAt.compareTo(a.value.recordedAt);
-      return byDate == 0 ? a.key.compareTo(b.key) : byDate;
+      return byDate == 0 ? b.key.compareTo(a.key) : byDate;
     });
   return indexed.map((entry) => entry.value).toList();
 }
