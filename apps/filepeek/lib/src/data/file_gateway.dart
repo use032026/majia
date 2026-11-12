@@ -49,7 +49,14 @@ class SystemFileGateway implements FileGateway {
     if (await file.length() > maxBytes) {
       throw const FileSystemException('File exceeds the 5 MiB limit');
     }
-    return ImportedFile(name, await file.readAsBytes());
+    final bytes = BytesBuilder(copy: false);
+    await for (final chunk in file.openRead(0, maxBytes + 1)) {
+      bytes.add(chunk);
+    }
+    if (bytes.length > maxBytes) {
+      throw const FileSystemException('File exceeds the 5 MiB limit');
+    }
+    return ImportedFile(name, bytes.takeBytes());
   }
 
   Future<Directory> _exportsDir() async {

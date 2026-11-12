@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:filerecheck/src/data/file_gateway.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,39 @@ void main() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
   const channel = MethodChannel('plugins.flutter.io/path_provider');
   const shareChannel = MethodChannel('dev.fluttercommunity.plus/share');
+
+  test('picker enforces the limit against the actual file bytes', () async {
+    final root = await Directory.systemTemp.createTemp('fylto-picker-');
+    addTearDown(() => root.delete(recursive: true));
+    final file = File('${root.path}/source.log');
+    final atLimit = Uint8List(SystemFileGateway.maxBytes);
+    atLimit.first = 42;
+    await file.writeAsBytes(atLimit);
+    FilePickerIO.registerWith();
+    final picker = MethodChannel(
+      'miguelruivo.flutter.plugins.filepicker',
+      Platform.isLinux || Platform.isWindows || Platform.isMacOS
+          ? const JSONMethodCodec()
+          : const StandardMethodCodec(),
+    );
+    final messenger = binding.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(
+      picker,
+      (_) async => [
+        {'name': 'source.log', 'size': 1, 'path': file.path},
+      ],
+    );
+    addTearDown(() => messenger.setMockMethodCallHandler(picker, null));
+
+    final gateway = SystemFileGateway();
+    final imported = (await gateway.pickFile())!;
+    expect(imported.name, 'source.log');
+    expect(imported.bytes, hasLength(SystemFileGateway.maxBytes));
+    expect(imported.bytes.first, 42);
+
+    await file.writeAsBytes([0], mode: FileMode.append);
+    await expectLater(gateway.pickFile(), throwsA(isA<FileSystemException>()));
+  });
 
   test('export cleanup only removes entries in its temporary folder', () async {
     final root = await Directory.systemTemp.createTemp('fylto-exports-');
