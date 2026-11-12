@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:file_selector/file_selector.dart' as selector;
@@ -68,10 +69,14 @@ class NativeCsvGateway implements CsvGateway {
       throw const FormatException('fileTooLarge');
     }
     try {
-      return PickedDataFile(
-        fileName: file.name,
-        bytes: await file.readAsBytes(),
-      );
+      final bytes = BytesBuilder(copy: false);
+      await for (final chunk in file.openRead()) {
+        if (chunk.length > maxFileBytes - bytes.length) {
+          throw const FormatException('fileTooLarge');
+        }
+        bytes.add(chunk);
+      }
+      return PickedDataFile(fileName: file.name, bytes: bytes.takeBytes());
     } on FileSystemException {
       throw const FormatException('unreadableFile');
     }

@@ -1,10 +1,25 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cleantrail/data/csv_gateway.dart';
 import 'package:cleantrail/data/native_csv_gateway.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:share_plus/share_plus.dart';
+
+class _StreamingFile extends XFile {
+  _StreamingFile(this.chunks) : super('tabular.csv');
+
+  final List<Uint8List> chunks;
+
+  @override
+  Future<int> length() async => 1;
+
+  @override
+  Stream<Uint8List> openRead([int? start, int? end]) async* {
+    yield* Stream.fromIterable(chunks);
+  }
+}
 
 void main() {
   late Directory temporary;
@@ -45,6 +60,32 @@ void main() {
       ]);
     },
   );
+
+  test('import checks the actual file stream against the size limit', () async {
+    final atLimit = Uint8List(NativeCsvGateway.maxFileBytes);
+    atLimit.first = 42;
+    var file = _StreamingFile([atLimit]);
+    final gateway = NativeCsvGateway(
+      openFile: ({required acceptedTypeGroups}) async => file,
+    );
+
+    final imported = (await gateway.pickDataFile())!;
+    expect(imported.fileName, 'tabular.csv');
+    expect(imported.bytes, hasLength(NativeCsvGateway.maxFileBytes));
+    expect(imported.bytes.first, 42);
+
+    file = _StreamingFile([atLimit, Uint8List(1)]);
+    await expectLater(
+      gateway.pickDataFile(),
+      throwsA(
+        isA<FormatException>().having(
+          (error) => error.message,
+          'message',
+          'fileTooLarge',
+        ),
+      ),
+    );
+  });
 
   test('export shares draft names and removes both staged files', () async {
     final gateway = NativeCsvGateway(
