@@ -344,6 +344,25 @@ module MajiaCI
   end
 
   class ASCClient
+    ASSOCIATED_ERROR_LIMIT = 8
+    ASSOCIATED_ERROR_SCAN_LIMIT = 64
+    ASSOCIATED_ERROR_DEPTH_LIMIT = 5
+    SAFE_ERROR_FIELDS = %w[
+      data attributes relationships id type
+      app apps appInfo appInfos appInfoLocalizations appStoreVersion appStoreVersions
+      appStoreVersionForReview appStoreVersionLocalizations appStoreReviewDetail appStoreReviewDetails
+      reviewSubmission reviewSubmissions reviewSubmissionItem reviewSubmissionItems items
+      version versionString platform state appVersionState releaseType submitted build builds buildNumber
+      contactFirstName contactLastName contactPhone contactEmail demoAccountName demoAccountPassword demoAccountRequired notes
+      appEncryptionDeclaration appEncryptionDeclarations usesNonExemptEncryption appEncryptionDeclarationState
+      ageRatingDeclaration ageRatingDeclarations appStoreAgeRating ageRatingOverrideV2
+      appScreenshotSets appScreenshots appPreviewSets appPreviews
+      primaryCategory secondaryCategory copyright description keywords locale marketingUrl privacyPolicyUrl
+      promotionalText supportUrl whatsNew usesIdfa bundleId processingState
+    ].freeze
+    SAFE_ERROR_PARAMETERS = %w[include sort limit cursor platform state version versionString].freeze
+    SAFE_PLAIN_ERROR_CODES = %w[FORBIDDEN UNAUTHORIZED CONFLICT].freeze
+
     def initialize(key:, key_id:, issuer_id:)
       @key = key
       @key_id = key_id
@@ -423,10 +442,13 @@ module MajiaCI
         return document
       end
 
-      details = Array(document["errors"]).map do |error|
+      errors = document.is_a?(Hash) ? Array(document["errors"]).grep(Hash) : []
+      details = errors.map do |error|
         [error["code"], error["title"], error["detail"]].compact.join(": ")
       end.reject(&:empty?).join("; ")
       details = "HTTP #{response.code}" if details.empty?
+      associated = associated_error_details(errors)
+      details += " [associated errors: #{associated.join(', ')}]" unless associated.empty?
       if expected_status
         raise ASCStatusError, "ASC request failed: HTTP #{response.code}: #{details}"
       end
@@ -435,6 +457,74 @@ module MajiaCI
       raise ASCStatusError, "ASC returned invalid JSON: #{e.message}"
     rescue SocketError, SystemCallError, Timeout::Error => e
       raise ASCStatusError, "ASC request failed: #{e.class}: #{e.message}"
+    end
+
+    def associated_error_details(errors)
+      details = []
+      remaining = ASSOCIATED_ERROR_SCAN_LIMIT
+      visit = lambda do |value, depth|
+        next if remaining.zero? || details.size >= ASSOCIATED_ERROR_LIMIT
+
+        remaining -= 1
+        next if depth > ASSOCIATED_ERROR_DEPTH_LIMIT
+
+        case value
+        when Array
+          value.each do |child|
+            break if remaining.zero? || details.size >= ASSOCIATED_ERROR_LIMIT
+
+            visit.call(child, depth + 1)
+          end
+        when Hash
+          if value.key?("code") || value.key?("meta")
+            detail = associated_error_detail(value)
+            details << detail if detail && !details.include?(detail)
+            visit.call(associated_error_container(value), depth + 1)
+          else
+            value.each_value do |child|
+              break if remaining.zero? || details.size >= ASSOCIATED_ERROR_LIMIT
+
+              visit.call(child, depth + 1)
+            end
+          end
+        end
+      end
+      errors.first(ASSOCIATED_ERROR_SCAN_LIMIT).each do |error|
+        visit.call(associated_error_container(error), 0)
+      end
+      details
+    end
+
+    def associated_error_container(error)
+      meta = error["meta"]
+      meta["associatedErrors"] if meta.is_a?(Hash)
+    end
+
+    def associated_error_detail(error)
+      code = error["code"]
+      return unless code.is_a?(String) && code.bytesize <= 80 &&
+                    code.match?(/\A[A-Z][A-Z0-9_]*(?:\.[A-Z0-9_]+)*\z/) &&
+                    (code.include?("_") || code.include?(".") || SAFE_PLAIN_ERROR_CODES.include?(code))
+
+      source = error["source"]
+      return code unless source.is_a?(Hash)
+
+      locations = []
+      pointer = source["pointer"]
+      if pointer.is_a?(String) && pointer.bytesize <= 120 && pointer.start_with?("/")
+        segments = pointer.split("/", -1).drop(1)
+        if segments.all? { |part| SAFE_ERROR_FIELDS.include?(part) || part.match?(/\A(?:0|[1-9]\d{0,2})\z/) }
+          locations << "pointer=#{pointer}"
+        end
+      end
+      parameter = source["parameter"]
+      if parameter.is_a?(String) && parameter.bytesize <= 80
+        nested = parameter.match(/\A(?:fields|filter|limit|exists)\[([A-Za-z][A-Za-z0-9]*)\]\z/)
+        if SAFE_ERROR_PARAMETERS.include?(parameter) || (nested && SAFE_ERROR_FIELDS.include?(nested[1]))
+          locations << "parameter=#{parameter}"
+        end
+      end
+      locations.empty? ? code : "#{code} (#{locations.join(', ')})"
     end
   end
 

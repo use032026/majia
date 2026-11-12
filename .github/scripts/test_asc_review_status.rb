@@ -40,6 +40,84 @@ class ASCReviewStatusTest < Minitest::Test
   APP_ID = "1234567890"
   VERSION_ID = "version-100"
 
+  def test_associated_error_codes_and_schema_paths_are_retained_without_raw_metadata
+    response = Net::HTTPConflict.new("1.1", "409", "Conflict")
+    response.body = JSON.generate("errors" => [{
+      "code" => "STATE_ERROR.ENTITY_STATE_INVALID",
+      "title" => "Version cannot be reviewed",
+      "detail" => "See associated errors",
+      "meta" => { "associatedErrors" => {
+        "/appStoreVersions/dynamic-id" => [{
+          "code" => "ENTITY_ERROR.ATTRIBUTE.REQUIRED",
+          "title" => "Private contact name",
+          "detail" => "Private contact data",
+          "source" => { "pointer" => "/data/attributes/contactEmail" },
+          "meta" => { "associatedErrors" => {
+            "https://example.invalid/private-resource" => [{
+              "code" => "PARAMETER_ERROR.INVALID",
+              "source" => { "parameter" => "filter[versionString]" }
+            }]
+          } }
+        }, {
+          "code" => "STATE_ERROR.ENTITY_NOT_FOUND",
+          "source" => {
+            "pointer" => "/data/attributes/PrivateName",
+            "parameter" => "filter[contactEmail]=private@example.invalid"
+          },
+          "links" => { "about" => "https://example.invalid/private-resource" }
+        }, {
+          "code" => "BEARER-TOKEN-REDACTED",
+          "source" => { "pointer" => "/data/attributes/demoAccountPassword" }
+        }]
+      } }
+    }])
+    response.instance_variable_set(:@read, true)
+
+    with_fake_http(response) do |client, http|
+      error = assert_raises(MajiaCI::ASCStatusError) do
+        client.post("/v1/reviewSubmissionItems", {})
+      end
+      assert_equal(
+        "ASC request failed: STATE_ERROR.ENTITY_STATE_INVALID: Version cannot be reviewed: See associated errors " \
+        "[associated errors: ENTITY_ERROR.ATTRIBUTE.REQUIRED (pointer=/data/attributes/contactEmail), " \
+        "PARAMETER_ERROR.INVALID (parameter=filter[versionString]), STATE_ERROR.ENTITY_NOT_FOUND]",
+        error.message
+      )
+      assert_equal 1, http.requests.length
+    end
+  end
+
+  def test_malformed_and_excess_associated_errors_do_not_replace_the_outer_error
+    response = Net::HTTPConflict.new("1.1", "409", "Conflict")
+    nested = Array.new(12) do |index|
+      {
+        "code" => "ENTITY_ERROR.FIELD_#{index}",
+        "source" => { "pointer" => "/" + "attributes/" * 30, "parameter" => ["limit"] }
+      }
+    end
+    response.body = JSON.generate("errors" => [
+      { "code" => "STATE_ERROR.ENTITY_STATE_INVALID", "meta" => "malformed" },
+      { "code" => "STATE_ERROR.OTHER", "meta" => { "associatedErrors" => [
+        nil, "malformed", { "code" => "ENTITY_ERROR." + "A" * 100 },
+        { "code" => { "private" => "secret" } }, *nested
+      ] } }
+    ])
+    response.instance_variable_set(:@read, true)
+
+    with_fake_http(response) do |client, http|
+      error = assert_raises(MajiaCI::ASCStatusError) do
+        client.post_created("/v1/appStoreVersionReleaseRequests", {})
+      end
+      assert_match(/\AASC request failed: HTTP 409: STATE_ERROR.ENTITY_STATE_INVALID; STATE_ERROR.OTHER/, error.message)
+      assert_equal (0..7).to_a, error.message.scan(/ENTITY_ERROR\.FIELD_(\d+)/).flatten.map(&:to_i)
+      refute_includes error.message, "pointer="
+      refute_includes error.message, "parameter="
+      refute_includes error.message, "secret"
+      assert_equal 0, http.max_retries
+      assert_equal 1, http.requests.length
+    end
+  end
+
   def test_jwt_is_es256_signed_and_uses_the_asc_audience
     key = OpenSSL::PKey::EC.generate("prime256v1")
     now = Time.utc(2026, 9, 24, 1, 2, 3)
