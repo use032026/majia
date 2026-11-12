@@ -124,11 +124,11 @@ class CareBackupCodec {
       final bytes = photoBytesByPath[entry.key]!;
       archive.add(ArchiveFile.bytes(entry.value, bytes));
     }
-    final encoded = ZipEncoder().encode(archive);
+    final encoded = ZipEncoder().encodeBytes(archive);
     if (encoded.length > maxArchiveBytes) {
       throw const CareBackupException('备份压缩包超过大小限制');
     }
-    return Uint8List.fromList(encoded);
+    return encoded;
   }
 
   static DecodedCareBackup decode(List<int> bytes) {
