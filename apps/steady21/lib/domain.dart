@@ -419,20 +419,28 @@ class ExperimentStats {
   ExperimentStats(this.experiment, this.today) {
     final sorted = [...experiment.entries]
       ..sort((a, b) => a.date.compareTo(b.date));
-    fullDays = sorted.where((entry) => entry.kind == EntryKind.full).length;
-    minimumDays = sorted
-        .where((entry) => entry.kind == EntryKind.minimum)
-        .length;
-    skippedDays = sorted
-        .where((entry) => entry.kind == EntryKind.skipped)
-        .length;
-    practiceDays = fullDays + minimumDays;
-    recoveryCount = sorted
-        .where(
-          (entry) =>
-              entry.isPractice && entry.recoveryPlan != RecoveryPlan.none,
-        )
-        .length;
+    var full = 0;
+    var minimum = 0;
+    var skipped = 0;
+    var recovery = 0;
+    for (final entry in sorted) {
+      switch (entry.kind) {
+        case EntryKind.full:
+          full++;
+        case EntryKind.minimum:
+          minimum++;
+        case EntryKind.skipped:
+          skipped++;
+      }
+      if (entry.isPractice && entry.recoveryPlan != RecoveryPlan.none) {
+        recovery++;
+      }
+    }
+    fullDays = full;
+    minimumDays = minimum;
+    skippedDays = skipped;
+    practiceDays = full + minimum;
+    recoveryCount = recovery;
     currentStreak = _currentStreak(sorted, today);
     bestStreak = _bestStreak(sorted);
     commonObstacle = _commonObstacle(sorted);
