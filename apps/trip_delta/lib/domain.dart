@@ -362,6 +362,7 @@ List<Expense> filterTripExpenses(
   final last = endDate == null ? null : day(endDate);
   return trip.expenses.reversed.where((expense) {
     if (category != null && expense.category != category) return false;
+    if (first == null && last == null) return true;
     final date = day(expense.recordedAt);
     if (first != null && date.isBefore(first)) return false;
     if (last != null && date.isAfter(last)) return false;
