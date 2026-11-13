@@ -357,8 +357,8 @@ class AlmanacGenerator {
           .map((item) => item.id)
           .toList(growable: false),
       avoidPromptIds: avoid.map((item) => item.id).toList(growable: false),
-      verseZh: List<String>.unmodifiable(_verseZh[theme]![verseIndex]),
-      verseEn: List<String>.unmodifiable(_verseEn[theme]![verseIndex]),
+      verseZh: _verseZh[theme]![verseIndex],
+      verseEn: _verseEn[theme]![verseIndex],
     );
   }
 
