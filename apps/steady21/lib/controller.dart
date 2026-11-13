@@ -121,7 +121,8 @@ class AppController extends ChangeNotifier {
     if (experiment.isArchived) {
       throw const DomainValidationException('archived');
     }
-    final needsRecovery = experiment.needsRecoveryBefore(_now());
+    final date = _now();
+    final needsRecovery = experiment.needsRecoveryBefore(date);
     if (kind == EntryKind.skipped && obstacle == Obstacle.none) {
       throw const DomainValidationException('obstacle_required');
     }
@@ -130,7 +131,7 @@ class AppController extends ChangeNotifier {
       throw const DomainValidationException('recovery_required');
     }
     final entry = DailyEntry(
-      date: localDateKey(_now()),
+      date: localDateKey(date),
       kind: kind,
       obstacle: kind == EntryKind.skipped ? obstacle : Obstacle.none,
       recoveryPlan: kind == EntryKind.skipped || needsRecovery

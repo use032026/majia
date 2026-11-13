@@ -61,6 +61,32 @@ void main() {
     expect(controller.snapshot.active?.entries.single.kind, EntryKind.skipped);
   });
 
+  test('saving across midnight uses one observation date', () async {
+    final beforeMidnight = DateTime(2026, 9, 22, 23, 59, 59);
+    final afterMidnight = DateTime(2026, 9, 23);
+    var clockReads = 0;
+    final controller = AppController(
+      MemoryRepository(),
+      now: () => clockReads++ == 0 ? beforeMidnight : afterMidnight,
+      idFactory: () => 'e1',
+    );
+    await controller.load();
+    await controller.createExperiment(
+      title: 'Read',
+      cue: 'After dinner',
+      fullAction: 'Read 10 pages',
+      minimumAction: 'Read 1 page',
+      targetDays: 21,
+    );
+
+    clockReads = 0;
+    expect(
+      await controller.saveEntry(experimentId: 'e1', kind: EntryKind.full),
+      isTrue,
+    );
+    expect(controller.snapshot.active!.entries.single.date, '2026-09-22');
+  });
+
   test('today can be corrected and undone without duplicate dates', () async {
     final controller = await populated();
     await controller.saveEntry(experimentId: 'e1', kind: EntryKind.full);
