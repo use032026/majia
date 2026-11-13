@@ -179,6 +179,7 @@ class CareBackupCodec {
       dataFile,
       maxBytes: _smaller(maxDataFileBytes, maxTotalExpandedBytes),
       expandedLimitMessage: '备份数据解压时超过大小限制',
+      copyBytes: false,
     );
     actualExpandedBytes += dataBytes.length;
     final decoded = jsonDecode(utf8.decode(dataBytes));
@@ -233,6 +234,7 @@ class CareBackupCodec {
     ArchiveFile file, {
     required int maxBytes,
     required String expandedLimitMessage,
+    bool copyBytes = true,
   }) {
     final output = _BoundedOutputMemoryStream(maxBytes);
     try {
@@ -240,7 +242,7 @@ class CareBackupCodec {
     } on _ExpandedSizeLimitExceeded {
       throw CareBackupException(expandedLimitMessage);
     }
-    final bytes = Uint8List.fromList(output.getBytes());
+    final bytes = output.getBytes();
     if (bytes.length != file.size) {
       throw const CareBackupException('备份文件声明大小与实际内容不一致');
     }
@@ -248,7 +250,7 @@ class CareBackupCodec {
     if (expectedCrc != null && getCrc32(bytes) != expectedCrc) {
       throw const CareBackupException('备份文件校验失败');
     }
-    return bytes;
+    return copyBytes ? Uint8List.fromList(bytes) : bytes;
   }
 
   static int _smaller(int first, int second) => first < second ? first : second;
