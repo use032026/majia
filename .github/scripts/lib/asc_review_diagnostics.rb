@@ -7,6 +7,7 @@ module MajiaCI
     module_function
 
     CONTACT_FIELDS = %w[contactFirstName contactLastName contactPhone contactEmail].freeze
+    CONTENT_RIGHTS = %w[DOES_NOT_USE_THIRD_PARTY_CONTENT USES_THIRD_PARTY_CONTENT].freeze
     AGE_FIELDS = %w[
       ageAssurance parentalControls unrestrictedWebAccess userGeneratedContent messagingAndChat advertising
     ].freeze
@@ -30,6 +31,7 @@ module MajiaCI
 
       version_id = resource_id(version)
       sections = {
+        "content_rights" => capture { content_rights(client, app_id) },
         "review_contact" => capture { review_contact(client, version_id) },
         "build_encryption" => capture { build_encryption(client, version_id) },
         "age_rating" => capture { age_rating(client, app_id) },
@@ -44,10 +46,24 @@ module MajiaCI
           "marketing_version" => marketing_version,
           "state" => state_code(version.dig("attributes", "appVersionState"))
         },
-        "complete" => sections.values.none? { |section| section["status"] == "unavailable" },
+        "complete" => sections.values.none? { |section| incomplete?(section) } &&
+          Array(sections.dig("age_rating", "app_infos")).none? { |info| incomplete?(info.fetch("primary_category")) },
         "sections" => sections,
         "evidence_boundary" => "Read-only field presence and state snapshot. It does not establish submission eligibility."
       }
+    end
+
+    def content_rights(client, app_id)
+      app = client.get("/v1/apps/#{app_id}", {
+        "fields[apps]" => "contentRightsDeclaration"
+      }).fetch("data")
+      raise ASCStatusError unless app["type"] == "apps" && resource_id(app) == app_id
+
+      declaration = app.fetch("attributes").fetch("contentRightsDeclaration")
+      return { "status" => "absent" } if declaration.nil?
+      raise ASCStatusError unless CONTENT_RIGHTS.include?(declaration)
+
+      { "declaration" => declaration }
     end
 
     def review_contact(client, version_id)
@@ -116,11 +132,21 @@ module MajiaCI
           {
             "state" => state_code(info.dig("attributes", "state") || info.dig("attributes", "appStoreState")),
             "app_store_age_rating" => state_code(info.dig("attributes", "appStoreAgeRating")),
+            "primary_category" => capture { primary_category(client, path) },
             "declaration_present" => !declaration_link.nil?,
             "core_answers_present" => responses&.transform_values { |value| !value.nil? }
           }
         end
       }
+    end
+
+    def primary_category(client, app_info_path)
+      category = client.get("#{app_info_path}/relationships/primaryCategory").fetch("data")
+      return { "status" => "absent" } if category.nil?
+      raise ASCStatusError unless category["type"] == "appCategories"
+
+      resource_id(category)
+      { "present" => true }
     end
 
     def review_drafts(client, app_id, version_id)
@@ -179,11 +205,18 @@ module MajiaCI
 
     def capture
       { "status" => "observed" }.merge(yield)
+    rescue ASCPermissionError
+      { "status" => "permission_denied" }
     rescue ASCStatusError, KeyError, TypeError
       # Never expose the API response body, which can contain private fields.
       { "status" => "unavailable" }
     end
     private_class_method :capture
+
+    def incomplete?(section)
+      %w[unavailable permission_denied].include?(section.fetch("status"))
+    end
+    private_class_method :incomplete?
 
     def resource_id(resource)
       id = resource.fetch("id")

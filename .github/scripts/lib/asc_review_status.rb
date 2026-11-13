@@ -9,6 +9,7 @@ require_relative "asc_private_key"
 
 module MajiaCI
   class ASCStatusError < StandardError; end
+  class ASCPermissionError < ASCStatusError; end
 
   module ASCReviewStatus
     module_function
@@ -449,10 +450,11 @@ module MajiaCI
       details = "HTTP #{response.code}" if details.empty?
       associated = associated_error_details(errors)
       details += " [associated errors: #{associated.join(', ')}]" unless associated.empty?
+      error_class = %w[401 403].include?(response.code) ? ASCPermissionError : ASCStatusError
       if expected_status
-        raise ASCStatusError, "ASC request failed: HTTP #{response.code}: #{details}"
+        raise error_class, "ASC request failed: HTTP #{response.code}: #{details}"
       end
-      raise ASCStatusError, "ASC request failed: #{details}"
+      raise error_class, "ASC request failed: #{details}"
     rescue JSON::ParserError => e
       raise ASCStatusError, "ASC returned invalid JSON: #{e.message}"
     rescue SocketError, SystemCallError, Timeout::Error => e

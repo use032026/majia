@@ -183,7 +183,7 @@ class ASCReviewStatusTest < Minitest::Test
     response.body = JSON.generate("errors" => [{ "code" => "FORBIDDEN", "title" => "Not authorized" }])
     response.instance_variable_set(:@read, true)
     with_fake_http(response) do |client, http|
-      error = assert_raises(MajiaCI::ASCStatusError) do
+      error = assert_raises(MajiaCI::ASCPermissionError) do
         client.post_created("/v1/appStoreVersionReleaseRequests", {})
       end
       assert_includes error.message, "HTTP 403"

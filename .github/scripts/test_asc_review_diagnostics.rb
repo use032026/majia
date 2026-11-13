@@ -43,6 +43,8 @@ class ASCReviewDiagnosticsTest < Minitest::Test
     sections = summary.fetch("sections")
     assert_equal true, summary["complete"]
     assert_equal Version, summary.dig("version", "marketing_version")
+    assert_equal "DOES_NOT_USE_THIRD_PARTY_CONTENT", sections.dig("content_rights", "declaration")
+    assert_equal({ "fields[apps]" => "contentRightsDeclaration" }, client.calls.assoc(AppPath).last)
     assert_equal({
       "contactFirstName" => true,
       "contactLastName" => false,
@@ -55,6 +57,7 @@ class ASCReviewDiagnosticsTest < Minitest::Test
     assert_equal "APPROVED", sections.dig("build_encryption", "declaration_state")
     info = sections.dig("age_rating", "app_infos").first
     assert_equal "FOUR_PLUS", info["app_store_age_rating"]
+    assert_equal({ "status" => "observed", "present" => true }, info["primary_category"])
     assert_equal true, info.dig("core_answers_present", "ageAssurance")
     assert_equal false, info.dig("core_answers_present", "userGeneratedContent")
     assert_equal({
@@ -87,6 +90,30 @@ class ASCReviewDiagnosticsTest < Minitest::Test
     assert_equal({ "status" => "unavailable" }, summary.dig("sections", "review_contact"))
     assert_equal({ "status" => "unavailable" }, summary.dig("sections", "review_drafts"))
     assert_equal "observed", summary.dig("sections", "build_encryption", "status")
+    refute_includes JSON.generate(summary), "Private"
+  end
+
+  def test_permission_failure_and_explicit_absence_are_distinct
+    summary = fetch(test_client(
+      AppPath => data(resource("app-1", "contentRightsDeclaration" => nil).merge("type" => "apps")),
+      "#{AppInfoPath}/relationships/primaryCategory" => MajiaCI::ASCPermissionError.new("Private server response")
+    ))
+    assert_equal false, summary["complete"]
+    assert_equal({ "status" => "absent" }, summary.dig("sections", "content_rights"))
+    assert_equal({ "status" => "permission_denied" },
+                 summary.dig("sections", "age_rating", "app_infos", 0, "primary_category"))
+    refute_includes JSON.generate(summary), "Private"
+  end
+
+  def test_unknown_declaration_and_malformed_category_are_unavailable
+    summary = fetch(test_client(
+      AppPath => data(resource("app-1", "contentRightsDeclaration" => "Private").merge("type" => "apps")),
+      "#{AppInfoPath}/relationships/primaryCategory" => data({ "type" => "appCategories", "id" => "https://example.invalid/Private" })
+    ))
+    assert_equal false, summary["complete"]
+    assert_equal({ "status" => "unavailable" }, summary.dig("sections", "content_rights"))
+    assert_equal({ "status" => "unavailable" },
+                 summary.dig("sections", "age_rating", "app_infos", 0, "primary_category"))
     refute_includes JSON.generate(summary), "Private"
   end
 
@@ -124,6 +151,7 @@ class ASCReviewDiagnosticsTest < Minitest::Test
   def test_client(overrides = {})
     PageClient.new({
       "/v1/apps" => data([resource("app-1", "bundleId" => Bundle)]),
+      AppPath => data(resource("app-1", "contentRightsDeclaration" => "DOES_NOT_USE_THIRD_PARTY_CONTENT").merge("type" => "apps")),
       "#{AppPath}/appStoreVersions" => data([resource("version-1", "versionString" => Version, "platform" => "IOS")]),
       "#{VersionPath}/relationships/appStoreReviewDetail" => data({ "id" => "contact-1" }),
       "#{VersionPath}/appStoreReviewDetail" => data(resource("contact-1", {
@@ -140,6 +168,7 @@ class ASCReviewDiagnosticsTest < Minitest::Test
       "/v1/appEncryptionDeclarations/encryption-1" => data(resource("encryption-1", "appEncryptionDeclarationState" => "APPROVED")),
       "#{AppPath}/appInfos" => data([resource("info-1", "state" => "PREPARE_FOR_SUBMISSION", "appStoreAgeRating" => "FOUR_PLUS")]),
       "#{AppInfoPath}/relationships/ageRatingDeclaration" => data({ "id" => "rating-1" }),
+      "#{AppInfoPath}/relationships/primaryCategory" => data({ "type" => "appCategories", "id" => "PHOTO_AND_VIDEO" }),
       "#{AppInfoPath}/ageRatingDeclaration" => data(resource("rating-1", "ageAssurance" => false, "userGeneratedContent" => nil)),
       "#{AppPath}/reviewSubmissions" => data([
         submission("empty-1", nil),
