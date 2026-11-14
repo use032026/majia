@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart'
@@ -1875,7 +1876,14 @@ class CareStore extends ChangeNotifier
       if (await sourceFile.length() > CareBackupCodec.maxArchiveBytes) {
         return false;
       }
-      final decoded = CareBackupCodec.decode(await sourceFile.readAsBytes());
+      final backupBytes = BytesBuilder(copy: false);
+      await for (final chunk in sourceFile.openRead(
+        0,
+        CareBackupCodec.maxArchiveBytes + 1,
+      )) {
+        backupBytes.add(chunk);
+      }
+      final decoded = CareBackupCodec.decode(backupBytes.takeBytes());
       final root = await _documentsDirectoryProvider();
       stagedImages = Directory(
         '${root.path}/item-photos/restore-${DateTime.now().microsecondsSinceEpoch}',
