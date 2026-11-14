@@ -375,14 +375,15 @@ ProgressTier tierForDays(int days) =>
 class JourneyTotals {
   JourneyTotals(AppSnapshot snapshot) {
     final practiceDates = <String>{};
-    final startedDates =
-        snapshot.experiments
-            .map((experiment) => localDateKey(experiment.startedAt))
-            .toList()
-          ..sort();
+    String? firstStartedDateKey;
     var full = 0;
     var minimum = 0;
     for (final experiment in snapshot.experiments) {
+      final startedDateKey = localDateKey(experiment.startedAt);
+      if (firstStartedDateKey == null ||
+          startedDateKey.compareTo(firstStartedDateKey) < 0) {
+        firstStartedDateKey = startedDateKey;
+      }
       for (final entry in experiment.entries) {
         if (entry.kind == EntryKind.full) {
           full += 1;
@@ -393,7 +394,7 @@ class JourneyTotals {
         }
       }
     }
-    _firstStartedDateKey = startedDates.isEmpty ? null : startedDates.first;
+    _firstStartedDateKey = firstStartedDateKey;
     _practiceDateKeys = List.unmodifiable(practiceDates.toList()..sort());
     practiceDays = _practiceDateKeys.length;
     fullEntries = full;
