@@ -388,6 +388,39 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('folio copy reports clipboard failure and allows retry', (
+    tester,
+  ) async {
+    var fails = true;
+    final messenger = tester.binding.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+      if (call.method == 'Clipboard.setData' && fails) {
+        throw PlatformException(code: 'clipboard_unavailable');
+      }
+      return null;
+    });
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(SystemChannels.platform, null);
+    });
+    await tester.pumpWidget(AlmanacApp(controller: await _controller()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('settings_button')));
+    await tester.pumpAndSettle();
+    final copy = find.byKey(const Key('copy_archive_button'));
+    await tester.ensureVisible(copy);
+    await tester.tap(copy);
+    await tester.pumpAndSettle();
+    expect(find.text('无法复制岁时册，请重试'), findsOneWidget);
+
+    fails = false;
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    await tester.tap(copy);
+    await tester.pumpAndSettle();
+    expect(find.text('已复制到系统剪贴板'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('settings write failure stays visible and can be retried', (
     tester,
   ) async {

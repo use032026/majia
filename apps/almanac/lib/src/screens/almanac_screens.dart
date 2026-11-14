@@ -1156,16 +1156,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: strings.text('copyArchive'),
                       subtitle: strings.text('copyArchiveHint'),
                       onTap: () async {
-                        await Clipboard.setData(
-                          ClipboardData(
-                            text: controller.exportMarkdown(
-                              useChinese: strings.useChinese,
+                        var message = 'copied';
+                        try {
+                          await Clipboard.setData(
+                            ClipboardData(
+                              text: controller.exportMarkdown(
+                                useChinese: strings.useChinese,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        } on PlatformException {
+                          message = 'copyFailed';
+                        } on MissingPluginException {
+                          message = 'copyFailed';
+                        }
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(strings.text('copied'))),
+                            SnackBar(content: Text(strings.text(message))),
                           );
                         }
                       },
