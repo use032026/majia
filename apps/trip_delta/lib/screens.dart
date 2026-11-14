@@ -2001,10 +2001,12 @@ class _ExpenseLedgerState extends State<ExpenseLedger> {
 
 BudgetCategory? largestOverCategory(Trip trip) {
   BudgetCategory? largest;
+  var largestDelta = 0;
   for (final item in BudgetCategory.values) {
-    if (trip.deltaFor(item) > 0 &&
-        (largest == null || trip.deltaFor(item) > trip.deltaFor(largest))) {
+    final delta = trip.deltaFor(item);
+    if (delta > largestDelta) {
       largest = item;
+      largestDelta = delta;
     }
   }
   return largest;

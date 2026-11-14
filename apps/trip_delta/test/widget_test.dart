@@ -734,6 +734,31 @@ void main() {
     expect(find.byKey(const Key('expense_stay-entry')), findsOneWidget);
   });
 
+  test('equal over-budget categories preserve the first category', () {
+    final now = DateTime(2026, 10, 1);
+    Expense expense(BudgetCategory category) => Expense(
+      id: category.name,
+      title: category.name,
+      category: category,
+      amountMinor: 100,
+      currency: 'CNY',
+      rate: 1,
+      bookedMinor: 100,
+      recordedAt: now,
+    );
+    final trip = Trip(
+      id: 'tie',
+      title: 'Tie',
+      baseCurrency: 'CNY',
+      budgets: const {},
+      stage: TripStage.active,
+      createdAt: now,
+      expenses: [expense(BudgetCategory.food), expense(BudgetCategory.stay)],
+    );
+    expect(largestOverCategory(trip), BudgetCategory.stay);
+    expect(largestOverCategory(trip.copyWith(expenses: [])), isNull);
+  });
+
   test(
     'recent expenses keep newest dates and newest insertion first on ties',
     () {
