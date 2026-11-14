@@ -96,7 +96,11 @@ class SystemFileGateway implements FileGateway {
       }
     }
     final dir = await _exportsDir();
-    final safeName = fileName.replaceAll(RegExp(r'[/\\\x00-\x1F\x7F]'), '_');
+    final sanitized = fileName.replaceAll(RegExp(r'[/\\\x00-\x1F\x7F]'), '_');
+    final safeName = switch (sanitized) {
+      '' || '.' || '..' => 'export.txt',
+      _ => sanitized,
+    };
     final shareDir = await dir.createTemp('share_');
     final path = '${shareDir.path}/$safeName';
     await File(path).writeAsBytes(bytes, flush: true);

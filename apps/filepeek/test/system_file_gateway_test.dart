@@ -11,6 +11,42 @@ void main() {
   const channel = MethodChannel('plugins.flutter.io/path_provider');
   const shareChannel = MethodChannel('dev.fluttercommunity.plus/share');
 
+  test('invalid export basenames use a file inside the share folder', () async {
+    final root = await Directory.systemTemp.createTemp('fylto-share-name-');
+    addTearDown(() => root.delete(recursive: true));
+    final messenger = binding.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (_) async => root.path);
+    final paths = <String>[];
+    messenger.setMockMethodCallHandler(shareChannel, (call) async {
+      paths.addAll(call.arguments['paths'].cast<String>());
+      return 'com.example.receiver';
+    });
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(channel, null);
+      messenger.setMockMethodCallHandler(shareChannel, null);
+    });
+
+    final gateway = SystemFileGateway();
+    for (final name in ['', '.', '..', 'normal.log']) {
+      await gateway.shareFile(
+        name,
+        Uint8List.fromList([42]),
+        const Rect.fromLTWH(0, 0, 10, 10),
+      );
+    }
+    expect(paths.map((path) => path.split(Platform.pathSeparator).last), [
+      'export.txt',
+      'export.txt',
+      'export.txt',
+      'normal.log',
+    ]);
+    for (final path in paths) {
+      final file = File(path);
+      expect(file.parent.parent.path, '${root.path}/filerecheck_exports');
+      expect(await file.readAsBytes(), [42]);
+    }
+  });
+
   test('picker enforces the limit against the actual file bytes', () async {
     final root = await Directory.systemTemp.createTemp('fylto-picker-');
     addTearDown(() => root.delete(recursive: true));
