@@ -132,18 +132,18 @@ class QualityEngine {
 
     final numericColumns = <int>{};
     for (var column = 0; column < headers.length; column++) {
-      final values = records
-          .where((row) => !duplicateRows.contains(row.id))
-          .map((row) => row.values[column].trim())
-          .where((value) => value.isNotEmpty)
-          .toList();
-      if (values.length >= 3) {
-        final numeric = values
-            .where((value) => num.tryParse(value) != null)
-            .length;
-        if (numeric >= math.max(2, (values.length * 0.7).ceil())) {
-          numericColumns.add(column);
-        }
+      var nonEmptyCount = 0;
+      var numericCount = 0;
+      for (final row in records) {
+        if (duplicateRows.contains(row.id)) continue;
+        final value = row.values[column].trim();
+        if (value.isEmpty) continue;
+        nonEmptyCount++;
+        if (num.tryParse(value) != null) numericCount++;
+      }
+      if (nonEmptyCount >= 3 &&
+          numericCount >= math.max(2, (nonEmptyCount * 0.7).ceil())) {
+        numericColumns.add(column);
       }
     }
 
