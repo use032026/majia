@@ -38,3 +38,13 @@
 本批本地验证及独立验收已通过；提交身份以 Git 历史为准。签名、上传和送审尚未执行。用户指定本批更新记录为“修复bug”、审核备注不填写；实际商店版本、构建归属及是否存在更高草稿仍须核实，不将文案当作已完成送审的证据。当前主线已有剪贴板复制失败提示修复，是否包含于待提交商店版本须另核实际来源。
 
 后四批的准确依赖闭包和比例待规划，不虚构每天完成量；第五批按当前决定仅本地完整验证，暂不送审。后续每批在本文件追加真实源码、构建与审核运行记录，完整能力接入后的说明由用户另行处理。
+
+## 2026-11-16：首批发布依赖工具一致性修复
+
+签名构建尝试 `43834612213` 使用首批源码 `9955abed7c9aee1dc151907b472fdf54a1915518`、目标版本 1.0.9，在依赖 deployment 阶段失败：runner 全局 CocoaPods 为 1.17.0，已提交 `ios/Podfile.lock` 的生成版本为 1.16.2；差异只在 COCOAPODS 字段。该尝试未产生 IPA、未上传。
+
+固定发布引擎 `b2a2e38df4eac58c35d1bf8b5dc7cc987be467d9` 已支持 Flutter App 目录的 Gemfile/Gemfile.lock：安装锁定 Ruby 工具后执行 `bundle exec pod install --project-directory=ios --deployment`。本次仅为 Deynu 新增 Gemfile 精确固定 CocoaPods 1.16.2，并用实际 Bundler 4.0.23 生成完整工具依赖锁；不手工改 Podfile.lock 尾行、不更新业务 Pods、Dart 依赖、SDK 或基础层源码，也不改共享引擎和发布工作流。
+
+失败 run 的固定 runner image 为 macos-26-arm64；其镜像清单列 Ruby 3.4.12 / Bundler 4.0.23 / CocoaPods 1.17.0（镜像资料，不是该 run 的 `ruby -v` 输出）。工具锁的 BUNDLED WITH 采用实际生成工具 4.0.23，与该 image 一致，避免依赖默认 Bundler 自动切换到旧版。锁包含通用 arm64-darwin 和本机 arm64-darwin-21 平台；实际 Bundler 平台匹配及 gem 的 Ruby 版本要求元数据核对通过，覆盖目标 arm64-darwin-25 / Ruby 3.4.12 的声明要求，但这不等于已在云端执行。
+
+本机 Ruby 3.3.0 + 实际 Bundler 4.0.23 验证：`bundle check` 通过，`bundle exec pod --version` 精确为 1.16.2；启用 frozen lock 后实际执行 deployment 安装通过，共 4 个依赖/4 个 Pods。Gemfile.lock、Podfile.lock 和 pubspec.lock 安装前后逐文件 SHA256 全等。未重新运行未变化的业务全量测试。后续仍需用新提交来源重新执行云端签名构建，核实工具安装与产物；本条不代表新 IPA、上传或送审已完成。

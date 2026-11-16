@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+# Match the CocoaPods writer recorded in ios/Podfile.lock.
+# The pinned release engine uses bundle exec pod when this file is present.
+gem "cocoapods", "1.16.2"
