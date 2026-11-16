@@ -48,3 +48,15 @@
 失败 run 的固定 runner image 为 macos-26-arm64；其镜像清单列 Ruby 3.4.12 / Bundler 4.0.23 / CocoaPods 1.17.0（镜像资料，不是该 run 的 `ruby -v` 输出）。工具锁的 BUNDLED WITH 采用实际生成工具 4.0.23，与该 image 一致，避免依赖默认 Bundler 自动切换到旧版。锁包含通用 arm64-darwin 和本机 arm64-darwin-21 平台；实际 Bundler 平台匹配及 gem 的 Ruby 版本要求元数据核对通过，覆盖目标 arm64-darwin-25 / Ruby 3.4.12 的声明要求，但这不等于已在云端执行。
 
 本机 Ruby 3.3.0 + 实际 Bundler 4.0.23 验证：`bundle check` 通过，`bundle exec pod --version` 精确为 1.16.2；启用 frozen lock 后实际执行 deployment 安装通过，共 4 个依赖/4 个 Pods。Gemfile.lock、Podfile.lock 和 pubspec.lock 安装前后逐文件 SHA256 全等。未重新运行未变化的业务全量测试。后续仍需用新提交来源重新执行云端签名构建，核实工具安装与产物；本条不代表新 IPA、上传或送审已完成。
+
+## 2026-11-16：第一批 1.0.9 签名构建、上传及送审进度
+
+本条更新此前条目记录时“尚未签名/上传”的状态。修复来源 `4baa638fbdd4c271885b4c1a5b2a2deca965410f` 的构建运行 `43838615277`（Deynu build #13）实际成功，已生成并上传 1.0.9/build 1，App Store Connect 处理为 VALID。后续若只提交本接入记录，其文档提交与该 IPA 来源分开追溯，不改写已构建源码身份，也不因此重打包。
+
+实际签名包大小为 **19,947,104 字节**，SHA256 为 `59c76ce76c79c8bd4dc76eb4f7dbbc07488364098f40ec67d7921070f5083af2`。独立验包确认 bundle 为 `com.almanac.lite`、arm64、最低 iOS 15.0；基础层实际入包，含 71 条 foundation/localization 符号及 35 份语言资源，未包含完整 Mini/Web/下载容器；`codesign --verify --deep --strict` 实际退出码为 0。这是签名包和模拟器/静态证据，不补充为物理设备或完整 Mini 端到端运行证明。
+
+用户随后将本批商店更新记录明确更正为 en-US **`fix bug`**（小写、单个空格、无句号），覆盖前文历史中文“修复bug”的计划。仅更正此 What's New；审核备注本次不填写，也不要求清空或读取历史值。更新运行 `43842993664`（existing-build #69）已实际 GET 回读英文文案一致。
+
+送审前精确查询 `43843368818`（status #197）及独立门禁确认：版本 1.0.9，version ID `3ae166f9-8599-4e5c-b239-8d40e7a8492c`，附加 build ID `5caa1b9e-43c5-4436-88df-91773f47ad0b` / build 1，状态 VALID，实际 release type 为 AFTER_APPROVAL；What's New 精确为 `fix bug`，无查询错误。正文和 5 张截图与 1.0.8 语义一致，未替换为新媒体。
+
+正式送审运行 `43843986777`（existing-build #70，submit=true，来源仍为上述 `4baa638`）实际成功。提交记录的 `submitted_at` 为 `2026-11-16T09:54:55Z`（北京时间 17:54:55），`review_submitted=true`、`no_op=false`，审核提交 ID 为 `f2a87d82-b0bf-4572-ab2c-38033e636431`，返回状态 WAITING_FOR_REVIEW。同一 1.0.9/version/build 1 复用未变，en-US `fix bug` 再次 GET 回读一致；正式 submission 结果与准备阶段未送审的回执分开记录。最终精确回查运行 `43844328593`（status #198，来源仍为 `4baa638`）成功：`2026-11-16T09:57:11Z` 实际回读同一 App/1.0.9/version/build，状态 WAITING_FOR_REVIEW、release type 为 AFTER_APPROVAL，build 1 为 VALID 且未过期；`2026-11-16T09:57:14Z` 的元数据回读无错误、en-US 文案精确为 `fix bug`。该只读摘要的 `review_submission` 为 null、没有查询错误，不能作为再次确认审核提交 ID 的证据；上述 `f2a87d82-b0bf-4572-ab2c-38033e636431` 仍明确来自 #70 正式提交回执。当前为已提交等待苹果审核，未获批、未发布；自动发布配置不等于已通过审核或已公开。后四批仍待真实依赖规划，第五批仍仅本地验证、暂不送审。
