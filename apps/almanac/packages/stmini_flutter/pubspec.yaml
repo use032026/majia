@@ -1,0 +1,17 @@
+name: stmini_flutter
+description: STMini main foundation subset for the Deynu staged integration.
+version: 0.1.1
+environment:
+  sdk: ^3.9.2
+  flutter: '>=3.3.0'
+dependencies:
+  flutter:
+    sdk: flutter
+flutter:
+  plugin:
+    platforms:
+      ios:
+        pluginClass: StminiFlutterPlugin
+      android:
+        package: com.fsst.stmini_flutter
+        pluginClass: StminiFlutterPlugin

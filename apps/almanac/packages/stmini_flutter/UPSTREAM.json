@@ -1,0 +1,324 @@
+{
+  "source_sha": "b4462f63a33acf6c3fff63f0e67b3713bc00dff8",
+  "stage": "foundation",
+  "not_full_main_runtime": true,
+  "exact_upstream_files": [
+    {
+      "path": "LICENSE",
+      "sha256": "422e0de8e3275febf5c41a5ccf891f68f16bc40e1b5dca26e50913b307ef794e",
+      "bytes": 29,
+      "lines": 1
+    },
+    {
+      "path": "ios/STMini/classes/frame/STMiniLocalization.swift",
+      "sha256": "c19f42b114068bab96ec5636fff40f324e8bc682e31a87ace2d0a28ce23b065f",
+      "bytes": 2812,
+      "lines": 71
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
+      "sha256": "62cb497bf80095b45bf921558b8035b052e110c678f0025580aa6d6cee8fa148",
+      "bytes": 538,
+      "lines": 16
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt",
+      "sha256": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
+      "bytes": 5258,
+      "lines": 108
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniLink.kt",
+      "sha256": "54ced365714b7c8001dc8f5ae4209df7a351ba7d0ee8e3ea46e9c9156fb9cc86",
+      "bytes": 3395,
+      "lines": 77
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/WebOrigin.kt",
+      "sha256": "3c8d57c2b11c32b3abe45b4ffe6c80ac42dd7f0022ea6760e0046fb7b2fac496",
+      "bytes": 1387,
+      "lines": 32
+    },
+    {
+      "path": "ios/Resources/PrivacyInfo.xcprivacy",
+      "sha256": "50b7b0fab3cec24e00803c838b5a2452d57e60cb528b3c3cd8c60c98e081513a",
+      "bytes": 716,
+      "lines": 25
+    },
+    {
+      "path": "ios/Resources/Language/Language-ar.json",
+      "sha256": "772dc300e2e87db1d5ddd131ba1890279d72608e1eb367ccc7220ba95a58c1f9",
+      "bytes": 6431,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-bg.json",
+      "sha256": "4d5ed325792c3c1698a6cabe0aa21ecbfb0d1c3bba4fc71d10a326e041eb9b09",
+      "bytes": 8076,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-cs.json",
+      "sha256": "687f6ff2220498dc31b13563b7551896d472bafeb83d6ad9573d88cab965fd5b",
+      "bytes": 4890,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-da.json",
+      "sha256": "a3a7460ed436b9309365c8a32e6fdf71fb0745982faef3f0455423658243d868",
+      "bytes": 4694,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-de.json",
+      "sha256": "5c783ef6fcc17f6b4374fd8de1bef62a867131e7a27eb8c5fe2ca11c49812493",
+      "bytes": 5389,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-el.json",
+      "sha256": "a8d32210618b9af756adfd4ae26fed4cf1c9dc694b5186806022129f99e97a55",
+      "bytes": 8277,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-en.json",
+      "sha256": "fb7afa351ae1d46abdf759a7914e3b513fa8eb661fd16e940b6b547d2fc36c28",
+      "bytes": 4541,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-es.json",
+      "sha256": "6a5d3b2898d6b2a829f36e3db3df79e1e09c1b7fea08e034485d5a198ca8583a",
+      "bytes": 5394,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-fi.json",
+      "sha256": "4cde34e1dcf9ced1f6b3331c9ea16f80230445a130ad23687f9a74c3086bbd71",
+      "bytes": 4988,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-fil.json",
+      "sha256": "3e4f7bdc713394a2dd6e1a268c2d079e654e926ddf54e81fc57c62f98a424482",
+      "bytes": 5333,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-fr.json",
+      "sha256": "0cec9e52e7b35eab9a746949e534c2dcf7b34a60833edb5b9c238a3e8a0510f7",
+      "bytes": 5518,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-hi.json",
+      "sha256": "9e9d44c61971238c316a4e1cc1ba7656e8df5dfab9c8755ced490b0e50b7db0e",
+      "bytes": 9520,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-hr.json",
+      "sha256": "92513030fa69facbbc864bfb7cd255e849d472e455c9b62c6d3887788c8593d0",
+      "bytes": 4862,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-hu.json",
+      "sha256": "a1ca05cf271c2ac018e2df020c2d06975d615817b381c16539fa088b9f44171c",
+      "bytes": 5220,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-id.json",
+      "sha256": "5efa81f5ef998d6a5cd9d28befcfe9638f839fd3b9d485e5d782a8d426459259",
+      "bytes": 4597,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-it.json",
+      "sha256": "db6373e2a25c020c4776dee2a6a3a6ab88af313018c4394813670c0158d94253",
+      "bytes": 5198,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-ja.json",
+      "sha256": "7b1349006e3d1b03d1dfff9abff9a804cb1ea00f02f47d819b31d609b1336a05",
+      "bytes": 6036,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-ko.json",
+      "sha256": "3f78e9dd97d8e25eb1fbf5a8791506be2972ff039c658ab13b308b5a40b83f95",
+      "bytes": 5701,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-ms.json",
+      "sha256": "3fb5c198c5730e5c07453c7796c0978a30919326c16125cf30f540179c0ab9e3",
+      "bytes": 4665,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-nb.json",
+      "sha256": "c2813551b19d590f9a385bfccaad5df94ba562ec6783ddc79a43f392f7b27ff2",
+      "bytes": 4718,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-nl.json",
+      "sha256": "c2186eeae9f39952bbf43ec5b73c0206a413fee2289541248cb9b171db07560b",
+      "bytes": 5381,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-pl.json",
+      "sha256": "e1b9383b2a32c73b840e28408ae2b824e7c36964af72f4efd90732be6f2c70c0",
+      "bytes": 5169,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-pt-BR.json",
+      "sha256": "e2dc670d4c4fe534b31ec11961c9ee7425cb529e5ef0bf09d43f3217cc02e36e",
+      "bytes": 5184,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-pt-PT.json",
+      "sha256": "facaa2b74140c764c40eb1098e40f49be52b0ce2b440be4cabed6c8856204652",
+      "bytes": 5219,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-ro.json",
+      "sha256": "901fc93e91e61524e60f63d8ce300171ac25b89475a96502f811748a787c7301",
+      "bytes": 5337,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-ru.json",
+      "sha256": "c64be87be0454031214f563a47654f1e9bc78869264624d5c7588ede39709b32",
+      "bytes": 7534,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-si.json",
+      "sha256": "f7f19e677477248f6cafd6fc3b45a7872c92008605c1c077927e7dafb4675df7",
+      "bytes": 8863,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-sk.json",
+      "sha256": "acf400f797b393cb75b66fac12fcba1bcd84d20b14fae6ef1b066eef8d5b2a9f",
+      "bytes": 5077,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-sv.json",
+      "sha256": "220f892a54b981121d5a3b89ccb42467529a09567806599ba27799867eb30ba1",
+      "bytes": 5032,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-th.json",
+      "sha256": "68aaec98bf98f87200b6d64586ceb28d3d1c13b35f5c32853d0013a4ef21be8b",
+      "bytes": 10287,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-tr.json",
+      "sha256": "251ea80981fe4b85a5a0ddeecd3c60f9a2dba0b0f9c49739d1d1c2f02cb27440",
+      "bytes": 4949,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-uk.json",
+      "sha256": "4ea411e6aa7174c1f706174ae7f5c6346fb7338ffe8a9e6530c43c488d634add",
+      "bytes": 7343,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-vi.json",
+      "sha256": "c33bfd26ef81e4c2234176b790b9fc686bce1f1dcdd8cda224374346f319495c",
+      "bytes": 5470,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-zh-Hans.json",
+      "sha256": "2cd1bb063a8aee1d79d5ea7ec4f80d46ec124933ede41e17dadd52845fdde84a",
+      "bytes": 3685,
+      "lines": 58
+    },
+    {
+      "path": "ios/Resources/Language/Language-zh-Hant.json",
+      "sha256": "96dcc9935b98e6304dbde78def75780c6db3e7464f9239eb739bd6b030462e05",
+      "bytes": 3706,
+      "lines": 58
+    }
+  ],
+  "adapted_files": [
+    "pubspec.yaml",
+    "lib/stmini_flutter.dart",
+    "ios/stmini_flutter.podspec",
+    "android/build.gradle",
+    "android/settings.gradle",
+    "android/src/main/AndroidManifest.xml",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
+    "ios/Classes/StminiFlutterPlugin.swift"
+  ],
+  "unsupported": [
+    "openMini",
+    "openWeb",
+    "closeMini",
+    "closeWeb",
+    "installedPackages",
+    "notifyWebSessionChanged",
+    "setWebBridgeHandler"
+  ],
+  "source_file_metric_note": "Only exact 5 upstream production files count as fully integrated originals; adapters/fragments measured separately. Resources excluded from source percentages.",
+  "license_status": "Upstream LICENSE is TODO placeholder; preserved, no open-source distribution authorization asserted.",
+  "production_metrics": {
+    "full_main": {
+      "files": 113,
+      "physical_lines": 20683,
+      "bytes": 823442
+    },
+    "exact_integrated": {
+      "files": 5,
+      "physical_lines": 304,
+      "bytes": 13390
+    },
+    "percentage": {
+      "files": 4.424778761061947,
+      "physical_lines": 1.4698061209689117,
+      "bytes": 1.6261011704528068
+    },
+    "note": "Not a capability completion percentage; adapters and resources are separate."
+  },
+  "adapted_production_metrics": {
+    "file_count": 3,
+    "physical_lines": 159,
+    "bytes": 7174,
+    "files": [
+      {
+        "path": "lib/stmini_flutter.dart",
+        "physical_lines": 29,
+        "bytes": 1127,
+        "sha256": "2712f9462979cd3b117dc8bff7a4029fd5ea3a517cc24b890a75fe3f7c2f08e0"
+      },
+      {
+        "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
+        "physical_lines": 67,
+        "bytes": 3364,
+        "sha256": "2fad6f2800062fde5a0c1b9d79a45a8cd85149c0e44590e67f6f58db736a660f"
+      },
+      {
+        "path": "ios/Classes/StminiFlutterPlugin.swift",
+        "physical_lines": 63,
+        "bytes": 2683,
+        "sha256": "eb7ed801a5747e2a34bf9ef242584ec9056941c1cde029c150a7b2f62074802f"
+      }
+    ],
+    "note": "Locally written stage adapters, not counted as unchanged upstream source."
+  }
+}

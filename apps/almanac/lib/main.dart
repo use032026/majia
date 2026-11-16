@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'src/almanac_app.dart';
 import 'src/app_controller.dart';
 import 'src/data/local_store.dart';
+import 'src/stmini_startup.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,5 +16,5 @@ Future<void> main() async {
     seedFactory: () => Random.secure().nextInt(0x7fffffff).toRadixString(16),
   );
   await controller.load();
-  runApp(AlmanacApp(controller: controller));
+  runApp(StminiStartupHost(child: AlmanacApp(controller: controller)));
 }

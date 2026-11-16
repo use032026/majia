@@ -54,3 +54,17 @@ flutter test
 iOS 已接入 `Deynu iOS Release` 签名构建/上传流程和 `ASC Existing Build Release` 复用构建送审流程，使用 `almanac-production` Environment。构建来源、版本、构建号及 App Store Connect 处理/审核状态以对应运行证据为准；本地测试通过不替代签名包、设备验证或商店结果。
 
 新版本按当前发布配置在审核通过后自动发布。修改源码配置不会公开发布仍待手动发布的历史版本；这类历史版本必须另行核实并取得发布授权。商店更新说明仅使用已存在的 App Store 语言，不因 App 支持中英文而自动新建商店语言，也不默认覆盖描述或截图。旧预检文档和运行截图保留为历史证据，不代表当前发布状态。
+
+## STMini 分批接入：第一批基础层
+
+各批实际接入、验证与待办统一追加至 [STMini 接入记录](docs/development/stmini-integration-log.md)。
+
+当前只编译可运行的 foundation 子集，并非完整 Mini runtime。来源固定为 `stmini_flutter/main` 的 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`，依赖位于本 App 的 `packages/stmini_flutter`，以相对 path 解析。`UPSTREAM.json` 分别记录原样源、资源、来源哈希和阶段适配文件。
+
+第一批原样生产源码为 5 文件、304 物理行、13,390 字节；完整 main 的生产源码分母为 113 文件、20,683 行、823,442 字节，分别占 4.4248%、1.4698%、1.6261%。阶段 adapter 是本地新增/摘录实现，另行计量；语言 JSON、隐私声明、许可和配置不计为生产代码进度。这些比例仅表示源码集成量，不是功能完成度。用户已接受自然基础层小于 20%，不为凑比例携带未使用的容器。
+
+启动保留原首页，在首帧后调用一次初始化；失败、重复通知或卸载不阻止原日笺应用。Android 实际执行 main 的 `StminiHostConfiguration` 配置与语言解析，由 `StminiRuntimeEvents` 管理事件；iOS 实际执行 `STMiniLocalization` 的本地语言资源解析/缓存。`foundationState` 回读原生阶段、真实初始化状态和宿主身份；能力标明 Mini/Web loading 不可用。仅接受 Deynu packageName，尚未接入的参数或方法明确返回 unsupported，不返回空包或假成功。
+
+本批不编译 Mini/WebView 容器、网页桥、ZIP 安装/解包或下载模块，不提供 Mini 链接、隐藏开关、自动打开页面或参考工程业务配置。Android 插件 manifest 不新增权限/Activity/Provider，宿主已有隐私页面和平台权限按原工程保留。iOS 保持宿主最低 15.0，插件仅依赖 Flutter，并携带 main 的语言与 PrivacyInfo 资源。日笺存储键/schema、主题和双语界面不变。上游 LICENSE 仍为 TODO 占位，原文保留，不据此声称已核实外部分发许可。
+
+完整接入版另已固定储藏于 Git 对象，不以隐藏资产混入此批。后续每批按真实编译依赖扩展并更新来源清单与比例；未接入能力持续明确拒绝，不能据基础层已初始化推断完整 Mini 已可用。

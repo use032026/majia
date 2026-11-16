@@ -1,0 +1,23 @@
+group 'com.fsst.stmini_flutter'
+version '1.0-SNAPSHOT'
+buildscript {
+    ext.kotlin_version = '1.9.22'
+    repositories { google(); mavenCentral() }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.3.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+android {
+    namespace 'com.fsst.stmini_flutter'
+    compileSdk 34
+    buildFeatures { buildConfig true }
+    defaultConfig { minSdk 24 }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions { jvmTarget = '1.8' }
+}
