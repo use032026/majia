@@ -60,3 +60,40 @@
 送审前精确查询 `43843368818`（status #197）及独立门禁确认：版本 1.0.9，version ID `3ae166f9-8599-4e5c-b239-8d40e7a8492c`，附加 build ID `5caa1b9e-43c5-4436-88df-91773f47ad0b` / build 1，状态 VALID，实际 release type 为 AFTER_APPROVAL；What's New 精确为 `fix bug`，无查询错误。正文和 5 张截图与 1.0.8 语义一致，未替换为新媒体。
 
 正式送审运行 `43843986777`（existing-build #70，submit=true，来源仍为上述 `4baa638`）实际成功。提交记录的 `submitted_at` 为 `2026-11-16T09:54:55Z`（北京时间 17:54:55），`review_submitted=true`、`no_op=false`，审核提交 ID 为 `f2a87d82-b0bf-4572-ab2c-38033e636431`，返回状态 WAITING_FOR_REVIEW。同一 1.0.9/version/build 1 复用未变，en-US `fix bug` 再次 GET 回读一致；正式 submission 结果与准备阶段未送审的回执分开记录。最终精确回查运行 `43844328593`（status #198，来源仍为 `4baa638`）成功：`2026-11-16T09:57:11Z` 实际回读同一 App/1.0.9/version/build，状态 WAITING_FOR_REVIEW、release type 为 AFTER_APPROVAL，build 1 为 VALID 且未过期；`2026-11-16T09:57:14Z` 的元数据回读无错误、en-US 文案精确为 `fix bug`。该只读摘要的 `review_submission` 为 null、没有查询错误，不能作为再次确认审核提交 ID 的证据；上述 `f2a87d82-b0bf-4572-ab2c-38033e636431` 仍明确来自 #70 正式提交回执。当前为已提交等待苹果审核，未获批、未发布；自动发布配置不等于已通过审核或已公开。后四批仍待真实依赖规划，第五批仍仅本地验证、暂不送审。
+
+
+## 2026-11-17：首批发布结果与第二批基础事件/地区资源修复
+
+首批状态查询运行 `43997660036` 在北京时间 09:43:09 实际确认同一 1.0.9/build 1 为 READY_FOR_DISTRIBUTION / DISTRIBUTED / AFTER_APPROVAL，已审核通过并自动发布。本条覆盖前文历史“仍等待审核”，不改变该签名 IPA 的源码身份。
+
+第二批仍以 pinned main `b4462f63a33acf6c3fff63f0e67b3713bc00dff8` 为只读来源，仅改 Deynu 专用副本。新增运行链是两端真实 initialize → 原生 `foundation_initialized` → 共享 Dart channel transport → process 级 startup 白名单内存诊断。事件不触发页面跳转、数据写入或能力开放；Host 卸载重挂保留初始化终态和一个订阅，非共享服务由创建者取消。listen/cancel 控制失败与 envelope/model 错误局部处理，不替换全局 FlutterError handler。
+
+### 真实缺陷及修正
+
+- iOS 旧实际 framework 的 initialize 可复得 pt-BR/pt-PT 选不到现有葡语资源、zh-TW 区域 alias 回落英文；en-US 对照正常。现仅修已有区域资源名及 `_`/`-` 归一，unknown → en → zh-Hans 回退保留，不加语言 setter/持久化或 Deynu UI 语种。
+- Android 旧逐字生产事件源在确定性 Handler/Looper 调度中会把取消前排队消息及无 listener 期间事件送给新 listener。现捕获 subscription lease 和顶层 payload 副本，只撤销自身 owner、忽略过期回调；此生产 state 自产嵌套 list 不再修改，不承诺任意可变嵌套 payload 的深快照。该缺陷复现是 JVM 受控调度，不能描述为观察到真实用户事件串用。
+- 两端 late-listen 回放当前实例的真实 initialized 状态，消除 MethodChannel/EventChannel 没有跨 channel FIFO 保证的 ready 竞态；未初始化不伪造 ready。Dart 对事件进行严格解码和深冻结，process 服务只保白名单状态和通用问题标记。
+
+### 当前累计来源计量
+
+| 分类 | 文件 | 物理行 | 字节 |
+| --- | ---: | ---: | ---: |
+| main 生产源码分母 | 113 | 20,683 | 823,442 |
+| 仍逐字等上游的生产源 | 3 | 217 | 10,040 |
+| 两份修订后的派生源 | 2 | 121 | 4,941 |
+| 本地生产 adapter/helper | 5 | 470 | 17,244 |
+
+首批的两份原样源修改后转派生，当前原样比例为 2.6549% 文件 / 1.0492% 行 / 1.2193% 字节；不是集成能力倒退或完成百分比。`UPSTREAM.json` 同时保留原 SHA、新 SHA、修订原因及当前计量。事件契约参考摘录仅 19 行 / 710 字节，不算新增完整原样文件；App startup 消费代码在包外另列，不混入上游比例。35 份语言 JSON、Privacy、许可、测试和配置均不用于凑量。
+
+### 本批验证与交付边界
+
+Flutter 3.35.7 / Dart 3.9.2：format 25 文件零变、analyze clean、三文件定向 25 项、全量 85 项、常规后 fake 25 项通过（25 已含在 85，不相加）。两条 widget fixture 曾因 SDK root-zone Future 与 FakeAsync 清理边界挂起；仅修测试清理为实际异步执行，所有业务断言保留，没有改生产服务来换通过。
+
+iOS 普通 `lib/main.dart` Simulator/debug/no-codesign 构建通过，插件真实注册及新二进制存在，35 语言 JSON/Privacy 资源保留，没有完整 Mini/Web/下载模块或额外框架。新专用 iPhone 16 / iOS 18.2 模拟器 6 项 native XCTest 全过，覆盖初始化、9 个地区/别名与回退、listen 前后时序/取消后当前状态回放、实例隔离和原 unsupported/参数拒绝。另用 test-only Flutter target 实际附着运行，完整 JSON 回执证实原生 init 与 startup eventCount=1、passed=true、disposed=true、无诊断 issue；这是平台 channel 路径，不等同原 App UI 或物理设备 E2E。普通入口已重建恢复，所有自建 iOS 设备均已删除，既有设备不动。首次直接 simctl launch 未收到完整输出，以及附着日志长行截断的对照都不作为通过依据；最后已压缩重复测试诊断并完整解析。
+
+Android 8 项生产事件源的受控 JVM 调度回归、真实插件 Kotlin 编译以及本批 debug APK 构建通过。Android33 / Android 13 任务独立 AVD 已实际运行同一 test-only target，完整 JSON 回执确认 native initialized=true、startup eventCount=1、passed=true、disposed=true、lastIssue=null。所有 adb 指令显式指向该任务 serial；未改系统镜像或既有 AVD，结束只退出本任务模拟器并清理其独立用户目录，未停止全局 adb。首次启动因本机 emulator 31.3.13 不支持可选的 no-metrics 参数而失败，移除该参数后新任务 AVD 成功；不把首次失败说成 OS 通过。之后普通 lib/main.dart debug APK 已重建恢复，真实宿主 merged manifest 保持 min24/target36、原 INTERNET 与 AndroidX receiver 权限、无 STMini Activity/Provider。OS 回执仅证明真实 channel 路径，8 项所有权时序仍是受控 JVM 测试，不声称每个时序都在 OS 重演。Gemfile.lock、Podfile.lock、pubspec.lock、原首页入口与数据/主题/双语/隐私实现保持原字节。本批未增加 Mini/Web/下载/安装、URL、隐藏开关、自动打开、宿主权限或组件。
+
+当前本地开发验证完成，待独立最终 Review，尚未提交或推送；本批尚未签名 IPA、上传、创建商店版本或送审。下一版本只作候选，由发布阶段 fresh 核库存决定；公开更新说明仍为 en-US `fix bug`，依据是本批实际新修复，不能重复借用已上线剪贴板修复。审核备注本次不填，不清历史。第3–5批仍按真实自然依赖和能力披露边界分别冻结，第5批仅本地完整验证不送审。
+
+
+可复跑的 Android 受控调度测试源保存在 `packages/stmini_flutter/test_support/jvm`。在插件目录，用 Kotlin 2.1 / JDK 21 将 `test_support/jvm/AndroidOs.kt`、生产 `android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt` 与 `test_support/jvm/StminiRuntimeEventsCases.kt` 一起编译后运行其 main；stub 仅替代测试中的 Handler/Looper，不进入 Android main 编译或发行包。真实 Flutter channel target 位于 `test/platform/stmini_native_channel_main.dart`，仅显式测试构建使用；普通 `lib/main.dart` 无引用，不添加 integration_test 依赖或测试开关。

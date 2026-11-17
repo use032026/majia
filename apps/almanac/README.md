@@ -32,7 +32,7 @@ flutter run
 ## 验证
 
 ```sh
-dart format --output=none --set-exit-if-changed lib test
+dart format --output=none --set-exit-if-changed lib test packages/stmini_flutter/lib
 flutter analyze
 flutter test
 ```
@@ -55,16 +55,20 @@ iOS 已接入 `Deynu iOS Release` 签名构建/上传流程和 `ASC Existing Bui
 
 新版本按当前发布配置在审核通过后自动发布。修改源码配置不会公开发布仍待手动发布的历史版本；这类历史版本必须另行核实并取得发布授权。商店更新说明仅使用已存在的 App Store 语言，不因 App 支持中英文而自动新建商店语言，也不默认覆盖描述或截图。旧预检文档和运行截图保留为历史证据，不代表当前发布状态。
 
-## STMini 分批接入：第一批基础层
+## STMini 分批接入：第二批基础事件与地区资源修复
 
 各批实际接入、验证与待办统一追加至 [STMini 接入记录](docs/development/stmini-integration-log.md)。
 
 当前只编译可运行的 foundation 子集，并非完整 Mini runtime。来源固定为 `stmini_flutter/main` 的 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`，依赖位于本 App 的 `packages/stmini_flutter`，以相对 path 解析。`UPSTREAM.json` 分别记录原样源、资源、来源哈希和阶段适配文件。
 
-第一批原样生产源码为 5 文件、304 物理行、13,390 字节；完整 main 的生产源码分母为 113 文件、20,683 行、823,442 字节，分别占 4.4248%、1.4698%、1.6261%。阶段 adapter 是本地新增/摘录实现，另行计量；语言 JSON、隐私声明、许可和配置不计为生产代码进度。这些比例仅表示源码集成量，不是功能完成度。用户已接受自然基础层小于 20%，不为凑比例携带未使用的容器。
+首批原样生产源码为 5 文件、304 物理行、13,390 字节；第二批修改其中事件所有权和地区资源解析两个文件后，它们改列派生源，累计仍逐字等上游的是 3 文件、217 行、10,040 字节。完整 main 的生产源码分母为 113 文件、20,683 行、823,442 字节，对应原样比例为 2.6549%、1.0492%、1.2193%。另列两份派生源（121 行、4,941 字节）及 5 份本地生产 adapter/helper（470 行、17,244 字节），App startup 消费代码单列。事件契约参考片段为 19 行/710 字节，不把片段或派生实现算成新增完整原样文件；语言 JSON、隐私声明、许可和配置不计为生产代码进度。这些比例仅表示源码集成量，不是功能完成度。用户已接受自然基础层小于 20%，不为凑比例携带未使用的容器。
 
-启动保留原首页，在首帧后调用一次初始化；失败、重复通知或卸载不阻止原日笺应用。Android 实际执行 main 的 `StminiHostConfiguration` 配置与语言解析，由 `StminiRuntimeEvents` 管理事件；iOS 实际执行 `STMiniLocalization` 的本地语言资源解析/缓存。`foundationState` 回读原生阶段、真实初始化状态和宿主身份；能力标明 Mini/Web loading 不可用。仅接受 Deynu packageName，尚未接入的参数或方法明确返回 unsupported，不返回空包或假成功。
+启动保留原首页，在首帧后调用一次初始化；process 级共享服务保留初始化终态和至多一个 SDK 事件订阅，Host 卸载重挂不重复初始化，非共享服务由创建者取消。失败、重复通知或卸载不阻止原日笺应用。Android 实际执行 main 的 `StminiHostConfiguration` 配置与语言解析，由 `StminiRuntimeEvents` 管理事件；iOS 实际执行 `STMiniLocalization` 的本地语言资源解析/缓存。`foundationState` 回读原生阶段、真实初始化状态和宿主身份；能力标明 Mini/Web loading 不可用。仅接受 Deynu packageName，尚未接入的参数或方法明确返回 unsupported，不返回空包或假成功。
 
-本批不编译 Mini/WebView 容器、网页桥、ZIP 安装/解包或下载模块，不提供 Mini 链接、隐藏开关、自动打开页面或参考工程业务配置。Android 插件 manifest 不新增权限/Activity/Provider，宿主已有隐私页面和平台权限按原工程保留。iOS 保持宿主最低 15.0，插件仅依赖 Flutter，并携带 main 的语言与 PrivacyInfo 资源。日笺存储键/schema、主题和双语界面不变。上游 LICENSE 仍为 TODO 占位，原文保留，不据此声称已核实外部分发许可。
+第二批将原生 `foundation_initialized` 通过同一个共享 Dart 事件流交给 startup 的只读内存诊断；多 listener 共用原生订阅，最后一个 listener 取消时可 await 取消结果。事件模型严格校验 `name/payload` 并深冻结；控制 channel 的 listen/cancel 失败局部处理，不改全局 Flutter 错误处理。两端 late-listen 回放当前真实原生状态，取消后旧排队消息不能误投新 owner。Android 仅复制当前载荷顶层；此链自产状态不再改动嵌套 list，不承诺任意可变嵌套载荷都深快照。
+
+iOS 仅修复已存在的 pt-BR/pt-PT 资源及 zh-TW/zh-HK/zh-CN 等 alias 匹配，保留未知语言回退；不新增语言设置/持久化或 Deynu UI 语言。诊断只留白名单状态及通用问题标记，不保存原始错误或任意桥接载荷。
+
+本批的 STMini 插件不编译 Mini/WebView 容器、网页桥、ZIP 安装/解包或下载模块，不提供 Mini 链接、隐藏开关、自动打开页面或参考工程业务配置。Android 插件 manifest 不新增权限/Activity/Provider，宿主已有隐私页面和平台权限按原工程保留。iOS 保持宿主最低 15.0，插件仅依赖 Flutter，并携带 main 的语言与 PrivacyInfo 资源。日笺存储键/schema、主题和双语界面不变。上游 LICENSE 仍为 TODO 占位，原文保留，不据此声称已核实外部分发许可。
 
 完整接入版另已固定储藏于 Git 对象，不以隐藏资产混入此批。后续每批按真实编译依赖扩展并更新来源清单与比例；未接入能力持续明确拒绝，不能据基础层已初始化推断完整 Mini 已可用。

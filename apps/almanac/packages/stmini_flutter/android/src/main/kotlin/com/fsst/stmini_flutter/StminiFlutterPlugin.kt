@@ -14,6 +14,7 @@ class StminiFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Even
     private lateinit var events: EventChannel
     private var initialized = false
     private var language: String? = null
+    private var eventSubscription: StminiRuntimeEvents.Subscription? = null
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = binding.applicationContext
@@ -39,7 +40,7 @@ class StminiFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Even
                 StminiHostConfiguration.configure(mapOf("packageName" to applicationContext.packageName))
                 language = StminiHostConfiguration.normalizedLanguage(applicationContext)
                 initialized = true
-                StminiRuntimeEvents.emit("foundation_initialized", state())
+                eventSubscription?.emit("foundation_initialized", state())
                 result.success(null)
             }
             "foundationState" -> result.success(state())
@@ -56,12 +57,20 @@ class StminiFlutterPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Even
     )
 
     override fun onListen(arguments: Any?, sink: EventChannel.EventSink) {
-        StminiRuntimeEvents.attach { sink.success(it) }
+        eventSubscription?.cancel()
+        eventSubscription = StminiRuntimeEvents.attach { sink.success(it) }
+        // EventChannel listen and initialize use different control channels.
+        // Replay current truth when listen arrives after initialization.
+        if (initialized) eventSubscription?.emit("foundation_initialized", state())
     }
-    override fun onCancel(arguments: Any?) { StminiRuntimeEvents.attach(null) }
+    override fun onCancel(arguments: Any?) {
+        eventSubscription?.cancel()
+        eventSubscription = null
+    }
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         methods.setMethodCallHandler(null)
         events.setStreamHandler(null)
-        StminiRuntimeEvents.attach(null)
+        eventSubscription?.cancel()
+        eventSubscription = null
     }
 }

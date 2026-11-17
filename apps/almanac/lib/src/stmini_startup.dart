@@ -9,26 +9,118 @@ typedef StminiInitializer =
 
 /// Initializes native foundation configuration without changing app data.
 class StminiStartup {
-  StminiStartup({StminiInitializer? initialize})
-    : _initialize = initialize ?? _initializeNative;
+  StminiStartup({StminiInitializer? initialize, Stream<StminiEvent>? events})
+    : _initialize = initialize ?? _initializeNative,
+      _events = events ?? StminiFlutter.events;
 
   static final StminiStartup shared = StminiStartup();
 
   final StminiInitializer _initialize;
+  final Stream<StminiEvent> _events;
   Future<void>? _initialization;
+  StreamSubscription<StminiEvent>? _subscription;
+  Future<void>? _disposal;
+  bool _disposed = false;
+  bool _initializationFinished = false;
+  bool _eventsDone = false;
+  int _eventCount = 0;
+  String? _lastIssue;
+  Map<String, dynamic>? _foundationState;
+
+  /// Process-local diagnostics only; no widget/controller or persistent data.
+  Map<String, Object?> get diagnostics => Map<String, Object?>.unmodifiable({
+    'initializationFinished': _initializationFinished,
+    'eventsDone': _eventsDone,
+    'eventCount': _eventCount,
+    'lastIssue': _lastIssue,
+    'foundationState': _foundationState,
+    'disposed': _disposed,
+  });
 
   /// Keeps either terminal result for this process; startup never retries.
-  Future<void> initializeOnce() => _initialization ??= _initializeSafely();
+  Future<void> initializeOnce() {
+    if (_disposed) return Future<void>.error(StateError('Startup disposed.'));
+    if (_initialization != null) return _initialization!;
+    final completion = Completer<void>();
+    _initialization = completion.future;
+    unawaited(_initializeSafely().then((_) => completion.complete()));
+    return completion.future;
+  }
 
   Future<void> _initializeSafely() async {
+    try {
+      _subscription = _events.listen(
+        _consume,
+        onError: (Object _, StackTrace __) {
+          if (!_disposed) _lastIssue = 'event_stream_failed';
+        },
+        onDone: () {
+          if (!_disposed) _eventsDone = true;
+        },
+      );
+    } catch (_) {
+      _lastIssue = 'event_subscription_failed';
+    }
     try {
       await _initialize(const <String, dynamic>{
         'packageName': 'com.almanac.lite',
       });
     } catch (_) {
+      if (!_disposed) _lastIssue = 'initialization_failed';
       // Initialization is optional for the local app. Do not expose native
       // error details or let a failed plugin replace the existing home page.
       if (kDebugMode) debugPrint('[Deynu] STMini initialization failed.');
+    } finally {
+      if (!_disposed) _initializationFinished = true;
+    }
+  }
+
+  void _consume(StminiEvent event) {
+    if (_disposed || event.name != 'foundation_initialized') return;
+    final state = event.payload;
+    if (state['stage'] != 'foundation' ||
+        state['initialized'] != true ||
+        state['packageName'] != 'com.almanac.lite' ||
+        state['miniLoadingAvailable'] != false ||
+        state['webLoadingAvailable'] != false) {
+      _lastIssue = 'invalid_foundation_event';
+      return;
+    }
+    // Keep only foundation fields, never arbitrary future event/bridge data.
+    final capabilities = state['capabilities'];
+    _foundationState = Map<String, dynamic>.unmodifiable({
+      'stage': 'foundation',
+      'initialized': true,
+      'packageName': 'com.almanac.lite',
+      'miniLoadingAvailable': false,
+      'webLoadingAvailable': false,
+      if (state['language'] is String) 'language': state['language'],
+      if (state['localizedClose'] is String)
+        'localizedClose': state['localizedClose'],
+      if (capabilities is List)
+        'capabilities': List<String>.unmodifiable(
+          capabilities.whereType<String>().where(
+            const {
+              'host_configuration',
+              'language_resolution',
+              'runtime_events',
+            }.contains,
+          ),
+        ),
+    });
+    _eventCount += 1;
+  }
+
+  /// Nonshared services are owned by their creator. Host unmount does not
+  /// dispose the process service or turn a pending callback into UI work.
+  Future<void> dispose() => _disposal ??= _dispose();
+
+  Future<void> _dispose() async {
+    _disposed = true;
+    try {
+      await _subscription?.cancel();
+    } catch (_) {
+      _lastIssue = 'event_cancel_failed';
     }
   }
 

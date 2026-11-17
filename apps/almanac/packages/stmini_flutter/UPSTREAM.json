@@ -10,18 +10,6 @@
       "lines": 1
     },
     {
-      "path": "ios/STMini/classes/frame/STMiniLocalization.swift",
-      "sha256": "c19f42b114068bab96ec5636fff40f324e8bc682e31a87ace2d0a28ce23b065f",
-      "bytes": 2812,
-      "lines": 71
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
-      "sha256": "62cb497bf80095b45bf921558b8035b052e110c678f0025580aa6d6cee8fa148",
-      "bytes": 538,
-      "lines": 16
-    },
-    {
       "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt",
       "sha256": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
       "bytes": 5258,
@@ -264,7 +252,9 @@
     "android/settings.gradle",
     "android/src/main/AndroidManifest.xml",
     "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
-    "ios/Classes/StminiFlutterPlugin.swift"
+    "ios/Classes/StminiFlutterPlugin.swift",
+    "lib/src/safe_event_stream.dart",
+    "lib/src/stmini_event.dart"
   ],
   "unsupported": [
     "openMini",
@@ -275,7 +265,7 @@
     "notifyWebSessionChanged",
     "setWebBridgeHandler"
   ],
-  "source_file_metric_note": "Only exact 5 upstream production files count as fully integrated originals; adapters/fragments measured separately. Resources excluded from source percentages.",
+  "source_file_metric_note": "Only the 3 byte-identical upstream production files count as full originals; the 2 modified upstream files, 5 production adapters/helpers and reference event excerpts are measured separately. Resources are excluded.",
   "license_status": "Upstream LICENSE is TODO placeholder; preserved, no open-source distribution authorization asserted.",
   "production_metrics": {
     "full_main": {
@@ -284,41 +274,121 @@
       "bytes": 823442
     },
     "exact_integrated": {
-      "files": 5,
-      "physical_lines": 304,
-      "bytes": 13390
+      "files": 3,
+      "physical_lines": 217,
+      "bytes": 10040
     },
     "percentage": {
-      "files": 4.424778761061947,
-      "physical_lines": 1.4698061209689117,
-      "bytes": 1.6261011704528068
+      "files": 2.6548672566371683,
+      "physical_lines": 1.0491708166126772,
+      "bytes": 1.2192722741856743
     },
     "note": "Not a capability completion percentage; adapters and resources are separate."
   },
   "adapted_production_metrics": {
-    "file_count": 3,
-    "physical_lines": 159,
-    "bytes": 7174,
+    "file_count": 5,
+    "physical_lines": 470,
+    "bytes": 17244,
     "files": [
       {
         "path": "lib/stmini_flutter.dart",
-        "physical_lines": 29,
-        "bytes": 1127,
-        "sha256": "2712f9462979cd3b117dc8bff7a4029fd5ea3a517cc24b890a75fe3f7c2f08e0"
+        "physical_lines": 42,
+        "bytes": 1600,
+        "sha256": "d69c0d39299c6005598a50e65b8910055d6a224e96bfa852a5601433c8de9b35"
       },
       {
         "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
-        "physical_lines": 67,
-        "bytes": 3364,
-        "sha256": "2fad6f2800062fde5a0c1b9d79a45a8cd85149c0e44590e67f6f58db736a660f"
+        "physical_lines": 76,
+        "bytes": 3799,
+        "sha256": "780b23f95a195779f348fde249c10b72cfbe1ea013ec94c0300e9821befd3b6d"
       },
       {
         "path": "ios/Classes/StminiFlutterPlugin.swift",
-        "physical_lines": 63,
-        "bytes": 2683,
-        "sha256": "eb7ed801a5747e2a34bf9ef242584ec9056941c1cde029c150a7b2f62074802f"
+        "physical_lines": 70,
+        "bytes": 2979,
+        "sha256": "244dca00bd48703153317306f8027fae3dbce73926d497068386e6f9bdcb0ec8"
+      },
+      {
+        "path": "lib/src/safe_event_stream.dart",
+        "physical_lines": 247,
+        "bytes": 7631,
+        "sha256": "84f2251f18a28d8b9719891395c349ee3434b171076bb2936b30ef7f811d354e"
+      },
+      {
+        "path": "lib/src/stmini_event.dart",
+        "physical_lines": 35,
+        "bytes": 1235,
+        "sha256": "e556a7c0a80b223439f35b08debb6cb5202bdbc9e6b360895ceb1ed6507588f1"
       }
     ],
-    "note": "Locally written stage adapters, not counted as unchanged upstream source."
-  }
+    "note": "Locally written foundation adapters/helpers, not counted as byte-identical upstream source."
+  },
+  "derived_upstream_files": [
+    {
+      "path": "ios/STMini/classes/frame/STMiniLocalization.swift",
+      "source_sha256": "c19f42b114068bab96ec5636fff40f324e8bc682e31a87ace2d0a28ce23b065f",
+      "source_bytes": 2812,
+      "source_physical_lines": 71,
+      "integrated_sha256": "a64daac918a371ce618e44257c4900e9498554672b6c736141c51500b2c68756",
+      "integrated_bytes": 3166,
+      "integrated_physical_lines": 76,
+      "reason": "Normalize existing zh regional aliases and pt-BR/PT resource names; preserve fallback without new language settings."
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
+      "source_sha256": "62cb497bf80095b45bf921558b8035b052e110c678f0025580aa6d6cee8fa148",
+      "source_bytes": 538,
+      "source_physical_lines": 16,
+      "integrated_sha256": "78d894ac77044ed6b96da598b310fc64f7d2c0081f28c341e37fc5c0670b125e",
+      "integrated_bytes": 1775,
+      "integrated_physical_lines": 45,
+      "reason": "Capture subscription lease and top-level payload snapshot; ignore obsolete owners/queued deliveries and drop events without a current listener. Nested mutable payloads have no generic deep-snapshot guarantee."
+    }
+  ],
+  "derived_production_metrics": {
+    "file_count": 2,
+    "physical_lines": 121,
+    "bytes": 4941,
+    "note": "Modified upstream files; original source and integrated hashes are listed in derived_upstream_files."
+  },
+  "event_contract_reference": {
+    "path": "lib/stmini_flutter.dart",
+    "source_file_sha256": "25f08c607373f0368bf16dd90c49920af97bdf09db1b81348229e2a67cc5cfdc",
+    "line_ranges": [
+      [
+        22,
+        22
+      ],
+      [
+        25,
+        31
+      ],
+      [
+        189,
+        199
+      ]
+    ],
+    "selected_physical_lines": 19,
+    "selected_bytes": 710,
+    "excerpt_sha256": "4935f0f16fbb59d97e4dd5cdcc9111b052c58f8780dc5bb9eab4113f05779d85",
+    "integrated_paths": [
+      "lib/stmini_flutter.dart",
+      "lib/src/safe_event_stream.dart",
+      "lib/src/stmini_event.dart"
+    ],
+    "note": "Reference schema/channel/model excerpt only; local shared transport and strict immutable model are derived implementations, not an additional exact original file."
+  },
+  "app_consumption": {
+    "path": "lib/src/stmini_startup.dart",
+    "lifetime": "process shared initialization terminal result and one subscription; Host unmount does not dispose it",
+    "state": "in-memory whitelisted foundation diagnostics only",
+    "metric": {
+      "path": "lib/src/stmini_startup.dart",
+      "physical_lines": 155,
+      "bytes": 5214,
+      "sha256": "67a5b6166a9240f6156d04ad5f236f02cf0d1ba1109059fcbce8617925ac7c9b"
+    },
+    "note": "App integration outside this package, excluded from upstream source percentages."
+  },
+  "batch": "second: native events consumption, ownership/replay and existing regional localization fix"
 }

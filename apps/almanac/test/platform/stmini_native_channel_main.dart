@@ -1,0 +1,66 @@
+// Test-only Flutter build target. Never imported by the production entry point.
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:almanac/src/stmini_startup.dart';
+import 'package:flutter/widgets.dart';
+import 'package:stmini_flutter/stmini_flutter.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  final startup = StminiStartup();
+  runApp(StminiStartupHost(startup: startup, child: const SizedBox.shrink()));
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    unawaited(_verify(startup));
+  });
+}
+
+Future<void> _verify(StminiStartup startup) async {
+  final result = <String, Object?>{
+    'kind': 'real_flutter_native_event_channel',
+    'runtimeStage': StminiFlutter.runtimeStage,
+  };
+  try {
+    await startup.initializeOnce().timeout(const Duration(seconds: 10));
+    final deadline = DateTime.now().add(const Duration(seconds: 5));
+    while (startup.diagnostics['eventCount'] == 0 &&
+        DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 25));
+    }
+    final native = await StminiFlutter.foundationState.timeout(
+      const Duration(seconds: 10),
+    );
+    result['nativeState'] = native;
+    result['startupDiagnostics'] = startup.diagnostics;
+    final eventState = startup.diagnostics['foundationState'] as Map?;
+    result['passed'] =
+        native['initialized'] == true &&
+        native['stage'] == 'foundation' &&
+        native['packageName'] == 'com.almanac.lite' &&
+        native['miniLoadingAvailable'] == false &&
+        native['webLoadingAvailable'] == false &&
+        eventState?['initialized'] == true &&
+        eventState?['packageName'] == native['packageName'];
+  } catch (_) {
+    result['passed'] = false;
+    result['issue'] = 'native_channel_verification_failed';
+  } finally {
+    try {
+      await startup.dispose().timeout(const Duration(seconds: 5));
+    } catch (_) {
+      result['passed'] = false;
+      result['disposeIssue'] = 'native_channel_disposal_failed';
+    }
+    result['disposedDiagnostics'] = <String, Object?>{
+      'disposed': startup.diagnostics['disposed'],
+      'eventCount': startup.diagnostics['eventCount'],
+      'lastIssue': startup.diagnostics['lastIssue'],
+    };
+  }
+  // Structured local test output only; no URLs, account values or persistence.
+  // ignore: avoid_print
+  print('STMINI_NATIVE_CHANNEL_RESULT ${jsonEncode(result)}');
+  await Future<void>.delayed(const Duration(milliseconds: 100));
+  exit(result['passed'] == true ? 0 : 1);
+}

@@ -27,14 +27,19 @@ enum STMiniLocalization {
             ?? Locale.preferredLanguages.first
             ?? "en")
             .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "_", with: "-")
             .lowercased()
-        if configured == "zh" || configured.hasPrefix("zh-hans") || configured.hasPrefix("zh_cn") {
+        if configured == "zh" || configured.hasPrefix("zh-hans") || configured.hasPrefix("zh-cn") {
             return "zh-Hans"
         }
-        if configured.hasPrefix("zh-hant") || configured.hasPrefix("zh_tw") || configured.hasPrefix("zh-hk") {
+        if configured.hasPrefix("zh-hant") || configured.hasPrefix("zh-tw") || configured.hasPrefix("zh-hk") {
             return "zh-Hant"
         }
-        return configured.split(whereSeparator: { $0 == "-" || $0 == "_" }).first.map(String.init) ?? "en"
+        // These existing resources are region-specific; truncating to "pt"
+        // would bypass both dictionaries and incorrectly fall back to English.
+        if configured == "pt-br" || configured.hasPrefix("pt-br-") { return "pt-BR" }
+        if configured == "pt-pt" || configured.hasPrefix("pt-pt-") { return "pt-PT" }
+        return configured.split(separator: "-").first.map(String.init) ?? "en"
     }
 
     private static func dictionary(for language: String) -> [String: String] {

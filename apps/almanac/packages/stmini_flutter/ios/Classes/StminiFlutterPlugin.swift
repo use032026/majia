@@ -13,6 +13,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     let methods = FlutterMethodChannel(name: "stmini_flutter/methods", binaryMessenger: registrar.messenger())
     let events = FlutterEventChannel(name: "stmini_flutter/events", binaryMessenger: registrar.messenger())
     registrar.addMethodCallDelegate(instance, channel: methods)
+    registrar.publish(instance)
     events.setStreamHandler(instance)
   }
 
@@ -54,10 +55,16 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
   public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
     eventSink = events
+    // A late listener receives this instance's current state, not an old event.
+    if initialized { events(["name": "foundation_initialized", "payload": state()]) }
     return nil
   }
   public func onCancel(withArguments arguments: Any?) -> FlutterError? {
     eventSink = nil
     return nil
+  }
+
+  public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
+    eventSink = nil
   }
 }

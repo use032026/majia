@@ -46,6 +46,15 @@ Future<AppController> _controller(MemoryStateStore store) async {
   return controller;
 }
 
+StminiStartup _testStartup({
+  required StminiInitializer initialize,
+  Stream<StminiEvent> events = const Stream<StminiEvent>.empty(),
+}) {
+  final startup = StminiStartup(initialize: initialize, events: events);
+  addTearDown(startup.dispose);
+  return startup;
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -54,7 +63,7 @@ void main() {
     () async {
       final pending = Completer<void>();
       final contexts = <Map<String, dynamic>>[];
-      final startup = StminiStartup(
+      final startup = _testStartup(
         initialize: (context) {
           contexts.add(context);
           return pending.future;
@@ -78,7 +87,7 @@ void main() {
       '${synchronous ? 'A synchronous' : 'An asynchronous'} failure is contained without retry',
       () async {
         var calls = 0;
-        final startup = StminiStartup(
+        final startup = _testStartup(
           initialize: (_) {
             calls += 1;
             if (synchronous) throw StateError('fake initialization failure');
@@ -109,7 +118,7 @@ void main() {
         final data = controller.data!.toJson();
         final pending = Completer<void>();
         var calls = 0;
-        final startup = StminiStartup(
+        final startup = _testStartup(
           initialize: (context) {
             calls += 1;
             expect(
@@ -197,7 +206,7 @@ void main() {
     tester,
   ) async {
     var calls = 0;
-    final startup = StminiStartup(
+    final startup = _testStartup(
       initialize: (_) async {
         calls += 1;
       },
@@ -229,7 +238,7 @@ void main() {
     tester,
   ) async {
     final pending = Completer<void>();
-    final startup = StminiStartup(initialize: (_) => pending.future);
+    final startup = _testStartup(initialize: (_) => pending.future);
     await tester.pumpWidget(
       StminiStartupHost(startup: startup, child: const SizedBox.shrink()),
     );
@@ -258,27 +267,37 @@ void main() {
         return null;
       });
       addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
-      final startup = StminiStartup();
-      await tester.pumpWidget(
-        StminiStartupHost(startup: startup, child: const SizedBox.shrink()),
+      const eventsChannel = MethodChannel('stmini_flutter/events');
+      messenger.setMockMethodCallHandler(eventsChannel, (_) async => null);
+      addTearDown(
+        () => messenger.setMockMethodCallHandler(eventsChannel, null),
       );
-      await tester.pump();
-      await startup.initializeOnce();
+      final startup = StminiStartup();
+      try {
+        await tester.pumpWidget(
+          StminiStartupHost(startup: startup, child: const SizedBox.shrink()),
+        );
+        await tester.pump();
+        await startup.initializeOnce();
 
-      expect(StminiFlutter.runtimeStage, 'foundation');
-      expect(calls.map((call) => call.method), <String>['initialize']);
-      expect(calls.single.arguments, <String, dynamic>{
-        'bridgeContext': <String, dynamic>{'packageName': 'com.almanac.lite'},
-      });
+        expect(StminiFlutter.runtimeStage, 'foundation');
+        expect(calls.map((call) => call.method), <String>['initialize']);
+        expect(calls.single.arguments, <String, dynamic>{
+          'bridgeContext': <String, dynamic>{'packageName': 'com.almanac.lite'},
+        });
 
-      // Verify the production Dart getter and payload decoding. Native state
-      // persistence is covered by native tests rather than this channel fake.
-      expect(await StminiFlutter.foundationState, nativeState);
-      expect(calls.map((call) => call.method), <String>[
-        'initialize',
-        'foundationState',
-      ]);
-      expect(calls.last.arguments, isNull);
+        // Verify the production Dart getter and payload decoding. Native state
+        // persistence is covered by native tests rather than this channel fake.
+        expect(await StminiFlutter.foundationState, nativeState);
+        expect(calls.map((call) => call.method), <String>[
+          'initialize',
+          'foundationState',
+        ]);
+        expect(calls.last.arguments, isNull);
+      } finally {
+        // Stream cancellation may return a root-zone SDK Future.
+        await tester.runAsync(startup.dispose);
+      }
     },
   );
 }
