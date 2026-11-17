@@ -75,8 +75,7 @@ class _PhotoReportAppState extends State<PhotoReportApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateTitle: (context) =>
-          tr('现场照片记录', locale: Localizations.localeOf(context)),
+      title: 'JOVFX',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
       darkTheme: buildAppTheme(brightness: Brightness.dark),

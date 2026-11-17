@@ -35,7 +35,7 @@ class BackupService {
         .toIso8601String()
         .replaceAll(':', '-')
         .replaceAll('.', '-');
-    final destination = p.join(directory.path, 'PhotoReport-$stamp.prbackup');
+    final destination = p.join(directory.path, 'JOVFX-$stamp.prbackup');
     final payload = {
       'format': 'photo-report-backup',
       'version': 1,
@@ -57,7 +57,7 @@ class BackupService {
     if (decoded is! Map ||
         decoded['format'] != 'photo-report-backup' ||
         decoded['version'] != 1) {
-      throw const FormatException('这不是受支持的现场照片记录备份');
+      throw const FormatException('这不是受支持的 JOVFX 备份');
     }
     final projects = _maps(decoded['projects'], '项目');
     final issues = _maps(decoded['issues'], '记录');

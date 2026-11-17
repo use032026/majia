@@ -13,7 +13,7 @@
 | CleanTrail（清迹） | [`apps/cleantrail/cleantrail/`](apps/cleantrail/cleantrail/) | [`CherryIce/Cleantrail`](https://github.com/CherryIce/Cleantrail)，迁移基点 `487c079c9f9b336dcedb586b80f9cca862c7a896` |
 | PlotProof Lab（图证实验室） | [`apps/plotproof_lab/plotproof_lab/`](apps/plotproof_lab/plotproof_lab/) | [`CherryIce/plotproof_lab`](https://github.com/CherryIce/plotproof_lab)，迁移基点 `7abd805f1ca6448e09dafbef6db3a153f20c6b0c` |
 | KIFXPRO（源项目 `sdpacket`） | [`apps/sdpacket/`](apps/sdpacket/) | [`CherryIce/SDPacket`](https://github.com/CherryIce/SDPacket)，迁移基点 `f5c16af424977b76da8a5b205f05c4b96768d52c` |
-| PhotoReport（现场照片记录） | [`apps/photoreport/`](apps/photoreport/) | [`CherryIce/PhotoReport`](https://github.com/CherryIce/PhotoReport)，迁移基点 `ad5cf6b8006ae4a569ea2bae1445dae3fa28c95f` |
+| JOVFX（现场照片记录） | [`apps/photoreport/`](apps/photoreport/) | [`CherryIce/PhotoReport`](https://github.com/CherryIce/PhotoReport)，迁移基点 `ad5cf6b8006ae4a569ea2bae1445dae3fa28c95f` |
 | Steady21（微成） | [`apps/steady21/`](apps/steady21/) | [`CherryIce/steady21`](https://github.com/CherryIce/steady21)，迁移基点 `0e273393c3cea00440c30d2b108beb813be7dcf5` |
 | PaceJar（源项目 `Looters`） | [`apps/looters/`](apps/looters/) | [`CherryIce/Looters`](https://github.com/CherryIce/Looters)，迁移基点 `822d7d343e9c80de4f912d03cb9b1d5517abf8ac` |
 | EchoPage（源项目 `Diary`） | [`apps/Diary/`](apps/Diary/) | [`CherryIce/Diary`](https://github.com/CherryIce/Diary)，迁移基点 `17679f8904bdd74d49ecf911fc332a8f1b05cf2d` |

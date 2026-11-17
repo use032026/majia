@@ -5,7 +5,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name="com.starburst.photoReport.PdfPreviewActivity"
+            android:name=".PdfPreviewActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <provider

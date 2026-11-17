@@ -66,6 +66,19 @@ import UniformTypeIdentifiers
       }
       UserDefaults.standard.set(isComplete, forKey: "onboardingComplete")
       result(nil)
+    case "openPrivacyPolicy":
+      guard
+        let address = arguments["url"] as? String,
+        let url = URL(string: address),
+        url.scheme == "https",
+        url.host == "jovfx1.com"
+      else {
+        result(false)
+        return
+      }
+      UIApplication.shared.open(url, options: [:]) { opened in
+        result(opened)
+      }
     case "generateReport":
       guard
         let project = arguments["project"] as? [String: Any],
@@ -214,7 +227,7 @@ import UniformTypeIdentifiers
     let format = UIGraphicsPDFRendererFormat()
     format.documentInfo = [
       kCGPDFContextTitle as String: copy.reportTitle(rawName),
-      kCGPDFContextCreator as String: copy.text("现场照片记录"),
+      kCGPDFContextCreator as String: "JOVFX",
     ]
     let renderer = UIGraphicsPDFRenderer(bounds: pageBounds, format: format)
     var pageNumber = 0
@@ -662,7 +675,6 @@ struct ReportCopy {
     "暂时无法打开文件选择器": "The file picker is temporarily unavailable",
     "语言设置无效": "Invalid language setting",
     "现场报告": "Site report",
-    "现场照片记录": "On-site Photo Records",
     "现场情况记录": "Site condition records",
     "现场照片沟通记录": "On-site Photo Communication Record",
     "记录地点": "Location",

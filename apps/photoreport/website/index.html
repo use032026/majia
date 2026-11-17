@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-Hans">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,30 +7,41 @@
     <meta name="color-scheme" content="light">
     <meta
       name="description"
-      content="现场照片记录是一款本地优先的 iOS 照片整理工具：拍摄、标注、编号并生成便于分享的 PDF 沟通记录。"
+      content="使用 JOVFX 在 iPhone、iPad 和 Android 设备上整理现场照片、添加标注并生成 PDF 记录。"
     >
     <meta property="og:type" content="website">
-    <meta property="og:title" content="现场照片记录 — 把现场情况说清楚">
+    <meta property="og:title" content="JOVFX — 把现场情况说清楚">
     <meta
       property="og:description"
       content="拍摄、标注、编号、整理分享。核心记录默认只保存在你的设备上。"
     >
-    <meta property="og:image" content="assets/og.png">
+    <meta property="og:url" content="https://jovfx1.com/?lang=zh">
+    <meta property="og:image" content="https://jovfx1.com/assets/og.png">
     <meta name="twitter:card" content="summary_large_image">
-    <title>现场照片记录 — 拍摄、标注、整理分享</title>
+    <title>JOVFX — 现场照片记录</title>
+    <link rel="canonical" href="https://jovfx1.com/?lang=zh">
+    <link rel="alternate" hreflang="zh-Hans" href="https://jovfx1.com/?lang=zh">
+    <link rel="alternate" hreflang="en" href="https://jovfx1.com/?lang=en">
+    <link rel="alternate" hreflang="x-default" href="https://jovfx1.com/">
     <link rel="icon" href="assets/app-icon.png">
     <link rel="apple-touch-icon" href="assets/app-icon.png">
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
   </head>
-  <body data-page="home">
+  <body
+    data-page="home"
+    data-title-zh="JOVFX — 现场照片记录"
+    data-title-en="JOVFX — Site Photo Reports"
+    data-description-zh="使用 JOVFX 在 iPhone、iPad 和 Android 设备上整理现场照片、添加标注并生成 PDF 记录。"
+    data-description-en="Organize site photos, add annotations, and create PDF records with JOVFX on iPhone, iPad, and Android."
+  >
     <a class="skip-link" href="#main" data-zh="跳到主要内容" data-en="Skip to main content">跳到主要内容</a>
 
     <header class="site-header" data-header>
       <div class="shell header-inner">
-        <a class="brand" href="#top" aria-label="现场照片记录首页">
+        <a class="brand" href="#top" aria-label="JOVFX">
           <img src="assets/app-icon.png" alt="" width="44" height="44">
-          <span data-zh="现场照片记录" data-en="Site Photo Log">现场照片记录</span>
+          <span>JOVFX</span>
         </a>
 
         <button
@@ -50,9 +61,9 @@
           <a href="#privacy" data-zh="隐私优先" data-en="Privacy">隐私优先</a>
           <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy Policy">隐私政策</a>
           <div class="language-switch" role="group" aria-label="语言 / Language">
-            <button type="button" data-lang-choice="zh" aria-pressed="true">中</button>
+            <button type="button" data-language-option="zh" aria-label="简体中文" aria-pressed="true">中</button>
             <span aria-hidden="true"></span>
-            <button type="button" data-lang-choice="en" aria-pressed="false">EN</button>
+            <button type="button" data-language-option="en" aria-label="English" aria-pressed="false">EN</button>
           </div>
         </nav>
       </div>
@@ -68,12 +79,11 @@
               <span data-zh="编号 · 标注 · 整理分享" data-en="Number · Mark up · Organize · Share">编号 · 标注 · 整理分享</span>
             </div>
             <h1>
-              <span data-zh="把现场照片，" data-en="Turn site photos into">把现场照片，</span>
-              <span class="accent-text" data-zh="整理成一份说得清的记录。" data-en="a record everyone understands.">整理成一份说得清的记录。</span>
+              <span data-zh="整理现场照片" data-en="Turn site photos">整理现场照片</span>
+              <span class="accent-text" data-zh="生成可分享的 PDF" data-en="into clear PDF records">生成可分享的 PDF</span>
             </h1>
-            <p class="hero-lede" data-zh="从拍摄、前后对照到重点标注与 PDF 分享，把散乱图片和说明放回同一条清晰线索。适合日常现场沟通与情况记录。" data-en="From capture and before-and-after comparison to annotations and PDF sharing, keep scattered photos and notes in one clear thread—made for everyday site communication and condition records.">
-              从拍摄、前后对照到重点标注与 PDF 分享，把散乱图片和说明放回同一条清晰线索。适合日常现场沟通与情况记录。
-            </p>
+            <p class="hero-lede" data-lang="zh">用 JOVFX 拍摄或导入现场照片，整理处理前后对照、标注重点，并将照片和说明合成 PDF 记录。适用于 iPhone、iPad 和 Android 设备。</p>
+            <p class="hero-lede" data-lang="en" hidden>Capture or import site photos in JOVFX, group before and after images, mark what matters, and turn photos and notes into a PDF. For iPhone, iPad, and Android.</p>
             <div class="hero-actions">
               <a class="button button-primary" href="#workflow">
                 <span data-zh="看看如何使用" data-en="See how it works">看看如何使用</span>
@@ -90,63 +100,17 @@
             </ul>
           </div>
 
-          <div class="hero-product" aria-label="现场照片记录应用界面示意">
+          <div class="hero-product">
             <div class="focus-corner focus-corner-top" aria-hidden="true"></div>
             <div class="focus-corner focus-corner-bottom" aria-hidden="true"></div>
-            <div class="floating-note note-number" aria-hidden="true">
-              <small data-zh="自动编号" data-en="Auto number">自动编号</small>
-              <strong>A-006</strong>
-            </div>
-            <div class="phone-frame">
-              <div class="phone-sensor" aria-hidden="true"></div>
-              <div class="phone-screen">
-                <div class="app-topbar">
-                  <div>
-                    <small data-zh="现场照片记录" data-en="Site Photo Log">现场照片记录</small>
-                    <strong data-zh="滨江办公区" data-en="Riverside Office">滨江办公区</strong>
-                  </div>
-                  <span class="app-avatar"><img src="assets/app-icon.png" alt=""></span>
-                </div>
-                <div class="project-summary">
-                  <span><b>6</b><small data-zh="记录" data-en="records">记录</small></span>
-                  <i></i>
-                  <span><b>2</b><small data-zh="待跟进" data-en="follow-ups">待跟进</small></span>
-                  <i></i>
-                  <span><b>18</b><small data-zh="照片" data-en="photos">照片</small></span>
-                </div>
-                <div class="record-heading">
-                  <strong data-zh="最近记录" data-en="Recent records">最近记录</strong>
-                  <span data-zh="全部" data-en="All">全部</span>
-                </div>
-                <article class="record-card">
-                  <div class="record-photo photo-one">
-                    <span class="annotation-box" aria-hidden="true"></span>
-                    <span class="photo-label" data-zh="处理前" data-en="Before">处理前</span>
-                  </div>
-                  <div class="record-copy">
-                    <div><span>A-006</span><em data-zh="处理中" data-en="In progress">处理中</em></div>
-                    <strong data-zh="东侧墙面渗水痕迹" data-en="Water marks on east wall">东侧墙面渗水痕迹</strong>
-                    <small data-zh="3 张照片 · 2 个标注" data-en="3 photos · 2 annotations">3 张照片 · 2 个标注</small>
-                  </div>
-                </article>
-                <article class="record-card">
-                  <div class="record-photo photo-two">
-                    <span class="annotation-arrow" aria-hidden="true"></span>
-                    <span class="photo-label" data-zh="处理后" data-en="After">处理后</span>
-                  </div>
-                  <div class="record-copy">
-                    <div><span>A-005</span><em class="status-done" data-zh="已完成" data-en="Completed">已完成</em></div>
-                    <strong data-zh="入口收边复核" data-en="Entrance edge review">入口收边复核</strong>
-                    <small data-zh="2 张照片 · 今天更新" data-en="2 photos · Updated today">2 张照片 · 今天更新</small>
-                  </div>
-                </article>
-                <button class="fake-fab" type="button" tabindex="-1" aria-hidden="true">＋</button>
-              </div>
-            </div>
-            <div class="floating-note note-share" aria-hidden="true">
-              <span>PDF</span>
-              <div><small data-zh="整理完成" data-en="Ready to share">整理完成</small><strong data-zh="可预览与分享" data-en="Preview &amp; share">可预览与分享</strong></div>
-            </div>
+            <figure class="workspace-preview" data-lang="zh">
+              <div class="phone-frame"><img src="assets/workspace-zh.webp" width="720" height="1280" alt="JOVFX 在 Android 上的项目列表"></div>
+              <figcaption>Android 版的项目工作区</figcaption>
+            </figure>
+            <figure class="workspace-preview" data-lang="en" hidden>
+              <div class="phone-frame"><img src="assets/workspace-en.webp" width="720" height="1561" alt="The JOVFX project list on iPhone"></div>
+              <figcaption>Project workspace on iPhone</figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -173,7 +137,8 @@
               <span class="step-index">01</span>
               <div class="step-icon camera-icon" aria-hidden="true"><i></i></div>
               <h3 data-zh="快速拍下现场" data-en="Capture the site quickly">快速拍下现场</h3>
-              <p data-zh="从相机拍摄或相册导入，按处理前、处理后归类。快速模式只需照片与说明，其他字段以后再补。" data-en="Take a photo or choose one from your library, then group it as before or after. Quick mode needs only photos and a note; the rest can wait.">从相机拍摄或相册导入，按处理前、处理后归类。快速模式只需照片与说明，其他字段以后再补。</p>
+              <p data-lang="zh">从相机拍摄或相册导入，按处理前、处理后归类。快速模式只需照片与说明，其他字段以后再补。</p>
+              <p data-lang="en" hidden>Take a photo or choose one from your library, then group it as before or after. Quick mode needs only photos and a note. Add other details later.</p>
             </article>
             <article class="workflow-card">
               <span class="step-index">02</span>
@@ -191,7 +156,7 @@
               <span class="step-index">04</span>
               <div class="step-icon share-icon" aria-hidden="true"><i>↑</i></div>
               <h3 data-zh="由你决定发给谁" data-en="You choose where it goes">由你决定发给谁</h3>
-              <p data-zh="只有在你主动打开 iOS 系统分享面板后，PDF 或本地备份才会离开应用，接收方由你选择。" data-en="A PDF or local backup leaves the app only after you open the iOS share sheet and choose its destination.">只有在你主动打开 iOS 系统分享面板后，PDF 或本地备份才会离开应用，接收方由你选择。</p>
+              <p data-zh="使用系统分享面板，把 PDF 或本地备份交给你选择的接收方或服务。" data-en="Use your device's share sheet to send a PDF or local backup to the recipient or service you choose.">使用系统分享面板，把 PDF 或本地备份交给你选择的接收方或服务。</p>
             </article>
           </div>
         </div>
@@ -215,9 +180,9 @@
                 <p data-zh="每条记录可包含多张处理前与处理后照片，编号、说明、状态和责任信息始终归在同一条记录下。" data-en="Each record can hold multiple before and after photos while its number, note, status, and ownership stay together.">每条记录可包含多张处理前与处理后照片，编号、说明、状态和责任信息始终归在同一条记录下。</p>
               </div>
               <div class="comparison-demo" aria-hidden="true">
-                <div class="demo-photo demo-before"><span>BEFORE</span><i></i></div>
+                <div class="demo-photo demo-before"><span data-zh="处理前" data-en="BEFORE">处理前</span><i></i></div>
                 <div class="comparison-arrow">→</div>
-                <div class="demo-photo demo-after"><span>AFTER</span><b>✓</b></div>
+                <div class="demo-photo demo-after"><span data-zh="处理后" data-en="AFTER">处理后</span><b>✓</b></div>
               </div>
             </article>
 
@@ -255,8 +220,8 @@
         <div class="shell privacy-panel">
           <div class="privacy-copy">
             <span class="section-kicker light-kicker" data-zh="你的记录，默认留在你的设备" data-en="Your records stay on your device by default">你的记录，默认留在你的设备</span>
-            <h2 data-zh="本地优先不是口号，是当前版本的数据路径。" data-en="Local first is the actual data path—not a slogan.">本地优先不是口号，是当前版本的数据路径。</h2>
-            <p data-zh="项目、记录、照片与标注保存在应用沙盒中。当前版本没有账号、云同步、广告或用户行为分析；开发者服务器不会接收这些内容。" data-en="Projects, records, photos, and annotations are stored in the app sandbox. This version has no accounts, cloud sync, ads, or behavioral analytics, and developer servers do not receive this content.">项目、记录、照片与标注保存在应用沙盒中。当前版本没有账号、云同步、广告或用户行为分析；开发者服务器不会接收这些内容。</p>
+            <h2 data-zh="在设备上记录和整理" data-en="Capture and organize on your device">在设备上记录和整理</h2>
+            <p data-zh="JOVFX 将项目、记录、照片与标注保存在应用沙盒中。隐私政策说明系统备份、分享及第三方文件服务如何处理你选择的数据。" data-en="JOVFX stores projects, records, photos, and annotations in the app sandbox. The privacy policy explains how device backups, sharing, and third-party file services can handle the data you select.">JOVFX 将项目、记录、照片与标注保存在应用沙盒中。隐私政策说明系统备份、分享及第三方文件服务如何处理你选择的数据。</p>
             <a class="button button-light" href="privacy.html" data-language-link>
               <span data-zh="查看完整隐私政策" data-en="Read the full privacy policy">查看完整隐私政策</span>
               <span aria-hidden="true">→</span>
@@ -265,7 +230,7 @@
           <ul class="privacy-facts">
             <li><span aria-hidden="true">01</span><div><strong data-zh="按需请求权限" data-en="Permissions on demand">按需请求权限</strong><small data-zh="仅在拍照或选择照片时使用相机与相册权限" data-en="Camera and photo access are used only when you choose those actions">仅在拍照或选择照片时使用相机与相册权限</small></div></li>
             <li><span aria-hidden="true">02</span><div><strong data-zh="设备内生成文件" data-en="Files created on device">设备内生成文件</strong><small data-zh="PDF 与本地备份都在设备上生成" data-en="PDFs and local backups are generated on your device">PDF 与本地备份都在设备上生成</small></div></li>
-            <li><span aria-hidden="true">03</span><div><strong data-zh="主动分享才会离开" data-en="Nothing leaves until you share">主动分享才会离开</strong><small data-zh="接收方或第三方服务由你在系统面板中选择" data-en="You choose the recipient or service in the system share sheet">接收方或第三方服务由你在系统面板中选择</small></div></li>
+            <li><span aria-hidden="true">03</span><div><strong data-zh="由你选择分享对象" data-en="Choose where you share">由你选择分享对象</strong><small data-zh="接收方或第三方服务由你在系统面板中选择" data-en="You choose the recipient or service in the system share sheet">接收方或第三方服务由你在系统面板中选择</small></div></li>
           </ul>
         </div>
       </section>
@@ -274,19 +239,24 @@
         <div class="shell support-grid">
           <div>
             <span class="section-kicker" data-zh="隐私与支持" data-en="Privacy & support">隐私与支持</span>
-            <h2 data-zh="发布前，请补充正式联系方式。" data-en="Add the official contact before publishing.">发布前，请补充正式联系方式。</h2>
+            <h2 data-zh="联系我们" data-en="Contact us">联系我们</h2>
           </div>
-          <div class="support-card">
-            <p data-zh="当前项目中没有可核实的公开支持邮箱，因此这里保留了醒目的占位值，避免代替你编造运营者或联系方式。" data-en="No verified public support email is present in the project, so a conspicuous placeholder remains instead of inventing an operator or contact address.">当前项目中没有可核实的公开支持邮箱，因此这里保留了醒目的占位值，避免代替你编造运营者或联系方式。</p>
-            <code>&lt;请填写公开支持邮箱 / PUBLIC_SUPPORT_EMAIL&gt;</code>
-            <a href="privacy.html#contact" data-language-link data-anchor-zh="contact" data-anchor-en="en-contact"><span data-zh="查看政策中的联系说明" data-en="View the contact section in the policy">查看政策中的联系说明</span> <span aria-hidden="true">→</span></a>
-          </div>
+          <dl class="support-card contact-details">
+            <div>
+              <dt data-zh="运营主体" data-en="Operator">运营主体</dt>
+              <dd data-zh="独立开发者" data-en="Independent developer">独立开发者</dd>
+            </div>
+            <div>
+              <dt data-zh="联系邮箱" data-en="Contact email">联系邮箱</dt>
+              <dd><a href="mailto:PadonSolmonson469@outlook.com">PadonSolmonson469<wbr>@outlook.com</a></dd>
+            </div>
+          </dl>
         </div>
       </section>
 
       <section class="use-notice">
         <div class="shell">
-          <p><strong data-zh="使用边界：" data-en="Scope of use: ">使用边界：</strong><span data-zh="现场照片记录及其导出内容仅用于现场沟通与情况记录，不构成专业鉴定、验收结论或法律意见。" data-en="Site Photo Log and its exports are for site communication and condition records only. They are not professional assessments, acceptance conclusions, or legal advice.">现场照片记录及其导出内容仅用于现场沟通与情况记录，不构成专业鉴定、验收结论或法律意见。</span></p>
+          <p><strong data-zh="使用边界：" data-en="Scope of use: ">使用边界：</strong><span data-zh="JOVFX 及其导出内容仅用于现场沟通与情况记录，不构成专业鉴定、验收结论或法律意见。" data-en="JOVFX and its exports are for site communication and condition records only. They are not professional assessments, acceptance conclusions, or legal advice.">JOVFX 及其导出内容仅用于现场沟通与情况记录，不构成专业鉴定、验收结论或法律意见。</span></p>
         </div>
       </section>
     </main>
@@ -295,14 +265,14 @@
       <div class="shell footer-inner">
         <div class="footer-brand">
           <img src="assets/app-icon.png" alt="" width="38" height="38">
-          <div><strong data-zh="现场照片记录" data-en="Site Photo Log">现场照片记录</strong><small data-zh="把现场情况整理清楚" data-en="Make site conditions clear">把现场情况整理清楚</small></div>
+          <div><strong>JOVFX</strong><small data-zh="把现场情况整理清楚" data-en="Make site conditions clear">把现场情况整理清楚</small></div>
         </div>
         <nav aria-label="页脚导航">
           <a href="#features" data-zh="功能" data-en="Features">功能</a>
           <a href="privacy.html" data-language-link data-zh="隐私政策" data-en="Privacy Policy">隐私政策</a>
           <a href="#support" data-zh="支持" data-en="Support">支持</a>
         </nav>
-        <p>© <span data-current-year>2026</span> <span data-zh="现场照片记录" data-en="Site Photo Log">现场照片记录</span></p>
+        <p>© <span data-current-year>2026</span> <span>JOVFX</span></p>
       </div>
     </footer>
   </body>

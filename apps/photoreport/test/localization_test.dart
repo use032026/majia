@@ -16,7 +16,6 @@ import 'package:photo_report/ui/project_list_screen.dart';
 void main() {
   test('English copy covers static and interpolated product messages', () {
     const english = Locale('en');
-    expect(AppLocalizations.text('现场照片记录', locale: english), 'Site Photo Log');
     expect(
       AppLocalizations.text('编号 · 标注 · 整理分享', locale: english),
       'Number · Mark up · Organize · Share',
@@ -74,7 +73,7 @@ void main() {
     controller.isLoading = false;
 
     await tester.pumpWidget(_LanguageHarness(controller: controller));
-    expect(find.text('现场照片记录'), findsOneWidget);
+    expect(find.text('JOVFX'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('home-settings-button')));
     await tester.pumpAndSettle();
@@ -87,7 +86,7 @@ void main() {
     await tester.tap(find.byKey(const Key('language-en')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Site Photo Log'), findsOneWidget);
+    expect(find.text('JOVFX'), findsOneWidget);
     expect(find.text('Number · Mark up · Organize · Share'), findsOneWidget);
     expect(find.byTooltip('More actions'), findsOneWidget);
   });
@@ -232,7 +231,7 @@ void main() {
     );
 
     for (final copy in const [
-      'Site Photo Log',
+      'JOVFX',
       'Number · Mark up · Organize · Share',
       'High: 1',
       'record',
@@ -241,7 +240,7 @@ void main() {
     }
     expect(
       tester.getTopLeft(find.text('Number · Mark up · Organize · Share')).dy,
-      greaterThan(tester.getTopLeft(find.text('Site Photo Log')).dy),
+      greaterThan(tester.getTopLeft(find.text('JOVFX')).dy),
     );
     final totalMarker = tester.getTopLeft(
       find.byKey(const Key('compact-status-total-marker')),
@@ -313,11 +312,11 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         locale: Locale('en'),
-        home: LText('现场照片记录', translate: false),
+        home: LText('从第一个记录项目开始', translate: false),
       ),
     );
-    expect(find.text('现场照片记录'), findsOneWidget);
-    expect(find.text('Site Photo Log'), findsNothing);
+    expect(find.text('从第一个记录项目开始'), findsOneWidget);
+    expect(find.text('Start with your first record project'), findsNothing);
   });
 
   testWidgets('English create screens render on a narrow phone', (

@@ -6,7 +6,7 @@ import XCTest
 final class RunnerTests: XCTestCase {
   func testEnglishReportCopyUsesEnglishLabels() {
     let copy = ReportCopy(languageCode: "en")
-    XCTAssertEqual(copy.text("现场照片记录"), "On-site Photo Records")
+    XCTAssertEqual(copy.reportTitle("Sample Site"), "Sample Site On-site Photo Records")
     XCTAssertEqual(copy.severityPriority("高"), "High priority")
     XCTAssertEqual(copy.projectLine("Sample Site"), "Project: Sample Site")
   }
@@ -47,6 +47,7 @@ final class RunnerTests: XCTestCase {
     defer { try? FileManager.default.removeItem(at: reportURL) }
 
     let document = try XCTUnwrap(PDFDocument(url: reportURL))
+    XCTAssertEqual(document.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String, "JOVFX")
     let text = (0..<document.pageCount)
       .compactMap { document.page(at: $0)?.string }
       .joined(separator: "\n")

@@ -1,10 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../report/report_service.dart';
 import 'app_theme.dart';
 import 'widgets/common.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
+
+  static Future<void> open(BuildContext context) async {
+    final locale = AppLocalizations.resolve(Localizations.localeOf(context));
+    final url = Uri.https('jovfx1.com', '/privacy.html', {
+      'lang': locale.languageCode,
+    });
+    if (await _openInBrowser(url) || !context.mounted) return;
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+    );
+  }
+
+  static Future<bool> _openInBrowser(Uri url) async {
+    try {
+      return await ReportService.channel.invokeMethod<bool>(
+            'openPrivacyPolicy',
+            {'url': url.toString()},
+          ) ??
+          false;
+    } on PlatformException {
+      return false;
+    } on MissingPluginException {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +67,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   LText(
-                    '“现场照片记录”是一款本地优先的照片记录工具。本政策说明本版本如何处理你在使用过程中提供的内容。',
+                    'JOVFX 是一款本地优先的照片记录工具。本政策说明本版本如何处理你在使用过程中提供的内容。',
                     style: TextStyle(
                       color: context.appColors.muted,
                       height: 1.6,
@@ -48,7 +75,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   LText(
-                    '最后更新：2026 年 8 月 28 日',
+                    '最后更新：2026 年 11 月 17 日',
                     style: TextStyle(
                       color: context.appColors.muted,
                       fontSize: 12,
@@ -74,7 +101,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             const _PolicySection(
               title: '系统权限',
-              paragraphs: ['仅在你主动拍照时请求相机权限；仅在你主动选择照片时请求相册访问。拒绝权限只会使对应功能不可用。'],
+              paragraphs: ['只有在你选择拍照或导入照片时，App 才会调用系统相机或照片选择器。如果系统提示授权，你可以拒绝。'],
             ),
             const _PolicySection(
               title: '分享与备份',
@@ -93,13 +120,15 @@ class PrivacyPolicyScreen extends StatelessWidget {
             const _PolicySection(
               title: '第三方服务',
               paragraphs: [
-                '本版本使用 Flutter、iOS 系统相机、照片选择、文件预览和分享能力，不包含广告或用户行为分析 SDK。',
+                '本版本使用 Flutter 和设备提供的相机、照片选择、文件预览及分享功能，不包含广告或用户行为分析 SDK。',
+                '打开线上隐私政策时，系统浏览器会访问 JOVFX 官网。浏览器与网站托管服务可能处理连接信息。',
               ],
             ),
             const _PolicySection(
               title: '政策更新与联系',
               paragraphs: [
-                '如果功能或数据处理方式发生变化，我们会更新本政策。若有隐私问题，请通过 App Store 产品页提供的开发者联系方式联系我们。',
+                '如果功能或数据处理方式发生变化，我们会更新本政策。',
+                '运营主体为独立开发者。若有隐私问题，请联系 PadonSolmonson469@outlook.com。',
               ],
               showDivider: false,
             ),

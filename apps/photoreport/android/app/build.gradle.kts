@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.starburst.photoReport"
+    namespace = "com.jovfx.lite"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.starburst.photoReport"
+        applicationId = "com.jovfx.lite"
         minSdk = 24
         targetSdk = 36
         versionCode = flutter.versionCode

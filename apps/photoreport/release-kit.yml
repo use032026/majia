@@ -1,59 +1,65 @@
-schema_version: 1
+schema_version: 2
 
 identity:
-  app_name: "Site Photo Log"
-  operator: ""
-  bundle_id: "com.starburst.photoReport"
+  app_name: "JOVFX"
+  operator: "独立开发者"
+  bundle_id: "com.jovfx.lite"
+  android_package: "com.jovfx.lite"
 
 contact:
-  support_email: ""
-  production_domain: ""
+  support_email: "PadonSolmonson469@outlook.com"
+  support_url: "https://jovfx1.com/?lang=en#support"
+  production_domain: "https://jovfx1.com"
 
 platforms:
-  iphone: true
-  ipad: true
+  ios:
+    iphone: true
+    ipad: true
+  android:
+    phone: true
 
 listing:
-  primary_locale: en-US
+  shared_full_description: artifacts/app-store-listing/description-en.txt
+  app_store:
+    primary_locale: en-US
+  google_play:
+    primary_locale: en-US
+    localized_graphics:
+      - en-US
+      - zh-CN
   tone: clear, specific, trustworthy
 
 privacy:
-  effective_date: "2026-08-28"
+  effective_date: "2026-11-17"
+  urls:
+    en: "https://jovfx1.com/privacy.html?lang=en"
+    zh-Hans: "https://jovfx1.com/privacy.html?lang=zh"
   confirmed:
     - "No account is required for the implemented app flows."
     - "Projects, records, photos, annotations, generated PDFs, and backups are handled on device by default."
     - "Camera and photo-library access are requested only for user-initiated capture or import."
     - "The current dependency set contains no advertising or behavioral analytics SDK."
-    - "Exports leave the app only through a user-initiated iOS share flow."
-  open_questions:
-    - "Confirm the public operator name."
-    - "Confirm the public support email."
-    - "Confirm the production website domain."
+    - "The app hands PDF or backup exports to the system share interface after a user action."
+    - "Manual backup files contain project and record data, photos, and annotations. Generated PDFs are excluded."
+    - "The app opens the official privacy policy in the system browser only when requested and passes the page URL with the chosen language."
 
 website:
+  marketing_url: "https://jovfx1.com/"
+  default_locale: en
   locales:
     - en
+    - zh-Hans
 
 screenshots:
-  locale: en-US
   source_policy: real-runtime-only
-  scenes:
-    - id: capture-context
-      source: "artifacts/app-store-previews/source/iphone-01-capture.png"
-      headline: "Capture the Full Context"
-      subheadline: "Keep photos, locations, and notes together from the start."
-    - id: clear-annotations
-      source: "artifacts/app-store-previews/source/iphone-02-annotate.png"
-      headline: "Make Every Detail Clear"
-      subheadline: "Use boxes, arrows, and notes for fast before-and-after context."
-    - id: offline-pdf
-      source: "artifacts/app-store-previews/source/iphone-03-export.png"
-      headline: "From Site Notes to Shareable PDF"
-      subheadline: "Keep core records on device, then export when you choose."
-    - id: project-workspace
-      source: "artifacts/app-store-previews/source/iphone-04-workspace.png"
-      headline: "One Workspace for Every Site"
-      subheadline: "Create a project, add photos, then organize and share."
+  app_store:
+    locale: en-US
+    preview_spec: artifacts/app-store-previews/preview-spec.json
+  google_play:
+    locales:
+      - en-US
+      - zh-CN
+    preview_spec: artifacts/google-play-listing/preview-spec.json
 
 paths:
   app_root: "apps/photoreport"

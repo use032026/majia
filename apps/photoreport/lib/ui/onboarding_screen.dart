@@ -227,29 +227,20 @@ class _OnboardingArtwork extends StatelessWidget {
         ],
       ),
       child: switch (index) {
-        0 => _brandArtwork(context.appColors),
+        0 => _brandArtwork(),
         1 => _annotationArtwork(context.appColors),
         _ => _reportArtwork(context.appColors),
       },
     );
   }
 
-  Widget _brandArtwork(AppThemeColors colors) {
+  Widget _brandArtwork() {
     return Padding(
       padding: const EdgeInsets.all(26),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.brand,
-          borderRadius: BorderRadius.circular(32),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Image.asset(
-            'assets/branding/photo_report_mark.png',
-            key: const Key('onboarding-brand-mark'),
-            fit: BoxFit.contain,
-          ),
-        ),
+      child: Image.asset(
+        'assets/branding/jovfx_mark.png',
+        key: const Key('onboarding-brand-mark'),
+        fit: BoxFit.contain,
       ),
     );
   }

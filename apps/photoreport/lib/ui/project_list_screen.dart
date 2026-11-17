@@ -240,9 +240,7 @@ class ProjectListScreen extends StatelessWidget {
       case _HomeSettingsAction.language:
         await _chooseLanguage(context);
       case _HomeSettingsAction.privacyPolicy:
-        await Navigator.of(context).push<void>(
-          MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
-        );
+        await PrivacyPolicyScreen.open(context);
     }
   }
 
@@ -297,8 +295,8 @@ class ProjectListScreen extends StatelessWidget {
           appBar: AppBar(
             toolbarHeight: 56,
             titleSpacing: 24,
-            title: LText(
-              '现场照片记录',
+            title: Text(
+              'JOVFX',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -1001,7 +999,7 @@ class _SettingsAndDataSheet extends StatelessWidget {
                 key: const Key('settings-privacy-policy'),
                 icon: Icons.privacy_tip_outlined,
                 title: '隐私政策',
-                subtitle: '查看本机数据与权限说明',
+                subtitle: '在浏览器中查看官方隐私政策',
                 onTap: () => onSelected(_HomeSettingsAction.privacyPolicy),
               ),
               Divider(height: 1, color: context.appColors.line),

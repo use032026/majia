@@ -1,6 +1,6 @@
-# PhotoReport website
+# JOVFX website
 
-Dependency-free static website for 现场照片记录 / Site Photo Log.
+Dependency-free static website for JOVFX on iPhone, iPad, and Android.
 
 ## Files
 
@@ -8,25 +8,33 @@ Dependency-free static website for 现场照片记录 / Site Photo Log.
 - `privacy.html`: bilingual privacy policy
 - `styles.css`: shared responsive and print styles
 - `site.js`: language preference, language-aware links, and mobile navigation
-- `assets/app-icon.png`: web copy of the current iOS marketing icon
+- `assets/app-icon.png`: JOVFX app icon
 - `assets/og.png`: social preview card
+- `assets/workspace-en.webp`, `assets/workspace-zh.webp`: current JOVFX workspace captures in English on iPhone and Simplified Chinese on Android
 
 ## Local preview
 
 Serve this directory with any static HTTP server and open `index.html`.
-Opening the HTML files directly also works, but an HTTP preview more closely
-matches production hosting.
+Use `?lang=en` or `?lang=zh` to preview a specific language. The language
+switch also saves your selection in browser storage.
 
-## Required before publishing
+The product page and privacy policy both list the independent developer and the
+public contact email `PadonSolmonson469@outlook.com`.
 
-1. Replace every Chinese and English operator/contact placeholder in
-   `index.html` and `privacy.html` with confirmed public details.
-2. Keep section 7's neutral network-log disclosure; no hosting provider name is
-   required.
-3. Use absolute production URLs for Open Graph images after the final domain is
-   known.
-4. Recheck the policy whenever app permissions, SDKs, storage, export, sync,
+## Production links
+
+- [JOVFX website](https://jovfx1.com/)
+- [Support](https://jovfx1.com/?lang=en#support)
+- [English privacy policy](https://jovfx1.com/privacy.html?lang=en)
+- [Simplified Chinese privacy policy](https://jovfx1.com/privacy.html?lang=zh)
+
+## Publication checklist
+
+1. Verify how the production host handles request logs and update the disclosure
+   in section 7 in both languages.
+2. Verify the public links and Open Graph image after deploying the site files.
+3. Recheck the policy whenever app permissions, SDKs, storage, export, sync,
    account, or analytics behavior changes.
-5. Have the final policy reviewed for the countries and regions where the app
+4. Have the final policy reviewed for the countries and regions where the app
    will be distributed. This repository draft is product-specific compliance
    content, not legal advice.

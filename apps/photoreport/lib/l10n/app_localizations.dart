@@ -147,7 +147,6 @@ class AppLocalizations {
   }
 
   static const Map<String, String> _english = {
-    '现场照片记录': 'Site Photo Log',
     '编号 · 标注 · 整理分享': 'Number · Mark up · Organize · Share',
     '本地数据': 'Local data',
     '设置与数据': 'Settings & data',
@@ -161,11 +160,11 @@ class AppLocalizations {
     '语言': 'Language',
     '隐私与支持': 'Privacy & support',
     '隐私政策': 'Privacy Policy',
-    '查看本机数据与权限说明': 'Review on-device data and permissions',
+    '在浏览器中查看官方隐私政策': 'View the official policy in your browser',
     '隐私概览': 'Privacy overview',
-    '“现场照片记录”是一款本地优先的照片记录工具。本政策说明本版本如何处理你在使用过程中提供的内容。':
-        'Site Photo Log is a local-first photo documentation tool. This policy explains how this version handles the content you provide while using it.',
-    '最后更新：2026 年 8 月 28 日': 'Last updated: August 28, 2026',
+    'JOVFX 是一款本地优先的照片记录工具。本政策说明本版本如何处理你在使用过程中提供的内容。':
+        'JOVFX is a local-first photo documentation tool. This policy explains how this version handles the content you provide while using it.',
+    '最后更新：2026 年 11 月 17 日': 'Last updated: November 17, 2026',
     '我们处理的信息': 'Information we process',
     '你主动输入的项目名称、地址、记录人、联系人、说明、负责人和期限。':
         'Project names, addresses, recorders, contacts, descriptions, assignees, and due dates that you enter.',
@@ -175,8 +174,8 @@ class AppLocalizations {
     '上述内容默认保存在本设备的应用沙盒中。本版本不提供账号、云同步、广告或分析服务，开发者服务器不会接收这些内容。':
         'This content is stored in the app sandbox on this device by default. This version does not provide accounts, cloud sync, advertising, or analytics, and developer servers do not receive this content.',
     '系统权限': 'System permissions',
-    '仅在你主动拍照时请求相机权限；仅在你主动选择照片时请求相册访问。拒绝权限只会使对应功能不可用。':
-        'Camera access is requested only when you choose to take a photo, and photo-library access only when you choose a photo. Denying access only makes the corresponding feature unavailable.',
+    '只有在你选择拍照或导入照片时，App 才会调用系统相机或照片选择器。如果系统提示授权，你可以拒绝。':
+        'The app uses the system camera or photo picker only when you choose to take or import a photo. You can decline any permission prompt shown by the system.',
     '分享与备份': 'Sharing and backups',
     'PDF 和本地备份均在设备上生成。只有当你主动使用系统分享面板时，文件才会发送给你选择的接收方或服务。':
         'PDF files and local backups are generated on the device. A file is sent to a recipient or service only when you choose it through the system share sheet.',
@@ -188,11 +187,15 @@ class AppLocalizations {
     '已导出的 PDF、备份或已分享的副本不在本应用控制范围内，需要由你在对应位置另行删除。':
         'Exported PDF files, backups, and shared copies are outside the app control and must be deleted separately from their respective locations.',
     '第三方服务': 'Third-party services',
-    '本版本使用 Flutter、iOS 系统相机、照片选择、文件预览和分享能力，不包含广告或用户行为分析 SDK。':
-        'This version uses Flutter and iOS system capabilities for the camera, photo selection, file preview, and sharing. It does not include advertising or user-behavior analytics SDKs.',
+    '本版本使用 Flutter 和设备提供的相机、照片选择、文件预览及分享功能，不包含广告或用户行为分析 SDK。':
+        'This version uses Flutter and device features for the camera, photo selection, file preview, and sharing. It does not include advertising or user-behavior analytics SDKs.',
+    '打开线上隐私政策时，系统浏览器会访问 JOVFX 官网。浏览器与网站托管服务可能处理连接信息。':
+        'Opening the online privacy policy visits the JOVFX website in your system browser. The browser and website host may process connection information.',
     '政策更新与联系': 'Policy updates and contact',
-    '如果功能或数据处理方式发生变化，我们会更新本政策。若有隐私问题，请通过 App Store 产品页提供的开发者联系方式联系我们。':
-        'We will update this policy if features or data practices change. For privacy questions, contact us using the developer contact details on the App Store product page.',
+    '如果功能或数据处理方式发生变化，我们会更新本政策。':
+        'We will update this policy if features or data practices change.',
+    '运营主体为独立开发者。若有隐私问题，请联系 PadonSolmonson469@outlook.com。':
+        'JOVFX is operated by an independent developer. For privacy questions, contact PadonSolmonson469@outlook.com.',
     '跟随系统': 'System default',
     '简体中文': '简体中文',
     '跳过': 'Skip',
@@ -483,7 +486,7 @@ class AppLocalizations {
     '备份中的项目格式错误': 'Project data in the backup has an invalid format',
     '备份中的记录格式错误': 'Record data in the backup has an invalid format',
     '备份中的照片格式错误': 'Photo data in the backup has an invalid format',
-    '这不是受支持的现场照片记录备份': 'This is not a supported Photo Records backup',
+    '这不是受支持的 JOVFX 备份': 'This is not a supported JOVFX backup',
   };
 }
 

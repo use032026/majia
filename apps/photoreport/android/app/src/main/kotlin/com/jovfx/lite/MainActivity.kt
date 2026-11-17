@@ -1,8 +1,10 @@
-package com.starburst.photoReport
+package com.jovfx.lite
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.FileProvider
@@ -54,6 +56,19 @@ class MainActivity : FlutterActivity() {
                 } else {
                     preferences.edit().putBoolean("onboardingComplete", complete).apply()
                     result.success(null)
+                }
+            }
+            "openPrivacyPolicy" -> {
+                val uri = call.argument<String>("url")?.let(Uri::parse)
+                if (uri == null || uri.scheme != "https" || uri.host != "jovfx1.com") {
+                    result.success(false)
+                    return
+                }
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, uri))
+                    result.success(true)
+                } catch (_: ActivityNotFoundException) {
+                    result.success(false)
                 }
             }
             "generateReport" -> {

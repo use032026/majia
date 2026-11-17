@@ -1,4 +1,4 @@
-package com.starburst.photoReport
+package com.jovfx.lite
 
 import android.app.Activity
 import android.graphics.Bitmap
