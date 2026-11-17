@@ -97,3 +97,18 @@ Android 8 项生产事件源的受控 JVM 调度回归、真实插件 Kotlin 编
 
 
 可复跑的 Android 受控调度测试源保存在 `packages/stmini_flutter/test_support/jvm`。在插件目录，用 Kotlin 2.1 / JDK 21 将 `test_support/jvm/AndroidOs.kt`、生产 `android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt` 与 `test_support/jvm/StminiRuntimeEventsCases.kt` 一起编译后运行其 main；stub 仅替代测试中的 Handler/Looper，不进入 Android main 编译或发行包。真实 Flutter channel target 位于 `test/platform/stmini_native_channel_main.dart`，仅显式测试构建使用；普通 `lib/main.dart` 无引用，不添加 integration_test 依赖或测试开关。
+
+
+## 2026-11-17：第二批 1.0.10 签名构建、正式送审与最终回查
+
+本条覆盖前文第二批本地验证时“待独立 Review、尚未提交/签名/送审”的历史状态。独立最终源码与本地 QA、跨端契约核对通过后，18 个文件精确提交并正常推送为 `193fc266eaa3277f1d6f69031beef26ecdffd4c5`。下列签名包、构建及商店动作均来自该源码；后续若仅追加本工程记录，其文档提交与此 IPA 来源分别追溯，不因此重新构建或送审。
+
+Deynu iOS Release #14 / `44008959464` 实际成功，来源 main / `193fc266eaa3277f1d6f69031beef26ecdffd4c5`，生成并上传 **1.0.10/build 1**。实际 IPA 为 **19,958,267 字节**，SHA256 为 `95bc5be1721be4ca7d4284fe41832e3bdf26f822e25e3d658af3ce308e3d9e8c`。独立实际验包确认 `com.almanac.lite`、arm64、最低 iOS 15.0，35 语言资源及 Privacy 逐字等源；Release 原生与 Dart AOT 中存在事件 transport、严格模型、startup 实际消费回调及地区解析标记，没有 test-only sentinel、完整 Mini/Web/下载容器或多余框架。`codesign --verify --deep --strict` 在可访问系统公共信任的环境中退出 0；该静态签名制品审核不等同物理设备或签名 App 的运行证明。
+
+送审前准确查询 #203 / `44010732469` 确认 App `6824457290`，版本 `1.0.10` / `11a30103-f973-435e-bead-9d2587ac281b`，附加 build `321bc11e-528e-4989-a64c-89cfb02a8e0d` / build 1 为 VALID 且未过期，release type 为 AFTER_APPROVAL。独立审核确认原正文与 5 张截图和 1.0.9 语义一致，en-US What's New 精确为 **`fix bug`**。本次只使用实际第二批 SDK 修复，不重复借用已上线的剪贴板修复；审核备注此次不填写，不读取或清空历史值。
+
+正式送审 #72 / `44011185245`（来源仍为 `193fc266`）实际成功。真实提交回执时间 `2026-11-17T03:35:09Z`（北京时间 **11:35:09**），`review_submitted=true`、`no_op=false`，审核提交 ID 为 `8c7afe2f-2b4a-4d7e-bbbc-625fb353f917`，返回提交状态 WAITING_FOR_REVIEW；不是只准备草稿或复用旧版提交。
+
+最终只读回查 #204 / `44011368663`（同来源）成功：`2026-11-17T03:36:40Z`（北京时间 **11:36:40**）准确回读同一 App、1.0.10、version ID 与 build ID，状态 **WAITING_FOR_REVIEW / QUEUED_FOR_REVIEW / AFTER_APPROVAL**，build 1 仍 VALID、未过期；`03:36:44Z` 元数据 errors 为空，en-US 文案仍精确 `fix bug`。该只读摘要的 `review_submission` 为 null、query error 为 null，不能作为再次核实 submission ID 的证据，也不表示撤回；上述真实 submission ID 明确来自 #72 正式回执。
+
+当前第二批已正式送审、等待苹果审核，**尚未获批、尚未发布**；自动发布配置不代表已公开。原首页、数据、主题/中英界面和隐私入口保持；完整接入储藏仍隔离，未恢复或作为隐藏资产混入本批。后续批次按各自真实范围与披露门禁推进，第五批仍仅本地完整验证、暂不送审。
