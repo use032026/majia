@@ -179,3 +179,18 @@ AOT 可达范围另行分层：实际检索保留 StminiStartup、StminiPackage�
 上传回执 artifact `14397184814` 在 `2026-11-18T04:23:52Z`（北京时间 **12:23:52**）确认 App `6824457290` / `com.almanac.lite`、1.0.11/build 1、build ID `130d4983-6020-41a3-a25a-f45dce28cfee`，`upload_accepted=true`、上传状态 **COMPLETE**、processing state **VALID**，上传 errors 为空。回执同时含非阻断此次 VALID 的 warning **90725**：该包使用 iOS 26.4 SDK，提示自 2027 年 4 月起上传要求 iOS 27 SDK 或更新版本。保留该后续 SDK 要求提示，不将本次警告改写成上传失败或全无警告。
 
 当前签名工作流、实际 IPA 独立静态验包与上传已完成；公开说明及审核说明的新具体方案仍待用户决定。拟案 `Local rendering infrastructure improvements.` 及内部 local-only HTML/CSS/JavaScript 执行边界说明尚未获得批准，不记录为已经改写；原首页和 daily reflection/verse/leaf/folio 用途不变，无产品 Mini 页面、远程激活、下载代码或产品测试 fixture。本阶段没有创建候选 App Store 版本、绑定该 build 或正式送审，也未获批或上线。此前两批已公开与本候选状态分开；第三批仍未完成发行，第五批仅本地限制保持。
+
+
+## 2026-11-18：第三批 1.0.11 已正式送审（等待审核，尚未获批或上线）
+
+本条更新前文“发行决定待完成、未创建店版/绑定/正式送审”的阶段状态。用户最新明确“暂不改文案，先送审，最后一批改文案”：本次公开更新说明保持精确 en-US `fix bug`，不采用此前拟案，不新增审核备注，也不清除历史备注；第五批仍仅本地。独立发行门禁审核已通过，P1=0/P2=0。原首页与 daily reflection/verse/leaf/folio 用途及前文原生编入/API、AOT 未消费 renderer、没有产品 Mini 入口的事实边界不变，本条不新增线上 Bug 已发生的声明。
+
+制品来源继续固定为源码 `4983b26eed8bbfc312491e5d293a7b310717a3b6`，实际签名 IPA 仍是 1.0.11/build 1、20,123,926 字节、SHA256 `151b0ddde7f1cabf15a850165572fc5b3bb31a6a66bc11124ace585e72c262e4`。前次工程日志提交 `6dde505cca53dc18171f8135808a94ecfb77326c`、后续审核备注工具提交 `c8e99a60727d0454fb4239a86d699ccfae97dcc6`，以及包含本条的后续纯文档提交均独立追溯，不能替换签名源码身份。没有为文档或工具重新构建、签名或上传该 IPA；审核备注工具本轮运行数为 0，未执行 apply。
+
+现有 build 发行准备 #73 / `44247492940` 成功，创建 App Store version `bac3b2d9-28c8-4135-b8c0-625fa9e92f0f` 并绑定原 build `130d4983-6020-41a3-a25a-f45dce28cfee`，设置审核通过后自动发布；当时 `review_submitted=false`，只作为准备，不当作送审。独立门禁核对精确 App `6824457290` / `com.almanac.lite`、1.0.11/build 1、`AFTER_APPROVAL`、同一 VALID 且未过期 build，以及 en-US `fix bug` 已写入并读回。正文与五个媒体资产的有效内容及顺序对照原 1.0.10 保持，新版本对象 ID 可不同；正文/媒体更新开关均为 false。备注保持的证据是已核固定脚本分支及本轮无写入/无清除路径，未直接读取或逐字比较私密历史备注值。
+
+随后仅一次正式送审：existing-build 发行 #74 / `44248853130`，实际回执 artifact `14402797855`。`2026-11-18T06:06:38Z`（北京时间 **14:06:38**）的 `asc-review-submission` 记录 `review_submitted=true`、`no_op=false`，submission ID `b0b92422-239b-4bfb-aefa-0943d96ac06d`、状态 `WAITING_FOR_REVIEW`；身份仍为上述 App、version 和 build。此处依据真实提交回执，不将工作流派发成功或准备完成当作已经送审。
+
+最终只读回查 #216 / `44249151572` / artifact `14403505420` 已 completed/success：`2026-11-18T06:09:01Z` 状态与 `06:09:04Z` metadata 均对应同一 App、1.0.11/build 1、version `bac3b2d9-28c8-4135-b8c0-625fa9e92f0f`、build `130d4983-6020-41a3-a25a-f45dce28cfee`，版本 **WAITING_FOR_REVIEW**、release type **AFTER_APPROVAL**，build **VALID**、`expired=false`，en-US 更新说明精确为 `fix bug`，metadata errors 为空。该只读状态中的 review-submission relationship 为 null，仅表示此关系查询未给出对象，不推翻前述真实提交回执，不据此重复提交。
+
+第三批当前结论是**已正式送审、等待审核**，尚未获批或公开上线；`AFTER_APPROVAL` 表示审核通过后的发布策略，不是现在已经发布。前述 90725 未来 SDK 要求仍保留为警告，当前 build VALID。此次只收集真实发行回执与精确终读，没有重跑 SDK/设备测试，也没有改变此前签名制品和本地验证的已说明限制。
