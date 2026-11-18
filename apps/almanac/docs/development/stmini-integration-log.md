@@ -164,3 +164,18 @@ Android v6 真实 OS 执行 108 项库存及 42 项 Looper/plugin 场景，并�
 最终 Android 13/API33 任务模拟器 v14 使用本机 `host` GPU，在同一 APK 上，生产默认 Impeller/OpenGLES 与仅测试 intent 的 Skia 两段均取得完整控制回执和 terminal 前真实屏幕：Flutter header、本地 JS 标题、CSS、按钮、二页链接都可见；同设备普通 main 两图也可见。此前 `swiftshader_indirect` 环境的黑图及测试签名/日志截断失败保留，结论仅限已观测的 GPU 环境差异，不宣称已定某个驱动内部根因、HC 或休眠是唯一原因。没有为测试修改生产 renderer backend/manifest。普通 main 已重建恢复，fixture 根清、本任务 AVD/私有目录已删除，既有设备与全局 adb 未改。
 
 双端列明 12 条本地 JS 网络尝试有真实终态、loopback 正控 1→攻击 0、无远程代码执行；这不证明所有浏览器通道封闭，WebRTC/UDP/DNS 与物理设备未覆盖。当前是本地开发验证完成，待最终冻结后的独立 QA/跨端核对，尚无第三批提交、推送、签名 IPA、上传或送审；新增内容执行能力的发行说明与审核访问仍由独立发行门禁决定，不因本地通过直接放行。第 5 批仍仅本地。
+
+
+## 2026-11-18：第三批 1.0.11 签名上传（验包通过，发行决定待完成）
+
+本条更新前文第三批本地验证阶段“尚未提交/签名/上传”的历史状态。冻结的本地只读库存与显式 renderer 已经独立最终 QA、跨端核对通过，P1=0/P2=0，38 个路径精确中文提交并普通推送为 `4983b26eed8bbfc312491e5d293a7b310717a3b6`，父提交为 `de25bfc47fe09a0abc9870fe5f1171ee3ff2390f`。以下签名 IPA 的源码身份固定为 `4983b26`；本条后续纯文档提交与该身份分开，不据文档提交重新构建、上传或送审。
+
+唯一 Deynu iOS Release #15 / `44235836404` / job `134571642683` 在 `2026-11-18T04:25:40Z` 的最终只读回查确认为 **completed/success**，source head 为 `4983b26`，run updated_at 为 `04:24:05Z`；构建与上传步骤均成功。签名制品 artifact `14398140124` 的实际 IPA 为 **1.0.11/build 1**、**20,123,926 字节**，SHA256 为 `151b0ddde7f1cabf15a850165572fc5b3bb31a6a66bc11124ace585e72c262e4`；build-metadata 同时记录 source `4983b26eed8bbfc312491e5d293a7b310717a3b6`、run attempt 1。实际下载的同一 IPA 已经独立静态制品与上传身份审核通过，P1=0/P2=0：Info 为 com.almanac.lite/1.0.11+1、最低 iOS 15.0；六个实际 Mach-O 均为 arm64，无模拟器 slice。App.framework/App 有四个 VM/isolate data/instruction snapshot 符号且无 kernel_blob，属于设备 Release AOT。原生插件实际包含 LocalMiniViewFactory、LocalMiniView、LocalMiniResource、LocalPackageInventory，Runner 链接插件、插件链接系统 WebKit；工厂注册链与冻结源码一致。35 语言资源和 Privacy 逐字等源码 `4983b26`，实际包中没有测试 fixture、test target sentinel 或测试 kernel。
+
+AOT 可达范围另行分层：实际检索保留 StminiStartup、StminiPackage、installedPackages 与 foundation_initialized；未检出未消费的 StminiLocalView/Controller/channel 及部分内存诊断字符串。普通 main/startup 只消费初始化、事件与库存，并未创建 renderer Widget/controller 或产品 Mini 页面入口；Release 优化/树摇与该检索结果一致属于推断，字符串缺失不是穷尽调用图证明。原生 renderer 已编入并注册，不等于签名 IPA 新增可达 Mini UI；此前 source SDK 与 test target 的真实双端页面执行证据不能改称这次签名 IPA 已运行新页面。
+
+严格 deep 签名验证初轮受限环境的 CSSMERR_TP_NOT_TRUSTED、entitlement display 的 invalid blob/no XML 警告均保留。独立解析实际签名 XML slot 有效；获得公共系统安全服务访问后，strict verify 与 entitlement display 均实际退出 0，XML 与实际 slot 一致，application bundle/team 前缀匹配、get-task-allow=false、beta-reports-active=true，不再有 invalid blob 警告，仅保留旧冒号输出语法的 deprecated 提示。该复核不改信任或提取 profile/证书/key；初始受限读行为不改写成签名制品缺陷。审核结论只覆盖静态 arm64/AOT/native/resources/签名与上传身份，没有执行签名 App 或物理机运行，也不由此自动批准商店写入。
+
+上传回执 artifact `14397184814` 在 `2026-11-18T04:23:52Z`（北京时间 **12:23:52**）确认 App `6824457290` / `com.almanac.lite`、1.0.11/build 1、build ID `130d4983-6020-41a3-a25a-f45dce28cfee`，`upload_accepted=true`、上传状态 **COMPLETE**、processing state **VALID**，上传 errors 为空。回执同时含非阻断此次 VALID 的 warning **90725**：该包使用 iOS 26.4 SDK，提示自 2027 年 4 月起上传要求 iOS 27 SDK 或更新版本。保留该后续 SDK 要求提示，不将本次警告改写成上传失败或全无警告。
+
+当前签名工作流、实际 IPA 独立静态验包与上传已完成；公开说明及审核说明的新具体方案仍待用户决定。拟案 `Local rendering infrastructure improvements.` 及内部 local-only HTML/CSS/JavaScript 执行边界说明尚未获得批准，不记录为已经改写；原首页和 daily reflection/verse/leaf/folio 用途不变，无产品 Mini 页面、远程激活、下载代码或产品测试 fixture。本阶段没有创建候选 App Store 版本、绑定该 build 或正式送审，也未获批或上线。此前两批已公开与本候选状态分开；第三批仍未完成发行，第五批仅本地限制保持。
