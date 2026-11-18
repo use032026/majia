@@ -11,6 +11,9 @@ import '../services/platform_services.dart';
 import 'widgets/address_picker.dart';
 import 'widgets/brand_mark.g.dart';
 
+part 'supporting_pages.dart';
+part 'workbench_results.dart';
+
 const _brandName = 'ISDFX';
 const _brandRed = Color(0xffd92432);
 const _brandCharcoal = Color(0xff17191d);
@@ -100,6 +103,17 @@ class IdFixtureApp extends StatelessWidget {
       onPrimary: dark ? _brandCharcoal : Colors.white,
       surface: dark ? const Color(0xff23252a) : Colors.white,
       onSurface: dark ? const Color(0xfff5f4f5) : _brandCharcoal,
+      onSurfaceVariant: dark
+          ? const Color(0xffc2bfc5)
+          : const Color(0xff5f5860),
+      outline: dark ? const Color(0xff929098) : const Color(0xff827b82),
+      outlineVariant: dark ? const Color(0xff414149) : const Color(0xffdfdbde),
+      surfaceContainerLow: dark
+          ? const Color(0xff2c2e34)
+          : const Color(0xfff5f3f3),
+      surfaceContainerHighest: dark
+          ? const Color(0xff3c3d45)
+          : const Color(0xffede9eb),
     );
     return ThemeData(
       colorScheme: scheme,
@@ -117,18 +131,31 @@ class IdFixtureApp extends StatelessWidget {
         color: scheme.surface,
         shape: RoundedRectangleBorder(
           side: BorderSide(color: scheme.outlineVariant),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        filled: true,
+        fillColor: scheme.surfaceContainerLow,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: scheme.outlineVariant),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 15,
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: scheme.surfaceContainerLow,
+        selectedColor: scheme.primary.withValues(alpha: .11),
+        checkmarkColor: scheme.primary,
+        side: BorderSide(color: scheme.outlineVariant),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        labelStyle: TextStyle(
+          color: scheme.onSurface,
+          fontWeight: FontWeight.w500,
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -213,167 +240,6 @@ class _MarkPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _MarkPainter oldDelegate) => false;
-}
-
-class _Onboarding extends StatefulWidget {
-  const _Onboarding({required this.settings, this.replay = false});
-  final AppSettings settings;
-  final bool replay;
-
-  @override
-  State<_Onboarding> createState() => _OnboardingState();
-}
-
-class _OnboardingState extends State<_Onboarding> {
-  int _page = 0;
-  bool _saving = false;
-
-  Future<void> _finish() async {
-    if (_saving) return;
-    setState(() => _saving = true);
-    try {
-      if (widget.replay) {
-        Navigator.pop(context);
-      } else {
-        await widget.settings.completeOnboarding();
-      }
-    } catch (error) {
-      if (!mounted) return;
-      await _notice(
-        context,
-        title: _text(context, '无法保存引导状态', 'Could not save setup'),
-        message: _errorText(context, error),
-      );
-    } finally {
-      if (mounted) setState(() => _saving = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final bottom = math.max(24.0, MediaQuery.viewPaddingOf(context).bottom);
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: widget.replay,
-        actions: [
-          TextButton(
-            key: const ValueKey('onboarding.skip'),
-            onPressed: _saving ? null : _finish,
-            child: Text(_text(context, '跳过', 'Skip')),
-          ),
-          const SizedBox(width: 12),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(28, 16, 28, bottom),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: math.max(0, constraints.maxHeight - 16 - bottom),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const _Mark(size: 76),
-                const SizedBox(height: 36),
-                Text(
-                  _brandName,
-                  style: TextStyle(
-                    fontSize: 12,
-                    letterSpacing: 1.6,
-                    color: scheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  _page == 0
-                      ? _text(
-                          context,
-                          '测试号码，\n也要有上下文。',
-                          'Test numbers,\nwith context.',
-                        )
-                      : _text(
-                          context,
-                          '把一次测试，\n变成可复现的用例。',
-                          'Keep the context.\nReplay the test.',
-                        ),
-                  style: const TextStyle(
-                    fontSize: 31,
-                    fontWeight: FontWeight.w600,
-                    height: 1.25,
-                    letterSpacing: -.8,
-                  ),
-                ),
-                const SizedBox(height: 22),
-                Text(
-                  _page == 0
-                      ? _text(
-                          context,
-                          '按国家、证件与已支持的规则，在本地生成测试样例。每个结果都会说明检查范围与未知项。',
-                          'Choose a country, document and supported rule. Generate locally, then inspect what was checked and what remains unknown.',
-                        )
-                      : _text(
-                          context,
-                          '导出用例包，保留参数和规则版本；再次打开，重新计算同一组结果。无需账号，也不上传号码。',
-                          'Export a test package with its parameters and rule versions. Open it later to recalculate the same results. No account or number uploads.',
-                        ),
-                  style: TextStyle(
-                    color: scheme.onSurfaceVariant,
-                    fontSize: 16,
-                    height: 1.7,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _ScopeNote(compact: true),
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    for (var i = 0; i < 2; i++)
-                      Container(
-                        width: i == _page ? 24 : 7,
-                        height: 7,
-                        margin: const EdgeInsets.only(right: 6),
-                        decoration: BoxDecoration(
-                          color: i == _page
-                              ? scheme.primary
-                              : scheme.outlineVariant,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    key: ValueKey(
-                      _page == 0 ? 'onboarding.next' : 'onboarding.complete',
-                    ),
-                    onPressed: _saving
-                        ? null
-                        : _page == 0
-                        ? () => setState(() => _page = 1)
-                        : _finish,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(
-                        _page == 0
-                            ? _text(context, '继续', 'Continue')
-                            : _text(context, '开始使用', 'Get started'),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _Workbench extends StatefulWidget {
@@ -480,9 +346,6 @@ class _WorkbenchState extends State<_Workbench> {
 
   String _name(RuleProfile profile) =>
       _chinese(context) ? profile.nameZh : profile.nameEn;
-
-  String _checkName(RuleCheck check) =>
-      _chinese(context) ? check.labelZh : check.labelEn;
 
   String _modeName(String mode) => switch (mode) {
     'length' => _text(context, '长度错误', 'Wrong length'),
@@ -788,17 +651,21 @@ class _WorkbenchState extends State<_Workbench> {
     required String value,
     required VoidCallback? onTap,
   }) => Padding(
-    padding: const EdgeInsets.only(bottom: 18),
+    padding: const EdgeInsets.only(bottom: 12),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _Label(label),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         OutlinedButton(
           key: key,
           onPressed: onTap,
           style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
           ),
           child: Row(
             children: [
@@ -807,6 +674,7 @@ class _WorkbenchState extends State<_Workbench> {
                   value,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -877,40 +745,33 @@ class _WorkbenchState extends State<_Workbench> {
     return parts.where((entry) => entry.isNotEmpty).join(' · ');
   }
 
-  Widget _configuration() {
+  Widget _documentSection() {
     final scheme = Theme.of(context).colorScheme;
-    final address = _profile.addressCodes.where((a) => a.code == _address);
     return _Panel(
-      title: _text(context, '配置用例', 'Configure cases'),
-      step: '01',
+      title: _text(context, '证件与地区', 'Document and region'),
+      icon: CupertinoIcons.person_crop_rectangle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _Label(_text(context, '国家 / 地区', 'Country / region')),
+          _Label(_text(context, '国家', 'Country')),
           const SizedBox(height: 9),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          _CountrySelector(
+            buttons: [
               for (final country in ['CN', 'US', 'VN'])
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: country == 'VN' ? 0 : 8),
-                    child: _CountryButton(
-                      key: ValueKey('country.$country'),
-                      code: country,
-                      label: switch (country) {
-                        'CN' => _text(context, '中国', 'China'),
-                        'US' => _text(context, '美国', 'United States'),
-                        _ => _text(context, '越南', 'Vietnam'),
-                      },
-                      selected: _country == country,
-                      onTap: () => _countryChanged(country),
-                    ),
-                  ),
+                _CountryButton(
+                  key: ValueKey('country.$country'),
+                  code: country,
+                  label: switch (country) {
+                    'CN' => _text(context, '中国', 'China'),
+                    'US' => _text(context, '美国', 'United States'),
+                    _ => _text(context, '越南', 'Vietnam'),
+                  },
+                  selected: _country == country,
+                  onTap: _busy ? null : () => _countryChanged(country),
                 ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
           if (_country == 'CN') ...[
             _Label(_text(context, '区域', 'Region')),
             const SizedBox(height: 8),
@@ -932,30 +793,78 @@ class _WorkbenchState extends State<_Workbench> {
                   ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
           ],
           _selection(
             key: const ValueKey('document.select'),
-            label: _text(context, '本工具支持的证件', 'Documents supported here'),
+            label: _text(context, '证件类型', 'Document type'),
             value: _name(_profile),
             onTap: _busy ? null : _pickDocument,
           ),
           Container(
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
             decoration: BoxDecoration(
-              color: scheme.primary.withValues(alpha: .07),
-              borderRadius: BorderRadius.circular(9),
+              color: scheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
-              _chinese(context) ? _profile.coverageZh : _profile.coverageEn,
-              style: TextStyle(
-                color: scheme.primary,
-                fontSize: 12,
-                height: 1.5,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _chinese(context) ? _profile.coverageZh : _profile.coverageEn,
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 13,
+                    height: 1.45,
+                  ),
+                ),
+                TextButton(
+                  key: const ValueKey('rule.current'),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    alignment: Alignment.centerLeft,
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => _RuleDetail(
+                        profile: _profile,
+                        services: widget.services,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          _text(context, '规则与来源', 'Rule and sources'),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Icon(CupertinoIcons.chevron_right, size: 12),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _parameterSection() {
+    final scheme = Theme.of(context).colorScheme;
+    final address = _profile.addressCodes.where(
+      (entry) => entry.code == _address,
+    );
+    return _Panel(
+      title: _text(context, '证件参数', 'Document parameters'),
+      icon: CupertinoIcons.slider_horizontal_3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           if (_profileId == 'us-ny-dmv')
             _selection(
               key: const ValueKey('state.select'),
@@ -1068,380 +977,275 @@ class _WorkbenchState extends State<_Workbench> {
                 style: TextStyle(color: scheme.onSurfaceVariant, height: 1.5),
               ),
             ),
-          _Label(_text(context, '测试场景', 'Test scenario')),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ChoiceChip(
-                key: const ValueKey('scenario.positive'),
-                label: Text(_text(context, '规则正例', 'Rule-positive')),
-                selected: _mode == 'positive',
-                onSelected: !_profile.enabled || _busy
-                    ? null
-                    : (_) {
-                        _mode = 'positive';
-                        _invalidate();
-                      },
-              ),
-              ChoiceChip(
-                key: const ValueKey('scenario.negative'),
-                label: Text(_text(context, '定向反例', 'Targeted negative')),
-                selected: _mode != 'positive',
-                onSelected: !_profile.enabled || _busy
-                    ? null
-                    : (_) {
-                        _mode = 'length';
-                        _invalidate();
-                      },
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          if (_mode != 'positive' && _profile.enabled)
-            _selection(
-              key: const ValueKey('mutation.select'),
-              label: _text(context, '预期不通过的规则', 'Expected failing rule'),
-              value: _modeName(_mode),
-              onTap: _busy
-                  ? null
-                  : () async {
-                      final selected = await _choose(
-                        context,
-                        title: _text(
-                          context,
-                          '预期不通过的规则',
-                          'Expected failing rule',
-                        ),
-                        options: [
-                          for (final mode in _profile.modes.where(
-                            (m) => m != 'positive',
-                          ))
-                            (mode, _modeName(mode)),
-                        ],
-                      );
-                      if (!mounted || selected == null) return;
-                      _mode = selected;
-                      _invalidate();
-                    },
-            ),
-          TextField(
-            key: const ValueKey('count.input'),
-            controller: _count,
-            enabled: !_busy && _profile.enabled,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelText: _text(context, '生成数量', 'Quantity'),
-              helperText: _text(
-                context,
-                '1—100条；仅批内去重',
-                '1–100 cases; unique within this batch only',
-              ),
-              helperMaxLines: 3,
-            ),
-            onChanged: (_) => _invalidate(),
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            key: const ValueKey('seed.input'),
-            controller: _seed,
-            enabled: !_busy && _profile.enabled,
-            autocorrect: false,
-            enableSuggestions: false,
-            maxLength: 64,
-            decoration: InputDecoration(
-              labelText: _text(context, '复现种子', 'Replay seed'),
-              helperText: _text(
-                context,
-                '保留原字符，相同版本下可复现。',
-                'Preserved verbatim for same-version replay.',
-              ),
-              helperMaxLines: 3,
-            ),
-            onChanged: (_) => _invalidate(),
-          ),
-          if (_error != null) ...[
-            const SizedBox(height: 16),
-            Semantics(
-              liveRegion: true,
-              child: Text(
-                _error!,
-                key: const ValueKey('form.error'),
-                style: TextStyle(color: scheme.error),
-              ),
-            ),
-          ],
-          const SizedBox(height: 20),
-          FilledButton.icon(
-            key: const ValueKey('generate.button'),
-            onPressed: _profile.enabled && !_busy ? _generate : null,
-            icon: const Icon(CupertinoIcons.arrow_right, size: 18),
-            label: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Text(
-                _profile.enabled
-                    ? _text(context, '生成测试用例', 'Generate test cases')
-                    : _text(context, '现行规则待核实', 'Current rules pending review'),
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _case(FixtureCase item, int index) {
-    final scheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: scheme.outlineVariant)),
+  Widget _generationSection() => _Panel(
+    title: _text(context, '生成设置', 'Generation settings'),
+    icon: CupertinoIcons.square_stack,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Label(_text(context, '测试场景', 'Test scenario')),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            ChoiceChip(
+              key: const ValueKey('scenario.positive'),
+              label: Text(_text(context, '规则正例', 'Rule-positive')),
+              selected: _mode == 'positive',
+              onSelected: !_profile.enabled || _busy
+                  ? null
+                  : (_) {
+                      _mode = 'positive';
+                      _invalidate();
+                    },
+            ),
+            ChoiceChip(
+              key: const ValueKey('scenario.negative'),
+              label: Text(_text(context, '定向反例', 'Targeted negative')),
+              selected: _mode != 'positive',
+              onSelected: !_profile.enabled || _busy
+                  ? null
+                  : (_) {
+                      _mode = 'length';
+                      _invalidate();
+                    },
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                spacing: 10,
-                runSpacing: 6,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(
-                    'CASE ${(index + 1).toString().padLeft(3, '0')}',
-                    style: TextStyle(
-                      color: scheme.onSurfaceVariant,
-                      fontSize: 11,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  _Tag(
-                    _batch!.config['mode'] == 'positive'
-                        ? _text(context, '规则正例', 'Rule-positive')
-                        : _text(context, '定向反例', 'Targeted negative'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SelectableText(
-                      item.value,
-                      key: ValueKey('case.value.$index'),
-                      style: const TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 21,
-                        fontWeight: FontWeight.w500,
-                        height: 1.6,
+        const SizedBox(height: 18),
+        if (_mode != 'positive' && _profile.enabled)
+          _selection(
+            key: const ValueKey('mutation.select'),
+            label: _text(context, '预期不通过的规则', 'Expected failing rule'),
+            value: _modeName(_mode),
+            onTap: _busy
+                ? null
+                : () async {
+                    final selected = await _choose(
+                      context,
+                      title: _text(
+                        context,
+                        '预期不通过的规则',
+                        'Expected failing rule',
                       ),
-                    ),
+                      options: [
+                        for (final mode in _profile.modes.where(
+                          (m) => m != 'positive',
+                        ))
+                          (mode, _modeName(mode)),
+                      ],
+                    );
+                    if (!mounted || selected == null) return;
+                    _mode = selected;
+                    _invalidate();
+                  },
+          ),
+        TextField(
+          key: const ValueKey('count.input'),
+          controller: _count,
+          enabled: !_busy && _profile.enabled,
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: _text(context, '生成数量', 'Quantity'),
+            helperText: _text(
+              context,
+              '1—100条；仅批内去重',
+              '1–100 cases; unique within this batch only',
+            ),
+            helperMaxLines: 3,
+          ),
+          onChanged: (_) => _invalidate(),
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          key: const ValueKey('seed.input'),
+          controller: _seed,
+          enabled: !_busy && _profile.enabled,
+          autocorrect: false,
+          enableSuggestions: false,
+          maxLength: 64,
+          decoration: InputDecoration(
+            labelText: _text(context, '复现种子', 'Replay seed'),
+            helperText: _text(
+              context,
+              '保留原字符，相同版本下可复现。',
+              'Preserved verbatim for same-version replay.',
+            ),
+            helperMaxLines: 3,
+          ),
+          onChanged: (_) => _invalidate(),
+        ),
+      ],
+    ),
+  );
+
+  bool get _hasDocumentParameters =>
+      _profileId == 'us-ny-dmv' ||
+      _profileId == 'hk-id' ||
+      _profile.addressCodes.isNotEmpty ||
+      _hasDate ||
+      _hasSex ||
+      _profile.archived;
+
+  Widget _workbenchHeader() {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final title = Text(
+      _text(context, '证件测试工作台', 'Test workbench'),
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 25,
+        fontWeight: FontWeight.w700,
+        height: 1.18,
+        letterSpacing: -.45,
+      ),
+    );
+    final import = OutlinedButton.icon(
+      key: const ValueKey('package.open'),
+      onPressed: _busy ? null : _import,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.white,
+        disabledForegroundColor: Colors.white54,
+        backgroundColor: Colors.white.withValues(alpha: .07),
+        side: BorderSide(color: Colors.white.withValues(alpha: .22)),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      icon: const Icon(CupertinoIcons.folder_open, size: 17),
+      label: Text(_text(context, '打开用例包', 'Open package')),
+    );
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: dark ? const Color(0xff282a30) : _brandCharcoal,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(17, 16, 17, 17),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final stacked =
+                constraints.maxWidth < 305 ||
+                MediaQuery.textScalerOf(context).scale(14) > 18;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (stacked)
+                  title
+                else
+                  Row(
+                    children: [
+                      Expanded(child: title),
+                      const SizedBox(width: 8),
+                      import,
+                    ],
                   ),
-                  IconButton(
-                    onPressed: () => _copy(item.value),
-                    tooltip: _text(context, '复制号码', 'Copy number'),
-                    icon: const Icon(CupertinoIcons.doc_on_doc, size: 19),
-                  ),
-                ],
-              ),
-              if (item.expectedFailureIds.isNotEmpty) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: 7),
                 Text(
-                  '${_text(context, '预期不通过', 'Expected failure')}: ${item.checks.where((c) => item.expectedFailureIds.contains(c.id)).map(_checkName).join(' · ')}',
-                  style: TextStyle(
-                    color: scheme.error,
-                    fontSize: 12,
-                    height: 1.6,
+                  _text(
+                    context,
+                    '按公开规则在本机生成可复现的证件号码。',
+                    'Generate reproducible test numbers from published rules, on device.',
+                  ),
+                  style: const TextStyle(
+                    color: Color(0xffd8d6db),
+                    fontSize: 13,
+                    height: 1.45,
                   ),
                 ),
+                if (stacked) ...[const SizedBox(height: 12), import],
               ],
-              Theme(
-                data: Theme.of(
-                  context,
-                ).copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  key: ValueKey('case.expand.$index'),
-                  tilePadding: EdgeInsets.zero,
-                  childrenPadding: const EdgeInsets.only(bottom: 5),
-                  visualDensity: VisualDensity.compact,
-                  title: Text(
-                    _text(context, '查看逐项检查', 'Inspect rule checks'),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                  children: [
-                    for (final check in item.checks)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                _checkName(check),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              switch (check.status) {
-                                'pass' => _text(context, '通过', 'Pass'),
-                                'fail' => _text(context, '未通过', 'Fail'),
-                                _ => _text(context, '未知', 'Unknown'),
-                              },
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: check.status == 'pass'
-                                    ? scheme.primary
-                                    : check.status == 'fail'
-                                    ? scheme.error
-                                    : scheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _generateBar() {
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        border: Border(top: BorderSide(color: scheme.outlineVariant)),
+      ),
+      child: SafeArea(
+        top: false,
+        minimum: const EdgeInsets.only(bottom: 8),
+        child: Center(
+          heightFactor: 1,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 680),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 9, 18, 3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_error != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Semantics(
+                        liveRegion: true,
+                        child: Text(
+                          _error!,
+                          key: const ValueKey('form.error'),
+                          style: TextStyle(color: scheme.error, height: 1.35),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                  FilledButton(
+                    key: const ValueKey('generate.button'),
+                    onPressed: _profile.enabled && !_busy ? _generate : null,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _profile.enabled
+                                  ? _text(
+                                      context,
+                                      '生成测试用例',
+                                      'Generate test cases',
+                                    )
+                                  : _text(
+                                      context,
+                                      '现行规则待核实',
+                                      'Current rules pending review',
+                                    ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          if (_profile.enabled) ...[
+                            const SizedBox(width: 8),
+                            const Icon(CupertinoIcons.arrow_right, size: 17),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _results() {
-    final batch = _batch;
-    return _Panel(
-      key: _resultKey,
-      title: _text(context, '生成结果', 'Results'),
-      step: '02',
-      child: batch == null
-          ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: Column(
-                children: [
-                  Text(
-                    '[ 018 ]',
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 35,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    _text(context, '下一组测试，从这里开始', 'Your next test starts here'),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 9),
-                  Text(
-                    _text(
-                      context,
-                      '生成后查看逐项检查，也可以打开用例包复现已有测试。',
-                      'Generate and inspect rule checks, or open a package to replay a previous test.',
-                    ),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      height: 1.6,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  _name(FixtureEngine.profile(batch.profileId)),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  '${batch.meta['profileVersion']}\n${_text(context, '种子', 'Seed')}: ${batch.config['seed']}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    height: 1.7,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                _Tag(
-                  '${_text(context, '已生成', 'Generated')} · ${batch.cases.length}',
-                ),
-                const SizedBox(height: 22),
-                for (var i = 0; i < math.min(_visible, batch.cases.length); i++)
-                  _case(batch.cases[i], i),
-                if (_visible < batch.cases.length)
-                  TextButton(
-                    key: const ValueKey('cases.more'),
-                    onPressed: () => setState(() => _visible += 5),
-                    child: Text(
-                      _text(context, '显示更多（5条）', 'Show more (5 cases)'),
-                    ),
-                  ),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    OutlinedButton(
-                      key: const ValueKey('copy.all'),
-                      onPressed: _busy
-                          ? null
-                          : () => _copy(
-                              batch.cases.map((c) => c.value).join('\n'),
-                            ),
-                      child: Text(_text(context, '复制全部号码', 'Copy all numbers')),
-                    ),
-                    Builder(
-                      builder: (buttonContext) => FilledButton.icon(
-                        key: const ValueKey('export.package'),
-                        onPressed: _busy ? null : () => _export(buttonContext),
-                        icon: const Icon(CupertinoIcons.share, size: 18),
-                        label: Text(_text(context, '导出用例包', 'Export package')),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  _text(
-                    context,
-                    'JSON包保留规则版本、参数和预期检查。可在系统分享中存到文件，供下次复现。',
-                    'The JSON package keeps versions, parameters and expected checks. Save it through the system share sheet for later replay.',
-                  ),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    height: 1.6,
-                  ),
-                ),
-              ],
-            ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final bottom = math.max(24.0, MediaQuery.viewPaddingOf(context).bottom);
+    final scheme = Theme.of(context).colorScheme;
+    final batch = _batch;
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 20,
+        titleSpacing: 18,
         title: const Row(
           children: [
             _Mark(size: 30),
@@ -1451,7 +1255,7 @@ class _WorkbenchState extends State<_Workbench> {
                 _brandName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             ),
           ],
@@ -1466,7 +1270,7 @@ class _WorkbenchState extends State<_Workbench> {
               ),
             ),
             tooltip: _text(context, '规则目录', 'Rule catalog'),
-            icon: const Icon(CupertinoIcons.list_bullet, size: 23),
+            icon: const Icon(CupertinoIcons.book, size: 21),
           ),
           IconButton(
             key: const ValueKey('settings.open'),
@@ -1477,130 +1281,119 @@ class _WorkbenchState extends State<_Workbench> {
               ),
             ),
             tooltip: _text(context, '偏好设置', 'Preferences'),
-            icon: const Icon(CupertinoIcons.slider_horizontal_3, size: 23),
+            icon: const Icon(CupertinoIcons.gear_alt, size: 22),
           ),
-          const SizedBox(width: 7),
+          const SizedBox(width: 8),
         ],
       ),
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: SingleChildScrollView(
-            controller: _scroll,
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.fromLTRB(20, 22, 20, bottom),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'TEST DATA, WITH CONTEXT.',
-                  style: TextStyle(
-                    fontSize: 10,
-                    letterSpacing: 1.6,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _text(
-                    context,
-                    '让每一组测试号码，\n都有据可循。',
-                    'Test numbers,\nwith a traceable basis.',
-                  ),
-                  style: const TextStyle(
-                    fontSize: 26,
-                    height: 1.4,
-                    letterSpacing: -.6,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 11),
-                Text(
-                  _text(
-                    context,
-                    '本地生成 · 无需账号 · 规则可追溯',
-                    'Local generation · No account · Traceable rules',
-                  ),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                if (widget.settings.storageWarning) ...[
-                  Semantics(
-                    liveRegion: true,
-                    child: Text(
-                      _text(
-                        context,
-                        '本地偏好暂不可用，当前会话可继续使用。重启后可能需要重新选择。',
-                        'Local preferences are unavailable. You can continue for this session; choices may need to be made again after restart.',
-                      ),
-                      key: const ValueKey('storage.warning'),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                        fontSize: 12,
-                        height: 1.6,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: OutlinedButton.icon(
-                    key: const ValueKey('package.open'),
-                    onPressed: _busy ? null : _import,
-                    icon: const Icon(CupertinoIcons.folder_open, size: 18),
-                    label: Text(_text(context, '打开用例包', 'Open test package')),
-                  ),
-                ),
-                const SizedBox(height: 22),
-                _configuration(),
-                const SizedBox(height: 20),
-                _results(),
-                const SizedBox(height: 22),
-                const _ScopeNote(),
-                const SizedBox(height: 18),
-                OutlinedButton.icon(
-                  key: const ValueKey('rule.current'),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (_) => _RuleDetail(
-                        profile: _profile,
-                        services: widget.services,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: LayoutBuilder(
+          builder: (context, constraints) => Column(
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 680),
+                    child: SingleChildScrollView(
+                      controller: _scroll,
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: const EdgeInsets.fromLTRB(18, 8, 18, 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _workbenchHeader(),
+                          const SizedBox(height: 14),
+                          if (widget.settings.storageWarning) ...[
+                            Semantics(
+                              liveRegion: true,
+                              child: Text(
+                                _text(
+                                  context,
+                                  '本地偏好暂不可用，当前会话可继续使用。重启后可能需要重新选择。',
+                                  'Local preferences are unavailable. You can continue for this session; choices may need to be made again after restart.',
+                                ),
+                                key: const ValueKey('storage.warning'),
+                                style: TextStyle(
+                                  color: scheme.error,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                          ],
+                          _documentSection(),
+                          if (_hasDocumentParameters) ...[
+                            const SizedBox(height: 12),
+                            _parameterSection(),
+                          ],
+                          const SizedBox(height: 12),
+                          _generationSection(),
+                          if (batch != null) ...[
+                            const SizedBox(height: 20),
+                            _GeneratedResults(
+                              key: _resultKey,
+                              batch: batch,
+                              visible: _visible,
+                              busy: _busy,
+                              onShowMore: () => setState(() => _visible += 5),
+                              onCopy: _copy,
+                              onExport: _export,
+                            ),
+                          ],
+                          const SizedBox(height: 20),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 3),
+                            child: _ScopeNote(compact: true),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  icon: const Icon(CupertinoIcons.doc_text_search, size: 19),
-                  label: Text(
-                    _text(
-                      context,
-                      '查看当前规则与来源',
-                      'View current rule and sources',
-                    ),
-                  ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  _text(
-                    context,
-                    '不上传号码，不连接实名核验服务。',
-                    'No number uploads or identity-verification services.',
-                  ),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    height: 1.7,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              if (constraints.maxHeight >= 230 ||
+                  MediaQuery.viewInsetsOf(context).bottom == 0)
+                _generateBar(),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CountrySelector extends StatelessWidget {
+  const _CountrySelector({required this.buttons});
+
+  final List<Widget> buttons;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(13),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth < 215 ||
+                MediaQuery.textScalerOf(context).scale(14) > 20) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: buttons,
+              );
+            }
+            return Row(
+              children: [for (final button in buttons) Expanded(child: button)],
+            );
+          },
         ),
       ),
     );
@@ -1615,10 +1408,11 @@ class _CountryButton extends StatelessWidget {
     required this.selected,
     required this.onTap,
   });
+
   final String code;
   final String label;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -1626,36 +1420,56 @@ class _CountryButton extends StatelessWidget {
     return Semantics(
       selected: selected,
       button: true,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 5),
-          decoration: BoxDecoration(
-            color: selected ? scheme.primary.withValues(alpha: .08) : null,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: selected ? scheme.primary : scheme.outlineVariant,
+      enabled: onTap != null,
+      label: label,
+      excludeSemantics: true,
+      onTap: onTap,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Ink(
+            decoration: BoxDecoration(
+              color: selected ? scheme.surface : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: selected
+                    ? scheme.primary.withValues(alpha: .45)
+                    : Colors.transparent,
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              Text(
-                code,
-                style: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 19,
-                  fontWeight: FontWeight.w600,
-                  color: selected ? scheme.primary : scheme.onSurfaceVariant,
-                ),
+            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 7),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 42),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    code,
+                    style: TextStyle(
+                      color: selected
+                          ? scheme.primary
+                          : scheme.onSurfaceVariant,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: scheme.onSurface,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      fontSize: 13,
+                      height: 1.2,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 3),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 12, height: 1.4),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -1664,51 +1478,56 @@ class _CountryButton extends StatelessWidget {
 }
 
 class _Panel extends StatelessWidget {
-  const _Panel({
-    super.key,
-    required this.title,
-    required this.step,
-    required this.child,
-  });
+  const _Panel({required this.title, required this.icon, required this.child});
+
   final String title;
-  final String step;
+  final IconData icon;
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => Card(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Text(
-                step,
-                style: TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: scheme.primary.withValues(alpha: .10),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Icon(icon, color: scheme.primary, size: 17),
                   ),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            child,
+          ],
         ),
-        Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
-        Padding(padding: const EdgeInsets.all(20), child: child),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
 class _Label extends StatelessWidget {
@@ -1722,30 +1541,6 @@ class _Label extends StatelessWidget {
       fontSize: 12,
       fontWeight: FontWeight.w600,
       color: Theme.of(context).colorScheme.onSurfaceVariant,
-    ),
-  );
-}
-
-class _Tag extends StatelessWidget {
-  const _Tag(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Align(
-    alignment: Alignment.centerLeft,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: .08),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 11,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
     ),
   );
 }
@@ -1801,344 +1596,4 @@ class _ScopeNote extends StatelessWidget {
       ],
     );
   }
-}
-
-class _RulesPage extends StatelessWidget {
-  const _RulesPage({required this.services});
-  final PlatformServices services;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(_text(context, '规则目录', 'Rule catalog'))),
-    body: ListView(
-      padding: EdgeInsets.fromLTRB(
-        20,
-        16,
-        20,
-        math.max(24, MediaQuery.viewPaddingOf(context).bottom),
-      ),
-      children: [
-        Text(
-          _text(
-            context,
-            '每个档案独立说明来源、版本和支持范围。未知项不会被当成通过。',
-            'Each profile records its sources, version and scope. Unknown checks never become passes.',
-          ),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            height: 1.6,
-          ),
-        ),
-        const SizedBox(height: 20),
-        for (final profile in FixtureEngine.profiles.where(
-          (entry) => !entry.archived,
-        )) ...[
-          Card(
-            child: ListTile(
-              key: ValueKey('rule.${profile.id}'),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 12,
-              ),
-              title: Text(_chinese(context) ? profile.nameZh : profile.nameEn),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  _chinese(context) ? profile.coverageZh : profile.coverageEn,
-                ),
-              ),
-              trailing: const Icon(CupertinoIcons.chevron_right, size: 16),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) =>
-                      _RuleDetail(profile: profile, services: services),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-        const SizedBox(height: 12),
-        Text(
-          _text(
-            context,
-            '旧版本 · 仅供已有用例包复现',
-            'Archived versions · for existing packages',
-          ),
-        ),
-        for (final profile in FixtureEngine.profiles.where(
-          (entry) => entry.archived,
-        ))
-          ListTile(
-            key: ValueKey('rule.${profile.id}'),
-            title: Text(_chinese(context) ? profile.nameZh : profile.nameEn),
-            subtitle: Text(profile.version),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (_) =>
-                    _RuleDetail(profile: profile, services: services),
-              ),
-            ),
-          ),
-      ],
-    ),
-  );
-}
-
-class _RuleDetail extends StatelessWidget {
-  const _RuleDetail({required this.profile, required this.services});
-  final RuleProfile profile;
-  final PlatformServices services;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(_text(context, '规则与来源', 'Rule and sources'))),
-    body: ListView(
-      padding: EdgeInsets.fromLTRB(
-        24,
-        20,
-        24,
-        math.max(24, MediaQuery.viewPaddingOf(context).bottom),
-      ),
-      children: [
-        _Tag(profile.country),
-        const SizedBox(height: 15),
-        Text(
-          _chinese(context) ? profile.nameZh : profile.nameEn,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 10),
-        SelectableText(
-          profile.version,
-          style: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          _chinese(context) ? profile.coverageZh : profile.coverageEn,
-          style: const TextStyle(fontSize: 16, height: 1.6),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          _chinese(context) ? profile.limitationsZh : profile.limitationsEn,
-          style: TextStyle(
-            height: 1.7,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 28),
-        const _ScopeNote(),
-        const SizedBox(height: 30),
-        Text(
-          _text(context, '公开来源', 'Public sources'),
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 12),
-        for (final source in profile.sources)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: OutlinedButton(
-              onPressed: () async {
-                try {
-                  await services.openSource(source.url);
-                } catch (error) {
-                  if (!context.mounted) return;
-                  await _notice(
-                    context,
-                    title: _text(context, '无法打开来源', 'Could not open source'),
-                    message: _errorText(context, error),
-                  );
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(child: Text(source.title)),
-                    const SizedBox(width: 10),
-                    const Icon(CupertinoIcons.arrow_up_right, size: 17),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        const SizedBox(height: 16),
-        Text(
-          _text(
-            context,
-            '资料核验日期：${['cn-id', 'hk-id', 'mo-id', 'tw-id', 'vn-id'].contains(profile.id) ? '2026-11-05' : '2026-11-04'}。打开外部来源需要联网，本地生成不需要。',
-            'Sources reviewed: ${['cn-id', 'hk-id', 'mo-id', 'tw-id', 'vn-id'].contains(profile.id) ? '2026-11-05' : '2026-11-04'}. External source pages need a connection; local generation does not.',
-          ),
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            height: 1.6,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _SettingsPage extends StatelessWidget {
-  const _SettingsPage({required this.settings});
-  final AppSettings settings;
-
-  Future<void> _save(
-    BuildContext context,
-    Future<void> Function() action,
-  ) async {
-    try {
-      await action();
-    } catch (error) {
-      if (!context.mounted) return;
-      await _notice(
-        context,
-        title: _text(context, '无法保存偏好', 'Could not save preference'),
-        message: _errorText(context, error),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: settings,
-    builder: (context, _) => Scaffold(
-      appBar: AppBar(title: Text(_text(context, '偏好设置', 'Preferences'))),
-      body: ListView(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          18,
-          20,
-          math.max(24, MediaQuery.viewPaddingOf(context).bottom),
-        ),
-        children: [
-          Text(
-            _text(
-              context,
-              '默认跟随系统，只保存明确选择的偏好。不保留号码历史；导出时会产生由系统缓存管理的临时副本。',
-              'Follows your system by default. Only explicit preferences are stored. Results are not kept as history; export creates a temporary copy managed by the system cache.',
-            ),
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              height: 1.7,
-            ),
-          ),
-          if (settings.storageWarning) ...[
-            const SizedBox(height: 15),
-            Text(
-              _text(
-                context,
-                '本地偏好暂不可用，当前选择可能无法在重启后保留。',
-                'Local preferences are unavailable. Current choices may not survive a restart.',
-              ),
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ],
-          const SizedBox(height: 24),
-          Card(
-            child: Column(
-              children: [
-                ListTile(
-                  key: const ValueKey('settings.language'),
-                  title: Text(_text(context, '界面语言', 'Interface language')),
-                  subtitle: Text(
-                    settings.locale?.languageCode == 'zh'
-                        ? '简体中文'
-                        : settings.locale?.languageCode == 'en'
-                        ? 'English'
-                        : _text(context, '跟随系统', 'Follow system'),
-                  ),
-                  trailing: const Icon(CupertinoIcons.chevron_down, size: 15),
-                  onTap: () async {
-                    final selected = await _choose(
-                      context,
-                      title: _text(context, '界面语言', 'Interface language'),
-                      options: [
-                        ('system', _text(context, '跟随系统', 'Follow system')),
-                        ('zh', '简体中文'),
-                        ('en', 'English'),
-                      ],
-                    );
-                    if (!context.mounted || selected == null) return;
-                    await _save(
-                      context,
-                      () => settings.setLanguage(
-                        selected == 'system' ? null : selected,
-                      ),
-                    );
-                  },
-                ),
-                const Divider(height: 1, indent: 16, endIndent: 16),
-                ListTile(
-                  key: const ValueKey('settings.theme'),
-                  title: Text(_text(context, '外观', 'Appearance')),
-                  subtitle: Text(switch (settings.themeMode) {
-                    ThemeMode.light => _text(context, '浅色', 'Light'),
-                    ThemeMode.dark => _text(context, '深色', 'Dark'),
-                    _ => _text(context, '跟随系统', 'Follow system'),
-                  }),
-                  trailing: const Icon(CupertinoIcons.chevron_down, size: 15),
-                  onTap: () async {
-                    final selected = await _choose(
-                      context,
-                      title: _text(context, '外观', 'Appearance'),
-                      options: [
-                        ('system', _text(context, '跟随系统', 'Follow system')),
-                        ('light', _text(context, '浅色', 'Light')),
-                        ('dark', _text(context, '深色', 'Dark')),
-                      ],
-                    );
-                    if (!context.mounted || selected == null) return;
-                    await _save(
-                      context,
-                      () => settings.setThemeMode(
-                        ThemeMode.values.firstWhere(
-                          (mode) => mode.name == selected,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Card(
-            child: ListTile(
-              key: const ValueKey('settings.replay'),
-              title: Text(_text(context, '重新查看使用引导', 'Replay introduction')),
-              subtitle: Text(
-                _text(context, '不改变已完成状态', 'Keeps your completed state'),
-              ),
-              trailing: const Icon(CupertinoIcons.arrow_up_right, size: 17),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute<void>(
-                  builder: (_) => _Onboarding(settings: settings, replay: true),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 28),
-          const _ScopeNote(),
-          const SizedBox(height: 28),
-          Text(
-            '$_brandName · 1.1.0\nLOCAL TEST WORKBENCH',
-            style: TextStyle(
-              fontSize: 11,
-              letterSpacing: 1,
-              height: 1.8,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }
