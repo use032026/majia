@@ -1,0 +1,104 @@
+name: Deynu Review Notes Only
+
+on:
+  workflow_dispatch:
+    inputs:
+      marketing_version:
+        description: Exact signed candidate marketing version (currently 1.0.11 only)
+        type: string
+        required: true
+      build_number:
+        description: Exact signed candidate build number (currently 1 only)
+        type: string
+        required: true
+      expected_asc_build_id:
+        description: Exact ASC build ID from the independent signed IPA/upload evidence
+        type: string
+        required: true
+      expected_current_notes_hash:
+        description: Required for apply; SHA256 of UTF-8 JSON.generate(current notes), null distinct
+        type: string
+        required: false
+      notes:
+        description: Optional desired review notes; apply requires nonempty approved content
+        type: string
+        required: false
+        default: ""
+      apply:
+        description: Explicitly PATCH only existing Deynu review notes after guards and pre-write reread
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+# Matches the existing Deynu ASC workflow group. This does not lock ASC clients outside Actions.
+concurrency:
+  group: majia-asc-almanac-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  review_notes:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    environment: almanac-production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Read or narrowly update existing review notes
+        shell: bash
+        env:
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          DEYNU_REVIEW_VERSION: ${{ inputs.marketing_version }}
+          DEYNU_REVIEW_BUILD: ${{ inputs.build_number }}
+          DEYNU_REVIEW_EXPECTED_BUILD_ID: ${{ inputs.expected_asc_build_id }}
+          DEYNU_REVIEW_EXPECTED_CURRENT_HASH: ${{ inputs.expected_current_notes_hash }}
+          DEYNU_REVIEW_APPLY: ${{ inputs.apply }}
+        run: |
+          ruby <<'RUBY'
+          require "json"
+          require "tempfile"
+          require "rbconfig"
+          status = 1
+          child_started = false
+          begin
+            # Runner prints step env before this script. Sensitive notes must
+            # come from the event file, never an expression in env or run.
+            ENV.delete("DEYNU_REVIEW_NOTES_TEXT")
+            require File.expand_path(".github/scripts/lib/deynu_review_notes", Dir.pwd)
+            event_path = ENV.fetch("GITHUB_EVENT_PATH")
+            raise ArgumentError if event_path.empty?
+            event_bytes = File.open(event_path, File::RDONLY | File::NOFOLLOW) do |event_file|
+              raise ArgumentError unless event_file.stat.file?
+              event_file.read(1_048_577)
+            end
+            # This is a local event-envelope bound, not an Apple field limit.
+            raise ArgumentError if event_bytes.bytesize > 1_048_576
+            event_bytes.force_encoding(Encoding::UTF_8)
+            raise ArgumentError unless event_bytes.valid_encoding?
+            event = JSON.parse(event_bytes)
+            raise ArgumentError unless event.is_a?(Hash) && event["inputs"].is_a?(Hash)
+            notes = event["inputs"].fetch("notes", "")
+            MajiaCI::DeynuReviewNotes.send(:validate_notes, notes, desired: true)
+            Tempfile.create(["deynu-review-notes-", ".txt"], ENV.fetch("RUNNER_TEMP")) do |file|
+              file.chmod(0o600)
+              file.write(notes)
+              file.flush
+              ENV["DEYNU_REVIEW_NOTES_FILE"] = file.path
+              child_started = true
+              system(RbConfig.ruby, ".github/scripts/sync-deynu-review-notes.rb")
+              status = $?.exitstatus || 1
+            end
+          rescue Exception
+            puts JSON.generate("status" => "failed", "error_code" => "configuration_or_evidence_io_failed",
+              "write_attempted" => child_started ? nil : false, "may_have_written" => child_started,
+              "write_outcome_unknown" => child_started, "verified" => false)
+          end
+          exit status
+          RUBY
