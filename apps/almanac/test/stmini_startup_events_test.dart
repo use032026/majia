@@ -28,6 +28,7 @@ void main() {
     () async {
       final events = StreamController<StminiEvent>.broadcast(sync: true);
       final startup = StminiStartup(
+        loadInstalledPackages: () async => const <StminiPackage>[],
         initialize: (_) async {},
         events: events.stream,
       );
@@ -59,6 +60,7 @@ void main() {
       final events = StreamController<StminiEvent>.broadcast(sync: true);
       var initializations = 0;
       final startup = StminiStartup(
+        loadInstalledPackages: () async => const <StminiPackage>[],
         initialize: (_) async {
           initializations += 1;
         },
@@ -85,6 +87,7 @@ void main() {
       final pending = Completer<void>();
       var initializations = 0;
       final old = StminiStartup(
+        loadInstalledPackages: () async => const <StminiPackage>[],
         initialize: (_) {
           initializations += 1;
           return pending.future;
@@ -95,6 +98,7 @@ void main() {
       await old.dispose();
       final afterDisposal = old.diagnostics;
       final fresh = StminiStartup(
+        loadInstalledPackages: () async => const <StminiPackage>[],
         initialize: (_) async {
           initializations += 1;
         },
@@ -126,6 +130,7 @@ void main() {
       );
       final pending = Completer<void>();
       final startup = StminiStartup(
+        loadInstalledPackages: () async => const <StminiPackage>[],
         initialize: (_) {
           initializations += 1;
           return pending.future;
@@ -201,6 +206,7 @@ void main() {
         bridgeContext: {'packageName': 'com.almanac.lite'},
       );
       final startup = StminiStartup(
+        loadInstalledPackages: () async => const <StminiPackage>[],
         initialize: (_) async {},
         events: StminiFlutter.events,
       );
@@ -230,7 +236,10 @@ void main() {
         return null;
       });
       addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
-      final startup = StminiStartup(initialize: (_) async {});
+      final startup = StminiStartup(
+        initialize: (_) async {},
+        loadInstalledPackages: () async => const <StminiPackage>[],
+      );
       await startup.initializeOnce();
       await Future<void>.delayed(Duration.zero);
       await startup.dispose();
@@ -239,7 +248,10 @@ void main() {
       messenger.setMockMethodCallHandler(channel, (_) async {
         throw PlatformException(code: 'fake_activation');
       });
-      final fresh = StminiStartup(initialize: (_) async {});
+      final fresh = StminiStartup(
+        initialize: (_) async {},
+        loadInstalledPackages: () async => const <StminiPackage>[],
+      );
       await fresh.initializeOnce();
       await Future<void>.delayed(Duration.zero);
       expect(fresh.diagnostics['lastIssue'], 'event_stream_failed');

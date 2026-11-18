@@ -112,3 +112,55 @@ Deynu iOS Release #14 / `44008959464` 实际成功，来源 main / `193fc266eaa3
 最终只读回查 #204 / `44011368663`（同来源）成功：`2026-11-17T03:36:40Z`（北京时间 **11:36:40**）准确回读同一 App、1.0.10、version ID 与 build ID，状态 **WAITING_FOR_REVIEW / QUEUED_FOR_REVIEW / AFTER_APPROVAL**，build 1 仍 VALID、未过期；`03:36:44Z` 元数据 errors 为空，en-US 文案仍精确 `fix bug`。该只读摘要的 `review_submission` 为 null、query error 为 null，不能作为再次核实 submission ID 的证据，也不表示撤回；上述真实 submission ID 明确来自 #72 正式回执。
 
 当前第二批已正式送审、等待苹果审核，**尚未获批、尚未发布**；自动发布配置不代表已公开。原首页、数据、主题/中英界面和隐私入口保持；完整接入储藏仍隔离，未恢复或作为隐藏资产混入本批。后续批次按各自真实范围与披露门禁推进，第五批仍仅本地完整验证、暂不送审。
+
+
+## 2026-11-18：第三批本地只读库存与来源校验修正（本地验证进行中）
+
+基线 main/de25bfc47fe09a0abc9870fe5f1171ee3ff2390f，已保留同期 photoreport 与根 README 的并行提交；本批仅改 Deynu 专用副本。来源继续固定 b4462f63a33acf6c3fff63f0e67b3713bc00dff8，完整接入 stash 不恢复。
+
+新增真正可调用的本地只读库存链：原生约定目录 → bounded manifest/installed record 校验 → 严格不可变五字段 Dart metadata → 初始化成功后的 startup 一次真实 SDK 查询。合法空库存来自真实读根目录，不创建 STMini 目录；查询失败与合法 count 0 分开。后台串行且单飞，原生 4 秒协作式截止与取消检查、startup 5 秒终态超时；detach/迟到结果不二次交付或影响新查询。内存诊断只留状态和数量，不留包路径、名字或链接，不写宿主数据。
+
+这次显式提取原 Android MiniPackageStore 与 iOS STWebResourceManager 中的只读数据/校验片段，不复制其网络、ZIP、安装、路由或渲染单体。两端统一顶层 List 与 manifest verified version，修正 pinned iOS Map envelope/缺版本的来源缺陷；每次重验、逐层拒绝 symlink/非普通文件，补上旧 iOS 空路径段与正缓存不重新验证等缺口。来源缺陷在接入前修正，不能称线上 Deynu 既有库存用户故障。新本地只读 metadata 能力在此如实记录，无新增远程加载或内容执行。
+
+阶段字段仅 miniId、miniName、version、entry、icon，不含完整宿主的 URL/launchLink；icon 可空，ID 是小写 ASCII，版本为 1–8 段且每段 1–9 位数字，仅精确字符串一致，不接比较器。name/path/channel 长度均以 UTF-16 code units 计；JSON 每份 64 KiB、最多 256 个非隐藏候选，路径逐段锚定于私有根。channel 若存在须与 record 一致，Android 历史 record 未携带而 manifest 携带 channel 的包在此严格阶段只读拒绝。它不是所有历史包兼容保证，不执行内容，也不称密码学真实性或敌对并发修改的原子快照。
+
+累计原样源仍 3 文件/217 行/10,040 字节；derived 4 文件/414 行/19,745 字节；本地生产 adapter/helper 6 文件/702 行/26,520 字节；App startup 187 行/6,205 字节单列。原分母 113/20,683/823,442 不变，原样比例仍 2.6549%/1.0492%/1.2193%，不据此声称功能百分比。新增库存参考片段与来源/集成 SHA 在 UPSTREAM.json 分别记录，不整份计入两大单体。
+
+常规 format 28 文件/0、analyze clean、全量 Flutter 99 项通过后追加库存/wire/生命周期 fake 定向 39 项通过；两者有重叠，不合计为 138 项。Android 最后生产插件 Kotlin compile 通过。iOS 首轮暴露插件 target iOS 13.0 与 FileHandle 新 API 的兼容问题，已改为有界 InputStream，不改最低版本或锁；新一轮普通 Simulator build 与真实 XCTest 15 项（原 6 项及本批 9 个测试方法，内部参数化多场景）通过，真实 Flutter-native inventory channel 完整 JSON passed=true/disposed=true、available/count0/unsupportedRejected=true，根目录前后均不存在；普通 main 已重建且专用模拟器已删除。Android OS fixtures/channel 及最终独立 QA 仍待完成，本条后续补结果；当前未提交、签名、上传或送审。
+
+默认原首页、日笺数据键/schema、主题/中英界面与隐私入口实现保持原样；不加 Mini 链接/自动打开/隐藏开关，不增加权限或宿主组件。第五批仍仅本地验证，实际签名 IPA/商店状态另设门禁，不以模拟器结果代替。
+
+
+第三批范围后续更新：用户已明确要求本次再加入 Mini 本地页面渲染。上述记录只描述当前已实现库存切片，整个第三批尚未冻结或完成；旧只读范围不能直接送审。渲染依赖、真实执行边界及验证将经新范围预核后继续记录在本文件，默认原首页及无自动/隐藏入口、无下载安装不变量保留。
+
+## 2026-11-18：第三批只读库存与显式本地 Mini renderer
+
+第三批仍只改 Deynu 专用副本，固定来源为 `stmini_flutter/main` 的 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`。库存查询统一为严格的五字段 List，每次复核 manifest/installed record、绑定身份与锚定普通文件，真实空目录不创建文件；来源 iOS Map/缺 version、路径和正向缓存缺口在移植前修正，不声称原线上 Deynu 已发生库存故障。生产 startup 初始化后只查询一次，只保内存状态/count，不打开 Mini 页面。
+
+本批新增显式 `StminiLocalView(miniId, version)`、双端真实 PlatformView factory 与受限本地 WebView。每实例 controller 仅接受无参 state/reload/goBack/close；ready 只表示当前受验本地主文档 commit，实际 DOM、资源和屏幕另验。Android 使用精确本包 HTTPS origin、`self` CSP 及禁网设置，iOS 使用 nonPersistent WKWebView、精确本 id scheme handler 与 `stmini:` CSP；后者不冒充 CSP 精确 host。逐资源身份、严格单次 UTF-8 路径解码、无链接普通文件、4 reader/8MiB/4 秒协作截止与零等待溢出拒绝均有边界；这不是整个 WebView 的内存限额。
+
+跨端 Unicode entry/channel 使用 UTF-16 逐字一致性；当前资源发现 version/entry 身份失效会使当前 generation failed/stop，普通缺图只拒绝该资源。跨文档/back/reload 创建新 WebView，以本包 history 和 generation 隔离旧事件；fragment 不制造 loading/8 秒超时。单 identity worker、取消/latest pending、当前 navigation/phase 校验与迟到回执隔离修正了本批独立预审发现。完整 openMini/openWeb、下载/安装、任意 URL/file/evaluateJS、原生 JSBridge、账号注入仍未接入；capability 显式区分 local_renderer 与完整 loading。原首页、存储/主题/双语/隐私及生产权限/组件保持原范围，无 Mini URL、隐藏开关或自动打开。
+
+### 累计来源计量
+
+| 分类 | 文件 | 物理行 | 字节 |
+| --- | ---: | ---: | ---: |
+| main 生产源码分母 | 113 | 20,683 | 823,442 |
+| 逐字原样生产源 | 3 | 217 | 10,040 |
+| 派生生产源 | 8 | 1,270 | 66,639 |
+| 本地生产 adapter/helper | 7 | 1,188 | 42,342 |
+| App startup 消费代码（另列） | 1 | 187 | 6,205 |
+
+40 份逐字来源文件包括上述 3 份代码、35 份语言 JSON、Privacy 与 LICENSE。renderer 的九份选段共 514 行/22,593 字节只作参考，不计完整原样移植或功能完成比例；`UPSTREAM.json` 的逐项来源/集成 hash、README 与本表已复核。没有为 20%/60% 比例携带未使用容器，LICENSE 仍保留来源 TODO 原文，不表示已核实外部分发许可。
+
+### 本地验证与限制
+
+Dart 生产实现冻结后，focus 1 项、全量 113 项、常规后 fake 53 项、analyze 与 format 31 文件通过；53 已包含于 113，不相加。后续只修 test-only Engine 宿主与日志回执，新增真实 Flutter 背景/header、首帧和布局诊断，静态分析及实际 target 编译运行通过，原返回/两轮重载/根 history/重复关闭断言保留。帧回执不代替截图；外部安装的 Engine fixture 将自动二页定时改为 20 秒，最终观察 15 秒，源码 fixture 不变，未加入产品资产或接口。
+
+iOS v5 实际 XCTest 23/0，真实本地 JS 生成指定 DOM、CSS、1px 图片、按钮、二页/back/reload/fragment、Unicode/身份失效、资源预算/取消、真实 8 秒 watchdog 与迟到释放/reload 均通过；真实 Preferences→App 往返、受控 renderer-loss delegate/reload 有证据。WK snapshot 与真实 FlutterEngine preterminal 图分别可见，不能把前者当物理机或整个原产品 UI E2E。mediaDevices 为 unavailable，不冒充系统权限弹窗已拒绝。后续当前 HC Dart 的普通 `lib/main.dart` iOS Simulator/debug/no-codesign 单次编译通过，35 语言/Privacy 逐字、原生类/WebKit 链接和普通 kernel 无测试 sentinel 均复核；debug Info 为 1.0.5/build 1，不是签名发行候选身份。
+
+Android v6 真实 OS 执行 108 项库存及 42 项 Looper/plugin 场景，并以生产 WebView 验 DOM/JS/CSS/image/button、列明安全尝试、Unicode/身份失效、实际 Activity 前后台同 view、受控 renderer loss、真实 8 秒 watchdog/late/reload 与资源边界。后续六份 native 输入 hash 未变，明确复用该证据，不声称每轮重跑。早期 Engine 控制链虽通过但截图全黑，始终未当作可见通过；加入显式 hybrid composition 和唤醒操作仍未证明能修复黑屏。默认 window/activity/surface 取证显示前台焦点、非零布局/真实 buffer、无 secure 截屏标志，仍不能单凭它们证明 paint。
+
+最终 Android 13/API33 任务模拟器 v14 使用本机 `host` GPU，在同一 APK 上，生产默认 Impeller/OpenGLES 与仅测试 intent 的 Skia 两段均取得完整控制回执和 terminal 前真实屏幕：Flutter header、本地 JS 标题、CSS、按钮、二页链接都可见；同设备普通 main 两图也可见。此前 `swiftshader_indirect` 环境的黑图及测试签名/日志截断失败保留，结论仅限已观测的 GPU 环境差异，不宣称已定某个驱动内部根因、HC 或休眠是唯一原因。没有为测试修改生产 renderer backend/manifest。普通 main 已重建恢复，fixture 根清、本任务 AVD/私有目录已删除，既有设备与全局 adb 未改。
+
+双端列明 12 条本地 JS 网络尝试有真实终态、loopback 正控 1→攻击 0、无远程代码执行；这不证明所有浏览器通道封闭，WebRTC/UDP/DNS 与物理设备未覆盖。当前是本地开发验证完成，待最终冻结后的独立 QA/跨端核对，尚无第三批提交、推送、签名 IPA、上传或送审；新增内容执行能力的发行说明与审核访问仍由独立发行门禁决定，不因本地通过直接放行。第 5 批仍仅本地。

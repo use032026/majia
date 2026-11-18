@@ -7,16 +7,24 @@ import 'package:stmini_flutter/stmini_flutter.dart';
 typedef StminiInitializer =
     Future<void> Function(Map<String, dynamic> bridgeContext);
 
+typedef StminiInventoryLoader = Future<List<StminiPackage>> Function();
+
 /// Initializes native foundation configuration without changing app data.
 class StminiStartup {
-  StminiStartup({StminiInitializer? initialize, Stream<StminiEvent>? events})
-    : _initialize = initialize ?? _initializeNative,
-      _events = events ?? StminiFlutter.events;
+  StminiStartup({
+    StminiInitializer? initialize,
+    Stream<StminiEvent>? events,
+    StminiInventoryLoader? loadInstalledPackages,
+  }) : _initialize = initialize ?? _initializeNative,
+       _events = events ?? StminiFlutter.events,
+       _loadInstalledPackages =
+           loadInstalledPackages ?? StminiFlutter.installedPackages;
 
   static final StminiStartup shared = StminiStartup();
 
   final StminiInitializer _initialize;
   final Stream<StminiEvent> _events;
+  final StminiInventoryLoader _loadInstalledPackages;
   Future<void>? _initialization;
   StreamSubscription<StminiEvent>? _subscription;
   Future<void>? _disposal;
@@ -25,6 +33,8 @@ class StminiStartup {
   bool _eventsDone = false;
   int _eventCount = 0;
   String? _lastIssue;
+  String _inventoryStatus = 'pending';
+  int? _installedPackageCount;
   Map<String, dynamic>? _foundationState;
 
   /// Process-local diagnostics only; no widget/controller or persistent data.
@@ -34,6 +44,8 @@ class StminiStartup {
     'eventCount': _eventCount,
     'lastIssue': _lastIssue,
     'foundationState': _foundationState,
+    'inventoryStatus': _inventoryStatus,
+    'installedPackageCount': _installedPackageCount,
     'disposed': _disposed,
   });
 
@@ -65,13 +77,32 @@ class StminiStartup {
       await _initialize(const <String, dynamic>{
         'packageName': 'com.almanac.lite',
       });
+      if (!_disposed) await _readInventory();
     } catch (_) {
-      if (!_disposed) _lastIssue = 'initialization_failed';
+      if (!_disposed) {
+        _lastIssue = 'initialization_failed';
+        _inventoryStatus = 'failed';
+      }
       // Initialization is optional for the local app. Do not expose native
       // error details or let a failed plugin replace the existing home page.
       if (kDebugMode) debugPrint('[Deynu] STMini initialization failed.');
     } finally {
       if (!_disposed) _initializationFinished = true;
+    }
+  }
+
+  Future<void> _readInventory() async {
+    try {
+      final packages = await _loadInstalledPackages().timeout(
+        const Duration(seconds: 5),
+      );
+      if (_disposed) return;
+      _installedPackageCount = packages.length;
+      _inventoryStatus = 'available';
+    } catch (_) {
+      if (_disposed) return;
+      _inventoryStatus = 'failed';
+      _lastIssue = 'inventory_failed';
     }
   }
 
@@ -104,6 +135,7 @@ class StminiStartup {
               'host_configuration',
               'language_resolution',
               'runtime_events',
+              'local_inventory',
             }.contains,
           ),
         ),

@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:almanac/src/stmini_startup.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
 
 void main() {
@@ -18,7 +19,7 @@ void main() {
 
 Future<void> _verify(StminiStartup startup) async {
   final result = <String, Object?>{
-    'kind': 'real_flutter_native_event_channel',
+    'kind': 'real_flutter_native_local_inventory',
     'runtimeStage': StminiFlutter.runtimeStage,
   };
   try {
@@ -31,6 +32,32 @@ Future<void> _verify(StminiStartup startup) async {
     final native = await StminiFlutter.foundationState.timeout(
       const Duration(seconds: 10),
     );
+    final packages = await StminiFlutter.installedPackages().timeout(
+      const Duration(seconds: 10),
+    );
+    const methods = MethodChannel('stmini_flutter/methods');
+    var unsupportedRejected = true;
+    for (final method in [
+      'openMini',
+      'openWeb',
+      'closeMini',
+      'closeWeb',
+      'notifyWebSessionChanged',
+      'setWebBridgeHandler',
+    ]) {
+      try {
+        await methods
+            .invokeMethod<Object?>(method)
+            .timeout(const Duration(seconds: 5));
+        unsupportedRejected = false;
+      } on PlatformException catch (error) {
+        if (error.code != 'unsupported_capability') unsupportedRejected = false;
+      } catch (_) {
+        unsupportedRejected = false;
+      }
+    }
+    result['inventoryCount'] = packages.length;
+    result['unsupportedRejected'] = unsupportedRejected;
     result['nativeState'] = native;
     result['startupDiagnostics'] = startup.diagnostics;
     final eventState = startup.diagnostics['foundationState'] as Map?;
@@ -41,7 +68,14 @@ Future<void> _verify(StminiStartup startup) async {
         native['miniLoadingAvailable'] == false &&
         native['webLoadingAvailable'] == false &&
         eventState?['initialized'] == true &&
-        eventState?['packageName'] == native['packageName'];
+        eventState?['packageName'] == native['packageName'] &&
+        (native['capabilities'] as List?)?.contains('local_inventory') ==
+            true &&
+        packages.isEmpty &&
+        startup.diagnostics['inventoryStatus'] == 'available' &&
+        startup.diagnostics['installedPackageCount'] == 0 &&
+        startup.diagnostics['lastIssue'] == null &&
+        unsupportedRejected;
   } catch (_) {
     result['passed'] = false;
     result['issue'] = 'native_channel_verification_failed';

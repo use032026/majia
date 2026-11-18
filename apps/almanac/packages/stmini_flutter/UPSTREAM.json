@@ -254,18 +254,19 @@
     "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
     "ios/Classes/StminiFlutterPlugin.swift",
     "lib/src/safe_event_stream.dart",
-    "lib/src/stmini_event.dart"
+    "lib/src/stmini_event.dart",
+    "lib/src/stmini_package.dart",
+    "lib/src/stmini_local_view.dart"
   ],
   "unsupported": [
     "openMini",
     "openWeb",
     "closeMini",
     "closeWeb",
-    "installedPackages",
     "notifyWebSessionChanged",
     "setWebBridgeHandler"
   ],
-  "source_file_metric_note": "Only the 3 byte-identical upstream production files count as full originals; the 2 modified upstream files, 5 production adapters/helpers and reference event excerpts are measured separately. Resources are excluded.",
+  "source_file_metric_note": "Only 3 byte-identical complete upstream production files count as exact originals. 8 derived files and 7 local adapters/helpers are separate; renderer reference excerpts are provenance, not additional exact originals. App startup, resources, configuration, fixtures and test support are excluded.",
   "license_status": "Upstream LICENSE is TODO placeholder; preserved, no open-source distribution authorization asserted.",
   "production_metrics": {
     "full_main": {
@@ -286,27 +287,27 @@
     "note": "Not a capability completion percentage; adapters and resources are separate."
   },
   "adapted_production_metrics": {
-    "file_count": 5,
-    "physical_lines": 470,
-    "bytes": 17244,
+    "file_count": 7,
+    "physical_lines": 1188,
+    "bytes": 42342,
     "files": [
       {
         "path": "lib/stmini_flutter.dart",
-        "physical_lines": 42,
-        "bytes": 1600,
-        "sha256": "d69c0d39299c6005598a50e65b8910055d6a224e96bfa852a5601433c8de9b35"
+        "physical_lines": 69,
+        "bytes": 2736,
+        "sha256": "5a00cb42b99a064f25241476da432aa7cac700c03255077fa73390b5946983fe"
       },
       {
         "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
-        "physical_lines": 76,
-        "bytes": 3799,
-        "sha256": "780b23f95a195779f348fde249c10b72cfbe1ea013ec94c0300e9821befd3b6d"
+        "physical_lines": 147,
+        "bytes": 7216,
+        "sha256": "931b466f8750b93537c29b05f59f34f2b7e97687fcb6d9bf9657d8d7389c2095"
       },
       {
         "path": "ios/Classes/StminiFlutterPlugin.swift",
-        "physical_lines": 70,
-        "bytes": 2979,
-        "sha256": "244dca00bd48703153317306f8027fae3dbce73926d497068386e6f9bdcb0ec8"
+        "physical_lines": 138,
+        "bytes": 6260,
+        "sha256": "f210bbecd0563f5fbe6a438c152d07c812a168c6b245e6d7fa13e8f57946407e"
       },
       {
         "path": "lib/src/safe_event_stream.dart",
@@ -319,9 +320,21 @@
         "physical_lines": 35,
         "bytes": 1235,
         "sha256": "e556a7c0a80b223439f35b08debb6cb5202bdbc9e6b360895ceb1ed6507588f1"
+      },
+      {
+        "path": "lib/src/stmini_package.dart",
+        "physical_lines": 84,
+        "bytes": 2508,
+        "sha256": "1be46d16add49c40e7ee0542d190605343d398ae981fd325b97356e3e7d67bed"
+      },
+      {
+        "path": "lib/src/stmini_local_view.dart",
+        "physical_lines": 468,
+        "bytes": 14756,
+        "sha256": "222798a534b7cb75ce5b57a7a56b87b56217067c380b696bd31a8da47df5460f"
       }
     ],
-    "note": "Locally written foundation adapters/helpers, not counted as byte-identical upstream source."
+    "note": "Locally written foundation, strict inventory and PlatformView/controller adapters; excluded from exact upstream percentages."
   },
   "derived_upstream_files": [
     {
@@ -343,13 +356,250 @@
       "integrated_bytes": 1775,
       "integrated_physical_lines": 45,
       "reason": "Capture subscription lease and top-level payload snapshot; ignore obsolete owners/queued deliveries and drop events without a current listener. Nested mutable payloads have no generic deep-snapshot guarantee."
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
+      "source_sha256": "237734d7c047f00f0a2a868423db6c2c9575ba7971695a8e6cdd4d9086105e7e",
+      "source_bytes": 19159,
+      "source_physical_lines": 409,
+      "reference_line_ranges": [
+        [
+          25,
+          38
+        ],
+        [
+          46,
+          47
+        ],
+        [
+          54,
+          59
+        ],
+        [
+          200,
+          278
+        ],
+        [
+          284,
+          291
+        ],
+        [
+          395,
+          407
+        ]
+      ],
+      "reference_selected_lines": 122,
+      "reference_selected_bytes": 5925,
+      "reference_excerpt_sha256": "9c8704d7e2266a6c4400291cb948d21c1b19433a25ec0339f9137e631f91469f",
+      "integrated_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/LocalPackageInventory.kt",
+      "integrated_sha256": "82742453bf65447cc105dc2120ae0e85024301072ec047e93c6d94f306fb05fd",
+      "integrated_bytes": 8357,
+      "integrated_physical_lines": 175,
+      "reason": "Shared read-only manifest/record inventory and bound renderer identity/file checks, UTF-16 exact wire semantics; no download, ZIP, installer or positive cache."
+    },
+    {
+      "path": "ios/STMini/classes/frame/STWebResourceManager.swift",
+      "source_sha256": "feba3613986a042ec6254741998728e9eb67bc6bd111185ad6e7cc6c5f50567e",
+      "source_bytes": 39807,
+      "source_physical_lines": 823,
+      "reference_line_ranges": [
+        [
+          23,
+          58
+        ],
+        [
+          178,
+          201
+        ],
+        [
+          535,
+          562
+        ],
+        [
+          630,
+          655
+        ],
+        [
+          754,
+          772
+        ],
+        [
+          794,
+          822
+        ]
+      ],
+      "reference_selected_lines": 162,
+      "reference_selected_bytes": 8058,
+      "reference_excerpt_sha256": "35bf78e6d09c64d273e26e3d229e2517cc109ddf8cba08e59fac7dc0c36b14a8",
+      "integrated_path": "ios/Classes/LocalPackageInventory.swift",
+      "integrated_sha256": "4a4e96c651039cbec3d32d2da4741608f8f8c91935eb8af7d6a8ec26ee66e6c1",
+      "integrated_bytes": 9188,
+      "integrated_physical_lines": 172,
+      "reason": "Shared read-only manifest/record inventory and bound renderer identity/file checks, UTF-16 exact wire semantics; no download, ZIP, installer or positive cache."
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
+      "integrated_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/LocalMiniResource.kt",
+      "reference_sources": [
+        {
+          "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
+          "start": 69,
+          "end": 105,
+          "purpose": "isolated local origin / route / resource identity",
+          "source_git_blob": "cd20cc82b109fd6635a91086b1a3e8eeb5385a0a",
+          "source_sha256": "237734d7c047f00f0a2a868423db6c2c9575ba7971695a8e6cdd4d9086105e7e",
+          "source_bytes": 19159,
+          "source_physical_lines": 409,
+          "excerpt_sha256": "36dac8e82189fc273a183312621025f79ac5e8ce06625004266faa5cd9985a09",
+          "excerpt_bytes": 1901,
+          "excerpt_physical_lines": 37
+        }
+      ],
+      "reason": "Derived local-only resource/navigation/lifecycle subset with strict per-request identity, cancellation and bounded reads; Flutter factory/control adapter is included in this derived file, never counted twice. No downloader, installer or JSBridge.",
+      "integrated_sha256": "1d80f30893ab9273c02fda1544dc7f11a344312d9927001ac870c7ca2dc05bd1",
+      "integrated_bytes": 7290,
+      "integrated_physical_lines": 140
+    },
+    {
+      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
+      "integrated_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/LocalMiniView.kt",
+      "reference_sources": [
+        {
+          "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
+          "start": 1188,
+          "end": 1273,
+          "purpose": "WebView local request interception / navigation / visible commit / renderer termination",
+          "source_git_blob": "afeef71ce6974a1174ec481762d62a13c879062e",
+          "source_sha256": "bffbb7d37a54e86b592d83c181f76ec861f5557d27f73bae6828f1a37419f180",
+          "source_bytes": 97490,
+          "source_physical_lines": 1993,
+          "excerpt_sha256": "558bc1ed9a3c0a039cf4c587c7abcd6bf6f1a57bb0d173f35d09be236a884a75",
+          "excerpt_bytes": 4916,
+          "excerpt_physical_lines": 86
+        },
+        {
+          "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt",
+          "start": 180,
+          "end": 204,
+          "purpose": "WebView configuration / load / back",
+          "source_git_blob": "ebda2ecedb4754d6002d72a77a78b8276ad8b24d",
+          "source_sha256": "f269dfde2c60dd79b6fef5039588fd96a463175881b6dbd92fbfc941f245ece3",
+          "source_bytes": 8670,
+          "source_physical_lines": 214,
+          "excerpt_sha256": "54540ecbec44c0636ac34f929a15edfb6b1b59cb0de66fcc0730490a7e810503",
+          "excerpt_bytes": 924,
+          "excerpt_physical_lines": 25
+        }
+      ],
+      "reason": "Derived local-only resource/navigation/lifecycle subset with strict per-request identity, cancellation and bounded reads; Flutter factory/control adapter is included in this derived file, never counted twice. No downloader, installer or JSBridge.",
+      "integrated_sha256": "b1b7deaefb018ba32990b3f20e75367f55d620c7fe2721e892399e425c146f9b",
+      "integrated_bytes": 13672,
+      "integrated_physical_lines": 240
+    },
+    {
+      "path": "ios/STMini/classes/frame/STWebResourceManager.swift",
+      "integrated_path": "ios/Classes/LocalMiniResource.swift",
+      "reference_sources": [
+        {
+          "path": "ios/STMini/classes/frame/STWebResourceManager.swift",
+          "start": 216,
+          "end": 262,
+          "purpose": "local page and internal origin resolver",
+          "source_git_blob": "d3f979a442a4c1956d1b57f85a8a65720d9ae84f",
+          "source_sha256": "feba3613986a042ec6254741998728e9eb67bc6bd111185ad6e7cc6c5f50567e",
+          "source_bytes": 39807,
+          "source_physical_lines": 823,
+          "excerpt_sha256": "2b222289a89b70b6d807e37d50a31d123a9dff9a86631b925ee127e24108222b",
+          "excerpt_bytes": 2408,
+          "excerpt_physical_lines": 47
+        },
+        {
+          "path": "ios/STMini/classes/frame/STWebResourceManager.swift",
+          "start": 517,
+          "end": 550,
+          "purpose": "resource URL / confinement prior to symlink hardening",
+          "source_git_blob": "d3f979a442a4c1956d1b57f85a8a65720d9ae84f",
+          "source_sha256": "feba3613986a042ec6254741998728e9eb67bc6bd111185ad6e7cc6c5f50567e",
+          "source_bytes": 39807,
+          "source_physical_lines": 823,
+          "excerpt_sha256": "aae5a7073e03032c7fbde52e653c8c707bc235a37c18430e537ecd75b514c641",
+          "excerpt_bytes": 1413,
+          "excerpt_physical_lines": 34
+        },
+        {
+          "path": "ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift",
+          "start": 1,
+          "end": 155,
+          "purpose": "bounded resource streaming / cancellation / MIME",
+          "source_git_blob": "638185f22c682dc0d17bd2f8b17c9f9bc9de1939",
+          "source_sha256": "5c6f222b39d43ea944f4d645b5dc0c23befda4e694d06104a51e8f429d5a2639",
+          "source_bytes": 6233,
+          "source_physical_lines": 155,
+          "excerpt_sha256": "5c6f222b39d43ea944f4d645b5dc0c23befda4e694d06104a51e8f429d5a2639",
+          "excerpt_bytes": 6233,
+          "excerpt_physical_lines": 155
+        }
+      ],
+      "reason": "Derived local-only resource/navigation/lifecycle subset with strict per-request identity, cancellation and bounded reads; Flutter factory/control adapter is included in this derived file, never counted twice. No downloader, installer or JSBridge.",
+      "integrated_sha256": "3371391f1293712430f2cf011438ce690c75cb67dc6db9bd97b24d4d71c3a9ad",
+      "integrated_bytes": 8573,
+      "integrated_physical_lines": 166
+    },
+    {
+      "path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
+      "integrated_path": "ios/Classes/LocalMiniView.swift",
+      "reference_sources": [
+        {
+          "path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
+          "start": 65,
+          "end": 84,
+          "purpose": "WK scheme registration",
+          "source_git_blob": "2c8ffddf08fd27a9bf4f815f4acead17097ab92c",
+          "source_sha256": "937e59755d8a2fbb31f9efa32f06ca3e3b684ff8bdf986d56eba72b52a346507",
+          "source_bytes": 21866,
+          "source_physical_lines": 567,
+          "excerpt_sha256": "7a11cd77a632044206405e0dfce195c93f00fde9508b72b71679043698a19b22",
+          "excerpt_bytes": 769,
+          "excerpt_physical_lines": 20
+        },
+        {
+          "path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
+          "start": 259,
+          "end": 283,
+          "purpose": "idempotent cleanup",
+          "source_git_blob": "2c8ffddf08fd27a9bf4f815f4acead17097ab92c",
+          "source_sha256": "937e59755d8a2fbb31f9efa32f06ca3e3b684ff8bdf986d56eba72b52a346507",
+          "source_bytes": 21866,
+          "source_physical_lines": 567,
+          "excerpt_sha256": "afc4d1b55ec7238d62f3f6ac5d6fcaed722e1e462e1cae40e11d9edc746321c9",
+          "excerpt_bytes": 596,
+          "excerpt_physical_lines": 25
+        },
+        {
+          "path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
+          "start": 365,
+          "end": 449,
+          "purpose": "navigation / first document / failure / process termination",
+          "source_git_blob": "2c8ffddf08fd27a9bf4f815f4acead17097ab92c",
+          "source_sha256": "937e59755d8a2fbb31f9efa32f06ca3e3b684ff8bdf986d56eba72b52a346507",
+          "source_bytes": 21866,
+          "source_physical_lines": 567,
+          "excerpt_sha256": "312d727b0e7a92bb23fdf05c3ba4257b6cc8d72e0581e2746724f46663b91acb",
+          "excerpt_bytes": 3433,
+          "excerpt_physical_lines": 85
+        }
+      ],
+      "reason": "Derived local-only resource/navigation/lifecycle subset with strict per-request identity, cancellation and bounded reads; Flutter factory/control adapter is included in this derived file, never counted twice. No downloader, installer or JSBridge.",
+      "integrated_sha256": "73c578364954be47e2e240e9d6165b5e75fa5f4de0a8dac0d679bb3ff484fe80",
+      "integrated_bytes": 14618,
+      "integrated_physical_lines": 256
     }
   ],
   "derived_production_metrics": {
-    "file_count": 2,
-    "physical_lines": 121,
-    "bytes": 4941,
-    "note": "Modified upstream files; original source and integrated hashes are listed in derived_upstream_files."
+    "file_count": 8,
+    "physical_lines": 1270,
+    "bytes": 66639,
+    "note": "Modified/extracted upstream-derived production files. Whole source monolith sizes are provenance only, not integrated code. New selected excerpts are references, not additional exact originals."
   },
   "event_contract_reference": {
     "path": "lib/stmini_flutter.dart",
@@ -381,14 +631,140 @@
   "app_consumption": {
     "path": "lib/src/stmini_startup.dart",
     "lifetime": "process shared initialization terminal result and one subscription; Host unmount does not dispose it",
-    "state": "in-memory whitelisted foundation diagnostics only",
+    "state": "in-memory whitelisted foundation diagnostics and inventory success/failure/count only",
     "metric": {
       "path": "lib/src/stmini_startup.dart",
-      "physical_lines": 155,
-      "bytes": 5214,
-      "sha256": "67a5b6166a9240f6156d04ad5f236f02cf0d1ba1109059fcbce8617925ac7c9b"
+      "physical_lines": 187,
+      "bytes": 6205,
+      "sha256": "bfb7291ba060db86ff7ed7cf640ca345e0898153b994061a4d1c6046412ba968"
     },
-    "note": "App integration outside this package, excluded from upstream source percentages."
+    "note": "Production startup performs one actual SDK inventory query after successful native initialize; timeout/failure distinct from valid zero. App integration excluded from upstream percentages."
   },
-  "batch": "second: native events consumption, ownership/replay and existing regional localization fix"
+  "batch": "third: validated read-only inventory plus explicit local-only Mini PlatformView renderer; ordinary product startup consumes inventory only, never mounts a page",
+  "inventory_contract_reference": {
+    "files": [
+      {
+        "path": "lib/stmini_flutter.dart",
+        "source_sha256": "25f08c607373f0368bf16dd90c49920af97bdf09db1b81348229e2a67cc5cfdc",
+        "source_bytes": 8484,
+        "source_lines": 225,
+        "ranges": [
+          [
+            146,
+            153
+          ],
+          [
+            201,
+            225
+          ]
+        ],
+        "selected_lines": 33,
+        "selected_bytes": 1087,
+        "excerpt_sha256": "9e41f0b84c07cc5569ea04f4474e30be535758ee17cb58886a222bf60a47ac4f"
+      },
+      {
+        "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
+        "source_sha256": "a3b842e190ea1295d45d19bc13a7a4d2f8e6a1f8012c816e1a33f39540e4369c",
+        "source_bytes": 8797,
+        "source_lines": 165,
+        "ranges": [
+          [
+            90,
+            93
+          ]
+        ],
+        "selected_lines": 4,
+        "selected_bytes": 301,
+        "excerpt_sha256": "0ccd233ae3a68c61d1aebecd93ee45ae4580f91bf0b14a39fd5040f3e06bc04a"
+      },
+      {
+        "path": "ios/Classes/StminiFlutterPlugin.swift",
+        "source_sha256": "0768d6903abb6ab8f693b86864b691e617ca5434362d218a6dba98687ab9ee72",
+        "source_bytes": 48706,
+        "source_lines": 1183,
+        "ranges": [
+          [
+            157,
+            158
+          ],
+          [
+            991,
+            1001
+          ]
+        ],
+        "selected_lines": 13,
+        "selected_bytes": 405,
+        "excerpt_sha256": "bba57f5810cc33fc3b687dc141ab133e2c92736c2cd94ccf643d6464c56280bb"
+      }
+    ],
+    "note": "Method/schema reference only. installedPackages returns exactly miniId/miniName/version/entry/icon Strings in a top-level List, without iconUrl/launchLink or arbitrary resource paths. Explicit local renderer is a separate staged API, not complete-host wire compatibility."
+  },
+  "local_inventory_contract": {
+    "roots": {
+      "android": "canonical application filesDir/STMini",
+      "ios": "canonical trusted application home/Documents/STMini; parent Documents symlinks rejected"
+    },
+    "fields": [
+      "miniId",
+      "miniName",
+      "version",
+      "entry",
+      "icon"
+    ],
+    "readonly": true,
+    "no_directory_creation": true,
+    "threading": "One background serial scan per plugin instance; repeat requests rejected busy; results on main thread; native 4s cooperative deadline, startup 5s terminal timeout; detach cancels exactly once and ignores late completion.",
+    "validation": "Every read checks current manifest and installed record without positive cache. Lowercase ASCII id, numeric dotted staged version domain, exact id/version/entry/channel consistency, bounded UTF-8 JSON and UTF-16 strings, no symlink at inspected paths, regular entry/icon and path confinement.",
+    "version_domain": "1-8 decimal components of 1-9 digits each; exact string equality only, no comparison; prerelease/underscore/overflow rejected, no migration.",
+    "scope_note": "Validated local metadata only. Non-empty inventory does not imply executable content or full runtime availability. Private local filesystem checks are not cryptographic authenticity or an atomic snapshot against hostile concurrent mutation."
+  },
+  "renderer_contract": {
+    "view_type": "stmini_flutter/local_view",
+    "creation_fields": [
+      "miniId",
+      "version"
+    ],
+    "control_channel": "stmini_flutter/local_view/<viewId>",
+    "no_argument_methods": {
+      "state": "strict state map",
+      "reload": "void",
+      "goBack": "bool",
+      "close": "void"
+    },
+    "state": {
+      "phase": [
+        "loading",
+        "ready",
+        "failed",
+        "closed"
+      ],
+      "canGoBack": "bool",
+      "errorCode": "null or invalid_parameters/not_initialized/package_unavailable/resource_unavailable/navigation_rejected/render_timeout/renderer_terminated"
+    },
+    "ready_semantics": "Current verified local main document committed; DOM/CSS/image/interaction are separate real-OS test evidence.",
+    "capability": {
+      "stage": "foundation",
+      "capabilities_added": [
+        "local_inventory",
+        "local_renderer"
+      ],
+      "localRendererAvailable": true,
+      "miniLoadingAvailable": false,
+      "webLoadingAvailable": false,
+      "note": "foundation preserves initialize compatibility; false loading flags refer to complete openMini/openWeb links, downloads/installation/Bridge, which remain unsupported."
+    },
+    "origins": {
+      "android": "https://<miniId>.stmini.local",
+      "ios": "stmini://<miniId>.stmini.local"
+    },
+    "validation": "Every resource revalidates the bound miniId/version/entry and current manifest/record channel consistency, regular file and symlink-free anchored path. One strict UTF-8 percent decode, no encoded slash/backslash/percent, authority userinfo/port/query or cross-package access; no network fallback.",
+    "identity_change": "A current-generation resource identity failure fails/stops the view. Ordinary missing image is rejected without failing the whole ready page. Reload remains bound to original version/entry; new identity requires explicit new view.",
+    "resource_bounds": "At most four active readers per view, 8MiB each, 4s cooperative deadline and zero wait overflow rejection; slot held through response stream/immutable bytes release. Not a whole-WebView memory bound.",
+    "lifecycle": "Single identity worker with cancellation/latest pending work, new WebView per cross-document navigation/reload/back, native same-package history, fragment changes keep committed phase. Close/detach and old generation callbacks cannot own a new navigation.",
+    "ios_csp_difference": "Custom scheme local JS/CSS/image use stmini: scheme CSP sources, not exact-host CSP. The sole scheme handler still enforces exact current miniId host/path/identity. Content rules block tested remote schemes.",
+    "network_claim": "Real OS tests cover listed main navigation, remote script/image/frame/fetch/XHR/WebSocket/form and file/content/data/blob/new-window attempts with local JS execution and loopback positive control. No claim that CSP/interception closes all browser channels; WebRTC/UDP/DNS and physical devices are unverified.",
+    "product_boundary": "Default original homepage; no Mini URL, hidden switch or automatic page open. No download, installation, native JavaScript bridge, account injection or new production permission. Test-only fixture/targets are not production assets.",
+    "android_csp": "Standard self sources enforce the current exact document origin, including staged IDs with underscore that are invalid CSP host-source tokens. blockNetworkLoads remains true and the local handler has no fallback.",
+    "android_composition": "Explicit hybrid composition: PlatformViewLink + AndroidViewSurface + initExpensiveAndroidView, with both framework and SDK creation listeners, native focus and layout direction updates. Native DOM/commit alone is insufficient evidence that the Flutter composition painted."
+  }
 }

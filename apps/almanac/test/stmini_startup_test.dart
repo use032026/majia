@@ -50,7 +50,11 @@ StminiStartup _testStartup({
   required StminiInitializer initialize,
   Stream<StminiEvent> events = const Stream<StminiEvent>.empty(),
 }) {
-  final startup = StminiStartup(initialize: initialize, events: events);
+  final startup = StminiStartup(
+    initialize: initialize,
+    events: events,
+    loadInstalledPackages: () async => const <StminiPackage>[],
+  );
   addTearDown(startup.dispose);
   return startup;
 }
@@ -264,6 +268,7 @@ void main() {
       messenger.setMockMethodCallHandler(channel, (call) async {
         calls.add(call);
         if (call.method == 'foundationState') return nativeState;
+        if (call.method == 'installedPackages') return <Object?>[];
         return null;
       });
       addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
@@ -281,8 +286,11 @@ void main() {
         await startup.initializeOnce();
 
         expect(StminiFlutter.runtimeStage, 'foundation');
-        expect(calls.map((call) => call.method), <String>['initialize']);
-        expect(calls.single.arguments, <String, dynamic>{
+        expect(calls.map((call) => call.method), <String>[
+          'initialize',
+          'installedPackages',
+        ]);
+        expect(calls.first.arguments, <String, dynamic>{
           'bridgeContext': <String, dynamic>{'packageName': 'com.almanac.lite'},
         });
 
@@ -291,6 +299,7 @@ void main() {
         expect(await StminiFlutter.foundationState, nativeState);
         expect(calls.map((call) => call.method), <String>[
           'initialize',
+          'installedPackages',
           'foundationState',
         ]);
         expect(calls.last.arguments, isNull);

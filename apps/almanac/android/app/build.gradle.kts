@@ -30,6 +30,7 @@ android {
 
     defaultConfig {
         applicationId = "com.almanac.lite"
+        testInstrumentationRunner = "com.almanac.lite.renderer.RendererInstrumentation"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 24
