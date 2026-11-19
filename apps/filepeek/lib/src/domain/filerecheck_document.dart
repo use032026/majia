@@ -290,15 +290,14 @@ class FileRecheckDocument {
         'Search terms are limited to 200 characters.',
       );
     }
-    return List.unmodifiable([
-      for (final line in _lines)
-        if (line.text.toLowerCase().contains(needle))
-          SearchHit(
-            line.number,
-            line.text.toLowerCase().indexOf(needle) + 1,
-            line.text,
-          ),
-    ]);
+    final hits = <SearchHit>[];
+    for (final line in _lines) {
+      final index = line.text.toLowerCase().indexOf(needle);
+      if (index >= 0) {
+        hits.add(SearchHit(line.number, index + 1, line.text));
+      }
+    }
+    return List.unmodifiable(hits);
   }
 
   List<CsvRow> filterCsv(String query) {

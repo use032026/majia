@@ -384,6 +384,25 @@ void main() {
   });
 
   group('line search and report', () {
+    test(
+      'search keeps first match columns, original text, and immutable hits',
+      () {
+        final document = inspect('search.txt', 'ERR err\n  éRR ÉRR\nno match');
+        final hits = document.search('ÉrR');
+        expect(hits, hasLength(1));
+        expect(hits.single.line, 2);
+        expect(hits.single.column, 3);
+        expect(hits.single.text, '  éRR ÉRR');
+        expect(document.search('err').single.column, 1);
+        expect(() => hits.clear(), throwsUnsupportedError);
+        expect(document.search(''), isEmpty);
+        expect(
+          () => document.search('x' * 201),
+          throwsA(isA<FileRecheckException>()),
+        );
+      },
+    );
+
     test('matches case-insensitive lines and marks LOG severity', () {
       final document = inspect(
         'a.log',
