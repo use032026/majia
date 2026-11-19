@@ -26,10 +26,13 @@ module MajiaCI
     ].freeze
     SUBMITTED_REVIEW_STATES = %w[WAITING_FOR_REVIEW IN_REVIEW COMPLETING COMPLETE].freeze
 
-    def submit(client:, bundle_id:, marketing_version:, submitted_at: Time.now.utc)
+    def submit(client:, bundle_id:, marketing_version:, expected_build_id: nil, submitted_at: Time.now.utc)
       app = ASCReviewStatus.resolve_app(client, bundle_id)
       version = ASCReviewStatus.resolve_version(client, app.fetch("id"), marketing_version)
       build = ASCReviewStatus.resolve_build(client, version.fetch("id"))
+      if expected_build_id && (build&.fetch("id") != expected_build_id || version.dig("attributes", "releaseType") != "MANUAL")
+        raise ASCSubmissionError, "ASC build or manual release setting no longer matches the requested submission"
+      end
       observed_version = version.dig("attributes", "versionString")
       unless observed_version == marketing_version
         raise ASCSubmissionError,
@@ -73,7 +76,8 @@ module MajiaCI
       submission = ensure_review_submission(
         client: client,
         app_id: app.fetch("id"),
-        version_id: version.fetch("id")
+        version_id: version.fetch("id"),
+        only_version: !expected_build_id.nil?
       )
       summary.merge(
         "review_submission" => summarize_submission(submission),
@@ -105,13 +109,16 @@ module MajiaCI
       lines.join("\n")
     end
 
-    def ensure_review_submission(client:, app_id:, version_id:)
+    def ensure_review_submission(client:, app_id:, version_id:, only_version: false)
       submissions = review_submissions(client, app_id)
       target = submissions.find do |submission|
         submission.dig("attributes", "state") == "READY_FOR_REVIEW" &&
           submission_contains_version?(client, submission.fetch("id"), version_id)
       end
-      return submit_review(client, target) if target
+      if target
+        verify_review_items!(client, target.fetch("id"), version_id) if only_version
+        return submit_review(client, target)
+      end
 
       blocker = submissions.find do |submission|
         BLOCKING_SUBMISSION_STATES.include?(submission.dig("attributes", "state"))
@@ -123,9 +130,19 @@ module MajiaCI
 
       submission = submissions.find { |candidate| candidate.dig("attributes", "state") == "READY_FOR_REVIEW" }
       submission ||= create_review_submission(client, app_id)
+      verify_review_items!(client, submission.fetch("id"), version_id) if only_version
       create_review_item(client, submission.fetch("id"), version_id)
+      verify_review_items!(client, submission.fetch("id"), version_id) if only_version
       submit_review(client, submission)
     end
+
+    def verify_review_items!(client, submission_id, version_id)
+      items = client.paginate("/v1/reviewSubmissions/#{submission_id}/items", { "limit" => "200" })
+      if items.any? { |item| item.dig("relationships", "appStoreVersion", "data", "id") != version_id }
+        raise ASCSubmissionError, "ASC review draft contains other items"
+      end
+    end
+    private_class_method :verify_review_items!
 
     def review_submissions(client, app_id)
       client.paginate(
