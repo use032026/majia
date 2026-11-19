@@ -292,10 +292,8 @@ class AppSnapshot {
     return null;
   }
 
-  List<Experiment> get archived => experiments
+  List<Experiment> get archived => experiments.reversed
       .where((experiment) => experiment.isArchived)
-      .toList()
-      .reversed
       .toList();
 
   AppSnapshot copyWith({

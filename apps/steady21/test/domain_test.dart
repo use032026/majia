@@ -17,6 +17,19 @@ Experiment _experiment({
 );
 
 void main() {
+  test('archived history keeps newest first without mutating the snapshot', () {
+    final first = _experiment().copyWith(archivedAt: DateTime(2026, 9, 2));
+    final active = _experiment();
+    final last = _experiment().copyWith(archivedAt: DateTime(2026, 9, 5));
+    final items = [first, active, last];
+    final snapshot = AppSnapshot(experiments: items);
+
+    expect(snapshot.archived, [last, first]);
+    expect(items, [first, active, last]);
+    expect(AppSnapshot(experiments: [active]).archived, isEmpty);
+    expect(const AppSnapshot().archived, isEmpty);
+  });
+
   test('title boundaries are exhaustive and non-overlapping', () {
     final expected = {
       0: '起念时刻',
