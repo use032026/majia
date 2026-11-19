@@ -237,3 +237,16 @@ Android minSdk24，插件虽保留来源 `WRITE_EXTERNAL_STORAGE maxSdkVersion=2
 最终 Dart 格式检查36文件/0、静态分析无问题、全量119项通过；全量后五文件fake回归50项通过，是重叠子集，不相加，也不沿用旧59项数字。57份Dart/fixture输入前后逐SHA一致。
 
 旧pre-P2的13,707到当前13,514减少193条来源资格，是累计P2-01至P2-06在九份生产文件中的本地安全修复改变了逐字匹配来源span，并非P6单独删除193行，也不是来源资格过滤规则缩放：本轮candidate/module exclusion/Release排除/资格状态均未变，改为本地等价实现的行依旧不给来源信用。九文件来源行差额依次为Android MiniPackageStore −12、Container −40；iOS Plugin −40、ResourceManager −13、ApiManager −11、Router −4、InstanceManager −19、WebView −12、根控制器累计 −42，总计−193。P6单独逆向重建旧根控制器的内存字节并与当时冻结SHA严格一致后重算，来源资格仅从1,992到1,986、减少6行；没有恢复或写入旧源码。对应保守新增下界从12,659到12,467减少192行，差1来自此前引用重叠区，仍不是前三批全部规模。
+
+
+## 2026-11-19：第四批签名上传后的用途声明修复
+
+完整容器/Bridge代码 `aabf8fb62f4617865c98825d6317829298ee125f` 的本地独立QA/cross通过和Git交付保持真实。随后签名上传run44462331461产出1.0.12/build1，上传被接收，但App Store Connect的build-upload处理实际FAILED，错误90683指出Runner.app缺NSCameraUsageDescription，asc_build_id为空；不是已成功处理的build，也没有据此送审。实际旧IPA为22,300,427字节、SHA256 `e666b88c6ed4fc7a3bfbbebffa97f5019b37f6aa27d8f7af20d70f109f95ea15`，只作该失败的静态诊断，不复用发行。90725关于未来2027年4月SDK要求仅警告，本轮不升级SDK。
+
+真实签名framework保留AVCaptureDevice/Input/Session与video类型、PHPhotoLibrary/PHAssetChangeRequest、UIImagePickerController引用。公开SDK扫描类的调用链是viewDidLoad→startScan→视频输入/session；其openPhotoAlbum→普通Photos授权→photoLibrary picker→选中图像QR识别。Deynu启动和实际宿主调用链没有构造/打开该扫描器，未新增扫描页面或自动权限请求；但SDK未被产品调用不免除二进制所引用保护API的用途声明。已有saveImageToPhotosAlbum路径继续使用add-only授权，该键不能代替扫描库普通相册读取用途。扫描SDK源与实包均无audio/AVAudio引用，不凭弱CoreLocation overlay或单纯库名增加麦克风、定位或其他purpose。
+
+本次只补宿主Camera与Photo Library Read两key，保留Photo Add及所有原Info值；新增en/zh-Hans InfoPlist.strings各三个用途，用最小variantgroup/Runner资源引用接入。developmentRegion仍en，原Base和首页Dart locale逻辑、日笺数据/隐私页面/原首页入口保持。Camera英文说明仅在主动打开扫描器时用于二维码扫描，Photo Read说明在扫描器中识别用户选择照片的二维码，中文同义；没有把Deynu描述为已经有拍照/扫描入口，也不以声明触发访问。
+
+当前普通无签名iOS Release实际构建退出0，包内Info三key与en/zh-Hans编译后的InfoPlist.strings逐值匹配，最低15.0、名称Deynu、不含Microphone key；原生framework仍2,557,200字节/SHA256 `21a849efb5d8b0ebbbc421d4f648860480e6100a016a700823eea2650d50d668`，Android APK仍`74037c54…`，依赖锁和原生/Dart/测试源码精确未变。旧iOS40/0、Dart119及后置五文件50、AndroidJVM92/0/native矩阵与双端A/B各17项SDK证据明确按SHA复用not_reexecuted，本次不机械重跑。新Info/project/语言资源已经当前普通Release实输入及包内值验证，不能沿用旧缺key的包装结论。
+
+UPSTREAM/SOURCE_MAP重新绑定当前宿主声明、普通Release与明确的runtime复用边界；来源C=13,514、额外引用扣重新增下界12,467不变。purpose/project/localization不取得来源行信用，Android APK与本地无签名iOS/后续实际签名IPA仍分开。后续必须用修复后的新提交及新的构建号重新签名上传并核实际IPA/ASC结果，不能把本地声明验证称为Apple ingest已成功，也不能重新上传失败build1；第五批继续仅本地。

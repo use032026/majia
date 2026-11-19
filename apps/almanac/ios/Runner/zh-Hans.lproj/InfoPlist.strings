@@ -1,0 +1,3 @@
+"NSCameraUsageDescription" = "仅在你主动打开扫码器时使用相机识别二维码。";
+"NSPhotoLibraryUsageDescription" = "读取你在扫码器中选择的照片，以识别其中的二维码。";
+"NSPhotoLibraryAddUsageDescription" = "仅在你选择保存图片时将图片存入相册。";

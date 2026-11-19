@@ -14,7 +14,8 @@
     "account_or_trading_provider": "not installed; recognized methods fail by contract",
     "sdk_storage": "SHA256 native Mini/origin domains independent of host schema",
     "android_save_album": "API24-28 permission denied because Deynu removes READ/WRITE external storage; API29+ scoped MediaStore implementation, actual OS save not tested",
-    "ios_photos": "explicit add-only authorization; no actual OS photo write claim",
+    "ios_photos": "Explicit save path uses add-only authorization. Retained scanner library separately references ordinary photo-library read access for selected-image QR recognition; host has camera/read/add purposes in en and zh-Hans. Current Deynu has no scanner entry or automatic permission request; actual protected-data access is untested",
+    "ios_camera": "Retained public SDK scanner uses video capture for QR scanning. A host purpose declaration is packaging compliance, not a new Deynu scanner entry or startup permission request; no microphone purpose or audio recording added",
     "fifth_batch": "local whole-system validation and gap filling only, no signing/upload/store submission"
   },
   "source_denominator": {
@@ -30,9 +31,65 @@
     "optional_ios_implementation_headers_shared_dart_denominator": 15550
   },
   "signed_ipa_qualification": null,
+  "host_purpose_declarations": {
+    "values": {
+      "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
+      "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+      "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
+    },
+    "source_info_sha256": "f5b477d63be5673304719782e437281fc82234d5958a55e59abc73a71a9e6a84",
+    "packaged_info_sha256": "71cb35a72d9575210edf7aac13603cdf0c29352c2f5df711341046c3bad57292",
+    "localizations": {
+      "en": {
+        "values": {
+          "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
+          "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+          "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
+        },
+        "source_sha256": "0a03b19473e3642ac8a0212269d969129b781fdb7b4e36d53bce9555ddd6458f",
+        "packaged_sha256": "cda1ec4f52c73278ff61c372543805cba1d3f0e12d342f8fe9cc94e5c689a454"
+      },
+      "zh-Hans": {
+        "values": {
+          "NSCameraUsageDescription": "仅在你主动打开扫码器时使用相机识别二维码。",
+          "NSPhotoLibraryUsageDescription": "读取你在扫码器中选择的照片，以识别其中的二维码。",
+          "NSPhotoLibraryAddUsageDescription": "仅在你选择保存图片时将图片存入相册。"
+        },
+        "source_sha256": "df691df014e4e6da8db61a5e9b76cdf9e60d0ffc240fab35171428ca90b56c1c",
+        "packaged_sha256": "f4cc2ca745ca0ad8eef13e433093c5ca09c68596f1543d4246b41640f28c41cf"
+      }
+    },
+    "boundary": "Camera/video and photo-read scanner APIs are compiled SDK references, not a Deynu startup scanner entry or an automatic permission request. Add-only applies to the explicit save path. No microphone purpose or audio recording is introduced."
+  },
+  "runtime_validation_reuse": {
+    "not_reexecuted": true,
+    "reason": "Only host purpose strings, localized resources and resource project references changed. Native/Dart/Android/test/lock inputs exactly match the prior completed validation; current ordinary iOS Release packaging is newly verified.",
+    "unchanged_qualified_native_paths": 52,
+    "unchanged_dart_and_fixture_inputs": 57,
+    "native_framework_sha256_unchanged": true,
+    "android_apk_sha256_unchanged": true,
+    "reused_results": {
+      "ios_native": {
+        "tests": 40,
+        "failures": 0,
+        "skipped": 0
+      },
+      "android_jvm": {
+        "tests": 92,
+        "failures": 0,
+        "skipped": 0
+      },
+      "dart_full": 119,
+      "dart_post_full_fake_overlapping_subset": 50,
+      "full_sdk": {
+        "both_platforms": "A/B each17 checks, closedBoth; iOS lifecycle onlyA, Android onlyB"
+      }
+    },
+    "boundary": "No new camera or photo access execution, no physical-device claim, and no signed IPA ingest acceptance implied. Runtime methods and source counts are separate from host declarations."
+  },
   "source_map": {
     "path": "SOURCE_MAP.json",
-    "sha256": "d8290e7f4fe95ac3dd51d01eff868d47431149264f589113b4d2a07568412eb6",
+    "sha256": "dfc7cfbf2a89cce605494caff26d12bf06604e487f8c167d9d95220aedc73681",
     "qualified_cumulative_source_lower_bound": 13514,
     "extra_reference_subtracted_fourth_new_lower_bound": 12467,
     "minimum_fourth_source_lines": 10342,

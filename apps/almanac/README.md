@@ -74,7 +74,7 @@ iOS 已接入 `Deynu iOS Release` 签名构建/上传流程和 `ASC Existing Bui
 
 ### 构建、权限与验证
 
-Android 宿主移除外部存储读写权限：API 24–28 的显式相册保存按无权限失败，API 29+ 使用 scoped MediaStore；系统实际保存尚未验证。Mini/OnlineWeb 组件为 non-exported；完整 native SDK 的可见能力必须按实际合并 manifest 与最终 APK 复核。iOS 最低版本仍 15.0，新增 Photos add 描述只供显式保存调用申请权限，未加入 camera/microphone 描述。完整依赖为 HXWRefresh 1.1.0、Masonry 1.1.0、SDWebImage 5.21.7、Toast-Swift 5.1.1、ZIPFoundation 0.9.20；语言资源和 Privacy 声明继续携带。原隐私政策路径、日笺 schema、主题与中英界面保持。
+Android 宿主移除外部存储读写权限：API 24–28 的显式相册保存按无权限失败，API 29+ 使用 scoped MediaStore；系统实际保存尚未验证。Mini/OnlineWeb 组件为 non-exported；完整 native SDK 的可见能力必须按实际合并 manifest 与最终 APK 复核。iOS 最低版本仍 15.0。宿主为完整 SDK 中保留的相机扫码和相册选图识别代码提供 Camera、Photo Library Read、Photo Library Add 三项准确的中英用途声明；显式保存路径仍只申请 add-only，未加入 microphone 声明。Deynu 当前没有扫描器入口，也不在启动时请求相机或相册权限；声明是编入 SDK 的打包要求，不代表新增产品入口。完整依赖为 HXWRefresh 1.1.0、Masonry 1.1.0、SDWebImage 5.21.7、Toast-Swift 5.1.1、ZIPFoundation 0.9.20；语言资源和 Privacy 声明继续携带。原隐私政策路径、日笺 schema、主题与中英界面保持。
 
 测试 fixture、Flutter 专用 target、原生 instrumentation 和报告 writer 仅用于验证。完整报告通过 nonce 和显式私有目录进行 probe/reader ack 后采集，不增加生产报告桥。模拟 URLProtocol/URLStreamHandler、真实模拟器 SDK/WebView、普通 unsigned Release 与签名 IPA 各自证明不同层级；真实 TLS/线上 Mini、物理设备、账号交易、系统相册写入和分享发送没有据此获得验证。实际逐项命令、失败和复测结论见接入记录；编译成功不能替代完整审核。
 
@@ -91,4 +91,4 @@ Android 宿主移除外部存储读写权限：API 24–28 的显式相册保存
 
 当前 iOS 完整原生测试 40 项通过，Android JVM 92 项通过；双端完整 SDK 的两个 Mini 各有 17 项检查通过并正常关闭，iOS 的生命周期事件实际观测于 A，Android 于 B。Android 原生矩阵按源码、测试及锁逐 SHA 复用已执行结果，并非在每轮 SDK 验证重跑。普通双端 Release 已构建并验包：原生组件/链接、资源和权限边界正确，普通产品制品没有测试 fixture。最终 Dart 格式检查、静态分析和 119 项全量测试通过，之后五个文件的 50 项 fake 回归通过；50 项是重叠子集，不与 119 相加。这些是本地构建与受控运行证据，实际未覆盖范围仍以上述能力边界为准。
 
-签名上传和商店结果由单独发行门禁记录。第五批仅本地完整整体验证和补缺，不签名、上传或送审。上游 `LICENSE` 的 TODO 原文保留，不据此声称已核实外部分发许可。保护的完整接入 stash 不用于本批恢复。
+用途声明窄修已重新构建普通 iOS Release，并从实际 App 包核对英文/简体中文用途值。原生、Dart、Android 与测试代码及锁未变，40 项原生、119 项 Dart、50 项后置重叠子集、92 项 JVM 及双端 SDK 结果按精确 SHA 复用，明确没有在该声明修复中重跑。签名上传和商店结果由单独发行门禁记录。第五批仅本地完整整体验证和补缺，不签名、上传或送审。上游 `LICENSE` 的 TODO 原文保留，不据此声称已核实外部分发许可。保护的完整接入 stash 不用于本批恢复。

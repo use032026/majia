@@ -7140,7 +7140,7 @@
       "android": "GeneratedPluginRegistrant -> StminiFlutterPlugin.onAttachedToEngine/onMethodCall -> StminiContainerActivity/Home/WebPage and OnlineWebActivity; container -> MiniPackageStore, MiniLink, pool, overlay, StminiWebBridge and SharedOnlineWeb. Activities are retained manifest entry points; R8 mapping/dex evidence is platform-specific.",
       "ios": "GeneratedPluginRegistrant -> StminiFlutterPlugin.register/handle -> STWebOpenHandler and STWebMiniprogramCrl/H5/OnlineWebViewController -> STWebResourceManager, scheme handler, views/navigation/instance pool and STWebApiManager/SharedOnlineWeb. Runner dynamically loads the native framework; core exported types are retained."
     },
-    "production_manifest_sha256": "31fbbe20ce01fad501c766c8bb81321efcdd6ce862b3b2c04679446f51d3e612",
+    "production_manifest_sha256": "e2ad425047b588cbd90b18ad53f04fc691444dede0cb4c40cb06d50718d7a2d3",
     "artifact_boundary": "Android source counts apply to APK only. iOS source counts apply to the local unsigned Runner.app/framework only; actual signed IPA is a separate PM gate.",
     "artifacts": {
       "ios": {
@@ -7156,6 +7156,62 @@
       "android": "flutter build apk --release --no-pub --target lib/main.dart --target-platform android-arm64",
       "ios": "bundle exec flutter build ios --release --no-codesign --no-pub --target lib/main.dart"
     },
-    "consumer_boundary": "Controlled real native SDK/WebView/CMS consumers and native tests are distinct from ordinary Dart main/AOT and from signed IPA/device/store evidence. This map does not assert each method/source line was individually executed."
+    "consumer_boundary": "Controlled real native SDK/WebView/CMS consumers and native tests are distinct from ordinary Dart main/AOT and from signed IPA/device/store evidence. This map does not assert each method/source line was individually executed.",
+    "host_purpose_declarations": {
+      "values": {
+        "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
+        "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+        "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
+      },
+      "source_info_sha256": "f5b477d63be5673304719782e437281fc82234d5958a55e59abc73a71a9e6a84",
+      "packaged_info_sha256": "71cb35a72d9575210edf7aac13603cdf0c29352c2f5df711341046c3bad57292",
+      "localizations": {
+        "en": {
+          "values": {
+            "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
+            "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+            "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
+          },
+          "source_sha256": "0a03b19473e3642ac8a0212269d969129b781fdb7b4e36d53bce9555ddd6458f",
+          "packaged_sha256": "cda1ec4f52c73278ff61c372543805cba1d3f0e12d342f8fe9cc94e5c689a454"
+        },
+        "zh-Hans": {
+          "values": {
+            "NSCameraUsageDescription": "仅在你主动打开扫码器时使用相机识别二维码。",
+            "NSPhotoLibraryUsageDescription": "读取你在扫码器中选择的照片，以识别其中的二维码。",
+            "NSPhotoLibraryAddUsageDescription": "仅在你选择保存图片时将图片存入相册。"
+          },
+          "source_sha256": "df691df014e4e6da8db61a5e9b76cdf9e60d0ffc240fab35171428ca90b56c1c",
+          "packaged_sha256": "f4cc2ca745ca0ad8eef13e433093c5ca09c68596f1543d4246b41640f28c41cf"
+        }
+      },
+      "boundary": "Camera/video and photo-read scanner APIs are compiled SDK references, not a Deynu startup scanner entry or an automatic permission request. Add-only applies to the explicit save path. No microphone purpose or audio recording is introduced."
+    },
+    "runtime_validation_reuse": {
+      "not_reexecuted": true,
+      "reason": "Only host purpose strings, localized resources and resource project references changed. Native/Dart/Android/test/lock inputs exactly match the prior completed validation; current ordinary iOS Release packaging is newly verified.",
+      "unchanged_qualified_native_paths": 52,
+      "unchanged_dart_and_fixture_inputs": 57,
+      "native_framework_sha256_unchanged": true,
+      "android_apk_sha256_unchanged": true,
+      "reused_results": {
+        "ios_native": {
+          "tests": 40,
+          "failures": 0,
+          "skipped": 0
+        },
+        "android_jvm": {
+          "tests": 92,
+          "failures": 0,
+          "skipped": 0
+        },
+        "dart_full": 119,
+        "dart_post_full_fake_overlapping_subset": 50,
+        "full_sdk": {
+          "both_platforms": "A/B each17 checks, closedBoth; iOS lifecycle onlyA, Android onlyB"
+        }
+      },
+      "boundary": "No new camera or photo access execution, no physical-device claim, and no signed IPA ingest acceptance implied. Runtime methods and source counts are separate from host declarations."
+    }
   }
 }
