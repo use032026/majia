@@ -195,7 +195,8 @@ class Trip {
 
   String get entryCurrency => localCurrency ?? baseCurrency;
   int get estimatedCount => expenses.where((item) => item.isEstimate).length;
-  bool get canComplete => expenses.isNotEmpty && estimatedCount == 0;
+  bool get canComplete =>
+      expenses.isNotEmpty && !expenses.any((item) => item.isEstimate);
   int get remainingMinor => plannedMinor - spentMinor;
   int daysRemaining(DateTime now) {
     if (startDate == null || endDate == null) return 0;

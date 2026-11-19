@@ -4,6 +4,36 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:trip_delta/domain.dart';
 
 void main() {
+  test('trip completion requires entries and all estimates settled', () {
+    Expense expense(String id, {int? settled}) => Expense(
+      id: id,
+      title: id,
+      category: BudgetCategory.food,
+      amountMinor: 100,
+      currency: 'USD',
+      rate: 1,
+      bookedMinor: 100,
+      settledMinor: settled,
+      recordedAt: DateTime(2026, 11, 19),
+    );
+    final trip = Trip(
+      id: 'completion',
+      title: '',
+      baseCurrency: 'USD',
+      budgets: const {},
+      stage: TripStage.active,
+      createdAt: DateTime(2026, 11, 19),
+      expenses: const [],
+    );
+    final paid = expense('paid', settled: 0);
+    final estimate = expense('estimate');
+    expect(trip.canComplete, isFalse);
+    expect(trip.copyWith(expenses: [paid]).canComplete, isTrue);
+    expect(trip.copyWith(expenses: [estimate, paid]).canComplete, isFalse);
+    expect(trip.copyWith(expenses: [paid, estimate]).canComplete, isFalse);
+    expect(trip.copyWith(expenses: [estimate, estimate]).canComplete, isFalse);
+  });
+
   test('money input and conversion preserve currency precision', () {
     expect(parseMinor('12.34', 'CNY'), 1234);
     expect(parseMinor('12.345', 'CNY'), isNull);
