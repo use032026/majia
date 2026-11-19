@@ -1,3 +1,2 @@
-"NSCameraUsageDescription" = "Camera access is used to scan QR codes only when you choose to open a scanner.";
-"NSPhotoLibraryUsageDescription" = "Photo access is used to recognize a QR code in a photo you choose in the scanner.";
+"NSPhotoLibraryUsageDescription" = "Photo library access is used to save an image when you choose to save it.";
 "NSPhotoLibraryAddUsageDescription" = "Save an image to your photo library when you choose to save it.";

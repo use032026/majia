@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'stmini_flutter'
   s.version          = '0.1.1'
-  s.summary          = 'Flutter host for STMini online Mini programs.'
+  s.summary          = 'Flutter host for verified local STMini programs.'
   s.description      = <<-DESC
-Reusable Flutter host for verified, downloadable STMini packages.
+Reusable Flutter host for opening verified existing local STMini packages.
                        DESC
   s.homepage         = 'https://github.com/fsst-ios/stmini_flutter'
   s.license          = { :file => '../LICENSE' }
@@ -29,7 +29,6 @@ Reusable Flutter host for verified, downloadable STMini packages.
   s.dependency 'SDWebImage'
   s.dependency 'HXWRefresh'
   s.dependency 'Toast-Swift'
-  s.dependency 'ZIPFoundation', '~> 0.9'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.

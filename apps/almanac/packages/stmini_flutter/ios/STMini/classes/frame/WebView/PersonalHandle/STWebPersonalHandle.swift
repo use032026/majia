@@ -23,7 +23,6 @@ public class STWebPersonalHandle: NSObject {
     /// Optional host-owned implementation for the common Mini update-check
     /// API. STMini invokes it only when the verified package manifest has
     /// `updateself: "0"`; third-party Minis stay self-updating.
-    @objc public var miniProgramUpdateCheckHandle: (([String: Any], STMiniWebView) -> [String: Any])?
     
     @objc public var logHandle: ((String) -> Void)?
     

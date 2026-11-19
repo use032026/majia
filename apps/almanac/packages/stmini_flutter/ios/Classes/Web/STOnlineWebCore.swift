@@ -166,19 +166,7 @@ public enum STOnlineWebCore {
 /// Tracks a presentation owner without retaining a stale Flutter/UIKit
 /// presenter across repeated online Web opens.  It is intentionally UIKit
 /// free so it can be unit tested and reused by a Web-only package.
-public final class STOnlineWebPresentationLease<Presenter: AnyObject> {
-  public private(set) weak var presenter: Presenter?
 
-  public init() {}
-
-  public func begin(with presenter: Presenter) {
-    self.presenter = presenter
-  }
-
-  public func end() {
-    presenter = nil
-  }
-}
 
 /// Session-only subset of the ordinary H5 bridge, shared by the full and
 /// Web-only runtimes. It contains no Mini package, route or business API.
@@ -298,71 +286,3 @@ public final class STOnlineWebDisplayLifecycle {
 /// When callers rapidly request A → B → C, A may finish its presentation, but
 /// only C is then presented after A has completely dismissed. This keeps the
 /// next presenter lookup outside the dying controller hierarchy.
-public final class STOnlineWebPresentationQueue<Request> {
-  public enum Step {
-    case present(Request)
-    case dismissCurrent
-    case waiting
-  }
-
-  private var hasActivePresentation = false
-  private var isTransitioning = false
-  private var pendingRequest: Request?
-
-  public init() {}
-
-  /// Returns any queued request superseded by a newer one, so the owner can
-  /// resolve its callback rather than leaving a MethodChannel call pending.
-  public func enqueue(_ request: Request, hasExistingPresentation: Bool) -> (step: Step, superseded: Request?) {
-    if isTransitioning {
-      let superseded = pendingRequest
-      pendingRequest = request
-      return (.waiting, superseded)
-    }
-    // UIKit may have dismissed an Online Web page through its own back UI.
-    // Reconcile that external close before deciding whether to dismiss again.
-    if hasActivePresentation && !hasExistingPresentation {
-      hasActivePresentation = false
-    }
-    if hasActivePresentation || hasExistingPresentation {
-      hasActivePresentation = true
-      isTransitioning = true
-      pendingRequest = request
-      return (.dismissCurrent, nil)
-    }
-    isTransitioning = true
-    return (.present(request), nil)
-  }
-
-  public func didPresent() -> Step? {
-    hasActivePresentation = true
-    isTransitioning = false
-    guard pendingRequest != nil else { return nil }
-    isTransitioning = true
-    return .dismissCurrent
-  }
-
-  public func didDismiss() -> Step? {
-    hasActivePresentation = false
-    isTransitioning = false
-    guard let request = pendingRequest else { return nil }
-    pendingRequest = nil
-    isTransitioning = true
-    return .present(request)
-  }
-
-  public func didFailToPresent() -> Step? {
-    hasActivePresentation = false
-    isTransitioning = false
-    guard let request = pendingRequest else { return nil }
-    pendingRequest = nil
-    isTransitioning = true
-    return .present(request)
-  }
-
-  public func reset() {
-    hasActivePresentation = false
-    isTransitioning = false
-    pendingRequest = nil
-  }
-}

@@ -107,42 +107,69 @@ class StminiStartup {
   }
 
   void _consume(StminiEvent event) {
-    if (_disposed || event.name != 'runtime_initialized') return;
+    if (_disposed ||
+        !const {
+          'runtime_initialized',
+          'foundation_initialized',
+        }.contains(event.name)) {
+      return;
+    }
     final state = event.payload;
-    if (state['stage'] != 'mini' ||
-        state['runtimeMode'] != 'mini' ||
+    final mini =
+        event.name == 'runtime_initialized' &&
+        state['stage'] == 'mini' &&
+        state['runtimeMode'] == 'mini' &&
+        state['miniPackageMode'] == 'local_only' &&
+        state['miniLoadingAvailable'] == true &&
+        state['miniChildWebAvailable'] == true;
+    final foundation =
+        event.name == 'foundation_initialized' &&
+        state['stage'] == 'foundation' &&
+        state['miniLoadingAvailable'] == false &&
+        state['miniChildWebAvailable'] == false;
+    if ((!mini && !foundation) ||
+        state['miniPackageDownloadAvailable'] != false ||
+        state['miniPackageInstallAvailable'] != false ||
+        state['miniPackageUpdateAvailable'] != false ||
+        state['closedMiniCacheAvailable'] != false ||
+        state['localRendererAvailable'] != true ||
         state['initialized'] != true ||
         state['packageName'] != 'com.almanac.lite' ||
-        state['miniLoadingAvailable'] != true ||
-        state['webLoadingAvailable'] != true) {
+        state['webLoadingAvailable'] != false) {
       _lastIssue = 'invalid_foundation_event';
       return;
     }
     // Keep only foundation fields, never arbitrary future event/bridge data.
     final capabilities = state['capabilities'];
     _foundationState = Map<String, dynamic>.unmodifiable({
-      'stage': 'mini',
-      'runtimeMode': 'mini',
+      'stage': mini ? 'mini' : 'foundation',
+      if (mini) 'runtimeMode': 'mini',
+      if (mini) 'miniPackageMode': 'local_only',
+      'miniPackageDownloadAvailable': false,
+      'miniPackageInstallAvailable': false,
+      'miniPackageUpdateAvailable': false,
       'initialized': true,
       'packageName': 'com.almanac.lite',
-      'miniLoadingAvailable': true,
-      'webLoadingAvailable': true,
+      'miniLoadingAvailable': mini,
+      'webLoadingAvailable': false,
+      'miniChildWebAvailable': mini,
+      'closedMiniCacheAvailable': false,
+      'localRendererAvailable': true,
       if (state['language'] is String) 'language': state['language'],
       if (state['localizedClose'] is String)
         'localizedClose': state['localizedClose'],
       if (capabilities is List)
         'capabilities': List<String>.unmodifiable(
           capabilities.whereType<String>().where(
-            const {
+            {
               'host_configuration',
               'language_resolution',
               'runtime_events',
               'local_inventory',
               'local_renderer',
-              'mini_runtime',
-              'online_web',
-              'framework_bridge',
-              'isolated_storage',
+              if (mini) 'local_mini_runtime',
+              if (mini) 'framework_bridge',
+              if (mini) 'isolated_storage',
             }.contains,
           ),
         ),

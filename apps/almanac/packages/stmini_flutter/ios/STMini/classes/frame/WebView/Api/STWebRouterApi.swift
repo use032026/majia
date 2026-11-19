@@ -148,11 +148,17 @@ struct STWebRouterApi {
                     ? "小程序链接无效" : "仅小程序根页面可打开其他小程序"
             ))
         }
+        guard !STWebResourceManager.requestsPackageMutation(link: link) else {
+            return ["code": "0", "data": ["msg": "Mini package installation is unsupported", "supported": false]]
+        }
+        guard STWebResourceManager.isInstalledMiniPackageRunnable(link: link) else {
+            return failure("No verified local Mini package meets the required version")
+        }
         guard let effectLease = STWebBridgeEffectLease(webView: model.webview, generation: model.documentGeneration, requiresMiniRoot: true) else {
             return failure(STMiniLocalized("mini.api_navigation_unavailable", "原页面授权已失效"))
         }
         DispatchQueue.main.async {
-            guard effectLease.isCurrent() else { return }
+            guard effectLease.isCurrent(), STWebResourceManager.isInstalledMiniPackageRunnable(link: link) else { return }
             STWebOpenHandler.openWeb(url: link, params: nil, crl: presenter)
         }
         return ["code": "1", "data": ["opened": true]]

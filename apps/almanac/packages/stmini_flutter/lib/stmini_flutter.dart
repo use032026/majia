@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 import 'src/safe_event_stream.dart';
 import 'src/stmini_event.dart';
@@ -12,11 +13,16 @@ export 'src/stmini_package.dart';
 export 'src/stmini_local_view.dart';
 export 'src/runtime_mode.dart';
 
-/// Complete native Mini/Web runtime plus strict inventory and local PlatformViews.
+/// iOS local Mini runtime; Android foundation with strict inventory/renderer.
 class StminiFlutter {
   StminiFlutter._();
-  static const runtimeStage = 'mini';
+  static String get runtimeStage =>
+      defaultTargetPlatform == TargetPlatform.iOS ? 'mini' : 'foundation';
   static const runtimeMode = configuredStminiRuntimeMode;
+  static const miniPackageMode = 'local_only';
+  static const miniPackageDownloadAvailable = false;
+  static const miniPackageInstallAvailable = false;
+  static const miniPackageUpdateAvailable = false;
   static WebBridgeHandler? _webBridgeHandler;
   static const _methods = MethodChannel('stmini_flutter/methods');
   static final Stream<StminiEvent> _events = SafeStminiEventStream();
@@ -36,11 +42,14 @@ class StminiFlutter {
     if (bridgeContext != null) 'bridgeContext': bridgeContext,
   });
 
-  /// Presents a verified Mini through the native complete container.
+  /// Opens only an existing verified local Mini in the native container.
+  /// Package URLs/force updates, missing packages and unmet version floors fail;
+  /// this API never downloads, installs or repairs a package.
   /// The application must explicitly supply a link; initialization never opens one.
   static Future<void> openMini(String link) =>
       _methods.invokeMethod<void>('openMini', {'link': link});
 
+  /// Recognized for compatibility; standalone Web presentation is unsupported.
   static Future<void> openWeb(
     String url, {
     String? title,

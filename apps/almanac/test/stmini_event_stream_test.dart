@@ -10,6 +10,10 @@ const _codec = StandardMethodCodec();
 const _state = <String, dynamic>{
   'stage': 'mini',
   'runtimeMode': 'mini',
+  'miniPackageMode': 'local_only',
+  'miniPackageDownloadAvailable': false,
+  'miniPackageInstallAvailable': false,
+  'miniPackageUpdateAvailable': false,
   'initialized': true,
   'packageName': 'com.almanac.lite',
 };

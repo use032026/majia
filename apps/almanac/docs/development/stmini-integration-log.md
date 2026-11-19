@@ -250,3 +250,22 @@ Android minSdk24，插件虽保留来源 `WRITE_EXTERNAL_STORAGE maxSdkVersion=2
 当前普通无签名iOS Release实际构建退出0，包内Info三key与en/zh-Hans编译后的InfoPlist.strings逐值匹配，最低15.0、名称Deynu、不含Microphone key；原生framework仍2,557,200字节/SHA256 `21a849efb5d8b0ebbbc421d4f648860480e6100a016a700823eea2650d50d668`，Android APK仍`74037c54…`，依赖锁和原生/Dart/测试源码精确未变。旧iOS40/0、Dart119及后置五文件50、AndroidJVM92/0/native矩阵与双端A/B各17项SDK证据明确按SHA复用not_reexecuted，本次不机械重跑。新Info/project/语言资源已经当前普通Release实输入及包内值验证，不能沿用旧缺key的包装结论。
 
 UPSTREAM/SOURCE_MAP重新绑定当前宿主声明、普通Release与明确的runtime复用边界；来源C=13,514、额外引用扣重新增下界12,467不变。purpose/project/localization不取得来源行信用，Android APK与本地无签名iOS/后续实际签名IPA仍分开。后续必须用修复后的新提交及新的构建号重新签名上传并核实际IPA/ASC结果，不能把本地声明验证称为Apple ingest已成功，也不能重新上传失败build1；第五批继续仅本地。
+
+
+## 2026-11-19｜第四批 C3：iOS 本地 Mini 与 Android 基础范围收敛
+
+用户最新范围为 Android 暂不接入第四批完整容器，只将 iOS 新增收敛到固定原生 iOS 来源的 30%–40%。来源仍为 main `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`，固定 iOS 86 文件 / 15,317 行（14,981 行实现、336 行 headers）；旧完整 main 113 文件 / 20,683 行仅为历史参考，不选择有利分母。Android 和 shared Dart 不计本次 iOS 原生来源。
+
+LBX 扫码及专属两图、Mini HTTP 下载、ZIP 解包安装/更新和 Tiercel 下载实现持续删除，第五批也不得自动恢复。iOS 仅只读打开合格已有本地 Mini；任何非空下载别名/重复参数、force 意图明确不支持；缺包、坏身份、低版本失败，不回退 HTTPS，不创建、修复或写包 metadata。旧更新方法回字符串 code=0、data.msg unsupported、supported=false，不伪造安装或进度。普通首页、原隐私网页及日笺数据保留。
+
+iOS 另真删独立 Flutter Web 呈现、关闭后 cache/reuse、无配置宿主 profile/token 缓存与 WebStorage 镜像、自定义 snapshot/interactive 转场及孤立 Card；关闭重开使用新的 controller/document 和正常 UIKit。Mini 内 H5、活动栈、根首文档 overlay/超时退出、CMS Bridge、直接 getUserInfo provider、标准 mini_notifySessionChanged 与 document/session lease 保留。webLoadingAvailable=false、miniChildWebAvailable=true、closedMiniCacheAvailable=false，三包操作能力均 false、miniPackageMode=local_only。Android 34 个基线文件中，仅 Plugin 的明确 unsupported 与 false 能力字段较第三批 `584c6b92447b90c28a7814fbf022e46e29ed2963` 不同；stage=foundation、foundation_initialized，严格库存/受限 renderer/event lease 保留，无完整 Mini/Web。shared Dart 按两个实际平台合同校验启动，不伪装完整能力。
+
+当前本地验证：Dart format、analyze 通过，完整测试 122 项/0 失败；iOS generic build-for-testing 通过，任务私有 iOS18.2/iPhone16 原生 37 项/0 失败；两个已有本地 Mini 各 18 项真实 CMS/页面检查通过，包括 iframe transport 正控与 native gate、local-only 拒绝、存储、缺 provider fail-closed、前后台及关闭。nonce regular-file probe/ack/final 报告采集通过，普通 main 恢复和私有设备清理已核。Android 新任务私有 API33 AVD 的原基线 renderer instrumentation、真实注册 FlutterEngine 默认 Impeller renderer 路径通过，普通 main 恢复和专用 AVD/目录清理完成。测试包均由测试 runner 在生产接口之外生成；没有恢复生产 installer。
+
+双普通 Release 构建通过，依赖锁前后不变。首次 actual App 扫描揭示旧增量输出残留未链接的 ZIPFoundation framework；保留失败证据，隔离两个完整 generated Runner.app 输出后重新构建，当前全 App 每个 Mach-O 均无 LBX/Tiercel/ZIP 标记，插件无 camera/scanner 标记，专用扫码图片缺失。当前 iOS 原生插件 SHA256 为 `954e28c4d562dea900f511532fde6f35847397a24f5c170bef246771bdaa0fa6`；Android APK SHA256 为 `07c3b6784a5fe7e253ab1cd2d34f99051795c7458c97ddd01c454825a2dd8c21`，无完整 Mini 组件，未添加 INTERNET、Camera 或广泛存储权限。Camera 用途已去除；Pod13 legacy Photos 授权 fallback 仍真实存在，保存相关 Read/Add 用途及 en/zh-Hans 本地化保留，不能为删用途改变保存行为。
+
+`SOURCE_MAP.json` 已按当前普通 Release 输入、实际 native/SDK consumer 与精确源 SHA 求交重建 iOS-only 资格，25 个核心路径，累计 C=6,182；已知同路径前三批子集 P=80，交集=79，未保留=1；扣所有旧参考的保守新增下界=5,632，相对已知 P 的新增上界=6,103（约36.77%–39.84%），整体满足 4,596–6,126。P 不是前三批全部，cross-path/equivalent-derived 来源仍未知；额外参考下界不与 P 相加，不倒推历史。计量不授予 supporting UI、headers、资源、Dart、local adapters、tests、no-caller/declaration、Debug-only 来源信用，也不声称逐行机器码或全部方法执行覆盖。Android 来源信用为0；本地无签名 iOS App/framework 不等于实际签名 IPA。
+
+本节点为负责人实现与本地验证证据，独立 QA/跨端允许差异结论及最终提交另行登记。未执行签名、上传、商店准备或送审，不将旧 C1/C2 发行证据套到当前源码；商店内容与实际签名包由授权发行流程另核。第五批仍仅本地整体验证与补缺。角色长期规则未由本节点改动。
+
+最后按机械格式窗口仅删除 STOnlineWebCore.swift 与 STWebInstanceManager.swift 各一个多余结尾 LF；原文导出证明 after=before.rstrip(LF)+LF、body 字节完全不变，git diff --check 清零。原 native/SDK 运行证据保留其旧 SHA，仅复用无语义变化的执行证据；当前普通 iOS Release 再构建通过，实际包扫描再通过，原生插件二进制 SHA 不变。当前来源资格与正式 provenance 绑定新源 SHA，并显式登记机械复用边界，没有将旧运行记录改写为新 SHA。

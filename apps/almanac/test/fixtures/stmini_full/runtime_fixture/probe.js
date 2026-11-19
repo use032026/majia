@@ -50,7 +50,10 @@ async function probe() {
     checks.malformedRejected = (await call('getStorage', {key: 'malformed_probe'})).code === '0';
     checks.unknownMethodRejected = (await call('fixture_business_provider_not_installed')).code === '0';
     checks.providerFailClosed = (await call('getQuantSession')).code === '0';
-    checks.selfManagedUpdateRejectsHostCheck = (await call('mini_checkMiniProgramUpdate')).code === '0';
+    const updateCheck = await call('mini_checkMiniProgramUpdate');
+    const updateInstall = await call('mini_downloadMiniProgramUpdate', {downloadUrl: 'https://fixture.invalid/rejected.zip', isforce: true});
+    checks.updateCheckUnsupported = updateCheck.code === '0' && updateCheck.data.supported === false;
+    checks.updateInstallUnsupported = updateInstall.code === '0' && updateInstall.data.supported === false;
     document.getElementById('action').onclick = () => { document.getElementById('result').textContent = 'Synthetic interaction complete'; };
     document.getElementById('action').click();
     checks.interaction = document.getElementById('result').textContent === 'Synthetic interaction complete';

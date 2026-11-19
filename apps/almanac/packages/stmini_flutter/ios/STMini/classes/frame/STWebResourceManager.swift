@@ -7,16 +7,8 @@
 
 import Foundation
 import UIKit
-import ZIPFoundation
 
-enum STDirectMiniPackageInstallOutcome {
-    /// The downloaded package passed validation and atomically replaced the
-    /// previously installed package (or was installed for the first time).
-    case installed(version: String)
-    /// The archive itself was valid, but its manifest version was not newer
-    /// than the verified local package, so the local package was retained.
-    case keptInstalled(version: String)
-}
+
 
 public struct STWebResourceManager {
 
@@ -40,8 +32,7 @@ public struct STWebResourceManager {
     }
 
     /// The locally installed record is derived only from the package manifest.
-    /// The first-version mini protocol downloads the archive directly; there
-    /// is no separate metadata document or pre-download checksum descriptor.
+    /// It is read without migration, repair or remote package installation.
     private struct InstalledMiniPackageRecord: Codable {
         let miniId: String
         let version: String
@@ -54,28 +45,8 @@ public struct STWebResourceManager {
         var launchLink: String?
     }
 
-    // All package mutations share one serial owner, including the version
-    // decision, kept-record update, swap, strict verification and rollback.
-    // Main-thread completions are enqueued after the transaction finishes.
-    private static let directMiniPackageInstallQueueKey = DispatchSpecificKey<Bool>()
-    static let directMiniPackageInstallQueue: DispatchQueue = {
-        let queue = DispatchQueue(label: "com.stmini.package-install", qos: .userInitiated)
-        queue.setSpecific(key: directMiniPackageInstallQueueKey, value: true)
-        return queue
-    }()
-
     private static let installedMetadataFileName = ".st-mini-package.json"
     private static let packageManifestFileName = "mini-manifest.json"
-    /// Keep direct ZIP delivery bounded on iOS just as it is on Android.
-    /// The archive limit protects temporary storage; the unpacked limit
-    /// prevents a small compressed archive from exhausting disk space.
-    private static let maximumDirectMiniArchiveBytes: UInt64 = 80 * 1024 * 1024
-    private static let maximumDirectMiniUnpackedBytes: UInt64 = 160 * 1024 * 1024
-    private static let installedPackageValidationCacheLock = NSLock()
-    /// Positive results are cached per Mini/version for the lifetime of the
-    /// installed package. Atomic install replacement explicitly invalidates
-    /// this cache before and after swapping directories.
-    private static var verifiedInstalledPackageVersions = [String: String]()
     /// WKURLSchemeHandler cannot take over http(s), so verified downloaded
     /// packages use STMini's own origin.  The host is the verified miniId:
     /// `stmini://asterquant.stmini.local/index.html`.  Root and package-owned
@@ -307,45 +278,52 @@ public struct STWebResourceManager {
         return installedRecord(name: miniName)?.launchLink
     }
 
-    /// Records a remote update source for an existing, verified package.
-    /// A bare mini://id is deliberately ignored by the caller so opening a
-    /// generated Home entry cannot erase a richer QR/CMS update link.
-    static func rememberInstalledMiniPackageLaunchLink(name: String, launchLink: String) {
-        let updateRecord = {
-            guard let miniName = miniNameHandle(name: name).0,
-                  isInstalledMiniPackageUsable(name: miniName),
-                  var record = installedRecord(name: miniName) else {
-                return
-            }
-            let normalizedLink = launchLink.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !normalizedLink.isEmpty, record.launchLink != normalizedLink else { return }
-            record.launchLink = normalizedLink
-            try? JSONEncoder().encode(record).write(
-                to: packageDirectoryURL(name: miniName).appendingPathComponent(installedMetadataFileName),
-                options: .atomic
-            )
-        }
-        // Preserve the original synchronous visibility without re-entering
-        // the same serial queue if a package transaction records its source.
-        if DispatchQueue.getSpecific(key: directMiniPackageInstallQueueKey) == true {
-            updateRecord()
-        } else {
-            directMiniPackageInstallQueue.sync(execute: updateRecord)
-        }
+
+
+    /// Remote package mutation is unavailable; inspect every supplied intent.
+    static func requestsPackageMutation(parameters: [String: String]?) -> Bool {
+        let keys = ["downloadUrl", "downloadURL", "download_url", "__st_force_self_update", "isforce", "isForce", "forceUpdate"]
+        return keys.contains { !(parameters?[$0]?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true) }
     }
 
-    /// Runtime compatibility is distinct from the desired download target.
+    static func requestsPackageMutation(link: String) -> Bool {
+        let keys: Set<String> = ["downloadUrl", "downloadURL", "download_url", "__st_force_self_update", "isforce", "isForce", "forceUpdate"]
+        return URLComponents(string: link)?.queryItems?.contains {
+            keys.contains($0.name) && !($0.value?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
+        } ?? false
+    }
+
+    static func isInstalledMiniPackageRunnable(link: String) -> Bool {
+        guard let components = URLComponents(string: link), let miniId = components.host,
+              !requestsPackageMutation(link: link) else { return false }
+        // Match the existing Mini opener: last non-empty duplicate wins,
+        // then a non-blank canonical value takes precedence over its alias.
+        var params: [String: String] = [:]
+        for item in components.queryItems ?? [] {
+            if let value = item.value, !value.isEmpty { params[item.name] = value }
+        }
+        func parameter(_ canonical: String, alias: String) -> String? {
+            for key in [canonical, alias] {
+                if let value = params[key]?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty { return value }
+            }
+            return nil
+        }
+        return isInstalledMiniPackageRunnable(name: miniId,
+            currentVersion: parameter("currentVersion", alias: "current_version"),
+            minSupportVersion: parameter("minSupportVersion", alias: "min_support_version"))
+    }
+
     static func isInstalledMiniPackageRunnable(name: String, currentVersion: String?, minSupportVersion: String?) -> Bool {
         guard let installed = installedMiniPackageVersion(name: name) else { return false }
-        guard let floor = minSupportVersion ?? currentVersion else { return true }
+        func normalized(_ value: String?) -> String? {
+            guard let text = value?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else { return nil }
+            return text
+        }
+        guard let floor = normalized(minSupportVersion) ?? normalized(currentVersion) else { return true }
         return compareMiniPackageVersion(installed, floor) >= 0
     }
 
-    static func requiredMiniDownloadVersion(currentVersion: String?, minSupportVersion: String?) -> String? {
-        guard let currentVersion else { return minSupportVersion }
-        guard let minSupportVersion else { return currentVersion }
-        return compareMiniPackageVersion(currentVersion, minSupportVersion) >= 0 ? currentVersion : minSupportVersion
-    }
+
 
     static func compareMiniPackageVersion(_ lhs: String, _ rhs: String) -> Int {
         compareVersion(lhs, rhs)
@@ -382,130 +360,7 @@ public struct STWebResourceManager {
     /// is the version source of truth after download. The archive is unpacked in a
     /// staging directory and atomically swapped into place only after its ID,
     /// entry, icon and channel are validated.
-    static func installDirectMiniPackage(archivePath: String, name: String, minimumVersion: String? = nil, requiresNewerVersion: Bool = false, launchLink: String? = nil, completion: @escaping (Result<STDirectMiniPackageInstallOutcome, Error>) -> Void) {
-        directMiniPackageInstallQueue.async {
-            do {
-                guard let miniName = miniNameHandle(name: name).0,
-                      isSafeMiniName(miniName) else {
-                    throw NSError(domain: "STMini", code: 8, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_identifier_invalid", "小程序标识无效")])
-                }
 
-                let fileManager = FileManager.default
-                let archiveURL = URL(fileURLWithPath: archivePath)
-                // A downloaded ZIP is only a transient installation input.
-                // Remove it for every outcome, including pre-unzip validation
-                // failures, so an invalid archive cannot accumulate in tmp.
-                defer { try? fileManager.removeItem(at: archiveURL) }
-                try validateDirectMiniArchive(at: archiveURL)
-                _ = try LocalPackageInventory(home: URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true)).read(check: {})
-                let rootURL = miniRootDirectoryURL()
-                try fileManager.createDirectory(at: rootURL, withIntermediateDirectories: true)
-                let stagingURL = rootURL.appendingPathComponent(".staging-\(UUID().uuidString)", isDirectory: true)
-                defer { try? fileManager.removeItem(at: stagingURL) }
-                let unpackedURL = stagingURL.appendingPathComponent("unpacked", isDirectory: true)
-                try fileManager.createDirectory(at: unpackedURL, withIntermediateDirectories: true)
-                try fileManager.unzipItem(at: archiveURL, to: unpackedURL)
-                try validateDirectMiniUnpackedDirectory(at: unpackedURL)
-
-                let candidateURL = try packageRoot(in: unpackedURL, expectedName: miniName)
-                let manifestURL = candidateURL.appendingPathComponent(packageManifestFileName)
-                let manifest = try JSONDecoder().decode(MiniPackageManifest.self, from: Data(contentsOf: manifestURL))
-                guard manifest.miniId == miniName,
-                      !manifest.version.isEmpty,
-                      isValidUpdateSelf(manifest.updateself),
-                      isSafeEntryPath(manifest.entry),
-                      isSafeEntryPath(manifest.icon),
-                      fileManager.fileExists(atPath: candidateURL.appendingPathComponent(manifest.entry).path),
-                      fileManager.fileExists(atPath: candidateURL.appendingPathComponent(manifest.icon).path) else {
-                    throw NSError(domain: "STMini", code: 9, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_integrity_failed", "小程序包完整性校验失败")])
-                }
-                if let minimumVersion = minimumVersion?.trimmingCharacters(in: .whitespacesAndNewlines),
-                   !minimumVersion.isEmpty,
-                   compareVersion(manifest.version, minimumVersion) < 0 {
-                    throw NSError(domain: "STMini", code: 10, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_version_lower", "下载的小程序版本低于当前版本")])
-                }
-
-                // A direct QR has no separate descriptor, so its package
-                // manifest is the version source of truth. Always validate
-                // the downloaded archive first, then replace the installed
-                // package only when it is strictly newer. Equal or older
-                // archives are discarded and the verified local package stays
-                // runnable.
-                if isInstalledMiniPackageUsable(name: miniName),
-                   let installed = installedRecord(name: miniName),
-                   compareVersion(manifest.version, installed.version) <= 0 {
-                    // A retained WebView can still execute an older H5 even
-                    // though a previous weak update has already installed the
-                    // server's target version on disk. For a forced update an
-                    // equal archive is therefore a valid cold-reload target;
-                    // only a genuinely older archive must fail the force
-                    // requirement.
-                    if requiresNewerVersion,
-                       compareVersion(manifest.version, installed.version) < 0 {
-                        throw NSError(domain: "STMini", code: 11, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_version_not_newer", "下载的小程序版本未高于本地版本")])
-                    }
-                    STProjectHelper.Log("[DirectMini] install skipped miniId=\(miniName) downloadedVersion=\(manifest.version) installedVersion=\(installed.version) reason=downloaded_version_not_newer")
-                    if let launchLink = launchLink?.trimmingCharacters(in: .whitespacesAndNewlines), !launchLink.isEmpty {
-                        var updatedRecord = installed
-                        updatedRecord.launchLink = launchLink
-                        try JSONEncoder().encode(updatedRecord).write(to: packageDirectoryURL(name: miniName).appendingPathComponent(installedMetadataFileName), options: .atomic)
-                    }
-                    try? fileManager.removeItem(atPath: archivePath)
-                    DispatchQueue.main.async {
-                        // The verified package is already runnable. Notify
-                        // Home as well because this scan may have supplied a
-                        // richer launch link for its generated Grid entry.
-                        STMiniPackageRegistry.postInstalledPackagesDidChange(
-                            miniId: miniName,
-                            version: installed.version
-                        )
-                        completion(.success(.keptInstalled(version: installed.version)))
-                    }
-                    return
-                }
-
-                let record = InstalledMiniPackageRecord(miniId: manifest.miniId, version: manifest.version, entry: manifest.entry, channel: manifest.channel, launchLink: launchLink?.trimmingCharacters(in: .whitespacesAndNewlines))
-                try JSONEncoder().encode(record).write(to: candidateURL.appendingPathComponent(installedMetadataFileName), options: .atomic)
-
-                let targetURL = packageDirectoryURL(name: miniName)
-                let backupURL = rootURL.appendingPathComponent(".backup-\(UUID().uuidString)", isDirectory: true)
-                var movedPreviousPackage = false
-                invalidateInstalledPackageValidation(miniName)
-                do {
-                    if fileManager.fileExists(atPath: targetURL.path) {
-                        try fileManager.moveItem(at: targetURL, to: backupURL)
-                        movedPreviousPackage = true
-                    }
-                    try fileManager.moveItem(at: candidateURL, to: targetURL)
-                    guard isInstalledMiniPackageUsable(name: miniName) else {
-                        try? fileManager.removeItem(at: targetURL)
-                        throw NSError(domain: "STMini", code: 9, userInfo: [NSLocalizedDescriptionKey: "Installed package failed strict validation"])
-                    }
-                    if movedPreviousPackage { try? fileManager.removeItem(at: backupURL) }
-                    invalidateInstalledPackageValidation(miniName)
-                } catch {
-                    if !fileManager.fileExists(atPath: targetURL.path), movedPreviousPackage, fileManager.fileExists(atPath: backupURL.path) {
-                        try? fileManager.moveItem(at: backupURL, to: targetURL)
-                    }
-                    invalidateInstalledPackageValidation(miniName)
-                    throw error
-                }
-                try? fileManager.removeItem(atPath: archivePath)
-                DispatchQueue.main.async {
-                    // Publish only after the atomic replacement has
-                    // completed. Hosts can now enumerate a fully validated
-                    // package and add its Home Grid entry immediately.
-                    STMiniPackageRegistry.postInstalledPackagesDidChange(
-                        miniId: manifest.miniId,
-                        version: manifest.version
-                    )
-                    completion(.success(.installed(version: manifest.version)))
-                }
-            } catch {
-                DispatchQueue.main.async { completion(.failure(error)) }
-            }
-        }
-    }
 
     private static func miniRootDirectoryURL() -> URL {
         URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
@@ -515,23 +370,11 @@ public struct STWebResourceManager {
         miniRootDirectoryURL().appendingPathComponent(name, isDirectory: true)
     }
 
-    private static func isInstalledPackageValidationCached(_ miniName: String) -> Bool {
-        installedPackageValidationCacheLock.lock()
-        defer { installedPackageValidationCacheLock.unlock() }
-        return verifiedInstalledPackageVersions[miniName] != nil
-    }
 
-    private static func cacheInstalledPackageValidation(_ miniName: String, version: String) {
-        installedPackageValidationCacheLock.lock()
-        verifiedInstalledPackageVersions[miniName] = version
-        installedPackageValidationCacheLock.unlock()
-    }
 
-    private static func invalidateInstalledPackageValidation(_ miniName: String) {
-        installedPackageValidationCacheLock.lock()
-        verifiedInstalledPackageVersions.removeValue(forKey: miniName)
-        installedPackageValidationCacheLock.unlock()
-    }
+
+
+
 
     /// Build the public URL only after the corresponding on-disk regular file
     /// has passed the same package-boundary validation as every resource load.
@@ -572,71 +415,11 @@ public struct STWebResourceManager {
         return try? JSONDecoder().decode(MiniPackageManifest.self, from: data)
     }
 
-    private static func packageRoot(in unpackedURL: URL, expectedName: String) throws -> URL {
-        let directEntry = unpackedURL.appendingPathComponent("index.html")
-        if FileManager.default.fileExists(atPath: directEntry.path) { return unpackedURL }
-        let expectedURL = unpackedURL.appendingPathComponent(expectedName, isDirectory: true)
-        if FileManager.default.fileExists(atPath: expectedURL.appendingPathComponent("index.html").path) { return expectedURL }
-        let children = try FileManager.default.contentsOfDirectory(at: unpackedURL, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
-            .filter { $0.lastPathComponent != "__MACOSX" }
-            .filter { (try? $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true }
-        guard children.count == 1, FileManager.default.fileExists(atPath: children[0].appendingPathComponent("index.html").path) else {
-            throw NSError(domain: "STMini", code: 7, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_structure_invalid", "小程序包目录结构无效")])
-        }
-        return children[0]
-    }
 
-    private static func validateDirectMiniArchive(at archiveURL: URL) throws {
-        let fileManager = FileManager.default
-        let attributes = try fileManager.attributesOfItem(atPath: archiveURL.path)
-        let archiveSize = (attributes[.size] as? NSNumber)?.uint64Value ?? 0
-        guard archiveSize > 0, archiveSize <= maximumDirectMiniArchiveBytes else {
-            throw NSError(domain: "STMini", code: 12, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_too_large", "小程序包无效或过大")])
-        }
-        guard let archive = Archive(url: archiveURL, accessMode: .read) else {
-            throw NSError(domain: "STMini", code: 13, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_invalid", "小程序包无效")])
-        }
-        var declaredUnpackedBytes: UInt64 = 0
-        for entry in archive {
-            let path = entry.path
-            guard !path.hasPrefix("/"),
-                  !path.hasPrefix("\\"),
-                  !path.contains("\\"),
-                  !path.split(separator: "/").contains(where: { $0 == "." || $0 == ".." || $0.isEmpty }),
-                  entry.type != .symlink else {
-                throw NSError(domain: "STMini", code: 14, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_illegal_path", "小程序包包含非法路径")])
-            }
-            guard entry.uncompressedSize <= maximumDirectMiniUnpackedBytes - declaredUnpackedBytes else {
-                throw NSError(domain: "STMini", code: 15, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_unpacked_too_large", "小程序解压后过大")])
-            }
-            declaredUnpackedBytes += entry.uncompressedSize
-        }
-    }
 
-    private static func validateDirectMiniUnpackedDirectory(at rootURL: URL) throws {
-        let fileManager = FileManager.default
-        let rootPath = rootURL.standardizedFileURL.path + "/"
-        guard let enumerator = fileManager.enumerator(at: rootURL, includingPropertiesForKeys: nil) else {
-            throw NSError(domain: "STMini", code: 16, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_unzip_failed", "小程序包解压失败")])
-        }
-        var actualUnpackedBytes: UInt64 = 0
-        for case let itemURL as URL in enumerator {
-            let normalizedURL = itemURL.standardizedFileURL
-            guard normalizedURL.path.hasPrefix(rootPath) else {
-                throw NSError(domain: "STMini", code: 14, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_illegal_path", "小程序包包含非法路径")])
-            }
-            let attributes = try fileManager.attributesOfItem(atPath: normalizedURL.path)
-            if attributes[.type] as? FileAttributeType == .typeSymbolicLink {
-                throw NSError(domain: "STMini", code: 14, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_illegal_path", "小程序包包含非法路径")])
-            }
-            guard attributes[.type] as? FileAttributeType == .typeRegular else { continue }
-            let size = (attributes[.size] as? NSNumber)?.uint64Value ?? 0
-            guard size <= maximumDirectMiniUnpackedBytes - actualUnpackedBytes else {
-                throw NSError(domain: "STMini", code: 15, userInfo: [NSLocalizedDescriptionKey: STMiniLocalized("mini.package_unpacked_too_large", "小程序解压后过大")])
-            }
-            actualUnpackedBytes += size
-        }
-    }
+
+
+
 
     private static func isSafeMiniName(_ value: String) -> Bool {
         !value.isEmpty && value.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil
@@ -673,46 +456,7 @@ public struct STWebResourceManager {
     
     
     
-    static func moveToTotalMiniProgramPath(from: String, name: String, complete: @escaping () -> Void) {
-        let group = DispatchGroup()
-        let queue = DispatchQueue.global()
-        let (miniName, _) = STWebResourceManager.miniNameHandle(name: name)
-        queue.async(group: group) {
-            
-            STProjectHelper.Log("开始处理下载的小程序包<\(miniName!).zip>")
-            
-            var miniPath = NSHomeDirectory() + "/Documents/STMini"
-            
-            STProjectHelper.Log("小程序沙盒总路径文件夹/Documents/STMini是否存在，不存在创建")
-            STFlieManager.createDirectory(path: miniPath)
-            miniPath = miniPath + "/\(miniName!)"
-            
-            
-            STProjectHelper.Log("解压缩<\(miniName!).zip>")
-            let fileManager = FileManager()
-            
-            let sourceURL = URL(fileURLWithPath: from)
-        
-            let destinationURL = URL(fileURLWithPath: from.replacingOccurrences(of: "\(miniName!).zip", with: ""))
-            do {
-                try fileManager.unzipItem(at: sourceURL, to: destinationURL)
-            } catch {
-                STProjectHelper.Log("解压缩<\(miniName!).zip>出错：\(error)")
-            }
-            
-            let unzipMiniPath = from.replacingOccurrences(of: ".zip", with: "")
-            STProjectHelper.Log("复制到小程序沙盒总路径后移除下载的小程序包及压缩文件<\(miniName!)>")
-            
-            STFlieManager.copyFile(from: unzipMiniPath, to: miniPath)
-            
-            STFlieManager.deleteDirectory(path: unzipMiniPath)
-            STFlieManager.deleteDirectory(path: from)
-        }
-        group.notify(queue: DispatchQueue.main) {
-            STProjectHelper.Log("下载的小程序包<\(miniName!).zip>处理完成")
-            complete()
-        }
-    }
+
     
     
     
@@ -826,7 +570,8 @@ public final class STMiniPackageRegistry: NSObject {
             }
             let miniName = STWebResourceManager.installedMiniPackageDisplayName(name: miniId) ?? miniId
             let iconURL = STWebResourceManager.installedMiniPackageIconURL(name: miniId)?.absoluteString ?? ""
-            let launchLink = STWebResourceManager.installedMiniPackageLaunchLink(name: miniId) ?? ""
+            let version = STWebResourceManager.installedMiniPackageVersion(name: miniId) ?? ""
+            let launchLink = "mini://\(miniId)?currentVersion=\(version)"
             return STMiniPackageInfo(miniId: miniId, miniName: miniName, iconURL: iconURL, launchLink: launchLink)
         }
         .sorted { $0.miniId.localizedStandardCompare($1.miniId) == .orderedAscending }

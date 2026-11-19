@@ -29,16 +29,6 @@ import UIKit
     /// receives the host event while the child is on top.
     private static weak var currentHostMiniRoot: STWebMiniprogramCrl?
     
-    fileprivate var interactive: STWebTransInteractive!
-    
-    fileprivate lazy var transAnimation: STWebTransAnimation = {
-        let trans = STWebTransAnimation(transType: .present)
-        trans.completion = { [weak self] transType, succeeded in
-            self?.handleTransitionCompletion(type: transType, succeeded: succeeded)
-        }
-        return trans
-    }()
-    
     fileprivate var loadAnimationView: STWebMiniLoadAnimate?
     /// An online Mini must let its native loading layer reach the first frame
     /// before it starts package resolution/download. Starting work from
@@ -70,27 +60,16 @@ import UIKit
     private var rootMiniDocumentTicket: RootMiniDocumentLoadTicket?
     private var rootMiniDocumentReadyGeneration: UInt?
     private var rootMiniLoadingObservation: NSKeyValueObservation?
-    private var directMiniPackageDownloadTask: URLSessionDownloadTask?
-    private var directMiniPackageDownloadSession: URLSession?
-    private var directMiniPackageDownloadOperationID: UUID?
-    /// The last decile emitted for the current direct ZIP transfer. Keeping
-    /// this on the main queue avoids flooding the native diagnostic stream.
-    private var directMiniDownloadLastProgressBucket = -1
-    /// Marks the one cold launch created by a forced self-update. The internal
-    /// config flag is cleared as soon as the verified package is selected so
-    /// later manual re-entry does not trigger another forced download.
-    private var forcedSelfUpdateLaunch = false
     /// Only a self-managed forced update supplies an explicit native retry.
     /// Its source URL is not necessarily present in the original Grid link.
     private var onlineLoadingRetryAction: (() -> Void)?
     /// Set only by the capsule's explicit refresh action.  A normal close or
     /// interactive dismissal remains eligible for keep-alive.
-    fileprivate var skipsKeepAliveOnNextDismiss = false
     /// Version of the package that this WebView actually loaded.  The keep-
     /// alive pool compares it with disk before reusing the runtime so a newly
     /// installed package is always picked up on the next cold launch.
     private(set) var loadedMiniPackageVersion: String?
-    /// A retained Mini program must only be resumed after its first document
+    /// An active Mini runtime is usable only after its first document
     /// has completed and while WKWebView's content process is still alive.
     /// iOS may terminate a background Web Content process; presenting that
     /// retained WebView again otherwise results in a permanent white page.
@@ -113,125 +92,6 @@ import UIKit
     private static let foregroundProcessProbeTimeout: TimeInterval = 1.2
     private static let foregroundProcessProbeRetryDelay: TimeInterval = 0.35
     private static let foregroundProcessProbeMaxAttempts = 2
-
-    private enum DirectMiniDownloadBehavior: Equatable {
-        case openAfterInstall
-        case silentUpdate
-    }
-
-    /// State retained between URLSession's progress, completion and failure
-    /// delegate callbacks for the one active direct Mini ZIP transfer.
-    private final class DirectMiniDownloadContext {
-        let operationID: UUID
-        let name: String
-        let downloadURL: String
-        let minimumVersion: String?
-        let behavior: DirectMiniDownloadBehavior
-        let fallbackToInstalledPackage: Bool
-        let requiresNewerVersion: Bool
-        let attempt: Int
-        let deadline: Date
-        let logURL: String
-
-        init(
-            operationID: UUID,
-            name: String,
-            downloadURL: String,
-            minimumVersion: String?,
-            behavior: DirectMiniDownloadBehavior,
-            fallbackToInstalledPackage: Bool,
-            requiresNewerVersion: Bool,
-            attempt: Int,
-            deadline: Date,
-            logURL: String
-        ) {
-            self.operationID = operationID
-            self.name = name
-            self.downloadURL = downloadURL
-            self.minimumVersion = minimumVersion
-            self.behavior = behavior
-            self.fallbackToInstalledPackage = fallbackToInstalledPackage
-            self.requiresNewerVersion = requiresNewerVersion
-            self.attempt = attempt
-            self.deadline = deadline
-            self.logURL = logURL
-        }
-    }
-
-    /// URLSession calls its delegate on a background queue. Keep the immutable
-    /// transfer description with that one delegate instead of reading the
-    /// controller's mutable current-task state from the background queue.
-    private final class DirectMiniDownloadDelegate: NSObject, URLSessionDownloadDelegate {
-        weak var owner: STWebMiniprogramCrl?
-        let context: DirectMiniDownloadContext
-
-        init(owner: STWebMiniprogramCrl, context: DirectMiniDownloadContext) {
-            self.owner = owner
-            self.context = context
-        }
-
-        func urlSession(
-            _ session: URLSession,
-            downloadTask: URLSessionDownloadTask,
-            didWriteData bytesWritten: Int64,
-            totalBytesWritten: Int64,
-            totalBytesExpectedToWrite: Int64
-        ) {
-            owner?.handleDirectMiniDownloadProgress(
-                context: context,
-                task: downloadTask,
-                totalBytesWritten: totalBytesWritten,
-                totalBytesExpectedToWrite: totalBytesExpectedToWrite
-            )
-        }
-
-        func urlSession(
-            _ session: URLSession,
-            task: URLSessionTask,
-            willPerformHTTPRedirection response: HTTPURLResponse,
-            newRequest request: URLRequest,
-            completionHandler: @escaping (URLRequest?) -> Void
-        ) {
-            // A redirect is allowed only when its final request remains on
-            // the host-initialized Mini download origin.  Never let a CDN or
-            // short-link silently move an executable package to another host.
-            guard let url = request.url,
-                  StminiFlutterPlugin.isMiniDownloadURLAllowed(url) else {
-                completionHandler(nil)
-                return
-            }
-            completionHandler(request)
-        }
-
-        func urlSession(
-            _ session: URLSession,
-            downloadTask: URLSessionDownloadTask,
-            didFinishDownloadingTo location: URL
-        ) {
-            owner?.handleDirectMiniDownloadFinished(
-                context: context,
-                task: downloadTask,
-                temporaryURL: location
-            )
-        }
-
-        func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-            guard let error else { return }
-            owner?.handleDirectMiniDownloadCompletion(
-                context: context,
-                task: task,
-                error: error
-            )
-        }
-    }
-
-    /// A Mini archive may legitimately be tens of megabytes. Keep each
-    /// transport attempt bounded, but do not reject a healthy mobile download
-    /// merely because it cannot complete in a few seconds.
-    // A package download may be slow on mobile networks: allow 60 seconds of
-    // inactivity per attempt and retain enough total time for a retry.
-    private static let directMiniDownloadAttemptTimeout: TimeInterval = 60
-    private static let directMiniDownloadTotalTimeout: TimeInterval = 180
 
     private var hostOperationID: String? {
         guard let value = miniParameter("__st_operation_id"), !value.isEmpty else { return nil }
@@ -490,7 +350,6 @@ import UIKit
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        STWebMiniProgramKeepAliveStore.shared.remove(self)
         hasEmittedCloseEvent = false
         isShow = true
         if !isChild {
@@ -504,7 +363,7 @@ import UIKit
         startInitialOnlinePackageLoadIfNeeded()
         // STMini's original full-screen interactive dismissal is owned by
         // the first page. Nested mini pages remain normal navigation pushes.
-        installRootInteractiveDismissalIfNeeded()
+
 
     }
 
@@ -533,45 +392,27 @@ import UIKit
         if !isChild,
            (isBeingDismissed || navigationController?.isBeingDismissed == true) {
             webView.invalidateBridgeDocumentSession()
-            cancelDirectMiniPackageDownload()
+
         }
         if !isChild,
            (isBeingDismissed || navigationController?.isBeingDismissed == true),
            Self.currentHostMiniRoot === self {
             Self.currentHostMiniRoot = nil
         }
-        if !isChild,
-           (isBeingDismissed || navigationController?.isBeingDismissed == true),
-           !(navigationController is STWebNavigationController) {
-            cacheForKeepAliveAfterDismissal()
-        }
+
     }
 
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        // A normal close, forced re-entry, or an unusable runtime can bypass
-        // the cache branch below.  In all cases a detached root must stop
-        // being the recipient of App foreground/background events.
+        // A detached root no longer receives application lifecycle events.
         clearCurrentHostMiniRootIfNeeded()
 
-        // Capsule close, the first-page edge gesture and custom presentation
-        // transitions do not all deliver the same `isBeingDismissed` state at
-        // `viewWillDisappear`. Once the root Mini is genuinely detached from
-        // its presentation, cache it from this common final lifecycle point.
-        guard !isChild,
-              !skipsKeepAliveOnNextDismiss,
-              let rootNavigationController = navigationController as? STWebNavigationController,
-              rootNavigationController.presentingViewController == nil,
-              rootNavigationController.view.window == nil else {
-            return
-        }
-        STWebMiniProgramKeepAliveStore.shared.cache(self,
-                                                     navigationController: rootNavigationController)
+
     }
     
     deinit {
-        cancelDirectMiniPackageDownload()
+
         if Self.currentHostMiniRoot === self {
             Self.currentHostMiniRoot = nil
         }
@@ -661,8 +502,6 @@ import UIKit
             return
         }
         if isHomeMiniProgram() {
-            interactive?.invalidate()
-            interactive = nil
             capsuleBar?.removeFromSuperview()
             STProjectHelper.Log("小程序<\(miniProgramId)>启用 ishome，隐藏根页胶囊并禁用侧滑关闭")
         } else {
@@ -670,119 +509,28 @@ import UIKit
         }
     }
 
-    private func installRootInteractiveDismissalIfNeeded() {
-        guard !isChild,
-              navigationController?.viewControllers.first === self,
-              interactive == nil,
-              (config.webMode != .online || STWebResourceManager.isInstalledMiniPackageUsable(name: name)),
-              !isHomeMiniProgram() else {
-            return
-        }
-        interactive = STWebTransInteractive(target: self)
-    }
+
 
     private func loadOnlineMiniPackage() {
-        guard let miniName = STWebResourceManager.miniNameHandle(name: name).0 else {
-            STProjectHelper.Log("小程序标识无效")
+        guard let miniId = STWebResourceManager.miniNameHandle(name: name).0 else {
+            finishOnlineLoading(message: "Invalid Mini identifier")
             return
         }
-
-        let installedVersion = STWebResourceManager.installedMiniPackageVersion(name: miniName)
-        let currentVersion = miniParameter("currentVersion")
-        let minSupportVersion = miniParameter("minSupportVersion")
-        let downloadURL = miniParameter("downloadUrl")
-        let forcedSelfUpdate = miniParameter("__st_force_self_update") == "1"
-        let downloadFloor = STWebResourceManager.requiredMiniDownloadVersion(
-            currentVersion: currentVersion, minSupportVersion: minSupportVersion)
-        let installedRunnable = STWebResourceManager.isInstalledMiniPackageRunnable(
-            name: miniName, currentVersion: currentVersion, minSupportVersion: minSupportVersion)
-
-        if let downloadURL, !isValidMiniDownloadURL(downloadURL) {
-            beginOnlineMiniLoading(miniId: miniName)
-            finishOnlineLoading(message: STMiniLocalized("mini.download_url_invalid", "小程序下载地址无效"))
+        guard !STWebResourceManager.requestsPackageMutation(parameters: config.params) else {
+            finishOnlineLoading(message: "Mini package downloads, installation and updates are unsupported")
             return
         }
-        if let iconURL = miniParameter("iconUrl"), !isValidHTTPURL(iconURL) {
-            beginOnlineMiniLoading(miniId: miniName)
-            finishOnlineLoading(message: STMiniLocalized("mini.icon_url_invalid", "小程序图标地址无效"))
+        guard STWebResourceManager.isInstalledMiniPackageRunnable(name: miniId,
+            currentVersion: miniParameter("currentVersion"), minSupportVersion: miniParameter("minSupportVersion")) else {
+            finishOnlineLoading(message: "No verified local Mini package meets the required version")
             return
         }
-
-        // A forced self-update always starts in a newly presented Mini
-        // controller. Do not reuse a retained runtime or apply the regular
-        // Grid/QR version shortcuts: this launch must show the native loader
-        // and complete its verified download before the package starts.
-        if forcedSelfUpdate {
-            forcedSelfUpdateLaunch = true
-            STProjectHelper.Log("[DirectMini] forced update container launched miniId=\(miniName)")
-            guard let downloadURL = downloadURL else {
-                finishOnlineLoading(message: STMiniLocalized("mini.download_url_missing", "小程序未提供下载地址"))
-                return
-            }
-            onlineLoadingRetryAction = { [weak self] in
-                self?.loadOnlineMiniPackage()
-            }
-            beginOnlineMiniLoading(miniId: miniName)
-            updateLoadAnimationIdentity(miniId: miniName, useInstalledPresentation: true)
-            downloadDirectMiniPackage(
-                name: miniName,
-                downloadURL: downloadURL,
-                minimumVersion: downloadFloor,
-                behavior: .openAfterInstall,
-                fallbackToInstalledPackage: false,
-                requiresNewerVersion: true
-            )
+        if let icon = miniParameter("iconUrl"), !isValidHTTPURL(icon) {
+            finishOnlineLoading(message: "Invalid Mini icon URL")
             return
         }
-
-        // Migrate packages installed before launchLink was persisted. Only a
-        // link that carries update information may replace the saved source;
-        // a generated Home mini://id must never erase that information.
-        if installedVersion != nil,
-           currentVersion != nil || minSupportVersion != nil || downloadURL != nil,
-           let sourceLink = config.sourceLink {
-            STWebResourceManager.rememberInstalledMiniPackageLaunchLink(name: miniName, launchLink: sourceLink)
-        }
-
-        // minSupport (or current when it is absent) is the hard runtime
-        // floor. A compatible older package stays visible during weak update.
-        if installedRunnable {
-            openOnlineMiniPackage()
-            if let currentVersion, let installedVersion,
-               STWebResourceManager.compareMiniPackageVersion(installedVersion, currentVersion) < 0,
-               let downloadURL {
-                downloadDirectMiniPackage(name: miniName, downloadURL: downloadURL,
-                                          minimumVersion: downloadFloor, behavior: .silentUpdate,
-                                          fallbackToInstalledPackage: false)
-            }
-            return
-        }
-
-        if let downloadURL = downloadURL {
-            // No package, or a package below minSupportVersion: installation
-            // must complete before this launch can continue.
-            beginOnlineMiniLoading(miniId: miniName)
-            downloadDirectMiniPackage(
-                name: miniName,
-                downloadURL: downloadURL,
-                minimumVersion: downloadFloor,
-                behavior: .openAfterInstall,
-                fallbackToInstalledPackage: installedRunnable
-            )
-            return
-        }
-
-        // The home entry generated from an already installed package has no
-        // remote descriptor. It intentionally opens that validated package
-        // directly instead of showing a loading failure.
-        if installedRunnable {
-            STProjectHelper.Log("小程序<\(miniName)>未提供更新链接，打开已校验本地包")
-            openOnlineMiniPackage()
-            return
-        }
-
-        beginOnlineMiniLoading(miniId: miniName)
-        finishOnlineLoading(message: STMiniLocalized("mini.download_url_missing", "小程序未提供下载地址"))
+        beginOnlineMiniLoading(miniId: miniId)
+        openOnlineMiniPackage()
     }
 
     private func miniParameter(_ key: String) -> String? {
@@ -807,15 +555,9 @@ import UIKit
         return true
     }
 
-    private func isValidMiniDownloadURL(_ value: String) -> Bool {
-        guard let url = URL(string: value) else { return false }
-        return isValidMiniDownloadURL(url)
-    }
 
-    private func isValidMiniDownloadURL(_ url: URL) -> Bool {
-        guard isValidHTTPURL(url) else { return false }
-        return StminiFlutterPlugin.isMiniDownloadURLAllowed(url)
-    }
+
+
 
     /// Handles a package update requested by the currently running Mini.
     /// The caller can supply a URL but can never select another miniId or pass
@@ -823,54 +565,7 @@ import UIKit
     /// authoritative. `isForce` is the only behavioural switch: forced
     /// updates cover the current WebView with the native loading view and only
     /// resume after the downloaded package has passed validation and loaded.
-    func requestSelfManagedPackageUpdate(downloadURL: String, isForce: Bool) -> [String: Any] {
-        guard !isChild,
-              config.webMode == .online,
-              let miniId = STWebResourceManager.miniNameHandle(name: name).0,
-              !miniId.isEmpty else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_update_root_only", "仅在线首层小程序可更新")]]
-        }
-        guard let url = URL(string: downloadURL), isValidMiniDownloadURL(url) else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.download_url_invalid", "小程序下载地址无效")]]
-        }
-        // Keep the source for a native retry and for a later keep-alive
-        // re-entry. This is runtime metadata only; installed package identity
-        // and channel still come from the verified manifest.
-        var parameters = config.params ?? [:]
-        parameters["downloadUrl"] = url.absoluteString
-        config.params = parameters
 
-        if isForce {
-            // Strong updates deliberately close the whole current Mini
-            // instance. It must not enter the keep-alive pool: the newly
-            // created controller owns the initial-style native loading page
-            // and cold-starts the verified package after installation.
-            STProjectHelper.Log("[DirectMini] self update forced close miniId=\(miniId)")
-            skipsKeepAliveOnNextDismiss = true
-            STWebMiniProgramKeepAliveStore.shared.remove(self)
-            var restartParameters = config.params ?? [:]
-            restartParameters["downloadUrl"] = url.absoluteString
-            restartParameters["__st_force_self_update"] = "1"
-            config.params = restartParameters
-            let infoStorage = STWebInfoStorage.sharedInstance()
-            infoStorage.config = config
-            infoStorage.name = name
-            dismiss(animated: false) {
-                STWebOpenHandler.reOpenMiniprogram(animated: false)
-            }
-            return ["code": "1", "data": ["accepted": true, "isforce": "1"]]
-        }
-        STProjectHelper.Log("[DirectMini] self update silent miniId=\(miniId)")
-        downloadDirectMiniPackage(
-            name: miniId,
-            downloadURL: url.absoluteString,
-            minimumVersion: nil,
-            behavior: .silentUpdate,
-            fallbackToInstalledPackage: false,
-            requiresNewerVersion: false
-        )
-        return ["code": "1", "data": ["accepted": true, "isforce": "0"]]
-    }
 
     /// Loading starts before the mini package is available, so the host must
     /// select the display name directly from the unified mini:// link. The
@@ -914,343 +609,35 @@ import UIKit
         loadRemoteLoadAnimationIcon(miniId: miniId)
     }
 
-    private func downloadDirectMiniPackage(
-        name: String,
-        downloadURL: String,
-        minimumVersion: String?,
-        behavior: DirectMiniDownloadBehavior,
-        fallbackToInstalledPackage: Bool,
-        requiresNewerVersion: Bool = false,
-        attempt: Int = 0,
-        deadline: Date? = nil,
-        existingOperationID: UUID? = nil
-    ) {
-        // This controller owns exactly one direct transfer. Keep all of its
-        // task/session/context mutations on the main thread so a cancelled
-        // task's late delegate callback cannot race a replacement transfer.
-        guard Thread.isMainThread else {
-            DispatchQueue.main.async { [weak self] in
-                self?.downloadDirectMiniPackage(
-                    name: name,
-                    downloadURL: downloadURL,
-                    minimumVersion: minimumVersion,
-                    behavior: behavior,
-                    fallbackToInstalledPackage: fallbackToInstalledPackage,
-                    requiresNewerVersion: requiresNewerVersion,
-                    attempt: attempt,
-                    deadline: deadline,
-                    existingOperationID: existingOperationID
-                )
-            }
-            return
-        }
-        let operationID: UUID
-        if let existingOperationID = existingOperationID {
-            guard directMiniPackageDownloadOperationID == existingOperationID else { return }
-            operationID = existingOperationID
-        } else {
-            operationID = UUID()
-            directMiniPackageDownloadOperationID = operationID
-        }
-        let deadline = deadline ?? Date().addingTimeInterval(Self.directMiniDownloadTotalTimeout)
-        let remainingTimeout = deadline.timeIntervalSinceNow
-        guard remainingTimeout > 0 else {
-            retryDirectMiniPackageDownloadIfNeeded(name: name, downloadURL: downloadURL, minimumVersion: minimumVersion, behavior: behavior, fallbackToInstalledPackage: fallbackToInstalledPackage, requiresNewerVersion: requiresNewerVersion, attempt: attempt, deadline: deadline, operationID: operationID, failureMessage: STMiniLocalized("mini.download_timeout_detail", "小程序下载超时，网络可能较慢，请检查网络后重试"))
-            return
-        }
-        guard let url = URL(string: downloadURL), isValidMiniDownloadURL(url) else {
-            directMiniPackageDownloadTask?.cancel()
-            directMiniPackageDownloadSession?.invalidateAndCancel()
-            directMiniPackageDownloadSession = nil
-            directMiniPackageDownloadTask = nil
-            directMiniPackageDownloadOperationID = nil
-            finishOnlineLoading(message: STMiniLocalized("mini.download_url_invalid", "小程序下载地址无效"))
-            return
-        }
-        let port = url.port.map { ":\($0)" } ?? ""
-        let logURL = "\(url.scheme ?? "")://\(url.host ?? "")\(port)\(url.path)"
-        let attemptTimeout = min(Self.directMiniDownloadAttemptTimeout, remainingTimeout)
-        STProjectHelper.Log("[DirectMini] download start miniId=\(name) attempt=\(attempt + 1) url=\(logURL) timeout=\(Int(attemptTimeout))s")
-        emitHostEvent("mini_download_started", ["attempt": attempt + 1])
-        DispatchQueue.main.async { [weak self] in
-            self?.directMiniDownloadLastProgressBucket = -1
-            // DNS/TLS/response headers may take a moment before the first
-            // byte callback. Keep the spinner alive during that gap;
-            // `didWriteData` switches to real progress immediately.
-            self?.loadAnimationView?.beginPostDownloadProcessing()
-        }
 
-        // Use the URLSession delegate path so didWriteData is delivered for
-        // real download progress. The temporary ZIP is still copied before
-        // didFinishDownloadingTo returns, preserving its limited lifetime.
-        directMiniPackageDownloadTask?.cancel()
-        directMiniPackageDownloadSession?.invalidateAndCancel()
-        directMiniPackageDownloadSession = nil
-        var request = URLRequest(url: url)
-        request.cachePolicy = .reloadIgnoringLocalCacheData
-        request.timeoutInterval = attemptTimeout
-        let sessionConfiguration = URLSessionConfiguration.ephemeral
-        // An unavailable LAN server must resolve into the existing retry and
-        // error UI, not leave the native loading layer spinning indefinitely.
-        sessionConfiguration.waitsForConnectivity = false
-        sessionConfiguration.timeoutIntervalForRequest = attemptTimeout
-        sessionConfiguration.timeoutIntervalForResource = remainingTimeout
-        let context = DirectMiniDownloadContext(
-            operationID: operationID,
-            name: name,
-            downloadURL: downloadURL,
-            minimumVersion: minimumVersion,
-            behavior: behavior,
-            fallbackToInstalledPackage: fallbackToInstalledPackage,
-            requiresNewerVersion: requiresNewerVersion,
-            attempt: attempt,
-            deadline: deadline,
-            logURL: logURL
-        )
-        let delegate = DirectMiniDownloadDelegate(owner: self, context: context)
-        let session = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: nil)
-        let task = session.downloadTask(with: request)
-        directMiniPackageDownloadSession = session
-        directMiniPackageDownloadTask = task
-        task.resume()
-    }
 
-    private func handleDirectMiniDownloadProgress(
-        context: DirectMiniDownloadContext,
-        task: URLSessionDownloadTask,
-        totalBytesWritten: Int64,
-        totalBytesExpectedToWrite: Int64
-    ) {
-        guard totalBytesExpectedToWrite > 0 else { return }
-        let progress = CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite)
-        DispatchQueue.main.async { [weak self] in
-            guard let self,
-                  self.directMiniPackageDownloadOperationID == context.operationID,
-                  self.directMiniPackageDownloadTask === task else { return }
-            let progressBucket = min(Int(progress * 10), 10)
-            if progressBucket > self.directMiniDownloadLastProgressBucket {
-                self.directMiniDownloadLastProgressBucket = progressBucket
-                STProjectHelper.Log("[DirectMini] download progress miniId=\(context.name) bytes=\(totalBytesWritten)/\(totalBytesExpectedToWrite) percent=\(progressBucket * 10)")
-                self.emitHostEvent("mini_download_progress", [
-                    "receivedBytes": totalBytesWritten,
-                    "totalBytes": totalBytesExpectedToWrite,
-                    "percent": progressBucket * 10,
-                ])
-            }
-            self.loadAnimationView?.setDownloadProgress(progress)
-        }
-    }
+
 
     /// The URLSession temporary file is only valid for the lifetime of this
     /// delegate callback. Copy it on the callback queue, then return to the
     /// main queue for all controller state and UI work.
-    private func handleDirectMiniDownloadFinished(
-        context: DirectMiniDownloadContext,
-        task: URLSessionDownloadTask,
-        temporaryURL: URL
-    ) {
-        let archiveURL = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("\(context.name)-scan-\(UUID().uuidString).zip")
-        do {
-            try? FileManager.default.removeItem(at: archiveURL)
-            try FileManager.default.copyItem(at: temporaryURL, to: archiveURL)
-        } catch {
-            let nsError = error as NSError
-            STProjectHelper.Log("[DirectMini] temporary copy failed miniId=\(context.name) attempt=\(context.attempt + 1) source=\(temporaryURL.lastPathComponent) errorDomain=\(nsError.domain) errorCode=\(nsError.code) error=\(error.localizedDescription)")
-            DispatchQueue.main.async { [weak self] in
-                self?.handleDirectMiniPackageDownload(context: context, task: task, archiveURL: nil, response: task.response, error: error)
-            }
-            return
-        }
-        DispatchQueue.main.async { [weak self] in
-            self?.loadAnimationView?.beginPostDownloadProcessing()
-            self?.handleDirectMiniPackageDownload(context: context, task: task, archiveURL: archiveURL, response: task.response, error: nil)
-        }
-    }
 
-    private func handleDirectMiniDownloadCompletion(
-        context: DirectMiniDownloadContext,
-        task: URLSessionTask,
-        error: Error
-    ) {
-        DispatchQueue.main.async { [weak self] in
-            self?.handleDirectMiniPackageDownload(context: context, task: task, archiveURL: nil, response: task.response, error: error)
-        }
-    }
 
-    private func handleDirectMiniPackageDownload(
-        context: DirectMiniDownloadContext,
-        task: URLSessionTask,
-        archiveURL: URL?,
-        response: URLResponse?,
-        error: Error?
-    ) {
-        guard Thread.isMainThread else {
-            DispatchQueue.main.async { [weak self] in
-                self?.handleDirectMiniPackageDownload(
-                    context: context,
-                    task: task,
-                    archiveURL: archiveURL,
-                    response: response,
-                    error: error
-                )
-            }
-            return
-        }
-        // A cancelled operation can report after a replacement transfer has
-        // started. Verify both the operation and task before touching the
-        // current session; otherwise an old callback could invalidate the new
-        // session and leave its loading UI stuck.
-        guard directMiniPackageDownloadOperationID == context.operationID,
-              directMiniPackageDownloadTask === task else {
-            if let archiveURL = archiveURL { try? FileManager.default.removeItem(at: archiveURL) }
-            return
-        }
-        directMiniPackageDownloadSession?.finishTasksAndInvalidate()
-        directMiniPackageDownloadSession = nil
 
-        guard error == nil,
-              let archiveURL = archiveURL,
-              let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode),
-              let finalURL = httpResponse.url,
-              StminiFlutterPlugin.isMiniDownloadURLAllowed(finalURL) else {
-            let statusCode = (response as? HTTPURLResponse)?.statusCode
-            let nsError = error as NSError?
-            let failure = error?.localizedDescription ?? "HTTP \(statusCode.map { String($0) } ?? "无响应")"
-            STProjectHelper.Log("[DirectMini] download failed miniId=\(context.name) attempt=\(context.attempt + 1) url=\(context.logURL) status=\(statusCode.map { String($0) } ?? "nil") errorDomain=\(nsError?.domain ?? "nil") errorCode=\(nsError.map { String($0.code) } ?? "nil") error=\(failure)")
-            retryDirectMiniPackageDownloadIfNeeded(name: context.name, downloadURL: context.downloadURL, minimumVersion: context.minimumVersion, behavior: context.behavior, fallbackToInstalledPackage: context.fallbackToInstalledPackage, requiresNewerVersion: context.requiresNewerVersion, attempt: context.attempt, deadline: context.deadline, operationID: context.operationID, failureMessage: directMiniDownloadFailureMessage(statusCode: statusCode, error: error))
-            return
-        }
 
-        guard Date() < context.deadline else {
-            retryDirectMiniPackageDownloadIfNeeded(name: context.name, downloadURL: context.downloadURL, minimumVersion: context.minimumVersion, behavior: context.behavior, fallbackToInstalledPackage: context.fallbackToInstalledPackage, requiresNewerVersion: context.requiresNewerVersion, attempt: context.attempt, deadline: context.deadline, operationID: context.operationID, failureMessage: STMiniLocalized("mini.download_timeout_detail", "小程序下载超时，网络可能较慢，请检查网络后重试"))
-            return
-        }
 
-        let archiveSize = ((try? FileManager.default.attributesOfItem(atPath: archiveURL.path)[.size]) as? NSNumber)?.int64Value ?? -1
-        STProjectHelper.Log("[DirectMini] download response miniId=\(context.name) attempt=\(context.attempt + 1) status=\(httpResponse.statusCode) expectedBytes=\(httpResponse.expectedContentLength) archiveBytes=\(archiveSize)")
-
-        guard Date() < context.deadline else {
-            try? FileManager.default.removeItem(at: archiveURL)
-            retryDirectMiniPackageDownloadIfNeeded(name: context.name, downloadURL: context.downloadURL, minimumVersion: context.minimumVersion, behavior: context.behavior, fallbackToInstalledPackage: context.fallbackToInstalledPackage, requiresNewerVersion: context.requiresNewerVersion, attempt: context.attempt, deadline: context.deadline, operationID: context.operationID, failureMessage: STMiniLocalized("mini.download_timeout_detail", "小程序下载超时，网络可能较慢，请检查网络后重试"))
-            return
-        }
-
-        STProjectHelper.Log("[DirectMini] archive ready miniId=\(context.name) attempt=\(context.attempt + 1) archiveBytes=\(archiveSize)")
-
-        STWebResourceManager.installDirectMiniPackage(archivePath: archiveURL.path, name: context.name, minimumVersion: context.minimumVersion, requiresNewerVersion: context.requiresNewerVersion, launchLink: config.sourceLink) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self,
-                      self.directMiniPackageDownloadOperationID == context.operationID else { return }
-                self.directMiniPackageDownloadTask = nil
-                self.directMiniPackageDownloadOperationID = nil
-                switch result {
-                case .success(let outcome):
-                    switch outcome {
-                    case .installed(let version):
-                        STProjectHelper.Log("[DirectMini] install succeeded miniId=\(context.name) version=\(version) attempt=\(context.attempt + 1)")
-                        self.emitHostEvent("mini_package_installed", ["version": version])
-                    case .keptInstalled(let version):
-                        STProjectHelper.Log("[DirectMini] install skipped miniId=\(context.name) reason=downloaded_version_not_newer retainedVersion=\(version) attempt=\(context.attempt + 1)")
-                    }
-                    if context.behavior == .openAfterInstall {
-                        self.updateLoadAnimationIdentity(miniId: context.name, useInstalledPresentation: true)
-                        self.openOnlineMiniPackage()
-                    } else {
-                        switch outcome {
-                        case .installed(let version):
-                            STProjectHelper.Log("[DirectMini] silent update completed miniId=\(context.name) version=\(version)")
-                        case .keptInstalled(let version):
-                            STProjectHelper.Log("[DirectMini] silent update skipped miniId=\(context.name) reason=downloaded_version_not_newer retainedVersion=\(version)")
-                        }
-                    }
-                case .failure(let error):
-                    let nsError = error as NSError
-                    STProjectHelper.Log("[DirectMini] install failed miniId=\(context.name) attempt=\(context.attempt + 1) errorDomain=\(nsError.domain) errorCode=\(nsError.code) error=\(error.localizedDescription)")
-                    if context.behavior == .openAfterInstall {
-                        let message = context.requiresNewerVersion && nsError.code == 11
-                            ? STMiniLocalized("mini.force_version_mismatch", "强更版本不符")
-                            : String(format: STMiniLocalized("mini.install_failed", "小程序安装失败：%@"), error.localizedDescription)
-                        self.finishOnlineLoading(message: message)
-                    }
-                }
-            }
-        }
-    }
 
     /// A LAN QR may be opened while the device is still establishing its first
     /// connection to the local server. Retry that transport step once before
     /// showing an error; package validation/install errors must never retry or
     /// fall back because they indicate a real package problem.
-    private func retryDirectMiniPackageDownloadIfNeeded(
-        name: String,
-        downloadURL: String,
-        minimumVersion: String?,
-        behavior: DirectMiniDownloadBehavior,
-        fallbackToInstalledPackage: Bool,
-        requiresNewerVersion: Bool,
-        attempt: Int,
-        deadline: Date,
-        operationID: UUID,
-        failureMessage: String
-    ) {
-        DispatchQueue.main.async {
-            guard self.directMiniPackageDownloadOperationID == operationID else { return }
-            self.directMiniPackageDownloadTask = nil
-            guard attempt == 0, deadline.timeIntervalSinceNow > 0 else {
-                self.directMiniPackageDownloadOperationID = nil
-                STProjectHelper.Log("[DirectMini] retry exhausted miniId=\(name)")
-                if behavior == .silentUpdate {
-                    STProjectHelper.Log("[DirectMini] silent update failed miniId=\(name)，保留当前本地包")
-                } else if fallbackToInstalledPackage {
-                    self.openInstalledMiniPackageOrShowDownloadFailure(name: name)
-                } else {
-                    self.finishOnlineLoading(message: failureMessage)
-                }
-                return
-            }
-            STProjectHelper.Log("[DirectMini] retry scheduled miniId=\(name) delayMs=600")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
-                self?.downloadDirectMiniPackage(name: name, downloadURL: downloadURL, minimumVersion: minimumVersion, behavior: behavior, fallbackToInstalledPackage: fallbackToInstalledPackage, requiresNewerVersion: requiresNewerVersion, attempt: attempt + 1, deadline: deadline, existingOperationID: operationID)
-            }
-        }
-    }
 
-    private func directMiniDownloadFailureMessage(statusCode: Int?, error: Error?) -> String {
-        if let nsError = error as NSError?, nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorTimedOut {
-            return STMiniLocalized("mini.download_timeout_detail", "小程序下载超时，网络可能较慢，请检查网络后重试")
-        }
-        if statusCode != nil {
-            return STMiniLocalized("mini.download_failed_retry", "小程序下载失败，请稍后重试")
-        }
-        return STMiniLocalized("mini.download_failed_network", "小程序下载失败，请检查网络连接后重试")
-    }
 
-    private func cancelDirectMiniPackageDownload() {
-        directMiniPackageDownloadOperationID = nil
-        directMiniPackageDownloadTask?.cancel()
-        directMiniPackageDownloadTask = nil
-        directMiniPackageDownloadSession?.invalidateAndCancel()
-        directMiniPackageDownloadSession = nil
-    }
+
+
+
 
     /// A QR may be temporarily unreachable after this mini program has
     /// already been installed. Download failure is not an integrity failure,
     /// so a previously verified package remains a safe fallback. Archives
     /// that did download but fail manifest/install validation never use this
     /// path and are still reported as installation failures.
-    private func openInstalledMiniPackageOrShowDownloadFailure(name: String) {
-        directMiniPackageDownloadTask = nil
-        if STWebResourceManager.isInstalledMiniPackageRunnable(
-            name: name, currentVersion: miniParameter("currentVersion"),
-            minSupportVersion: miniParameter("minSupportVersion")) {
-            STProjectHelper.Log("小程序<\(name)>下载失败，打开已校验的本地包")
-            openOnlineMiniPackage()
-        } else {
-            finishOnlineLoading(message: STMiniLocalized("mini.download_failed_network", "小程序下载失败，请检查网络连接后重试"))
-        }
-    }
+
 
     private func observeRootMiniDocumentLoading() {
         rootMiniLoadingObservation = webView.observe(\.isLoading, options: [.new]) { [weak self] _, change in
@@ -1434,9 +821,8 @@ import UIKit
             return
         }
         loadedMiniPackageVersion = STWebResourceManager.installedMiniPackageVersion(name: name)
-        config.params?.removeValue(forKey: "__st_force_self_update")
         refreshRootMiniChrome()
-        installRootInteractiveDismissalIfNeeded()
+
         loadVerifiedRootMiniDocument(url)
     }
 
@@ -1490,86 +876,25 @@ extension STWebMiniprogramCrl {
     /// A retained Mini remains alive in a transparent host view so its
     /// strategies can continue. Tell H5 that it is not visible, allowing it
     /// to keep workers but stop expensive full-page rendering until reuse.
-    func setKeepAliveRuntimeHidden(_ hidden: Bool) {
-        sendHostMessage("hostMiniRuntimeVisibilityChanged", params: ["hidden": hidden])
-        if hidden {
-            // A later background interval is measured from its own lifecycle
-            // boundary, not from an earlier visible App resume.
-            lastBackgroundDurationMs = 0
-            return
-        }
-        // Hidden runtimes intentionally do not receive appShow when the App
-        // itself returns. Send it only after this specific Mini becomes
-        // visible again, carrying the interval used to fence stale ticks.
-        let backgroundDurationMs = lastBackgroundDurationMs
-        lastBackgroundDurationMs = 0
-        // `sendHostMessage` queues the visibility bridge dispatch on main.
-        // Queue appShow behind it so H5 always observes visible=true first.
-        DispatchQueue.main.async { [weak self] in
-            self?.sendHostLifecycleMessage("appShow", params: [
-                "backgroundDurationMs": max(0, backgroundDurationMs),
-                "recoveryMode": "memory_resume",
-            ])
-        }
-    }
+
 
     /// Called by STMini's keep-alive store for roots that are not the current
     /// visible Mini. This preserves the existing one-visible-root rule while
     /// still providing the system-background persistence boundary.
-    func notifyHostApplicationHiddenWhileRetained() {
-        guard isKeepAliveRuntimeUsable else { return }
-        sendHostLifecycleMessage("appHide")
-        STProjectHelper.Log("[STMini][Lifecycle] appHide delivered retained miniId=\(miniProgramId)")
-    }
+
 
     /// Re-entry from STMini's keep-alive cache.  The existing document is not
     /// reloaded, so strategy workers and the current tab keep running.  The
     /// newest link metadata is still remembered and its default update check
     /// runs silently in the background.
-    func prepareForKeepAliveReuse(config: STWebConfig) {
-        self.config = config
-        refreshOnlineMiniPackageInBackgroundIfNeeded()
-    }
+
 
     /// STWebNavigationController invokes this after a successful dismissal so
     /// a pushed STMini child page can be retained with the Mini root. The
     /// explicit capsule re-enter action marks this runtime as non-reusable.
-    func cacheForKeepAliveAfterDismissal() {
-        guard !isChild, !skipsKeepAliveOnNextDismiss else { return }
-        if !hasEmittedCloseEvent {
-            hasEmittedCloseEvent = true
-            emitHostEvent("mini_closed", ["reason": "dismissed"])
-        }
-        STWebMiniProgramKeepAliveStore.shared.cache(self)
-    }
 
-    private func refreshOnlineMiniPackageInBackgroundIfNeeded() {
-        guard config.webMode == .online,
-              let miniId = STWebResourceManager.miniNameHandle(name: name).0,
-              let downloadURL = miniParameter("downloadUrl") else {
-            return
-        }
-        let installedVersion = STWebResourceManager.installedMiniPackageVersion(name: miniId)
-        let currentVersion = miniParameter("currentVersion")
-        let minimum = miniParameter("minSupportVersion")
-        guard STWebResourceManager.isInstalledMiniPackageRunnable(
-            name: miniId, currentVersion: currentVersion, minSupportVersion: minimum) else {
-            loadOnlineMiniPackage()
-            return
-        }
-        if currentVersion == nil { return }
-        if let currentVersion = currentVersion,
-           let installedVersion = installedVersion,
-           STWebResourceManager.compareMiniPackageVersion(installedVersion, currentVersion) >= 0 {
-            return
-        }
-        STProjectHelper.Log("小程序<\(miniId)>保活重开，后台检查更新")
-        downloadDirectMiniPackage(name: miniId,
-                                  downloadURL: downloadURL,
-                                  minimumVersion: STWebResourceManager.requiredMiniDownloadVersion(currentVersion: currentVersion, minSupportVersion: minimum),
-                                  behavior: .silentUpdate,
-                                  fallbackToInstalledPackage: false)
-    }
+
+
 
     @objc private func updateUserInfo(_: Notification) {
         sendHostMessage("updateUserInfo", params: [:])
@@ -1590,8 +915,7 @@ extension STWebMiniprogramCrl {
     @objc private func applicationDidEnterBackground(_ notification: Notification) {
         backgroundEnteredAt = Date()
         let miniId = miniProgramId
-        let continuousKeepAlive = STWebMiniProgramKeepAliveStore.shared.isContinuousKeepAliveEnabled(miniId: miniId)
-        STProjectHelper.Log("[STMini][Lifecycle] app_background miniId=\(miniId) visible=\(isShow) runtimeUsable=\(isKeepAliveRuntimeUsable) continuousKeepAlive=\(continuousKeepAlive)")
+        STProjectHelper.Log("[STMini][Lifecycle] app_background miniId=\(miniId) visible=\(isShow) runtimeUsable=\(isKeepAliveRuntimeUsable)")
     }
 
     /// `willResignActive` is intentionally used instead of waiting for
@@ -1617,9 +941,8 @@ extension STWebMiniprogramCrl {
             STProjectHelper.Log("[STMini][Lifecycle] appShow delivered miniId=\(miniProgramId)")
         }
         let miniId = miniProgramId
-        let continuousKeepAlive = STWebMiniProgramKeepAliveStore.shared.isContinuousKeepAliveEnabled(miniId: miniId)
         let willProbe = backgroundDuration >= 1 && isShow && isKeepAliveRuntimeUsable && !isRecoveringTerminatedWebContentProcess
-        STProjectHelper.Log("[STMini][Lifecycle] app_foreground miniId=\(miniId) backgroundDurationMs=\(Int(backgroundDuration * 1000)) visible=\(isShow) runtimeUsable=\(isKeepAliveRuntimeUsable) continuousKeepAlive=\(continuousKeepAlive) willProbe=\(willProbe)")
+        STProjectHelper.Log("[STMini][Lifecycle] app_foreground miniId=\(miniId) backgroundDurationMs=\(Int(backgroundDuration * 1000)) visible=\(isShow) runtimeUsable=\(isKeepAliveRuntimeUsable) willProbe=\(willProbe)")
         // Ignore short Control Center / permission interruptions. The probe is
         // for a resumed, already-rendered Mini after a genuine background stay.
         guard backgroundDuration >= 1,
@@ -1727,15 +1050,10 @@ extension STWebMiniprogramCrl {
         rootMiniDocumentTicket = nil
         isKeepAliveRuntimeUsable = true
         isRecoveringTerminatedWebContentProcess = false
-        if forcedSelfUpdateLaunch {
-            forcedSelfUpdateLaunch = false
-            let renderedVersion = loadedMiniPackageVersion ?? "unknown"
-            STProjectHelper.Log("[DirectMini] forced update package rendered miniId=\(miniProgramId) version=\(renderedVersion)")
-        }
+
         loadAnimationView?.finished()
         emitHostEvent("mini_first_content_ready", ["version": loadedMiniPackageVersion ?? ""])
         showTerminatedProcessRecoveryToastIfNeeded()
-        showMemoryWarningRecoveryToastIfNeeded()
     }
 
     /// A package can pass archive validation while its first root navigation
@@ -1768,13 +1086,12 @@ extension STWebMiniprogramCrl {
         isKeepAliveRuntimeUsable = false
         let miniId = miniProgramId
         UserDefaults.standard.set(true, forKey: Self.terminatedProcessToastKeyPrefix + miniId)
-        let wasCachedForKeepAlive = STWebMiniProgramKeepAliveStore.shared.discardTerminated(self)
         STProjectHelper.Log("小程序<\(miniId)>Web 内容进程已终止，已移出保活缓存并冷启动恢复")
 
         // A detached cache entry is discarded here; the next user opening
         // constructs a new controller. A visible controller has no cache
         // entry, so reload it now instead of leaving a white page onscreen.
-        guard !wasCachedForKeepAlive else { return }
+        guard Self.currentHostMiniRoot === self else { return }
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.reloadAfterWebContentProcessTermination()
@@ -1862,40 +1179,15 @@ extension STWebMiniprogramCrl {
         }
     }
 
-    private func showMemoryWarningRecoveryToastIfNeeded() {
-        guard STWebMiniProgramKeepAliveStore.shared.consumeMemoryWarningRecoveryNotice(miniId: miniProgramId) else { return }
-        let message = STMiniLocalized("mini.memory_released", "小程序后台运行实例已因内存压力释放，已重新加载")
-        if let apiHandle = STWebPersonalHandle.sharedInstance().apiHandle,
-           let webView = webView {
-            _ = apiHandle(["method": "showToast", "params": ["title": message, "duration": 2]], webView)
-        } else {
-            STProjectHelper.Log("小程序<\(miniProgramId)>内存压力恢复提示未显示：宿主未提供 Toast handler")
-        }
-    }
+
     
     
     public func close() {
-        // A cached/closed Mini must not be revived by a late download or retry
-        // callback after it has left the screen.
         invalidateRootMiniDocumentLoad()
-        cancelDirectMiniPackageDownload()
-        // UIKit may clear `self.navigationController` while completing a
-        // custom dismissal. Capture the root navigation container before the
-        // transition so a continuous Mini can always be placed in STMini's
-        // keep-alive store afterwards.
-        let rootNavigationController = navigationController as? STWebNavigationController
-        dismiss(animated: true) { [self, rootNavigationController] in
-            // Capsule close is the main path back to the host. Do not rely
-            // solely on UINavigationController's dismissal callback here:
-            // custom presentations may skip that callback. Cache explicitly
-            // after the transition, when the navigation hierarchy is detached.
-            guard !isChild, !skipsKeepAliveOnNextDismiss else { return }
-            if !hasEmittedCloseEvent {
-                hasEmittedCloseEvent = true
-                emitHostEvent("mini_closed", ["reason": "dismissed"])
-            }
-            STWebMiniProgramKeepAliveStore.shared.cache(self,
-                                                         navigationController: rootNavigationController)
+        dismiss(animated: true) { [weak self] in
+            guard let self, !self.isChild, !self.hasEmittedCloseEvent else { return }
+            self.hasEmittedCloseEvent = true
+            self.emitHostEvent("mini_closed", ["reason": "dismissed"])
         }
     }
 
@@ -1914,22 +1206,7 @@ extension STWebMiniprogramCrl: STWebMiniprogramCapsuleBarDelegate {
     }
     
     
-    func changeCapsuleBar(isShowStandIn: Bool) {
-        // Transition-finished is a process-wide notification. Controllers
-        // created for child/loading Mini routes do not own a capsule bar, so
-        // touching the implicitly-unwrapped outlet here used to terminate the
-        // host with a Swift fatal error after a scanned Mini package opened.
-        guard !isHomeMiniProgram(), let capsuleBar = capsuleBar else {
-            return
-        }
-        capsuleBar.removeFromSuperview()
-        if isShowStandIn {
-            view.addSubview(capsuleBar)
-        }
-        else {
-            STScreenHelper.keyWindow().addSubview(capsuleBar)
-        }
-    }
+
     
     
     func more() {
@@ -1948,11 +1225,6 @@ extension STWebMiniprogramCrl: STWebMiniprogramCapsuleBarDelegate {
                         // Explicit "re-enter" is a refresh action, not a
                         // warm resume.  Drop this runtime before presenting
                         // the new root Mini program.
-                        if let self = self {
-                            self.skipsKeepAliveOnNextDismiss = true
-                            self.cancelDirectMiniPackageDownload()
-                            STWebMiniProgramKeepAliveStore.shared.remove(self)
-                        }
                         let infoStorage = STWebInfoStorage.sharedInstance()
                         infoStorage.config = self?.config
                         infoStorage.name = self?.name
@@ -1978,53 +1250,4 @@ extension STWebMiniprogramCrl: STWebMiniprogramCapsuleBarDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-}
-
-
-extension STWebMiniprogramCrl: UIViewControllerTransitioningDelegate {
-    
-    
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transAnimation.transType = .present
-        return transAnimation
-    }
-
-    
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        changeCapsuleBar(isShowStandIn: true)
-        transAnimation.transType = .dismiss
-        transAnimation.interactive = interactive
-        return transAnimation
-    }
-
-    
-    public func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return nil
-    }
-
-    
-    public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        return interactive?.isInteractive == true ? interactive : nil
-    }
-    
-}
-
-
-extension STWebMiniprogramCrl {
-
-    /// The capsule belongs to a visible Mini only. After a successful close
-    /// it must not remain attached to the host window; a cancelled gesture
-    /// restores it because the Mini is still on screen.
-    fileprivate func handleTransitionCompletion(type: STWebTransType, succeeded: Bool) {
-        switch type {
-        case .present:
-            changeCapsuleBar(isShowStandIn: false)
-        case .dismiss:
-            if succeeded {
-                capsuleBar?.removeFromSuperview()
-            } else {
-                changeCapsuleBar(isShowStandIn: false)
-            }
-        }
-    }
 }

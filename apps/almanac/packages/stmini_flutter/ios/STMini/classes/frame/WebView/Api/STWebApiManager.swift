@@ -256,24 +256,8 @@ import UIKit
         
         result.removeValue(forKey: "params")
         result.removeValue(forKey: "handled")
-        if model.method == "mini_getMiniProgramContinuousKeepAlive" {
-            result = STWebApiManager.continuousKeepAliveState(model: model, enabled: nil)
-        }
-        else if model.method == "mini_setMiniProgramContinuousKeepAlive" {
-            let rawEnabled = model.params["enabled"]
-            let enabled: Bool
-            if let boolValue = rawEnabled as? Bool {
-                enabled = boolValue
-            } else if let numberValue = rawEnabled as? NSNumber {
-                enabled = numberValue.boolValue
-            } else if let textValue = rawEnabled as? String {
-                enabled = ["1", "true", "yes", "on"].contains(textValue.lowercased())
-            } else {
-                result = ["code": "0", "data": ["msg": "缺少 enabled"]]
-                STWebApiManager.callBack(result, model: model)
-                return
-            }
-            result = STWebApiManager.continuousKeepAliveState(model: model, enabled: enabled)
+        if model.method == "mini_getMiniProgramContinuousKeepAlive" || model.method == "mini_setMiniProgramContinuousKeepAlive" {
+            result = ["code": "0", "data": ["msg": "Closed Mini runtime caching is unsupported", "enabled": false, "supported": false]]
         }
         else if model.method == "mini_getMiniPackageInfo" {
             result = STWebApiManager.miniPackageInfo(model: model)
@@ -385,21 +369,7 @@ import UIKit
     /// A generic API is therefore rooted at that Mini, rather than restricted
     /// to whichever page happens to be visible.  Ordinary H5 remains outside
     /// this resolver and keeps only its existing H5 API surface.
-    private static func continuousKeepAliveState<T>(model: T, enabled: Bool?) -> [String: Any] where T: STWebApiForm {
-        guard let miniCrl = onlineMiniRootController(for: model.webview),
-              let miniId = miniCrl.name,
-              !miniId.isEmpty else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_keep_alive_only", "仅小程序页面可设置持续保活")]]
-        }
-        let supported = STWebMiniProgramKeepAliveStore.shared.supportsContinuousKeepAlive(miniId: miniId)
-        if let enabled = enabled, supported {
-            STWebMiniProgramKeepAliveStore.shared.setContinuousKeepAlive(enabled, for: miniId)
-        }
-        return ["code": "1", "data": [
-            "enabled": supported && STWebMiniProgramKeepAliveStore.shared.isContinuousKeepAliveEnabled(miniId: miniId),
-            "supported": supported,
-        ]]
-    }
+
 
     /// Returns the identity of the package that STMini has already verified
     /// and is currently running.  H5 must never infer this from a route or a
@@ -420,67 +390,14 @@ import UIKit
     }
 
     /// Common host update-check entry for first-party Mini programs. The
-    /// package manifest is authoritative so H5 cannot opt into the host path
-    /// by forging a parameter. The actual unified update service is supplied
-    /// later by the host through `miniProgramUpdateCheckHandle`.
+    /// Local manifest metadata never grants package update capability.
     private static func checkMiniProgramUpdate<T>(model: T) -> [String: Any] where T: STWebApiForm {
-        guard let miniCrl = onlineMiniRootController(for: model.webview),
-              let miniId = STWebResourceManager.miniNameHandle(name: miniCrl.name).0,
-              !miniId.isEmpty,
-              let updateSelf = STWebResourceManager.installedMiniPackageUpdateSelf(name: miniId) else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_package_verification_failed", "小程序包校验失败")]]
-        }
-        guard updateSelf == "0" else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_self_checks_update", "当前小程序由自身检查更新"), "updateself": updateSelf]]
-        }
-        guard let handler = STWebPersonalHandle.sharedInstance().miniProgramUpdateCheckHandle else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_host_update_unavailable", "宿主检查更新尚未接入"), "updateself": "0"]]
-        }
-        // Let the future host service receive H5 options, while always
-        // overriding identity and update ownership with verified values.
-        var request = model.params
-        request["miniId"] = miniId
-        request["updateself"] = "0"
-        return handler(request, model.webview!)
+        ["code": "0", "data": ["msg": "Mini package downloads, installation and updates are unsupported in this local-only runtime", "supported": false]]
     }
 
-    /// Self-managed packages may use their own version-check service, but the
-    /// archive itself is always downloaded, verified and atomically installed
-    /// by STMini. H5 provides only the server-issued URL and force flag; the
-    /// downloaded manifest, rather than an H5 version argument, is the source
-    /// of package-version truth.
+    /// Recognized legacy method; no package update implementation is compiled.
     private static func downloadMiniProgramUpdate<T>(model: T) -> [String: Any] where T: STWebApiForm {
-        guard let miniCrl = onlineMiniRootController(for: model.webview),
-              let miniId = STWebResourceManager.miniNameHandle(name: miniCrl.name).0,
-              !miniId.isEmpty,
-              STWebResourceManager.installedMiniPackageUpdateSelf(name: miniId) == "1" else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_update_unsupported", "当前小程序不支持自行更新")]]
-        }
-        guard let downloadURL = (model.params["downloadUrl"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !downloadURL.isEmpty else {
-            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_update_address_missing", "缺少更新地址")]]
-        }
-        let rawForce = model.params["isforce"] ?? model.params["isForce"]
-        let isForce: Bool
-        if let value = rawForce as? Bool {
-            isForce = value
-        } else if let value = rawForce as? NSNumber {
-            isForce = value.boolValue
-        } else if let value = rawForce as? String {
-            isForce = ["1", "true", "yes", "on"].contains(value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
-        } else {
-            return ["code": "0", "data": ["msg": "缺少 isforce"]]
-        }
-        // A forced package update replaces the whole Mini runtime.  When it
-        // originates from a pushed Mini page, return to the root first so the
-        // native loading layer is visible instead of remaining underneath the
-        // child H5 controller.
-        if isForce,
-           let navigationController = miniCrl.navigationController,
-           navigationController.topViewController !== miniCrl {
-            navigationController.popToViewController(miniCrl, animated: false)
-        }
-        return miniCrl.requestSelfManagedPackageUpdate(downloadURL: downloadURL, isForce: isForce)
+        ["code": "0", "data": ["msg": "Mini package downloads, installation and updates are unsupported in this local-only runtime", "supported": false]]
     }
     
     
@@ -543,14 +460,8 @@ import UIKit
             let currentTargets = targetLeases.compactMap { target, lease in
                 lease.isCurrent() && sourceLease.ownsTarget(target) ? target : nil
             }
-            // This authorized invalidation precedes a fresh mirror lease;
-            // otherwise our own invalidation would cancel every valid reload.
+            // Session changes retire queued authority before notifying active sibling pages.
             currentTargets.forEach { $0.invalidateBridgeDocumentSession() }
-            // Online `/web` pages run in a separate WKWebView and retain the
-            // browser's legacy localStorage. The host may explicitly opt in
-            // an origin/key allow-list; only then mirror its selected session
-            // keys and reload the online page from that updated snapshot.
-            STWebApiManager.mirrorSessionToLegacyWebStorage(targets: currentTargets, sourceLease: sourceLease)
             currentTargets.forEach { webView in
                 guard sourceLease.isCurrent(), sourceLease.ownsTarget(webView) else { return }
                 STWebApiManager.sendScriptMessageWithMethod(
@@ -563,97 +474,7 @@ import UIKit
         return ["code": "1", "data": ["notified": targets.count]]
     }
 
-    static func mirrorSessionToLegacyWebStorage(targets: [STMiniWebView], sourceLease: STWebBridgeEffectLease,
-                                               bridgeContext: [String: Any] = StminiFlutterPlugin.bridgeContextSnapshot) {
-        guard sourceLease.isCurrent(),
-              let mirror = bridgeContext["legacyWebStorageMirror"] as? [String: Any],
-              let origins = mirror["origins"] as? [String],
-              let rawKeys = mirror["keys"] as? [String],
-              !origins.isEmpty,
-              !rawKeys.isEmpty else {
-            return
-        }
 
-        let allowedOrigins = Set(origins.compactMap { raw -> String? in
-            guard let url = URL(string: raw),
-                  let scheme = url.scheme?.lowercased(),
-                  let host = url.host?.lowercased(),
-                  ["http", "https"].contains(scheme) else {
-                return nil
-            }
-            return "\(scheme)://\(host)"
-        })
-        let keys = Array(Set(rawKeys.filter { !$0.isEmpty && $0.count <= 128 })).sorted()
-        guard !allowedOrigins.isEmpty, !keys.isEmpty else { return }
-
-        let authStorageKey = (mirror["storageKey"] as? String)
-            ?? (bridgeContext["authStorageKey"] as? String)
-        guard let authStorageKey,
-              let stored = STMiniScopedStorage.defaults(for: "host-configured-auth")?.string(forKey: authStorageKey),
-              let data = stored.data(using: .utf8),
-              let snapshot = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            return
-        }
-
-        var values: [String: Any] = [:]
-        keys.forEach { key in
-            values[key] = snapshot[key] ?? NSNull()
-        }
-
-        // A remote PWA restores Pinia before any page-activation hook runs.
-        // The host may opt in selected cache entries with the same strict
-        // origin allow-list as auth keys. This component never assumes a
-        // product cache key or storage namespace on its own.
-        if let cacheStorageKey = mirror["cacheStorageKey"] as? String,
-           let rawCacheKeys = mirror["cacheKeys"] as? [String],
-           let cached = STMiniScopedStorage.defaults(for: "host-configured-auth")?.string(forKey: cacheStorageKey),
-           let cacheData = cached.data(using: .utf8),
-           let cacheSnapshot = try? JSONSerialization.jsonObject(with: cacheData) as? [String: Any] {
-            let cacheKeys = Set(rawCacheKeys.filter { !$0.isEmpty && $0.count <= 128 })
-            cacheKeys.forEach { key in
-                values[key] = cacheSnapshot[key] ?? NSNull()
-            }
-        }
-
-        guard let payload = jsonString(["values": values]) else { return }
-        let script = """
-        (() => {
-          const values = \(payload).values || {};
-          Object.keys(values).forEach((key) => {
-            const value = values[key];
-            if (value === null || value === undefined || value === '')
-              window.localStorage.removeItem(key);
-            else
-              window.localStorage.setItem(key, String(value));
-          });
-          return true;
-        })();
-        """
-        let reloadOnChange = (mirror["reloadOnChange"] as? Bool) ?? true
-
-        targets.forEach { webView in
-            guard sourceLease.isCurrent(), sourceLease.ownsTarget(webView),
-                  let targetLease = STWebBridgeEffectLease(webView: webView, generation: webView.bridgeDocumentGeneration, requiresMiniRoot: true),
-                  let currentURL = webView.url,
-                  let scheme = currentURL.scheme?.lowercased(),
-                  let host = currentURL.host?.lowercased(),
-                  allowedOrigins.contains("\(scheme)://\(host)") else {
-                return
-            }
-            webView.evaluateJavaScript(script) { _, error in
-                guard sourceLease.isCurrent(), sourceLease.ownsTarget(webView), targetLease.isCurrent() else { return }
-                if let error {
-                    STProjectHelper.Log("Mini 会话镜像写入旧 Web 存储失败：\(error.localizedDescription)")
-                    return
-                }
-                let hostName = currentURL.host ?? ""
-                STProjectHelper.Log("Mini 会话镜像已同步至旧 Web 存储：\(hostName)")
-                if reloadOnChange {
-                    webView.reload()
-                }
-            }
-        }
-    }
     
     
     static func callBack<T>(_ params: [String: Any], model: T) where T: STWebApiForm {

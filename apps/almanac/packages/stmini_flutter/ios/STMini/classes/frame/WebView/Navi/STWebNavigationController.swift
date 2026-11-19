@@ -17,7 +17,7 @@ public class STWebNavigationController: UINavigationController, UIGestureRecogni
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard isBeingDismissed,
-              let miniRoot = viewControllers.first as? STWebMiniprogramCrl else {
+              viewControllers.first is STWebMiniprogramCrl else {
             return
         }
 
@@ -29,17 +29,7 @@ public class STWebNavigationController: UINavigationController, UIGestureRecogni
             if let h5 = controller as? STWebH5Crl { h5.webView?.invalidateBridgeDocumentSession() }
         }
 
-        // UIKit only forwards the dismissal appearance callback to the
-        // visible child. Cache from the navigation container so a pushed
-        // STMini web page remains the visible page after re-entry.
-        if let coordinator = transitionCoordinator {
-            coordinator.animate(alongsideTransition: nil) { context in
-                guard !context.isCancelled else { return }
-                miniRoot.cacheForKeepAliveAfterDismissal()
-            }
-        } else {
-            miniRoot.cacheForKeepAliveAfterDismissal()
-        }
+
     }
     
     

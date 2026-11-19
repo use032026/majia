@@ -13,13 +13,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   /// Base64 expands binary data by roughly one third. Keep the encoded input
   /// bounded before decoding so an untrusted Mini cannot exhaust host memory.
   private static let maximumMiniImageBase64Bytes = 26_214_400
-  private static var isDebugBuild: Bool {
-    #if DEBUG
-    return true
-    #else
-    return false
-    #endif
-  }
+
   private let inventoryQueue = DispatchQueue(label: "stmini.local-inventory")
   private var detached = false
   var photoLibraryAccess = STMiniPhotoLibraryAccess.system
@@ -45,18 +39,6 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   /// API is exposed through this path.
   private var methodChannel: FlutterMethodChannel?
   private weak var presentingViewController: UIViewController?
-  /// Web-only presentation state is weak by construction. Repeated opens
-  /// must not keep a previously dismissed Flutter controller alive.
-  private let onlineWebPresentationLease = STOnlineWebPresentationLease<UIViewController>()
-  private struct OnlineWebPresentationRequest {
-    let webURL: URL
-    let params: [String: String]
-    let showNavigationBar: Bool
-    let result: FlutterResult
-  }
-  /// Serializes rapid `openWeb` calls so presentation/dismissal transitions
-  /// cannot overlap or use an H5 controller that UIKit is removing.
-  private let onlineWebPresentationQueue = STOnlineWebPresentationQueue<OnlineWebPresentationRequest>()
   private var initialized = false
   /// Optional, JSON-compatible context supplied by the embedding Flutter app.
   /// STMini stays reusable: it never imports a host's account/login module.
@@ -103,21 +85,8 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       emit("runtime_initialized", state())
       result(nil)
     case "foundationState": result(state())
-    case "closeWeb":
-      DispatchQueue.main.async { [weak self] in
-        guard let self else { result(nil); return }
-        let container = self.currentPresentingViewController().flatMap(self.presentedStandaloneOnlineWebContainer)
-        container?.dismiss(animated: true)
-        self.onlineWebPresentationLease.end(); self.onlineWebPresentationQueue.reset(); result(nil)
-      }
-    case "notifyWebSessionChanged":
-      guard let args = call.arguments as? [String: Any], Set(args.keys) == ["reason"],
-            let reason = args["reason"] as? String, !reason.isEmpty, reason.count <= 128 else {
-        result(FlutterError(code: "invalid_reason", message: "A bounded reason is required.", details: nil)); return
-      }
-      let pages = standaloneWebViews.allObjects.filter { $0.allowsOnlineWebHostForwarding }
-      pages.forEach { STWebApiManager.sendScriptMessageWithMethod("miniSessionChanged", params: ["reason": reason], webview: $0) }
-      result(pages.count)
+    case "closeWeb", "notifyWebSessionChanged":
+      result(FlutterError(code: "unsupported", message: "Standalone Web presentation is unavailable.", details: nil))
     case "openMini":
       guard initialized, !detached else { result(FlutterError(code: "not_initialized", message: "Initialize the Mini runtime first.", details: nil)); return }
       guard let arguments = call.arguments as? [String: Any],
@@ -128,17 +97,12 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       }
       configureIfNeeded(loadingImage: nil, bridgeContext: nil)
       let operationId = UUID().uuidString
-      // A bare mini:// link only reopens an already verified local package.
-      // It cannot start a download, so it does not require a current source.
-      // A supplied source remains strictly checked below.
-      if let sourceURL = miniDownloadURL(from: link), let reason = Self.miniDownloadURLRejectionReason(sourceURL) {
-        Self.emitMiniRuntimeEvent("mini_open_failed", payload: [
-          "operationId": operationId,
-          "code": "download_source_rejected",
-          "message": reason,
-          "retryable": false,
-        ])
-        result(FlutterError(code: "mini_download_source_rejected", message: reason, details: nil))
+      if STWebResourceManager.requestsPackageMutation(link: link) {
+        result(FlutterError(code: "unsupported", message: "Mini package downloads, installation and updates are unavailable.", details: nil))
+        return
+      }
+      guard STWebResourceManager.isInstalledMiniPackageRunnable(link: link) else {
+        result(FlutterError(code: "mini_package_unavailable", message: "No verified local Mini package meets the required version.", details: nil))
         return
       }
       guard let controller = currentPresentingViewController() else {
@@ -162,31 +126,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         result(nil)
       }
     case "openWeb":
-      guard initialized, !detached else { result(FlutterError(code: "not_initialized", message: "Initialize the Mini runtime first.", details: nil)); return }
-      guard let arguments = call.arguments as? [String: Any],
-            let url = arguments["url"] as? String,
-            let webURL = URL(string: url.trimmingCharacters(in: .whitespacesAndNewlines)),
-            let scheme = webURL.scheme?.lowercased(),
-            (scheme == "https" || (scheme == "http" && Self.allowsInsecureHttpNavigation())),
-            webURL.host != nil else {
-        result(FlutterError(code: "invalid_web_url", message: "url must be an absolute HTTPS URL", details: nil))
-        return
-      }
-      configureIfNeeded(loadingImage: nil, bridgeContext: nil)
-      let showNavigationBar = arguments["showNavigationBar"] as? Bool ?? true
-      let title = arguments["title"] as? String
-      var params = ["isNeedNavigationBar": showNavigationBar ? "true" : "false"]
-      if let title, !title.isEmpty {
-        params["title"] = title
-      }
-      emit("web_open_requested", ["url": redactedWebURL(webURL)])
-      DispatchQueue.main.async { [weak self] in
-        self?.presentOnlineWeb(
-          webURL: webURL,
-          params: params,
-          showNavigationBar: showNavigationBar,
-          result: result)
-      }
+      result(FlutterError(code: "unsupported", message: "Standalone Web presentation is unavailable; Mini child pages remain supported.", details: nil))
     case "closeMini":
       DispatchQueue.main.async { [weak self] in
         guard let controller = self?.currentPresentingViewController() else {
@@ -194,8 +134,6 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
           return
         }
         controller.dismiss(animated: true) {
-          self?.onlineWebPresentationLease.end()
-          self?.onlineWebPresentationQueue.reset()
           self?.emit("closed", [:])
           result(nil)
         }
@@ -224,11 +162,12 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
   private let standaloneWebViews = NSHashTable<STMiniWebView>.weakObjects()
   private func state() -> [String: Any] {
-    ["stage": "mini", "runtimeMode": "mini", "initialized": initialized,
+    ["stage": "mini", "runtimeMode": "mini", "miniPackageMode": "local_only", "initialized": initialized,
+     "miniPackageDownloadAvailable": false, "miniPackageInstallAvailable": false, "miniPackageUpdateAvailable": false,
      "packageName": initialized ? ("com.almanac.lite" as Any) : NSNull(),
      "localizedClose": STMiniLocalized("mini.close", "Close"),
-     "capabilities": ["host_configuration", "language_resolution", "runtime_events", "local_inventory", "local_renderer", "mini_runtime", "online_web", "framework_bridge", "isolated_storage"],
-     "localRendererAvailable": true, "miniLoadingAvailable": true, "webLoadingAvailable": true]
+     "capabilities": ["host_configuration", "language_resolution", "runtime_events", "local_inventory", "local_renderer", "local_mini_runtime", "framework_bridge", "isolated_storage"],
+     "localRendererAvailable": true, "miniLoadingAvailable": true, "webLoadingAvailable": false, "miniChildWebAvailable": true, "closedMiniCacheAvailable": false]
   }
 
   private func readInventory(_ arguments: Any?, result: @escaping FlutterResult) {
@@ -282,103 +221,6 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     eventSink = nil
   }
 
-  /// `openWeb` can be called while a prior host-opened H5 is still the top
-  /// controller. Presenting from that dying H5 causes UIKit's "not in the
-  /// window hierarchy" warning and intermittently loses the second page.
-  /// Dismiss first, then resolve the current Flutter presenter in completion.
-  private func presentOnlineWeb(
-    webURL: URL,
-    params: [String: String],
-    showNavigationBar: Bool,
-    result: @escaping FlutterResult
-  ) {
-    let request = OnlineWebPresentationRequest(
-      webURL: webURL,
-      params: params,
-      showNavigationBar: showNavigationBar,
-      result: result
-    )
-    let existing = currentPresentingViewController().flatMap(presentedStandaloneOnlineWebContainer)
-    let action = onlineWebPresentationQueue.enqueue(
-      request,
-      hasExistingPresentation: existing != nil
-    )
-    // A newer open replaces a request that had not reached UIKit yet. Resolve
-    // the older MethodChannel invocation rather than leaving it pending; the
-    // newest page is the visible result of this serialized transition.
-    action.superseded?.result(nil)
-    performOnlineWebPresentationStep(action.step, existing: existing)
-  }
-
-  private func performOnlineWebPresentationStep(
-    _ step: STOnlineWebPresentationQueue<OnlineWebPresentationRequest>.Step,
-    existing: UIViewController? = nil
-  ) {
-    switch step {
-    case .waiting:
-      return
-    case .dismissCurrent:
-      let container = existing ?? currentPresentingViewController().flatMap(presentedStandaloneOnlineWebContainer)
-      guard let container else {
-        if let next = onlineWebPresentationQueue.didDismiss() {
-          performOnlineWebPresentationStep(next)
-        }
-        return
-      }
-      container.dismiss(animated: true) { [weak self] in
-        guard let self else { return }
-        self.onlineWebPresentationLease.end()
-        // Completion is the only place that advances the queue. The next
-        // `present` resolves its presenter anew, after UIKit removed this H5.
-        if let next = self.onlineWebPresentationQueue.didDismiss() {
-          self.performOnlineWebPresentationStep(next)
-        }
-      }
-    case .present(let request):
-      guard let presenter = currentPresentingViewController() else {
-        request.result(FlutterError(code: "no_presenting_controller", message: "No active Flutter view controller", details: nil))
-        if let next = onlineWebPresentationQueue.didFailToPresent() {
-          performOnlineWebPresentationStep(next)
-        }
-        return
-      }
-      onlineWebPresentationLease.begin(with: presenter)
-      let navigationController = UINavigationController()
-      navigationController.modalPresentationStyle = .fullScreen
-      let config = STWebConfig(webMode: .h5, params: request.params)
-      config.bridgePolicy = Self.externalWebBridgePolicy(for: request.webURL)
-      config.allowsInsecureHttpNavigation = Self.allowsInsecureHttpNavigation()
-      STWebOpenHandler.openH5(url: request.webURL.absoluteString, config: config, navi: navigationController)
-      navigationController.isNavigationBarHidden = !request.showNavigationBar
-      presenter.present(navigationController, animated: true) { [weak self] in
-        guard let self else { return }
-        self.emit("web_opened", ["url": self.redactedWebURL(request.webURL)])
-        request.result(nil)
-        if let next = self.onlineWebPresentationQueue.didPresent() {
-          self.performOnlineWebPresentationStep(next)
-        }
-      }
-    }
-  }
-
-  /// Only a standalone host `openWeb` gets replaced. A Mini-owned `/web`
-  /// child remains part of its Mini navigation stack and is never dismissed
-  /// by this Web-only transition helper.
-  private func presentedStandaloneOnlineWebContainer(from controller: UIViewController) -> UIViewController? {
-    if let h5 = controller as? STWebH5Crl,
-       h5.config.webMode == .h5,
-       !h5.isMiniInternalPage {
-      return h5.navigationController ?? h5
-    }
-    if let navigation = controller as? UINavigationController,
-       let h5 = navigation.visibleViewController as? STWebH5Crl,
-       h5.config.webMode == .h5,
-       !h5.isMiniInternalPage {
-      return navigation
-    }
-    return nil
-  }
-
   private func configureIfNeeded(loadingImage: String?, bridgeContext: [String: Any]?) {
     if let bridgeContext {
       self.bridgeContext = bridgeContext
@@ -407,28 +249,9 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       object: nil)
   }
 
-  static func miniDownloadURLRejectionReason(_ url: URL) -> String? {
-    // The backend currently rotates Mini download hosts. Keep the component
-    // permissive about HTTPS origins until that contract is stabilized;
-    // archive validation still runs after download.
-    guard let candidateOrigin = miniDownloadOrigin(url) else {
-      return "小程序下载地址无效"
-    }
-    if candidateOrigin.scheme == "https" {
-      return nil
-    }
-    #if DEBUG
-    let security = bridgeContextSnapshot["miniSecurity"] as? [String: Any]
-    if (security?["allowInsecureHTTPForDebug"] as? Bool) == true {
-      return nil
-    }
-    #endif
-    return "小程序下载仅支持 HTTPS"
-  }
 
-  static func isMiniDownloadURLAllowed(_ url: URL) -> Bool {
-    miniDownloadURLRejectionReason(url) == nil
-  }
+
+
 
   /// External `/web` documents use the common Web bridge, but never acquire
   /// Mini package/update/navigation APIs from the reusable Mini runtime.
@@ -441,46 +264,17 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     return security?["allowInsecureHTTP"] as? Bool ?? false
   }
 
-  static func continuousKeepAliveMiniIds() -> Set<String> {
-    guard let security = bridgeContextSnapshot["miniSecurity"] as? [String: Any],
-          let values = security["continuousKeepAliveMiniIds"] as? [String] else {
-      return []
-    }
-    return Set(values.compactMap { value in
-      let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-      return normalized.isEmpty ? nil : normalized
-    })
-  }
+
 
   static func emitMiniRuntimeEvent(_ name: String, payload: [String: Any]) {
     registeredInstance?.emit(name, payload)
   }
 
-  private struct MiniDownloadOrigin: Equatable {
-    let scheme: String
-    let host: String
-    let port: Int
-  }
 
-  private static func miniDownloadOrigin(_ url: URL) -> MiniDownloadOrigin? {
-    guard let scheme = url.scheme?.lowercased(),
-          let host = url.host?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
-          !host.isEmpty,
-          scheme == "https" || scheme == "http" else {
-      return nil
-    }
-    let port = url.port ?? (scheme == "https" ? 443 : 80)
-    return MiniDownloadOrigin(scheme: scheme, host: host, port: port)
-  }
 
-  private func miniDownloadURL(from link: String) -> URL? {
-    guard let components = URLComponents(string: link),
-          let rawURL = components.queryItems?.first(where: { $0.name == "downloadUrl" })?.value,
-          !rawURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-      return nil
-    }
-    return URL(string: rawURL.trimmingCharacters(in: .whitespacesAndNewlines))
-  }
+
+
+
 
   private func linkWithOperationID(_ link: String, operationID: String) -> String {
     guard var components = URLComponents(string: link) else { return link }
@@ -519,7 +313,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     let callerURL = webView.url
     let method = message["method"] as? String ?? ""
     let params = message["params"] as? [String: Any] ?? [:]
-    // The standalone online-Web path has no Mini session delegate. Keep its
+    // A Mini child Web document can use the shared session bridge. Keep its
     // ordinary session bridge in the shared Web core so mini_web receives the
     // exact same package identity and persisted session contract.
     if webView.allowsOnlineWebHostForwarding,
@@ -652,7 +446,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       return success(bridgeUserInfo())
     case "getToken":
       let hostToken = (bridgeContext["userInfo"] as? [String: Any])?["token"] as? String
-      return success(hostToken ?? storedBridgeUserInfo()["token"] as? String ?? "")
+      return success(hostToken ?? "")
     case "applog":
       if let message = params["msg"] ?? params["message"] {
         emit("native_log", ["message": String(describing: message)])
@@ -1043,61 +837,12 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       "dark_mode": isDark ? "1" : "0",
       "language_code": normalizedLanguage(),
     ]
-    result.merge(storedBridgeUserInfo()) { _, storedValue in storedValue }
-    // Some online H5 pages use the normal native `getUserInfo` payload as
-    // their persisted profile and check its `id`, rather than `user_id`.
-    // Keep this component product-agnostic: an embedding host may opt in to
-    // one JSON cache entry and, optionally, a nested profile object.
-    result.merge(storedBridgeUserProfile()) { _, profileValue in profileValue }
     // A host that owns authentication may supply its normal H5 bridge payload
     // through `initialize({ bridgeContext: { userInfo: ... } })`.
     if let userInfo = bridgeContext["userInfo"] as? [String: Any] {
       result.merge(userInfo) { _, hostValue in hostValue }
     }
     return result
-  }
-
-  /// The host explicitly selects the Mini-owned JSON storage key. This avoids
-  /// inspecting unrelated app defaults while allowing a reusable STMini host
-  /// to expose the conventional iOS H5 session fields to an online page.
-  private func storedBridgeUserInfo() -> [String: Any] {
-    guard let storageKey = bridgeContext["authStorageKey"] as? String,
-          let jsonText = STMiniScopedStorage.defaults(for: "host-configured-auth")?.string(forKey: storageKey),
-          let values = jsonValue(from: jsonText) as? [String: Any] else {
-      return [:]
-    }
-    var result: [String: Any] = [:]
-    result["token"] = values["token"] ?? values["access_token"]
-    result["device_id"] = values["device_id"]
-    result["user_id"] = values["user_id"]
-    return result.compactMapValues { $0 }
-  }
-
-  /// Reads an optional user profile from the host-selected Mini cache.  The
-  /// cache itself is a JSON object whose selected entry is commonly another
-  /// JSON string (for example a Pinia persisted-store value).
-  private func storedBridgeUserProfile() -> [String: Any] {
-    guard let config = bridgeContext["bridgeUserInfoStorage"] as? [String: Any],
-          let storageKey = config["storageKey"] as? String,
-          let valueKey = config["valueKey"] as? String,
-          let jsonText = STMiniScopedStorage.defaults(for: "host-configured-auth")?.string(forKey: storageKey),
-          let storageValues = jsonValue(from: jsonText) as? [String: Any],
-          let rawValue = storageValues[valueKey] else {
-      return [:]
-    }
-
-    let value: Any
-    if let text = rawValue as? String {
-      guard let decoded = jsonValue(from: text) else { return [:] }
-      value = decoded
-    } else {
-      value = rawValue
-    }
-
-    guard let nestedKey = config["nestedKey"] as? String, !nestedKey.isEmpty else {
-      return value as? [String: Any] ?? [:]
-    }
-    return (value as? [String: Any])?[nestedKey] as? [String: Any] ?? [:]
   }
 
   private func failure(_ message: String) -> [String: Any] {
@@ -1198,14 +943,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     return topController(from: root)
   }
 
-  private func redactedWebURL(_ url: URL) -> String {
-    guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-      return url.scheme.map { "\($0)://<invalid>" } ?? "<invalid>"
-    }
-    components.query = nil
-    components.fragment = nil
-    return components.string ?? "<invalid>"
-  }
+
 
   private func topController(from controller: UIViewController?) -> UIViewController? {
     if let navigation = controller as? UINavigationController {

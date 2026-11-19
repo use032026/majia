@@ -14,11 +14,9 @@ PODS:
     - Masonry
     - SDWebImage
     - Toast-Swift
-    - ZIPFoundation (~> 0.9)
   - Toast-Swift (5.1.1)
   - url_launcher_ios (0.0.1):
     - Flutter
-  - ZIPFoundation (0.9.20)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -32,7 +30,6 @@ SPEC REPOS:
     - Masonry
     - SDWebImage
     - Toast-Swift
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   Flutter:
@@ -50,10 +47,9 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
-  stmini_flutter: f462b05b6e2c33c14664f6d3b2406a5f55ac669c
+  stmini_flutter: ea4f231d471c1355dcc174c25f004dc95562e5e5
   Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  ZIPFoundation: dfd3d681c4053ff7e2f7350bc4e53b5dba3f5351
 
 PODFILE CHECKSUM: 53a6aebc29ccee84c41f92f409fc20cd4ca011f1
 

@@ -2,33 +2,53 @@
   "task_id": "20261116-1401-deynu-stmini-five-batches",
   "upstream_sha": "b4462f63a33acf6c3fff63f0e67b3713bc00dff8",
   "baseline_before_fourth": "584c6b92447b90c28a7814fbf022e46e29ed2963",
-  "denominator_physical_lines": 20683,
-  "minimum_fourth_unique_source_lines": 10342,
+  "source_scope": "Fixed native-only iOS main implementation plus headers; Android and shared Dart are excluded by user decision",
+  "denominator_source_files": 86,
+  "denominator_physical_lines": 15317,
+  "reference_full_main_source_files": 113,
+  "reference_full_main_denominator_physical_lines": 20683,
+  "minimum_fourth_unique_source_lines": 4596,
+  "maximum_fourth_unique_source_lines": 6126,
+  "user_target_percent": [
+    30,
+    40
+  ],
   "algorithm": "Conservative fixed-source line map; compile/link qualification is separate.\n\nOnly byte-equal source spans count here. Changed but equivalent source is not\nadded, so no human equivalence judgment is disguised as an automated match.\nThe fourth-batch lower bound subtracts *all* prior reference ranges, including\nreferences that were never claimed as integrated source, to avoid overlap.\n",
+  "static_only_no_current_compile_qualification": false,
   "mapping_boundary": "Mapped source is not compiled/retained coverage. Qualification requires separate ordinary-main Release compile/link and native dispatcher/class/real-consumer evidence. No equivalent changed lines are counted; fourth new lower bound subtracts every earlier source reference range conservatively, rather than claiming reference text was integrated.",
-  "mapped_cumulative_conservative_lines": 13514,
-  "mapped_fourth_new_conservative_lower_bound": 12467,
-  "qualified_cumulative_conservative_lines": 13514,
-  "qualified_fourth_new_conservative_lower_bound": 12467,
+  "mapped_cumulative_conservative_lines": 6182,
+  "mapped_fourth_new_conservative_lower_bound": 5632,
+  "mapped_new_upper_relative_to_known_P": 6103,
+  "mapped_known_byte_equal_origin_sets": {
+    "P_known_same_path": 80,
+    "C_mapped_current": 6182,
+    "P_retained_in_C": 79,
+    "P_not_retained_in_C": 1,
+    "N_C_minus_known_P": 6103
+  },
+  "mapped_new_source_entire_interval_within_user_target": true,
+  "qualified_cumulative_conservative_lines": 6182,
+  "qualified_fourth_new_conservative_lower_bound": 5632,
   "qualified_fourth_meets_floor": true,
+  "qualified_new_upper_relative_to_known_P": 6103,
+  "qualified_new_source_entire_interval_within_user_target": true,
   "files": [
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiDebugLog.kt",
       "source_git_blob": "be6a4a842d6eda391f236b5254de9c1b5d2ada1f",
       "source_sha256": "80cf851e1d3a4822a2dfdade9c5b68542c59141cc8508c088fa6b3dd0bda5044",
       "source_physical_lines": 34,
+      "source_physical_bytes": 1149,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/StminiDebugLog.kt",
-      "target_sha256": "80cf851e1d3a4822a2dfdade9c5b68542c59141cc8508c088fa6b3dd0bda5044",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          34,
           1,
           34
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [
         [
           1,
@@ -36,7 +56,7 @@
         ]
       ],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
       "mapped_conservative_source_lines": 0,
       "fourth_new_lower_bound": 0,
@@ -53,156 +73,45 @@
       "source_git_blob": "01669f49ac2c1f793d4a9622d6cc573ae4ed02b6",
       "source_sha256": "a3b842e190ea1295d45d19bc13a7a4d2f8e6a1f8012c816e1a33f39540e4369c",
       "source_physical_lines": 165,
+      "source_physical_bytes": 8797,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
-      "target_sha256": "4b4716fdaddfc4816889f73ff4cb559b054f5487aa8916fda5def19f357eb7eb",
+      "target_sha256": "6848aff9cc1621bef9c2a1aa06d5a4af623ba2b3a4d96e9b8d682cf931d97ee0",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
-          3,
+          17,
+          19,
+          14,
+          16
+        ],
+        [
+          27,
           29,
-          11,
+          20,
+          22
+        ],
+        [
+          53,
+          55,
+          35,
           37
         ],
         [
-          30,
-          55,
-          51,
-          76
+          58,
+          60,
+          45,
+          47
         ],
         [
-          56,
+          62,
           66,
-          83,
-          93
-        ],
-        [
-          75,
-          89,
-          109,
-          123
-        ],
-        [
-          94,
-          98,
-          132,
-          136
-        ],
-        [
-          100,
-          131,
-          177,
-          208
-        ],
-        [
-          132,
-          149,
-          210,
-          227
-        ],
-        [
-          156,
-          165,
-          248,
-          257
+          51,
+          55
         ]
       ],
       "unmapped_source_lines": [
         [
           1,
-          2
-        ],
-        [
-          67,
-          74
-        ],
-        [
-          90,
-          93
-        ],
-        [
-          99,
-          99
-        ],
-        [
-          150,
-          155
-        ]
-      ],
-      "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          17,
-          19
-        ],
-        [
-          27,
-          29
-        ],
-        [
-          53,
-          55
-        ],
-        [
-          58,
-          60
-        ],
-        [
-          62,
-          66
-        ]
-      ],
-      "candidate_native_core": true,
-      "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 144,
-      "fourth_new_lower_bound": 127,
-      "compile_link_consumer_qualified": true,
-      "actual_previous_same_path_byte_equal_source_ranges": [
-        [
-          17,
-          19
-        ],
-        [
-          27,
-          29
-        ],
-        [
-          53,
-          55
-        ],
-        [
-          58,
-          60
-        ],
-        [
-          62,
-          66
-        ]
-      ],
-      "actual_previous_retained_in_current_source_ranges": [
-        [
-          17,
-          19
-        ],
-        [
-          27,
-          29
-        ],
-        [
-          53,
-          55
-        ],
-        [
-          58,
-          60
-        ],
-        [
-          62,
-          66
-        ]
-      ],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          3,
           16
         ],
         [
@@ -222,52 +131,30 @@
           61
         ],
         [
-          75,
-          89
-        ],
-        [
-          94,
-          98
-        ],
-        [
-          100,
-          149
-        ],
-        [
-          156,
+          67,
           165
         ]
       ],
-      "qualified_conservative_source_lines": 144,
-      "qualified_fourth_new_lower_bound": 127,
-      "qualified_source_ranges": [
-        [
-          3,
-          66
-        ],
-        [
-          75,
-          89
-        ],
-        [
-          94,
-          98
-        ],
-        [
-          100,
-          149
-        ],
-        [
-          156,
-          165
-        ]
-      ]
+      "release_excluded_source_ranges": [],
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
+      "conservative_module_excluded": false,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
+      "actual_previous_same_path_byte_equal_source_ranges": [],
+      "actual_previous_retained_in_current_source_ranges": [],
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
       "source_git_blob": "5298434fcab0d832b75b1aea4f18b3b91cde09e6",
       "source_sha256": "62cb497bf80095b45bf921558b8035b052e110c678f0025580aa6d6cee8fa148",
       "source_physical_lines": 16,
+      "source_physical_bytes": 538,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
       "target_sha256": "78d894ac77044ed6b96da598b310fc64f7d2c0081f28c341e37fc5c0670b125e",
       "byte_identical_complete_file": false,
@@ -286,260 +173,55 @@
         ]
       ],
       "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          1,
-          7
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 7,
+      "mapped_conservative_source_lines": 0,
       "fourth_new_lower_bound": 0,
-      "compile_link_consumer_qualified": true,
-      "actual_previous_same_path_byte_equal_source_ranges": [
-        [
-          1,
-          7
-        ]
-      ],
-      "actual_previous_retained_in_current_source_ranges": [
-        [
-          1,
-          7
-        ]
-      ],
+      "compile_link_consumer_qualified": false,
+      "actual_previous_same_path_byte_equal_source_ranges": [],
+      "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [],
-      "qualified_conservative_source_lines": 7,
+      "qualified_conservative_source_lines": 0,
       "qualified_fourth_new_lower_bound": 0,
-      "qualified_source_ranges": [
-        [
-          1,
-          7
-        ]
-      ]
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt",
       "source_git_blob": "e85a6fdefda32eed8328dd5111193a6c88c3e2a3",
       "source_sha256": "15086cbb9be6f12d1c3bd1122baf10c17a54ece4d16ecdbf9b2d9d4dbcca4874",
       "source_physical_lines": 502,
+      "source_physical_bytes": 28257,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt",
-      "target_sha256": "39b38928492b2cc0990e352ed79a5a8f796cbd0e2cf304fb548af00ff2f9bfbe",
+      "target_sha256": null,
       "byte_identical_complete_file": false,
-      "byte_equal_span_map_source_start_end_target_start_end": [
-        [
-          1,
-          14,
-          1,
-          14
-        ],
-        [
-          15,
-          118,
-          18,
-          121
-        ],
-        [
-          119,
-          122,
-          128,
-          131
-        ],
-        [
-          124,
-          167,
-          133,
-          176
-        ],
-        [
-          171,
-          322,
-          180,
-          331
-        ],
-        [
-          325,
-          339,
-          334,
-          348
-        ],
-        [
-          346,
-          351,
-          355,
-          360
-        ],
-        [
-          353,
-          358,
-          363,
-          368
-        ],
-        [
-          360,
-          362,
-          370,
-          372
-        ],
-        [
-          367,
-          371,
-          378,
-          382
-        ],
-        [
-          377,
-          479,
-          396,
-          498
-        ],
-        [
-          481,
-          502,
-          504,
-          525
-        ]
-      ],
+      "byte_equal_span_map_source_start_end_target_start_end": [],
       "unmapped_source_lines": [
         [
-          123,
-          123
-        ],
-        [
-          168,
-          170
-        ],
-        [
-          323,
-          324
-        ],
-        [
-          340,
-          345
-        ],
-        [
-          352,
-          352
-        ],
-        [
-          359,
-          359
-        ],
-        [
-          363,
-          366
-        ],
-        [
-          372,
-          376
-        ],
-        [
-          480,
-          480
+          1,
+          502
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 478,
-      "fourth_new_lower_bound": 478,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          122
-        ],
-        [
-          124,
-          167
-        ],
-        [
-          171,
-          322
-        ],
-        [
-          325,
-          339
-        ],
-        [
-          346,
-          351
-        ],
-        [
-          353,
-          358
-        ],
-        [
-          360,
-          362
-        ],
-        [
-          367,
-          371
-        ],
-        [
-          377,
-          479
-        ],
-        [
-          481,
-          502
-        ]
-      ],
-      "qualified_conservative_source_lines": 478,
-      "qualified_fourth_new_lower_bound": 478,
-      "qualified_source_ranges": [
-        [
-          1,
-          122
-        ],
-        [
-          124,
-          167
-        ],
-        [
-          171,
-          322
-        ],
-        [
-          325,
-          339
-        ],
-        [
-          346,
-          351
-        ],
-        [
-          353,
-          358
-        ],
-        [
-          360,
-          362
-        ],
-        [
-          367,
-          371
-        ],
-        [
-          377,
-          479
-        ],
-        [
-          481,
-          502
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniLink.kt",
       "source_git_blob": "6c473dbeed8e84f1edf78f69b5a18cd2817b1359",
       "source_sha256": "54ced365714b7c8001dc8f5ae4209df7a351ba7d0ee8e3ea46e9c9156fb9cc86",
       "source_physical_lines": 77,
+      "source_physical_bytes": 3395,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniLink.kt",
       "target_sha256": "54ced365714b7c8001dc8f5ae4209df7a351ba7d0ee8e3ea46e9c9156fb9cc86",
       "byte_identical_complete_file": true,
@@ -558,319 +240,55 @@
           63
         ]
       ],
-      "prior_reference_overlap_subtracted": [
-        [
-          1,
-          62
-        ],
-        [
-          64,
-          77
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 76,
+      "mapped_conservative_source_lines": 0,
       "fourth_new_lower_bound": 0,
-      "compile_link_consumer_qualified": true,
-      "actual_previous_same_path_byte_equal_source_ranges": [
-        [
-          1,
-          62
-        ],
-        [
-          64,
-          77
-        ]
-      ],
-      "actual_previous_retained_in_current_source_ranges": [
-        [
-          1,
-          62
-        ],
-        [
-          64,
-          77
-        ]
-      ],
+      "compile_link_consumer_qualified": false,
+      "actual_previous_same_path_byte_equal_source_ranges": [],
+      "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [],
-      "qualified_conservative_source_lines": 76,
+      "qualified_conservative_source_lines": 0,
       "qualified_fourth_new_lower_bound": 0,
-      "qualified_source_ranges": [
-        [
-          1,
-          62
-        ],
-        [
-          64,
-          77
-        ]
-      ]
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
       "source_git_blob": "cd20cc82b109fd6635a91086b1a3e8eeb5385a0a",
       "source_sha256": "237734d7c047f00f0a2a868423db6c2c9575ba7971695a8e6cdd4d9086105e7e",
       "source_physical_lines": 409,
+      "source_physical_bytes": 19159,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
-      "target_sha256": "0d8034b68cc4872eb1adc50dd822f5ae2ea4afbdce6edd4f9afc072eaa2a2b3e",
+      "target_sha256": null,
       "byte_identical_complete_file": false,
-      "byte_equal_span_map_source_start_end_target_start_end": [
-        [
-          1,
-          36,
-          1,
-          36
-        ],
-        [
-          38,
-          68,
-          40,
-          70
-        ],
-        [
-          74,
-          113,
-          89,
-          128
-        ],
-        [
-          115,
-          126,
-          138,
-          149
-        ],
-        [
-          128,
-          133,
-          152,
-          157
-        ],
-        [
-          143,
-          170,
-          175,
-          202
-        ],
-        [
-          171,
-          176,
-          215,
-          220
-        ],
-        [
-          177,
-          184,
-          222,
-          229
-        ],
-        [
-          186,
-          191,
-          231,
-          236
-        ],
-        [
-          194,
-          244,
-          244,
-          294
-        ],
-        [
-          245,
-          265,
-          297,
-          317
-        ],
-        [
-          267,
-          285,
-          319,
-          337
-        ],
-        [
-          292,
-          409,
-          343,
-          460
-        ]
-      ],
+      "byte_equal_span_map_source_start_end_target_start_end": [],
       "unmapped_source_lines": [
         [
-          37,
-          37
-        ],
-        [
-          69,
-          73
-        ],
-        [
-          114,
-          114
-        ],
-        [
-          127,
-          127
-        ],
-        [
-          134,
-          142
-        ],
-        [
-          185,
-          185
-        ],
-        [
-          192,
-          193
-        ],
-        [
-          266,
-          266
-        ],
-        [
-          286,
-          291
+          1,
+          409
         ]
       ],
       "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          25,
-          36
-        ],
-        [
-          38,
-          38
-        ],
-        [
-          46,
-          47
-        ],
-        [
-          54,
-          59
-        ],
-        [
-          74,
-          105
-        ],
-        [
-          200,
-          265
-        ],
-        [
-          267,
-          278
-        ],
-        [
-          284,
-          285
-        ],
-        [
-          395,
-          407
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 382,
-      "fourth_new_lower_bound": 236,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          36
-        ],
-        [
-          38,
-          68
-        ],
-        [
-          74,
-          113
-        ],
-        [
-          115,
-          126
-        ],
-        [
-          128,
-          133
-        ],
-        [
-          143,
-          184
-        ],
-        [
-          186,
-          191
-        ],
-        [
-          194,
-          265
-        ],
-        [
-          267,
-          285
-        ],
-        [
-          292,
-          409
-        ]
-      ],
-      "qualified_conservative_source_lines": 382,
-      "qualified_fourth_new_lower_bound": 236,
-      "qualified_source_ranges": [
-        [
-          1,
-          36
-        ],
-        [
-          38,
-          68
-        ],
-        [
-          74,
-          113
-        ],
-        [
-          115,
-          126
-        ],
-        [
-          128,
-          133
-        ],
-        [
-          143,
-          184
-        ],
-        [
-          186,
-          191
-        ],
-        [
-          194,
-          265
-        ],
-        [
-          267,
-          285
-        ],
-        [
-          292,
-          409
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt",
       "source_git_blob": "acde619fe706d0b81a30d4cfaab48931c5f55799",
       "source_sha256": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
       "source_physical_lines": 108,
+      "source_physical_bytes": 5258,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt",
       "target_sha256": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
       "byte_identical_complete_file": true,
@@ -884,85 +302,55 @@
       ],
       "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          1,
-          108
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 108,
+      "mapped_conservative_source_lines": 0,
       "fourth_new_lower_bound": 0,
-      "compile_link_consumer_qualified": true,
-      "actual_previous_same_path_byte_equal_source_ranges": [
-        [
-          1,
-          108
-        ]
-      ],
-      "actual_previous_retained_in_current_source_ranges": [
-        [
-          1,
-          108
-        ]
-      ],
+      "compile_link_consumer_qualified": false,
+      "actual_previous_same_path_byte_equal_source_ranges": [],
+      "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [],
-      "qualified_conservative_source_lines": 108,
+      "qualified_conservative_source_lines": 0,
       "qualified_fourth_new_lower_bound": 0,
-      "qualified_source_ranges": [
-        [
-          1,
-          108
-        ]
-      ]
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiRuntimePool.kt",
       "source_git_blob": "e0781da3d7b706f78ea3588196f2b7a01f106eba",
       "source_sha256": "df34f45809b14035c5168c3258e3b8cb6690f2c650cd27b3a9987648a7422d30",
       "source_physical_lines": 272,
+      "source_physical_bytes": 11737,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiRuntimePool.kt",
-      "target_sha256": "df34f45809b14035c5168c3258e3b8cb6690f2c650cd27b3a9987648a7422d30",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          272,
           1,
           272
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 272,
-      "fourth_new_lower_bound": 272,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          272
-        ]
-      ],
-      "qualified_conservative_source_lines": 272,
-      "qualified_fourth_new_lower_bound": 272,
-      "qualified_source_ranges": [
-        [
-          1,
-          272
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/WebOrigin.kt",
       "source_git_blob": "cf903be18afc02db9d334ba7073f2fcd86b7183a",
       "source_sha256": "3c8d57c2b11c32b3abe45b4ffe6c80ac42dd7f0022ea6760e0046fb7b2fac496",
       "source_physical_lines": 32,
+      "source_physical_bytes": 1387,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/runtime/WebOrigin.kt",
       "target_sha256": "3c8d57c2b11c32b3abe45b4ffe6c80ac42dd7f0022ea6760e0046fb7b2fac496",
       "byte_identical_complete_file": true,
@@ -976,1463 +364,804 @@
       ],
       "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          1,
-          32
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 32,
+      "mapped_conservative_source_lines": 0,
       "fourth_new_lower_bound": 0,
-      "compile_link_consumer_qualified": true,
-      "actual_previous_same_path_byte_equal_source_ranges": [
-        [
-          1,
-          32
-        ]
-      ],
-      "actual_previous_retained_in_current_source_ranges": [
-        [
-          1,
-          32
-        ]
-      ],
+      "compile_link_consumer_qualified": false,
+      "actual_previous_same_path_byte_equal_source_ranges": [],
+      "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [],
-      "qualified_conservative_source_lines": 32,
+      "qualified_conservative_source_lines": 0,
       "qualified_fourth_new_lower_bound": 0,
-      "qualified_source_ranges": [
-        [
-          1,
-          32
-        ]
-      ]
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniBridgeOriginPolicy.kt",
       "source_git_blob": "f146189886f257f47cd4ceabcf18bb0528e286b0",
       "source_sha256": "73ac38e98f4ebcf0b060f195fa3d97fb0a8fbd9d62b26609d8e237f42897f4ed",
       "source_physical_lines": 23,
+      "source_physical_bytes": 948,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniBridgeOriginPolicy.kt",
-      "target_sha256": "73ac38e98f4ebcf0b060f195fa3d97fb0a8fbd9d62b26609d8e237f42897f4ed",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          23,
           1,
           23
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 23,
-      "fourth_new_lower_bound": 23,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          23
-        ]
-      ],
-      "qualified_conservative_source_lines": 23,
-      "qualified_fourth_new_lower_bound": 23,
-      "qualified_source_ranges": [
-        [
-          1,
-          23
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchIdentity.kt",
       "source_git_blob": "88ff66280062f586769b3cab4c8631b1914252e8",
       "source_sha256": "c71a912570715056af47e3838298725a7af7e71eeec970aec3bd16f047fe7fca",
       "source_physical_lines": 48,
+      "source_physical_bytes": 1693,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchIdentity.kt",
-      "target_sha256": "c71a912570715056af47e3838298725a7af7e71eeec970aec3bd16f047fe7fca",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          48,
           1,
           48
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 48,
-      "fourth_new_lower_bound": 48,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          48
-        ]
-      ],
-      "qualified_conservative_source_lines": 48,
-      "qualified_fourth_new_lower_bound": 48,
-      "qualified_source_ranges": [
-        [
-          1,
-          48
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchOverlay.kt",
       "source_git_blob": "b02471c8ad1c8c7990333876117d7b9fd2445d5f",
       "source_sha256": "3326ce0137e5e09b34076821ed09e0953c0495220c9c3b5e356bc6d2503f6c84",
       "source_physical_lines": 329,
+      "source_physical_bytes": 13318,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchOverlay.kt",
-      "target_sha256": "3326ce0137e5e09b34076821ed09e0953c0495220c9c3b5e356bc6d2503f6c84",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          329,
           1,
           329
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 329,
-      "fourth_new_lower_bound": 329,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          329
-        ]
-      ],
-      "qualified_conservative_source_lines": 329,
-      "qualified_fourth_new_lower_bound": 329,
-      "qualified_source_ranges": [
-        [
-          1,
-          329
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchSnapshotStore.kt",
       "source_git_blob": "1b03d3a40d0a68b70d3b5085a7830f199615d72e",
       "source_sha256": "7b9887b61cae48a4816cf273d03015526ad9e63563f65c9299aa8f7f11a7d641",
       "source_physical_lines": 93,
+      "source_physical_bytes": 3575,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchSnapshotStore.kt",
-      "target_sha256": "7b9887b61cae48a4816cf273d03015526ad9e63563f65c9299aa8f7f11a7d641",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          93,
           1,
           93
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 93,
-      "fourth_new_lower_bound": 93,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          93
-        ]
-      ],
-      "qualified_conservative_source_lines": 93,
-      "qualified_fourth_new_lower_bound": 93,
-      "qualified_source_ranges": [
-        [
-          1,
-          93
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniPopupBridgePolicy.kt",
       "source_git_blob": "4fd455b55f91fb10df4dc9a7d1958e1cd8a34a37",
       "source_sha256": "466752a09e08880035b709f2c3ec0162b3b79b99d76c508121798784994e6e09",
       "source_physical_lines": 31,
+      "source_physical_bytes": 1298,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniPopupBridgePolicy.kt",
-      "target_sha256": "466752a09e08880035b709f2c3ec0162b3b79b99d76c508121798784994e6e09",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          31,
           1,
           31
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 31,
-      "fourth_new_lower_bound": 31,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          31
-        ]
-      ],
-      "qualified_conservative_source_lines": 31,
-      "qualified_fourth_new_lower_bound": 31,
-      "qualified_source_ranges": [
-        [
-          1,
-          31
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
       "source_git_blob": "afeef71ce6974a1174ec481762d62a13c879062e",
       "source_sha256": "bffbb7d37a54e86b592d83c181f76ec861f5557d27f73bae6828f1a37419f180",
       "source_physical_lines": 1993,
+      "source_physical_bytes": 97490,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
-      "target_sha256": "0c5e4d878defb2d9463d85ee987453089120753b897b83e4141019fc7f7e5dab",
+      "target_sha256": null,
       "byte_identical_complete_file": false,
-      "byte_equal_span_map_source_start_end_target_start_end": [
-        [
-          2,
-          235,
-          4,
-          237
-        ],
-        [
-          239,
-          308,
-          245,
-          314
-        ],
-        [
-          310,
-          312,
-          316,
-          318
-        ],
-        [
-          313,
-          611,
-          320,
-          618
-        ],
-        [
-          613,
-          846,
-          622,
-          855
-        ],
-        [
-          852,
-          862,
-          865,
-          875
-        ],
-        [
-          876,
-          889,
-          891,
-          904
-        ],
-        [
-          893,
-          911,
-          909,
-          927
-        ],
-        [
-          913,
-          925,
-          964,
-          976
-        ],
-        [
-          933,
-          957,
-          980,
-          1004
-        ],
-        [
-          959,
-          968,
-          1006,
-          1015
-        ],
-        [
-          970,
-          1039,
-          1020,
-          1089
-        ],
-        [
-          1041,
-          1051,
-          1091,
-          1101
-        ],
-        [
-          1054,
-          1202,
-          1103,
-          1251
-        ],
-        [
-          1203,
-          1226,
-          1255,
-          1278
-        ],
-        [
-          1228,
-          1381,
-          1284,
-          1437
-        ],
-        [
-          1383,
-          1395,
-          1439,
-          1451
-        ],
-        [
-          1396,
-          1407,
-          1453,
-          1464
-        ],
-        [
-          1410,
-          1417,
-          1469,
-          1476
-        ],
-        [
-          1422,
-          1444,
-          1503,
-          1525
-        ],
-        [
-          1445,
-          1993,
-          1528,
-          2076
-        ]
-      ],
+      "byte_equal_span_map_source_start_end_target_start_end": [],
       "unmapped_source_lines": [
         [
           1,
-          1
-        ],
-        [
-          236,
-          238
-        ],
-        [
-          309,
-          309
-        ],
-        [
-          612,
-          612
-        ],
-        [
-          847,
-          851
-        ],
-        [
-          863,
-          875
-        ],
-        [
-          890,
-          892
-        ],
-        [
-          912,
-          912
-        ],
-        [
-          926,
-          932
-        ],
-        [
-          958,
-          958
-        ],
-        [
-          969,
-          969
-        ],
-        [
-          1040,
-          1040
-        ],
-        [
-          1052,
-          1053
-        ],
-        [
-          1227,
-          1227
-        ],
-        [
-          1382,
-          1382
-        ],
-        [
-          1408,
-          1409
-        ],
-        [
-          1418,
-          1421
+          1993
         ]
       ],
       "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          1188,
-          1226
-        ],
-        [
-          1228,
-          1273
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 1945,
-      "fourth_new_lower_bound": 1860,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          2,
-          235
-        ],
-        [
-          239,
-          308
-        ],
-        [
-          310,
-          611
-        ],
-        [
-          613,
-          846
-        ],
-        [
-          852,
-          862
-        ],
-        [
-          876,
-          889
-        ],
-        [
-          893,
-          911
-        ],
-        [
-          913,
-          925
-        ],
-        [
-          933,
-          957
-        ],
-        [
-          959,
-          968
-        ],
-        [
-          970,
-          1039
-        ],
-        [
-          1041,
-          1051
-        ],
-        [
-          1054,
-          1226
-        ],
-        [
-          1228,
-          1381
-        ],
-        [
-          1383,
-          1407
-        ],
-        [
-          1410,
-          1417
-        ],
-        [
-          1422,
-          1993
-        ]
-      ],
-      "qualified_conservative_source_lines": 1945,
-      "qualified_fourth_new_lower_bound": 1860,
-      "qualified_source_ranges": [
-        [
-          2,
-          235
-        ],
-        [
-          239,
-          308
-        ],
-        [
-          310,
-          611
-        ],
-        [
-          613,
-          846
-        ],
-        [
-          852,
-          862
-        ],
-        [
-          876,
-          889
-        ],
-        [
-          893,
-          911
-        ],
-        [
-          913,
-          925
-        ],
-        [
-          933,
-          957
-        ],
-        [
-          959,
-          968
-        ],
-        [
-          970,
-          1039
-        ],
-        [
-          1041,
-          1051
-        ],
-        [
-          1054,
-          1226
-        ],
-        [
-          1228,
-          1381
-        ],
-        [
-          1383,
-          1407
-        ],
-        [
-          1410,
-          1417
-        ],
-        [
-          1422,
-          1993
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiHomeActivity.kt",
       "source_git_blob": "69db1bf4067e86d5f0b99cc02300e9eec85d3ae0",
       "source_sha256": "83e46f2e8a6ac92609bdaec0359723fca48705b5a70fdb7750718f1ac491715f",
       "source_physical_lines": 10,
+      "source_physical_bytes": 387,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiHomeActivity.kt",
-      "target_sha256": "83e46f2e8a6ac92609bdaec0359723fca48705b5a70fdb7750718f1ac491715f",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          10,
           1,
           10
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 10,
-      "fourth_new_lower_bound": 10,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          10
-        ]
-      ],
-      "qualified_conservative_source_lines": 10,
-      "qualified_fourth_new_lower_bound": 10,
-      "qualified_source_ranges": [
-        [
-          1,
-          10
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiMediaStoreWrite.kt",
       "source_git_blob": "53483cf0f66c746a5fca519add536c0ba3c464d8",
       "source_sha256": "9abc077392ac4c827c9e1415cc58b4ee54fa7ab97e8062c73018d3680adf0ad1",
       "source_physical_lines": 25,
+      "source_physical_bytes": 716,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiMediaStoreWrite.kt",
-      "target_sha256": "9abc077392ac4c827c9e1415cc58b4ee54fa7ab97e8062c73018d3680adf0ad1",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          25,
           1,
           25
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 25,
-      "fourth_new_lower_bound": 25,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          25
-        ]
-      ],
-      "qualified_conservative_source_lines": 25,
-      "qualified_fourth_new_lower_bound": 25,
-      "qualified_source_ranges": [
-        [
-          1,
-          25
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiWebPageActivity.kt",
       "source_git_blob": "7a8d0ce04493106aad6a523b75f1b78a9fef95c7",
       "source_sha256": "f122c9a5b5ce75f30131e571ae0b3010a6b0a2680880f460d208cb53b35e5567",
       "source_physical_lines": 8,
+      "source_physical_bytes": 312,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiWebPageActivity.kt",
-      "target_sha256": "f122c9a5b5ce75f30131e571ae0b3010a6b0a2680880f460d208cb53b35e5567",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          8,
           1,
           8
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 8,
-      "fourth_new_lower_bound": 8,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          8
-        ]
-      ],
-      "qualified_conservative_source_lines": 8,
-      "qualified_fourth_new_lower_bound": 8,
-      "qualified_source_ranges": [
-        [
-          1,
-          8
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt",
       "source_git_blob": "d1b334cf8a2a14c1f35ccb45b8c8f9f951a47e40",
       "source_sha256": "1f35de09784255424744dae0a6b8a6363ac910f663bab3ccae456d121dd5bd00",
       "source_physical_lines": 330,
+      "source_physical_bytes": 15333,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt",
-      "target_sha256": "0da1d29a0dbfca1e2d18999f671ee539b9483c727e150c6fb3fcf2810e31dcc4",
+      "target_sha256": null,
       "byte_identical_complete_file": false,
-      "byte_equal_span_map_source_start_end_target_start_end": [
-        [
-          1,
-          57,
-          1,
-          57
-        ],
-        [
-          58,
-          123,
-          63,
-          128
-        ],
-        [
-          124,
-          140,
-          132,
-          148
-        ],
-        [
-          141,
-          154,
-          151,
-          164
-        ],
-        [
-          156,
-          162,
-          166,
-          172
-        ],
-        [
-          163,
-          229,
-          174,
-          240
-        ],
-        [
-          230,
-          266,
-          242,
-          278
-        ],
-        [
-          267,
-          310,
-          280,
-          323
-        ],
-        [
-          312,
-          330,
-          325,
-          343
-        ]
-      ],
+      "byte_equal_span_map_source_start_end_target_start_end": [],
       "unmapped_source_lines": [
         [
-          155,
-          155
-        ],
-        [
-          311,
-          311
+          1,
+          330
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 328,
-      "fourth_new_lower_bound": 328,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          154
-        ],
-        [
-          156,
-          310
-        ],
-        [
-          312,
-          330
-        ]
-      ],
-      "qualified_conservative_source_lines": 328,
-      "qualified_fourth_new_lower_bound": 328,
-      "qualified_source_ranges": [
-        [
-          1,
-          154
-        ],
-        [
-          156,
-          310
-        ],
-        [
-          312,
-          330
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebConfiguration.kt",
       "source_git_blob": "8fe756b6875f48087905449ae5b879fe31a65882",
       "source_sha256": "1d7726b14119ec64e456e40caac4ccf9e0d4c15fd53743d4b4f1aba6cfd55396",
       "source_physical_lines": 17,
+      "source_physical_bytes": 547,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebConfiguration.kt",
-      "target_sha256": "1d7726b14119ec64e456e40caac4ccf9e0d4c15fd53743d4b4f1aba6cfd55396",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          17,
           1,
           17
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 17,
-      "fourth_new_lower_bound": 17,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          17
-        ]
-      ],
-      "qualified_conservative_source_lines": 17,
-      "qualified_fourth_new_lower_bound": 17,
-      "qualified_source_ranges": [
-        [
-          1,
-          17
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt",
       "source_git_blob": "ebda2ecedb4754d6002d72a77a78b8276ad8b24d",
       "source_sha256": "f269dfde2c60dd79b6fef5039588fd96a463175881b6dbd92fbfc941f245ece3",
       "source_physical_lines": 214,
+      "source_physical_bytes": 8670,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt",
-      "target_sha256": "09aa8bcb209446cb60a23b66899f0af128ddc769a9adfcd86172cab0cfd1fcad",
+      "target_sha256": null,
       "byte_identical_complete_file": false,
-      "byte_equal_span_map_source_start_end_target_start_end": [
-        [
-          1,
-          95,
-          1,
-          95
-        ],
-        [
-          99,
-          214,
-          102,
-          217
-        ]
-      ],
+      "byte_equal_span_map_source_start_end_target_start_end": [],
       "unmapped_source_lines": [
         [
-          96,
-          98
+          1,
+          214
         ]
       ],
       "release_excluded_source_ranges": [],
-      "prior_reference_overlap_subtracted": [
-        [
-          180,
-          204
-        ]
-      ],
-      "candidate_native_core": true,
+      "prior_reference_overlap_subtracted": [],
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 211,
-      "fourth_new_lower_bound": 186,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          95
-        ],
-        [
-          99,
-          214
-        ]
-      ],
-      "qualified_conservative_source_lines": 211,
-      "qualified_fourth_new_lower_bound": 186,
-      "qualified_source_ranges": [
-        [
-          1,
-          95
-        ],
-        [
-          99,
-          214
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebHostBridge.kt",
       "source_git_blob": "ea199974a5c728f077ed70c492a7cbb37757405e",
       "source_sha256": "b4def815bb12bec06f04de901effa5709221fe279b5a8493a505f74c2736da09",
       "source_physical_lines": 111,
+      "source_physical_bytes": 4397,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebHostBridge.kt",
-      "target_sha256": "b4def815bb12bec06f04de901effa5709221fe279b5a8493a505f74c2736da09",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          111,
           1,
           111
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 111,
-      "fourth_new_lower_bound": 111,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          111
-        ]
-      ],
-      "qualified_conservative_source_lines": 111,
-      "qualified_fourth_new_lower_bound": 111,
-      "qualified_source_ranges": [
-        [
-          1,
-          111
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebOrigin.kt",
       "source_git_blob": "1498493a6c2c4d608da0e959573e606ffbf7759b",
       "source_sha256": "54b415871d88cabc52d46b8ca9b0293d551fd78403d597f10be893f66d4eae25",
       "source_physical_lines": 59,
+      "source_physical_bytes": 2710,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebOrigin.kt",
-      "target_sha256": "54b415871d88cabc52d46b8ca9b0293d551fd78403d597f10be893f66d4eae25",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          59,
           1,
           59
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 59,
-      "fourth_new_lower_bound": 59,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          59
-        ]
-      ],
-      "qualified_conservative_source_lines": 59,
-      "qualified_fourth_new_lower_bound": 59,
-      "qualified_source_ranges": [
-        [
-          1,
-          59
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionBridge.kt",
       "source_git_blob": "415ce6f3a2a740c0ac7405b9f42d22786823c7f0",
       "source_sha256": "dcfd0e82ae1898d40100a7b223ab20d53d6beba639c05667d966b443be4c5c66",
       "source_physical_lines": 113,
+      "source_physical_bytes": 5594,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionBridge.kt",
-      "target_sha256": "cb13d0b57cc3712c4ea6f73feb3541ed50e10c674cc684550784dcd4f38e0af2",
+      "target_sha256": null,
       "byte_identical_complete_file": false,
-      "byte_equal_span_map_source_start_end_target_start_end": [
-        [
-          1,
-          20,
-          1,
-          20
-        ],
-        [
-          22,
-          24,
-          22,
-          24
-        ],
-        [
-          28,
-          66,
-          28,
-          66
-        ],
-        [
-          68,
-          72,
-          68,
-          72
-        ],
-        [
-          74,
-          76,
-          74,
-          76
-        ],
-        [
-          80,
-          83,
-          80,
-          83
-        ],
-        [
-          87,
-          113,
-          87,
-          113
-        ]
-      ],
+      "byte_equal_span_map_source_start_end_target_start_end": [],
       "unmapped_source_lines": [
         [
-          21,
-          21
-        ],
-        [
-          25,
-          27
-        ],
-        [
-          67,
-          67
-        ],
-        [
-          73,
-          73
-        ],
-        [
-          77,
-          79
-        ],
-        [
-          84,
-          86
+          1,
+          113
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 101,
-      "fourth_new_lower_bound": 101,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          20
-        ],
-        [
-          22,
-          24
-        ],
-        [
-          28,
-          66
-        ],
-        [
-          68,
-          72
-        ],
-        [
-          74,
-          76
-        ],
-        [
-          80,
-          83
-        ],
-        [
-          87,
-          113
-        ]
-      ],
-      "qualified_conservative_source_lines": 101,
-      "qualified_fourth_new_lower_bound": 101,
-      "qualified_source_ranges": [
-        [
-          1,
-          20
-        ],
-        [
-          22,
-          24
-        ],
-        [
-          28,
-          66
-        ],
-        [
-          68,
-          72
-        ],
-        [
-          74,
-          76
-        ],
-        [
-          80,
-          83
-        ],
-        [
-          87,
-          113
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionRegistry.kt",
       "source_git_blob": "b53a5c64aa66970e7218cdbcca0ab50ae105abe8",
       "source_sha256": "7aa08cf93e22a16b847191cd15148acc1f5b2465992c13b955704f9aa49eb1e3",
       "source_physical_lines": 114,
+      "source_physical_bytes": 4614,
       "target_path": "apps/almanac/packages/stmini_flutter/android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionRegistry.kt",
-      "target_sha256": "7aa08cf93e22a16b847191cd15148acc1f5b2465992c13b955704f9aa49eb1e3",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          114,
           1,
           114
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
-      "candidate_native_core": true,
+      "candidate_native_core": false,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 114,
-      "fourth_new_lower_bound": 114,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          114
-        ]
-      ],
-      "qualified_conservative_source_lines": 114,
-      "qualified_fourth_new_lower_bound": 114,
-      "qualified_source_ranges": [
-        [
-          1,
-          114
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "ios/Classes/StminiFlutterPlugin.swift",
       "source_git_blob": "77e2607a941d5010fe5b4f69f618a9beb2e5df0e",
       "source_sha256": "0768d6903abb6ab8f693b86864b691e617ca5434362d218a6dba98687ab9ee72",
       "source_physical_lines": 1183,
+      "source_physical_bytes": 48706,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/Classes/StminiFlutterPlugin.swift",
-      "target_sha256": "9fc29eced2a11103ca94cfab7b3df155e4795c3c06eae64baa8b5b98e585646f",
+      "target_sha256": "020fee45dce2610a24c1204237a2b8122127c6d40b77ea68611793a78db9176a",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          22,
+          15,
           1,
-          22
+          15
         ],
         [
           23,
+          28,
+          36,
+          41
+        ],
+        [
+          41,
           63,
           42,
-          82
+          64
         ],
         [
           64,
           69,
-          89,
-          94
+          71,
+          76
         ],
         [
           76,
-          117,
-          123,
-          164
+          83,
+          92,
+          99
         ],
         [
-          118,
+          95,
+          117,
+          106,
+          128
+        ],
+        [
+          142,
+          148,
+          130,
+          136
+        ],
+        [
+          151,
           157,
-          166,
-          205
+          137,
+          143
         ],
         [
           159,
           164,
-          207,
-          212
+          145,
+          150
         ],
         [
           166,
           169,
-          216,
-          219
+          154,
+          157
         ],
         [
-          172,
+          170,
+          173,
+          159,
+          162
+        ],
+        [
+          269,
+          298,
+          222,
+          251
+        ],
+        [
+          321,
+          332,
+          255,
+          266
+        ],
+        [
+          343,
+          347,
+          268,
+          272
+        ],
+        [
+          373,
           405,
-          283,
-          516
+          278,
+          310
         ],
         [
-          406,
+          409,
           417,
-          520,
-          531
+          317,
+          325
         ],
         [
           419,
           424,
-          534,
-          539
+          328,
+          333
         ],
         [
           426,
           430,
-          541,
-          545
+          335,
+          339
         ],
         [
           432,
           436,
-          547,
-          551
+          341,
+          345
         ],
         [
           438,
           442,
-          553,
-          557
+          347,
+          351
         ],
         [
           444,
           447,
-          559,
-          562
+          353,
+          356
         ],
         [
           449,
           453,
-          564,
-          568
+          358,
+          362
         ],
         [
           455,
           463,
-          570,
-          578
+          364,
+          372
         ],
         [
           465,
           469,
-          580,
-          584
+          374,
+          378
         ],
         [
           471,
           501,
-          586,
-          616
+          380,
+          410
         ],
         [
           506,
           512,
-          621,
-          627
+          415,
+          421
         ],
         [
           514,
           525,
-          629,
-          640
+          423,
+          434
         ],
         [
           531,
-          542,
-          646,
-          657
+          539,
+          440,
+          448
         ],
         [
           544,
           561,
-          659,
-          676
+          453,
+          470
         ],
         [
           562,
           584,
-          687,
-          709
+          481,
+          503
         ],
         [
           585,
           589,
-          711,
-          715
+          505,
+          509
         ],
         [
           591,
           678,
-          717,
-          804
+          511,
+          598
         ],
         [
           680,
           691,
-          807,
-          818
+          601,
+          612
         ],
         [
           693,
           695,
-          820,
-          822
+          614,
+          616
         ],
         [
           697,
           699,
-          825,
-          827
+          619,
+          621
         ],
         [
           701,
           713,
-          829,
-          841
+          623,
+          635
         ],
         [
           715,
           717,
-          844,
-          846
+          638,
+          640
         ],
         [
           720,
           847,
-          853,
-          980
+          647,
+          774
         ],
         [
           849,
           858,
-          984,
-          993
+          778,
+          787
         ],
         [
           908,
-          935,
-          1037,
-          1064
+          916,
+          831,
+          839
         ],
         [
-          937,
-          953,
-          1066,
-          1082
+          923,
+          928,
+          840,
+          845
         ],
         [
-          955,
+          972,
           985,
-          1084,
-          1114
+          846,
+          859
         ],
         [
           989,
+          1073,
+          861,
+          945
+        ],
+        [
+          1082,
           1115,
-          1116,
-          1242
+          947,
+          980
         ],
         [
           1125,
           1183,
-          1253,
-          1311
+          991,
+          1049
         ]
       ],
       "unmapped_source_lines": [
         [
+          16,
+          22
+        ],
+        [
+          29,
+          40
+        ],
+        [
           70,
           75
+        ],
+        [
+          84,
+          94
+        ],
+        [
+          118,
+          141
+        ],
+        [
+          149,
+          150
         ],
         [
           158,
@@ -2443,8 +1172,24 @@
           165
         ],
         [
-          170,
-          171
+          174,
+          268
+        ],
+        [
+          299,
+          320
+        ],
+        [
+          333,
+          342
+        ],
+        [
+          348,
+          372
+        ],
+        [
+          406,
+          408
         ],
         [
           418,
@@ -2495,7 +1240,7 @@
           530
         ],
         [
-          543,
+          540,
           543
         ],
         [
@@ -2535,16 +1280,20 @@
           907
         ],
         [
-          936,
-          936
+          917,
+          922
         ],
         [
-          954,
-          954
+          929,
+          971
         ],
         [
           986,
           988
+        ],
+        [
+          1074,
+          1081
         ],
         [
           1116,
@@ -2584,10 +1333,6 @@
         ],
         [
           169,
-          169
-        ],
-        [
-          172,
           173
         ],
         [
@@ -2597,8 +1342,8 @@
       ],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 1071,
-      "fourth_new_lower_bound": 1045,
+      "mapped_conservative_source_lines": 814,
+      "fourth_new_lower_bound": 786,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [
         [
@@ -2633,24 +1378,20 @@
         ],
         [
           169,
-          169
-        ],
-        [
-          172,
           173
         ]
       ],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
-          16
+          15
         ],
         [
-          20,
-          20
+          23,
+          28
         ],
         [
-          22,
+          41,
           53
         ],
         [
@@ -2659,6 +1400,18 @@
         ],
         [
           76,
+          83
+        ],
+        [
+          95,
+          117
+        ],
+        [
+          142,
+          148
+        ],
+        [
+          151,
           157
         ],
         [
@@ -2670,11 +1423,23 @@
           168
         ],
         [
-          174,
-          308
+          269,
+          298
         ],
         [
-          315,
+          321,
+          332
+        ],
+        [
+          343,
+          347
+        ],
+        [
+          373,
+          405
+        ],
+        [
+          409,
           417
         ],
         [
@@ -2723,7 +1488,7 @@
         ],
         [
           531,
-          542
+          539
         ],
         [
           544,
@@ -2763,18 +1528,22 @@
         ],
         [
           908,
-          935
+          916
         ],
         [
-          937,
-          953
+          923,
+          928
         ],
         [
-          955,
+          972,
           985
         ],
         [
           989,
+          1073
+        ],
+        [
+          1082,
           1115
         ],
         [
@@ -2782,23 +1551,35 @@
           1183
         ]
       ],
-      "qualified_conservative_source_lines": 1071,
-      "qualified_fourth_new_lower_bound": 1045,
+      "qualified_conservative_source_lines": 814,
+      "qualified_fourth_new_lower_bound": 786,
       "qualified_source_ranges": [
         [
           1,
-          16
+          15
         ],
         [
-          20,
-          20
+          23,
+          28
         ],
         [
-          22,
+          41,
           69
         ],
         [
           76,
+          83
+        ],
+        [
+          95,
+          117
+        ],
+        [
+          142,
+          148
+        ],
+        [
+          151,
           157
         ],
         [
@@ -2807,14 +1588,26 @@
         ],
         [
           166,
-          169
+          173
         ],
         [
-          172,
-          308
+          269,
+          298
         ],
         [
-          315,
+          321,
+          332
+        ],
+        [
+          343,
+          347
+        ],
+        [
+          373,
+          405
+        ],
+        [
+          409,
           417
         ],
         [
@@ -2863,7 +1656,7 @@
         ],
         [
           531,
-          542
+          539
         ],
         [
           544,
@@ -2903,18 +1696,22 @@
         ],
         [
           908,
-          935
+          916
         ],
         [
-          937,
-          953
+          923,
+          928
         ],
         [
-          955,
+          972,
           985
         ],
         [
           989,
+          1073
+        ],
+        [
+          1082,
           1115
         ],
         [
@@ -2928,6 +1725,7 @@
       "source_git_blob": "45dd153368f5b42ea1ca38deb4912f51a083178f",
       "source_sha256": "78822322f62a5ae83113612931186ce84b95dc04fbbfd9b95d2480e1c698dc52",
       "source_physical_lines": 65,
+      "source_physical_bytes": 2187,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/Classes/Web/OnlineWebViewController.swift",
       "target_sha256": "78822322f62a5ae83113612931186ce84b95dc04fbbfd9b95d2480e1c698dc52",
       "byte_identical_complete_file": true,
@@ -2969,66 +1767,77 @@
       "source_git_blob": "d148b03f0e0f36ffa3551b4121fb81a7c189d39d",
       "source_sha256": "57ff95c0a930e49ca6963f0b1948899f3e290c12a3fa96780552229a3fffa104",
       "source_physical_lines": 364,
+      "source_physical_bytes": 14794,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/Classes/Web/STOnlineWebCore.swift",
-      "target_sha256": "ded6a03c6da3c15e5aa818df05efef6e0f4d5a97451be3e550e441d4d2e35bc6",
+      "target_sha256": "86d47f036036a9d8add1147a69550141bdbf79155f3e653233c69dc0965087fd",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          195,
+          168,
           1,
-          195
+          168
+        ],
+        [
+          182,
+          195,
+          170,
+          183
         ],
         [
           197,
           204,
-          198,
-          205
+          186,
+          193
         ],
         [
           208,
           213,
-          209,
-          214
+          197,
+          202
         ],
         [
           215,
           221,
-          216,
-          222
+          204,
+          210
         ],
         [
           223,
           232,
-          224,
-          233
+          212,
+          221
         ],
         [
           234,
           237,
-          236,
-          239
+          224,
+          227
         ],
         [
           239,
           241,
-          241,
-          243
+          229,
+          231
         ],
         [
           245,
           247,
-          248,
-          250
+          236,
+          238
         ],
         [
           251,
-          364,
-          255,
-          368
+          296,
+          243,
+          288
         ]
       ],
       "unmapped_source_lines": [
+        [
+          169,
+          181
+        ],
         [
           196,
           196
@@ -3060,20 +1869,28 @@
         [
           248,
           250
+        ],
+        [
+          297,
+          364
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 350,
-      "fourth_new_lower_bound": 350,
+      "mapped_conservative_source_lines": 269,
+      "fourth_new_lower_bound": 269,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
+          168
+        ],
+        [
+          182,
           195
         ],
         [
@@ -3106,14 +1923,18 @@
         ],
         [
           251,
-          364
+          296
         ]
       ],
-      "qualified_conservative_source_lines": 350,
-      "qualified_fourth_new_lower_bound": 350,
+      "qualified_conservative_source_lines": 269,
+      "qualified_fourth_new_lower_bound": 269,
       "qualified_source_ranges": [
         [
           1,
+          168
+        ],
+        [
+          182,
           195
         ],
         [
@@ -3146,7 +1967,7 @@
         ],
         [
           251,
-          364
+          296
         ]
       ]
     },
@@ -3155,6 +1976,7 @@
       "source_git_blob": "da838f17557b5f80ab22e043a4d5098fe982f48f",
       "source_sha256": "bd40afa7e73369911d0c7aefcaaba44cb4fc51233294996865e3c8e95d15fea9",
       "source_physical_lines": 18,
+      "source_physical_bytes": 164,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/STFrameKit.h",
       "target_sha256": "bd40afa7e73369911d0c7aefcaaba44cb4fc51233294996865e3c8e95d15fea9",
       "byte_identical_complete_file": true,
@@ -3186,6 +2008,7 @@
       "source_git_blob": "44a902c094431a6b9e5f7207b000d7d45b5cd3aa",
       "source_sha256": "c19f42b114068bab96ec5636fff40f324e8bc682e31a87ace2d0a28ce23b065f",
       "source_physical_lines": 71,
+      "source_physical_bytes": 2812,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/STMiniLocalization.swift",
       "target_sha256": "a64daac918a371ce618e44257c4900e9498554672b6c736141c51500b2c68756",
       "byte_identical_complete_file": false,
@@ -3264,66 +2087,103 @@
       "source_git_blob": "d3f979a442a4c1956d1b57f85a8a65720d9ae84f",
       "source_sha256": "feba3613986a042ec6254741998728e9eb67bc6bd111185ad6e7cc6c5f50567e",
       "source_physical_lines": 823,
+      "source_physical_bytes": 39807,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/STWebResourceManager.swift",
-      "target_sha256": "d91467d5e329bf18bd1dabc241331d1bc8974825f24b7f5a4bf5ea6b59e29043",
+      "target_sha256": "ae337627977504dfe5774406f1d8ae51265a95885e020554996b6cb109e2c80e",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          55,
+          9,
           1,
-          55
+          9
         ],
         [
-          56,
+          20,
+          42,
+          12,
+          34
+        ],
+        [
+          45,
+          58,
+          36,
+          49
+        ],
+        [
+          69,
           180,
-          66,
-          190
+          50,
+          161
         ],
         [
           202,
           253,
-          196,
-          247
+          167,
+          218
         ],
         [
           261,
-          319,
-          255,
-          313
+          315,
+          226,
+          280
         ],
         [
-          332,
-          369,
-          348,
-          385
+          333,
+          368,
+          327,
+          362
         ],
         [
-          371,
-          383,
-          387,
+          488,
+          496,
+          364,
+          372
+        ],
+        [
+          514,
+          535,
+          378,
           399
         ],
         [
-          384,
-          462,
-          401,
-          479
-        ],
-        [
-          463,
-          535,
-          484,
-          556
-        ],
-        [
           550,
+          563,
+          404,
+          417
+        ],
+        [
+          629,
+          664,
+          423,
+          458
+        ],
+        [
+          705,
+          817,
+          460,
+          572
+        ],
+        [
+          819,
           823,
-          561,
-          834
+          575,
+          579
         ]
       ],
       "unmapped_source_lines": [
+        [
+          10,
+          19
+        ],
+        [
+          43,
+          44
+        ],
+        [
+          59,
+          68
+        ],
         [
           181,
           201
@@ -3333,22 +2193,42 @@
           260
         ],
         [
-          320,
-          331
+          316,
+          332
         ],
         [
-          370,
-          370
+          369,
+          487
+        ],
+        [
+          497,
+          513
         ],
         [
           536,
           549
+        ],
+        [
+          564,
+          628
+        ],
+        [
+          665,
+          704
+        ],
+        [
+          818,
+          818
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [
         [
           23,
+          42
+        ],
+        [
+          45,
           58
         ],
         [
@@ -3381,19 +2261,35 @@
         ],
         [
           794,
+          817
+        ],
+        [
+          819,
           822
         ]
       ],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 768,
-      "fourth_new_lower_bound": 583,
+      "mapped_conservative_source_lines": 500,
+      "fourth_new_lower_bound": 318,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
+          9
+        ],
+        [
+          20,
+          42
+        ],
+        [
+          45,
+          58
+        ],
+        [
+          69,
           180
         ],
         [
@@ -3402,26 +2298,54 @@
         ],
         [
           261,
-          319
+          315
         ],
         [
-          332,
-          369
+          333,
+          368
         ],
         [
-          371,
+          488,
+          496
+        ],
+        [
+          514,
           535
         ],
         [
           550,
+          563
+        ],
+        [
+          629,
+          664
+        ],
+        [
+          705,
+          817
+        ],
+        [
+          819,
           823
         ]
       ],
-      "qualified_conservative_source_lines": 768,
-      "qualified_fourth_new_lower_bound": 583,
+      "qualified_conservative_source_lines": 500,
+      "qualified_fourth_new_lower_bound": 318,
       "qualified_source_ranges": [
         [
           1,
+          9
+        ],
+        [
+          20,
+          42
+        ],
+        [
+          45,
+          58
+        ],
+        [
+          69,
           180
         ],
         [
@@ -3430,18 +2354,34 @@
         ],
         [
           261,
-          319
+          315
         ],
         [
-          332,
-          369
+          333,
+          368
         ],
         [
-          371,
+          488,
+          496
+        ],
+        [
+          514,
           535
         ],
         [
           550,
+          563
+        ],
+        [
+          629,
+          664
+        ],
+        [
+          705,
+          817
+        ],
+        [
+          819,
           823
         ]
       ]
@@ -3451,8 +2391,9 @@
       "source_git_blob": "ce3bb8c2ed7dc6b43332841fd93e7acd01ca2352",
       "source_sha256": "8ff448a4c792807953eade49cd1fdc8c58fa0d1ed5408499e2ae84e17809f04e",
       "source_physical_lines": 672,
+      "source_physical_bytes": 31671,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift",
-      "target_sha256": "a5dffb360ec7d6c45949f0ea35f1cc60ae4bcdfc91950b9bcb99a52d1033cc4d",
+      "target_sha256": "bdf068b1b6bd47c52e5cae5a6c0770cbfcc8d50808dbe49678ce3b2d267ad7d5",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -3481,75 +2422,63 @@
         ],
         [
           138,
-          306,
+          256,
           140,
-          308
+          258
+        ],
+        [
+          275,
+          306,
+          261,
+          292
         ],
         [
           310,
-          528,
-          315,
-          533
+          382,
+          299,
+          371
         ],
         [
-          530,
-          533,
-          549,
-          552
+          398,
+          417,
+          373,
+          392
+        ],
+        [
+          479,
+          528,
+          401,
+          450
         ],
         [
           536,
           545,
-          556,
-          565
+          467,
+          476
         ],
         [
-          548,
-          567,
-          570,
-          589
-        ],
-        [
-          571,
-          586,
-          593,
-          608
-        ],
-        [
-          588,
-          612,
-          610,
-          634
-        ],
-        [
-          614,
-          619,
-          638,
-          643
-        ],
-        [
-          620,
+          632,
           634,
-          645,
-          659
+          478,
+          480
         ],
         [
           636,
           644,
-          663,
-          671
+          484,
+          492
         ],
         [
           646,
           660,
-          674,
-          688
+          495,
+          509
         ],
         [
           662,
           668,
-          695,
-          701
+          516,
+          522
         ]
       ],
       "unmapped_source_lines": [
@@ -3566,32 +2495,28 @@
           133
         ],
         [
+          257,
+          274
+        ],
+        [
           307,
           309
         ],
         [
-          529,
-          529
+          383,
+          397
         ],
         [
-          534,
+          418,
+          478
+        ],
+        [
+          529,
           535
         ],
         [
           546,
-          547
-        ],
-        [
-          568,
-          570
-        ],
-        [
-          587,
-          587
-        ],
-        [
-          613,
-          613
+          631
         ],
         [
           635,
@@ -3619,8 +2544,8 @@
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 646,
-      "fourth_new_lower_bound": 646,
+      "mapped_conservative_source_lines": 469,
+      "fourth_new_lower_bound": 469,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
@@ -3643,34 +2568,30 @@
         ],
         [
           147,
+          256
+        ],
+        [
+          275,
           306
         ],
         [
           310,
-          528
+          382
         ],
         [
-          530,
-          533
+          398,
+          417
+        ],
+        [
+          479,
+          528
         ],
         [
           536,
           545
         ],
         [
-          548,
-          567
-        ],
-        [
-          571,
-          586
-        ],
-        [
-          588,
-          612
-        ],
-        [
-          614,
+          632,
           634
         ],
         [
@@ -3686,8 +2607,8 @@
           668
         ]
       ],
-      "qualified_conservative_source_lines": 646,
-      "qualified_fourth_new_lower_bound": 646,
+      "qualified_conservative_source_lines": 469,
+      "qualified_fourth_new_lower_bound": 469,
       "qualified_source_ranges": [
         [
           1,
@@ -3707,34 +2628,30 @@
         ],
         [
           147,
+          256
+        ],
+        [
+          275,
           306
         ],
         [
           310,
-          528
+          382
         ],
         [
-          530,
-          533
+          398,
+          417
+        ],
+        [
+          479,
+          528
         ],
         [
           536,
           545
         ],
         [
-          548,
-          567
-        ],
-        [
-          571,
-          586
-        ],
-        [
-          588,
-          612
-        ],
-        [
-          614,
+          632,
           634
         ],
         [
@@ -3756,6 +2673,7 @@
       "source_git_blob": "da35383e16c88118c236090c00b7cdb9257a016b",
       "source_sha256": "84ccc7c56337743a8dd2c1761e384e8f0b4af9ab883ebb59961ce622716985fd",
       "source_physical_lines": 31,
+      "source_physical_bytes": 560,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift",
       "target_sha256": "081caccb58962d8430bf44426ef266228c97ee70bc051d749bb00b7f461412bd",
       "byte_identical_complete_file": false,
@@ -3820,6 +2738,7 @@
       "source_git_blob": "2f9b9b0aabebe44ac04ad4a27151fb3edf181878",
       "source_sha256": "af91746848f2929698efae7146239a8ac980375241fc8286450ad6f3e61b3100",
       "source_physical_lines": 46,
+      "source_physical_bytes": 630,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebApiProtocol.swift",
       "target_sha256": "3b013303d0974a7bad35232e3ed0cb1e3d6e5695542c33192369e90a3293e60a",
       "byte_identical_complete_file": false,
@@ -3863,6 +2782,7 @@
       "source_git_blob": "0c5ef142fdcd5948f62de9b32accd68c9733c553",
       "source_sha256": "26ca0006bf19fed22c8fa512499acaec99aee29700ec0e77733eca9bfe4988e0",
       "source_physical_lines": 50,
+      "source_physical_bytes": 1257,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebNetApi.swift",
       "target_sha256": "26ca0006bf19fed22c8fa512499acaec99aee29700ec0e77733eca9bfe4988e0",
       "byte_identical_complete_file": true,
@@ -3894,8 +2814,9 @@
       "source_git_blob": "9b3f6e8c6174b26d714299ac513ebe38cc00b9e5",
       "source_sha256": "02ddc600e59874b66dbecec7237084270afbaf540877fa0b34733d883a71e963",
       "source_physical_lines": 303,
+      "source_physical_bytes": 15601,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift",
-      "target_sha256": "d6ba2853545cd9d009fab93b119f3f554d3212777fbdd25b1610316041686495",
+      "target_sha256": "44bad6c661c0f7f2daa67b348f5f9eebf89133851e224901c32f37fa6b937828",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -3919,14 +2840,14 @@
         [
           144,
           189,
-          156,
-          201
+          162,
+          207
         ],
         [
           191,
           303,
-          207,
-          319
+          213,
+          325
         ]
       ],
       "unmapped_source_lines": [
@@ -4008,6 +2929,7 @@
       "source_git_blob": "f0759d0ad97500fa2e06f04f10cda5614a790b3b",
       "source_sha256": "cbfd74b8459bcc03919e643f0db82029abfa130fb430359c572166d7b85a880b",
       "source_physical_lines": 53,
+      "source_physical_bytes": 1072,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebUIApi.swift",
       "target_sha256": "cbfd74b8459bcc03919e643f0db82029abfa130fb430359c572166d7b85a880b",
       "byte_identical_complete_file": true,
@@ -4049,6 +2971,7 @@
       "source_git_blob": "ff52a3e2352c1590ebe36145c64fbbdf3f6a05c1",
       "source_sha256": "6e11d8f0810e01efef96d33226539eb3dfe3892fab9e14abffd2942a5c488370",
       "source_physical_lines": 15,
+      "source_physical_bytes": 213,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Define/STMacro.swift",
       "target_sha256": "6e11d8f0810e01efef96d33226539eb3dfe3892fab9e14abffd2942a5c488370",
       "byte_identical_complete_file": true,
@@ -4080,6 +3003,7 @@
       "source_git_blob": "638185f22c682dc0d17bd2f8b17c9f9bc9de1939",
       "source_sha256": "5c6f222b39d43ea944f4d645b5dc0c23befda4e694d06104a51e8f429d5a2639",
       "source_physical_lines": 155,
+      "source_physical_bytes": 6233,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift",
       "target_sha256": "4b1e65dfc52edd640568d525e7f02e1b09c730f9ad1f38ae4dd4a382187fe713",
       "byte_identical_complete_file": false,
@@ -4215,6 +3139,7 @@
       "source_git_blob": "774e6ec6bcf80def65aa545f2f2cdf57d91b1c3d",
       "source_sha256": "69329d15703ea7890b3eaa76fa5d1a4245e307dc255fc480630792df4345b3e9",
       "source_physical_lines": 12,
+      "source_physical_bytes": 60,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Handler/STWebScriptHandler.swift",
       "target_sha256": "69329d15703ea7890b3eaa76fa5d1a4245e307dc255fc480630792df4345b3e9",
       "byte_identical_complete_file": true,
@@ -4256,76 +3181,45 @@
       "source_git_blob": "28fdc72793689a171b7fb20ee83fd5c3889a2a93",
       "source_sha256": "c4e6223a5f885660461d363bb557d129854bde93bb05a57422c60444fd3cf0fb",
       "source_physical_lines": 461,
+      "source_physical_bytes": 21103,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
-      "target_sha256": "d7e001fb69a60d294c0da773c4fc0f8ced31fb91a86a0de56d330bebc6150a1f",
+      "target_sha256": "8dc5abb2b6f6f87b8b05e0cef1a6be66cdd0085210d1c8378ab985ceef812931",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          419,
+          23,
           1,
-          419
-        ],
-        [
-          421,
-          424,
-          421,
-          424
-        ],
-        [
-          443,
-          461,
-          430,
-          448
+          23
         ]
       ],
       "unmapped_source_lines": [
         [
-          420,
-          420
-        ],
-        [
-          425,
-          442
+          24,
+          461
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 442,
-      "fourth_new_lower_bound": 442,
+      "mapped_conservative_source_lines": 23,
+      "fourth_new_lower_bound": 23,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
-          419
-        ],
-        [
-          421,
-          424
-        ],
-        [
-          443,
-          461
+          23
         ]
       ],
-      "qualified_conservative_source_lines": 442,
-      "qualified_fourth_new_lower_bound": 442,
+      "qualified_conservative_source_lines": 23,
+      "qualified_fourth_new_lower_bound": 23,
       "qualified_source_ranges": [
         [
           1,
-          419
-        ],
-        [
-          421,
-          424
-        ],
-        [
-          443,
-          461
+          23
         ]
       ]
     },
@@ -4334,6 +3228,7 @@
       "source_git_blob": "f2b94be3224dbbcfeae87a983fac6cb1f5b1db4f",
       "source_sha256": "16dfcf22ece9420889ed4f34b7b11ddb7324c5fb060a1c405a3ae00f37d36fbf",
       "source_physical_lines": 28,
+      "source_physical_bytes": 747,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/LoadAnimation/STWebLoadProtocol.swift",
       "target_sha256": "16dfcf22ece9420889ed4f34b7b11ddb7324c5fb060a1c405a3ae00f37d36fbf",
       "byte_identical_complete_file": true,
@@ -4365,6 +3260,7 @@
       "source_git_blob": "d6081ff52b8e3d3c333ba1f2899c7881aeca4738",
       "source_sha256": "184df34785236066baa376415b7aad8aa8232ef7dca24d1afedae24d740c6592",
       "source_physical_lines": 158,
+      "source_physical_bytes": 6447,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/LoadAnimation/STWebMiniLoadAnimationView.swift",
       "target_sha256": "184df34785236066baa376415b7aad8aa8232ef7dca24d1afedae24d740c6592",
       "byte_identical_complete_file": true,
@@ -4406,44 +3302,76 @@
       "source_git_blob": "b46a67b788eb261db7e5f9db3318dd83e4148ee3",
       "source_sha256": "ef69f394a04943e75b496cd926710651d8ff267f2bf44595e46481de88f277fe",
       "source_physical_lines": 49,
+      "source_physical_bytes": 1494,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Navi/STWebNavigationController.swift",
-      "target_sha256": "dac6cfd11d410bea171ca26b9611b70c8507b29063c917f7af0b71261e239198",
+      "target_sha256": "97a3a5ded08a43f2fecd8ffe6111f8a7db0e3c3c0a3f1a17fc92a75026f61cea",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          21,
+          19,
           1,
-          21
+          19
         ],
         [
-          22,
+          21,
+          23,
+          21,
+          23
+        ],
+        [
+          35,
           49,
-          30,
-          57
+          33,
+          47
         ]
       ],
-      "unmapped_source_lines": [],
+      "unmapped_source_lines": [
+        [
+          20,
+          20
+        ],
+        [
+          24,
+          34
+        ]
+      ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 49,
-      "fourth_new_lower_bound": 49,
+      "mapped_conservative_source_lines": 37,
+      "fourth_new_lower_bound": 37,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
+          19
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          35,
           49
         ]
       ],
-      "qualified_conservative_source_lines": 49,
-      "qualified_fourth_new_lower_bound": 49,
+      "qualified_conservative_source_lines": 37,
+      "qualified_fourth_new_lower_bound": 37,
       "qualified_source_ranges": [
         [
           1,
+          19
+        ],
+        [
+          21,
+          23
+        ],
+        [
+          35,
           49
         ]
       ]
@@ -4453,6 +3381,7 @@
       "source_git_blob": "c3e3776861119c8ad284b06e5908040d96fc8ae6",
       "source_sha256": "e57cfd19b1a96cf8173736726de5fa018ea439fe3a467b7992a20306a454baba",
       "source_physical_lines": 37,
+      "source_physical_bytes": 733,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Network/STWebApiRequest.swift",
       "target_sha256": "e57cfd19b1a96cf8173736726de5fa018ea439fe3a467b7992a20306a454baba",
       "byte_identical_complete_file": true,
@@ -4484,6 +3413,7 @@
       "source_git_blob": "253ad1bc7bc1ecce3d41238cac68f06b5695d42c",
       "source_sha256": "b819b27ca4d99e395b8778b3b8db19bfea7ffbfd7d8680a3a825ca3f1a13eeef",
       "source_physical_lines": 63,
+      "source_physical_bytes": 1671,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Network/STWebServer.swift",
       "target_sha256": "b819b27ca4d99e395b8778b3b8db19bfea7ffbfd7d8680a3a825ca3f1a13eeef",
       "byte_identical_complete_file": true,
@@ -4515,6 +3445,7 @@
       "source_git_blob": "512095769c93b07086217bb895f8e37053bccf63",
       "source_sha256": "1f0b1d9a95cef9efb5483937b981224977022e77810da84e581401f7ce336372",
       "source_physical_lines": 26,
+      "source_physical_bytes": 376,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Open/STWebInfoStorage.swift",
       "target_sha256": "1f0b1d9a95cef9efb5483937b981224977022e77810da84e581401f7ce336372",
       "byte_identical_complete_file": true,
@@ -4556,38 +3487,112 @@
       "source_git_blob": "a6e836988a0df0e4b70d4343ad6c81a7e236039a",
       "source_sha256": "38aa709be9849a8889775d80cb20f67c20bc3c06b95dab9ecd7201b9cd3d5521",
       "source_physical_lines": 451,
+      "source_physical_bytes": 16587,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift",
-      "target_sha256": "38aa709be9849a8889775d80cb20f67c20bc3c06b95dab9ecd7201b9cd3d5521",
-      "byte_identical_complete_file": true,
+      "target_sha256": "7b5051657a49c9d569984c74f28b38192cc6dd9cf3489bc26c34bae4e54d539d",
+      "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          451,
+          297,
           1,
-          451
+          297
+        ],
+        [
+          322,
+          326,
+          299,
+          303
+        ],
+        [
+          329,
+          352,
+          305,
+          328
+        ],
+        [
+          355,
+          383,
+          330,
+          358
+        ],
+        [
+          386,
+          451,
+          360,
+          425
         ]
       ],
-      "unmapped_source_lines": [],
+      "unmapped_source_lines": [
+        [
+          298,
+          321
+        ],
+        [
+          327,
+          328
+        ],
+        [
+          353,
+          354
+        ],
+        [
+          384,
+          385
+        ]
+      ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 451,
-      "fourth_new_lower_bound": 451,
+      "mapped_conservative_source_lines": 421,
+      "fourth_new_lower_bound": 421,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
+          297
+        ],
+        [
+          322,
+          326
+        ],
+        [
+          329,
+          352
+        ],
+        [
+          355,
+          383
+        ],
+        [
+          386,
           451
         ]
       ],
-      "qualified_conservative_source_lines": 451,
-      "qualified_fourth_new_lower_bound": 451,
+      "qualified_conservative_source_lines": 421,
+      "qualified_fourth_new_lower_bound": 421,
       "qualified_source_ranges": [
         [
           1,
+          297
+        ],
+        [
+          322,
+          326
+        ],
+        [
+          329,
+          352
+        ],
+        [
+          355,
+          383
+        ],
+        [
+          386,
           451
         ]
       ]
@@ -4597,38 +3602,58 @@
       "source_git_blob": "0bb90b1762f7774d5a0909f40b552ebe434c50c3",
       "source_sha256": "0092ca8151f1bd001c257259d7be369556a6ca36b69134209c6e047f094ae2ce",
       "source_physical_lines": 44,
+      "source_physical_bytes": 1429,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/PersonalHandle/STWebPersonalHandle.swift",
-      "target_sha256": "0092ca8151f1bd001c257259d7be369556a6ca36b69134209c6e047f094ae2ce",
-      "byte_identical_complete_file": true,
+      "target_sha256": "626ff8d576688fa0c664a2a0992ab516854c65a6770019a001e10374672b6e2b",
+      "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          44,
+          25,
           1,
-          44
+          25
+        ],
+        [
+          27,
+          44,
+          26,
+          43
         ]
       ],
-      "unmapped_source_lines": [],
+      "unmapped_source_lines": [
+        [
+          26,
+          26
+        ]
+      ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 44,
-      "fourth_new_lower_bound": 44,
+      "mapped_conservative_source_lines": 43,
+      "fourth_new_lower_bound": 43,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
+          25
+        ],
+        [
+          27,
           44
         ]
       ],
-      "qualified_conservative_source_lines": 44,
-      "qualified_fourth_new_lower_bound": 44,
+      "qualified_conservative_source_lines": 43,
+      "qualified_fourth_new_lower_bound": 43,
       "qualified_source_ranges": [
         [
           1,
+          25
+        ],
+        [
+          27,
           44
         ]
       ]
@@ -4638,6 +3663,7 @@
       "source_git_blob": "474794d17d2df6deb737dad1f0fa588f4332a275",
       "source_sha256": "3274a3901a50520e28485a74cfcd15c392170e9fba86060f270163d99bf47131",
       "source_physical_lines": 27,
+      "source_physical_bytes": 465,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Setting/STWebCommonConfig.swift",
       "target_sha256": "3274a3901a50520e28485a74cfcd15c392170e9fba86060f270163d99bf47131",
       "byte_identical_complete_file": true,
@@ -4679,6 +3705,7 @@
       "source_git_blob": "343b623e9cf7a3d3ede105c18509e03002aa3c60",
       "source_sha256": "5ca5f0491bbb1b0b7ddd1b54c18db8931b7e1f7b724c63ed7dbc7154bca1a262",
       "source_physical_lines": 76,
+      "source_physical_bytes": 2214,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Setting/STWebConfig.swift",
       "target_sha256": "5ca5f0491bbb1b0b7ddd1b54c18db8931b7e1f7b724c63ed7dbc7154bca1a262",
       "byte_identical_complete_file": true,
@@ -4720,88 +3747,67 @@
       "source_git_blob": "630ba9e06fdfb793f2b59aa8f0efecb37395b2d8",
       "source_sha256": "2891523804eee36053ff4d04a50569e4c217dbe477132b45c55bd06bbf9618fc",
       "source_physical_lines": 153,
+      "source_physical_bytes": 6518,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Trans/STWebTransAnimation.swift",
-      "target_sha256": "2891523804eee36053ff4d04a50569e4c217dbe477132b45c55bd06bbf9618fc",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          153,
           1,
           153
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 153,
-      "fourth_new_lower_bound": 153,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          153
-        ]
-      ],
-      "qualified_conservative_source_lines": 153,
-      "qualified_fourth_new_lower_bound": 153,
-      "qualified_source_ranges": [
-        [
-          1,
-          153
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift",
       "source_git_blob": "708fe2843dbaf210ae4dd1a885fb9f949bf41483",
       "source_sha256": "78239956f07c0bab4c5266227bdc9bb33dc6847e4c58e10d8613611f0d64019c",
       "source_physical_lines": 93,
+      "source_physical_bytes": 2761,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift",
-      "target_sha256": "78239956f07c0bab4c5266227bdc9bb33dc6847e4c58e10d8613611f0d64019c",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          93,
           1,
           93
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 93,
-      "fourth_new_lower_bound": 93,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          93
-        ]
-      ],
-      "qualified_conservative_source_lines": 93,
-      "qualified_fourth_new_lower_bound": 93,
-      "qualified_source_ranges": [
-        [
-          1,
-          93
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
       "source_git_blob": "2c8ffddf08fd27a9bf4f815f4acead17097ab92c",
       "source_sha256": "937e59755d8a2fbb31f9efa32f06ca3e3b684ff8bdf986d56eba72b52a346507",
       "source_physical_lines": 567,
+      "source_physical_bytes": 21866,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
       "target_sha256": "ff7ea475d23e7aecb44fe5bc08b3cc18d0801bb088cf8ea4c4af045c0e4efdaa",
       "byte_identical_complete_file": false,
@@ -4929,47 +3935,37 @@
       "source_git_blob": "36692af6c51247069622e180ab6a7b47efcb71d0",
       "source_sha256": "857254b529307e5e05a96834b0df274139eaa2dde79118d38be9485f9dd19fb2",
       "source_physical_lines": 73,
+      "source_physical_bytes": 2179,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Views/STWebCardView.swift",
-      "target_sha256": "857254b529307e5e05a96834b0df274139eaa2dde79118d38be9485f9dd19fb2",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          73,
           1,
           73
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 73,
-      "fourth_new_lower_bound": 73,
-      "compile_link_consumer_qualified": true,
+      "mapped_conservative_source_lines": 0,
+      "fourth_new_lower_bound": 0,
+      "compile_link_consumer_qualified": false,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
-      "actual_new_relative_to_known_previous_source_ranges": [
-        [
-          1,
-          73
-        ]
-      ],
-      "qualified_conservative_source_lines": 73,
-      "qualified_fourth_new_lower_bound": 73,
-      "qualified_source_ranges": [
-        [
-          1,
-          73
-        ]
-      ]
+      "actual_new_relative_to_known_previous_source_ranges": [],
+      "qualified_conservative_source_lines": 0,
+      "qualified_fourth_new_lower_bound": 0,
+      "qualified_source_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift",
       "source_git_blob": "42081fbacfd7960767a9ac8a57ca0f16b76d3f48",
       "source_sha256": "1e3372db7ff2da74845384f6abf66638a1a255839cec6d0324ac9eb2031f0b4d",
       "source_physical_lines": 92,
+      "source_physical_bytes": 3462,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift",
       "target_sha256": "1e3372db7ff2da74845384f6abf66638a1a255839cec6d0324ac9eb2031f0b4d",
       "byte_identical_complete_file": true,
@@ -5011,6 +4007,7 @@
       "source_git_blob": "57cc811719b51ddd10d3d6d7e88c0c950d6f29ff",
       "source_sha256": "0b5ddbb883b65d64a43fbbd37f8aaf21e55adf0d0adf5c39804e98b4380f3301",
       "source_physical_lines": 107,
+      "source_physical_bytes": 3445,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Views/STWebPopView.swift",
       "target_sha256": "0b5ddbb883b65d64a43fbbd37f8aaf21e55adf0d0adf5c39804e98b4380f3301",
       "byte_identical_complete_file": true,
@@ -5052,6 +4049,7 @@
       "source_git_blob": "055ab225942a29b30843a77504efc50ed8cc2cc3",
       "source_sha256": "8bccf013767ffb71400a7664776f777e537a843297a0bc3d681a126b676be636",
       "source_physical_lines": 121,
+      "source_physical_bytes": 4235,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Views/STWebToolView.swift",
       "target_sha256": "8bccf013767ffb71400a7664776f777e537a843297a0bc3d681a126b676be636",
       "byte_identical_complete_file": true,
@@ -5093,6 +4091,7 @@
       "source_git_blob": "124ae4576a116fbbf0b65e698922f0f30a630902",
       "source_sha256": "a872bfd1196515f6ae7157ffd587da44330add73fedd867f347b7add618cd4a8",
       "source_physical_lines": 613,
+      "source_physical_bytes": 27201,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/WebCrl/H5/STWebH5Crl.swift",
       "target_sha256": "a872bfd1196515f6ae7157ffd587da44330add73fedd867f347b7add618cd4a8",
       "byte_identical_complete_file": true,
@@ -5134,190 +4133,681 @@
       "source_git_blob": "72dbc451f72e8105b8a3475bc017d803866397bc",
       "source_sha256": "d3cb9d1b91ab538009eeef18b3763221fdd02e7743ea046a78931335d695d613",
       "source_physical_lines": 2028,
+      "source_physical_bytes": 97928,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift",
-      "target_sha256": "194e0363ca727c7e4fdb7afb3683166c2b2d54ab49a80529dcb3ac2ec6ef9897",
+      "target_sha256": "2de21a8a18f8fb1ac1e744cfa8acd2679d7104f80ba7770a7bc5d347f5eb8b2c",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          534,
+          30,
           1,
-          534
+          30
         ],
         [
-          535,
-          579,
+          41,
+          72,
+          31,
+          62
+        ],
+        [
+          83,
+          87,
+          63,
+          67
+        ],
+        [
+          89,
+          92,
+          68,
+          71
+        ],
+        [
+          94,
+          115,
+          73,
+          94
+        ],
+        [
+          235,
+          492,
+          95,
+          352
+        ],
+        [
+          494,
+          506,
+          353,
+          365
+        ],
+        [
+          508,
+          534,
+          367,
+          393
+        ],
+        [
           536,
-          580
+          541,
+          396,
+          401
+        ],
+        [
+          547,
+          551,
+          403,
+          407
+        ],
+        [
+          570,
+          572,
+          412,
+          414
+        ],
+        [
+          574,
+          579,
+          416,
+          421
         ],
         [
           586,
-          692,
-          588,
-          694
+          661,
+          429,
+          504
         ],
         [
-          693,
-          723,
-          699,
-          729
+          664,
+          670,
+          505,
+          511
         ],
         [
-          725,
-          740,
-          731,
-          746
+          799,
+          822,
+          534,
+          557
         ],
         [
-          770,
-          780,
-          757,
-          767
+          832,
+          838,
+          561,
+          567
         ],
         [
-          784,
-          790,
-          771,
-          777
+          887,
+          929,
+          569,
+          611
         ],
         [
-          792,
-          1257,
-          779,
-          1244
+          1056,
+          1059,
+          615,
+          618
         ],
         [
-          1259,
+          1194,
+          1198,
+          624,
+          628
+        ],
+        [
+          1250,
+          1255,
+          634,
+          639
+        ],
+        [
+          1265,
           1432,
-          1248,
-          1421
+          641,
+          808
         ],
         [
           1433,
-          1558,
-          1428,
-          1553
+          1441,
+          815,
+          823
         ],
         [
-          1559,
-          1566,
-          1561,
-          1568
+          1445,
+          1497,
+          826,
+          878
         ],
         [
-          1568,
-          2028,
-          1570,
-          2030
+          1520,
+          1523,
+          880,
+          883
+        ],
+        [
+          1529,
+          1533,
+          885,
+          889
+        ],
+        [
+          1538,
+          1541,
+          891,
+          894
+        ],
+        [
+          1571,
+          1590,
+          898,
+          917
+        ],
+        [
+          1593,
+          1617,
+          919,
+          943
+        ],
+        [
+          1621,
+          1727,
+          946,
+          1052
+        ],
+        [
+          1733,
+          1735,
+          1054,
+          1056
+        ],
+        [
+          1737,
+          1768,
+          1057,
+          1088
+        ],
+        [
+          1770,
+          1774,
+          1089,
+          1093
+        ],
+        [
+          1776,
+          1862,
+          1095,
+          1181
+        ],
+        [
+          1873,
+          1875,
+          1183,
+          1185
+        ],
+        [
+          1897,
+          1914,
+          1191,
+          1208
+        ],
+        [
+          1931,
+          1948,
+          1210,
+          1227
+        ],
+        [
+          1954,
+          1979,
+          1228,
+          1253
         ]
       ],
       "unmapped_source_lines": [
+        [
+          31,
+          40
+        ],
+        [
+          73,
+          82
+        ],
+        [
+          88,
+          88
+        ],
+        [
+          93,
+          93
+        ],
+        [
+          116,
+          234
+        ],
+        [
+          493,
+          493
+        ],
+        [
+          507,
+          507
+        ],
+        [
+          535,
+          535
+        ],
+        [
+          542,
+          546
+        ],
+        [
+          552,
+          569
+        ],
+        [
+          573,
+          573
+        ],
         [
           580,
           585
         ],
         [
-          724,
-          724
+          662,
+          663
         ],
         [
-          741,
-          769
+          671,
+          798
         ],
         [
-          781,
-          783
+          823,
+          831
         ],
         [
-          791,
-          791
+          839,
+          886
         ],
         [
-          1258,
-          1258
+          930,
+          1055
         ],
         [
-          1567,
-          1567
+          1060,
+          1193
+        ],
+        [
+          1199,
+          1249
+        ],
+        [
+          1256,
+          1264
+        ],
+        [
+          1442,
+          1444
+        ],
+        [
+          1498,
+          1519
+        ],
+        [
+          1524,
+          1528
+        ],
+        [
+          1534,
+          1537
+        ],
+        [
+          1542,
+          1570
+        ],
+        [
+          1591,
+          1592
+        ],
+        [
+          1618,
+          1620
+        ],
+        [
+          1728,
+          1732
+        ],
+        [
+          1736,
+          1736
+        ],
+        [
+          1769,
+          1769
+        ],
+        [
+          1775,
+          1775
+        ],
+        [
+          1863,
+          1872
+        ],
+        [
+          1876,
+          1896
+        ],
+        [
+          1915,
+          1930
+        ],
+        [
+          1949,
+          1953
+        ],
+        [
+          1980,
+          2028
         ]
       ],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": true,
       "conservative_module_excluded": false,
-      "mapped_conservative_source_lines": 1986,
-      "fourth_new_lower_bound": 1986,
+      "mapped_conservative_source_lines": 1170,
+      "fourth_new_lower_bound": 1170,
       "compile_link_consumer_qualified": true,
       "actual_previous_same_path_byte_equal_source_ranges": [],
       "actual_previous_retained_in_current_source_ranges": [],
       "actual_new_relative_to_known_previous_source_ranges": [
         [
           1,
+          30
+        ],
+        [
+          41,
+          72
+        ],
+        [
+          83,
+          87
+        ],
+        [
+          89,
+          92
+        ],
+        [
+          94,
+          115
+        ],
+        [
+          235,
+          492
+        ],
+        [
+          494,
+          506
+        ],
+        [
+          508,
+          534
+        ],
+        [
+          536,
+          541
+        ],
+        [
+          547,
+          551
+        ],
+        [
+          570,
+          572
+        ],
+        [
+          574,
           579
         ],
         [
           586,
-          723
+          661
         ],
         [
-          725,
-          740
+          664,
+          670
         ],
         [
-          770,
-          780
+          799,
+          822
         ],
         [
-          784,
-          790
+          832,
+          838
         ],
         [
-          792,
-          1257
+          887,
+          929
         ],
         [
-          1259,
-          1566
+          1056,
+          1059
         ],
         [
-          1568,
-          2028
+          1194,
+          1198
+        ],
+        [
+          1250,
+          1255
+        ],
+        [
+          1265,
+          1441
+        ],
+        [
+          1445,
+          1497
+        ],
+        [
+          1520,
+          1523
+        ],
+        [
+          1529,
+          1533
+        ],
+        [
+          1538,
+          1541
+        ],
+        [
+          1571,
+          1590
+        ],
+        [
+          1593,
+          1617
+        ],
+        [
+          1621,
+          1727
+        ],
+        [
+          1733,
+          1735
+        ],
+        [
+          1737,
+          1768
+        ],
+        [
+          1770,
+          1774
+        ],
+        [
+          1776,
+          1862
+        ],
+        [
+          1873,
+          1875
+        ],
+        [
+          1897,
+          1914
+        ],
+        [
+          1931,
+          1948
+        ],
+        [
+          1954,
+          1979
         ]
       ],
-      "qualified_conservative_source_lines": 1986,
-      "qualified_fourth_new_lower_bound": 1986,
+      "qualified_conservative_source_lines": 1170,
+      "qualified_fourth_new_lower_bound": 1170,
       "qualified_source_ranges": [
         [
           1,
+          30
+        ],
+        [
+          41,
+          72
+        ],
+        [
+          83,
+          87
+        ],
+        [
+          89,
+          92
+        ],
+        [
+          94,
+          115
+        ],
+        [
+          235,
+          492
+        ],
+        [
+          494,
+          506
+        ],
+        [
+          508,
+          534
+        ],
+        [
+          536,
+          541
+        ],
+        [
+          547,
+          551
+        ],
+        [
+          570,
+          572
+        ],
+        [
+          574,
           579
         ],
         [
           586,
-          723
+          661
         ],
         [
-          725,
-          740
+          664,
+          670
         ],
         [
-          770,
-          780
+          799,
+          822
         ],
         [
-          784,
-          790
+          832,
+          838
         ],
         [
-          792,
-          1257
+          887,
+          929
         ],
         [
-          1259,
-          1566
+          1056,
+          1059
         ],
         [
-          1568,
-          2028
+          1194,
+          1198
+        ],
+        [
+          1250,
+          1255
+        ],
+        [
+          1265,
+          1441
+        ],
+        [
+          1445,
+          1497
+        ],
+        [
+          1520,
+          1523
+        ],
+        [
+          1529,
+          1533
+        ],
+        [
+          1538,
+          1541
+        ],
+        [
+          1571,
+          1590
+        ],
+        [
+          1593,
+          1617
+        ],
+        [
+          1621,
+          1727
+        ],
+        [
+          1733,
+          1735
+        ],
+        [
+          1737,
+          1768
+        ],
+        [
+          1770,
+          1774
+        ],
+        [
+          1776,
+          1862
+        ],
+        [
+          1873,
+          1875
+        ],
+        [
+          1897,
+          1914
+        ],
+        [
+          1931,
+          1948
+        ],
+        [
+          1954,
+          1979
         ]
       ]
     },
@@ -5326,6 +4816,7 @@
       "source_git_blob": "b763f1413b53b77f29e30f2bff63bab7aaaa14f0",
       "source_sha256": "84c079324d0e4b41b72625252332f9148b40bb44a22b5f8c097c3957f86d8ae1",
       "source_physical_lines": 32,
+      "source_physical_bytes": 723,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/WebCrl/STWebCrlProtocol.swift",
       "target_sha256": "84c079324d0e4b41b72625252332f9148b40bb44a22b5f8c097c3957f86d8ae1",
       "byte_identical_complete_file": true,
@@ -5357,6 +4848,7 @@
       "source_git_blob": "4ce18058695ae1e30a4ee1b3bf07f664decc7c9c",
       "source_sha256": "ef321004afec549838ad119c6fc9d9cee5cd9eb7000013d364dc264853737a5b",
       "source_physical_lines": 25,
+      "source_physical_bytes": 400,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Extension/DispatchQueue+HLOnce.swift",
       "target_sha256": "ef321004afec549838ad119c6fc9d9cee5cd9eb7000013d364dc264853737a5b",
       "byte_identical_complete_file": true,
@@ -5388,6 +4880,7 @@
       "source_git_blob": "1d38a31266d9f4ae39abcc98ac30682d5a0542be",
       "source_sha256": "2cf0451eef75f60f41e3f6a75c3e7c8bb83f8e47bf6c809b9a75ed9e6602e1fe",
       "source_physical_lines": 19,
+      "source_physical_bytes": 424,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Extension/STBundleExtension.swift",
       "target_sha256": "2cf0451eef75f60f41e3f6a75c3e7c8bb83f8e47bf6c809b9a75ed9e6602e1fe",
       "byte_identical_complete_file": true,
@@ -5419,6 +4912,7 @@
       "source_git_blob": "cae14d1ef60330d697f2289ac1d1801ffd726b90",
       "source_sha256": "e5df08b5bfc4d8971d40d1a01c93bdf1065c74bf2d6db9b5f5546b3f00da6f1e",
       "source_physical_lines": 83,
+      "source_physical_bytes": 1078,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Common/Decode/STDecode.swift",
       "target_sha256": "e5df08b5bfc4d8971d40d1a01c93bdf1065c74bf2d6db9b5f5546b3f00da6f1e",
       "byte_identical_complete_file": true,
@@ -5450,6 +4944,7 @@
       "source_git_blob": "2bc949b0cd2b79db1cf87f7125493cfbe040c3c1",
       "source_sha256": "10e5c150f65cdd1583b1132372e98174fd847e3a9d92576e3227d2f55d6f7fb8",
       "source_physical_lines": 23,
+      "source_physical_bytes": 325,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Common/Request/STRequest.swift",
       "target_sha256": "10e5c150f65cdd1583b1132372e98174fd847e3a9d92576e3227d2f55d6f7fb8",
       "byte_identical_complete_file": true,
@@ -5481,6 +4976,7 @@
       "source_git_blob": "88e62ace2cbd469a7a9dae626c7b44c44753da47",
       "source_sha256": "587645ffe014a3c81d71400771c9282c96dfb6307ac05e89167f116bee2fb153",
       "source_physical_lines": 38,
+      "source_physical_bytes": 687,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Common/Server/HLServer.swift",
       "target_sha256": "587645ffe014a3c81d71400771c9282c96dfb6307ac05e89167f116bee2fb153",
       "byte_identical_complete_file": true,
@@ -5512,18 +5008,17 @@
       "source_git_blob": "069f75d62b746cce23fa0473520a3e2b9c19a4be",
       "source_sha256": "aefc00e1b744a80f34de32ce82e7f8c9d0dbd1122ff6a41d245674e0fb0f93e6",
       "source_physical_lines": 38,
+      "source_physical_bytes": 247,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Array+Safe.swift",
-      "target_sha256": "aefc00e1b744a80f34de32ce82e7f8c9d0dbd1122ff6a41d245674e0fb0f93e6",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          38,
           1,
           38
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5543,18 +5038,17 @@
       "source_git_blob": "5005da1871c95606855d5ba613e9a94436bd31fe",
       "source_sha256": "19d9bda72afda035da4da304f24b189e251cf25ab58d31b4d946befc2ebf19b6",
       "source_physical_lines": 68,
+      "source_physical_bytes": 1401,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Data+Hash.swift",
-      "target_sha256": "19d9bda72afda035da4da304f24b189e251cf25ab58d31b4d946befc2ebf19b6",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          68,
           1,
           68
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5574,18 +5068,17 @@
       "source_git_blob": "f3ef2bd6f5e46403b5f9f625a9c0bbf4cef6f64c",
       "source_sha256": "899d185e6eea3f7cc6acee1765a9265455bd96bb10319a8c81fb82dee8dcc0cd",
       "source_physical_lines": 43,
+      "source_physical_bytes": 446,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/DispatchQueue+Safe.swift",
-      "target_sha256": "899d185e6eea3f7cc6acee1765a9265455bd96bb10319a8c81fb82dee8dcc0cd",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          43,
           1,
           43
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5605,18 +5098,17 @@
       "source_git_blob": "afb316f0cd7cd480630d9e6545a148543432ee98",
       "source_sha256": "49de198117390ce1a6db74e03d0f0a6552087bb0f3af35fc0cb4463dc33d2d6b",
       "source_physical_lines": 42,
+      "source_physical_bytes": 398,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Double+TaskInfo.swift",
-      "target_sha256": "49de198117390ce1a6db74e03d0f0a6552087bb0f3af35fc0cb4463dc33d2d6b",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          42,
           1,
           42
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5636,18 +5128,17 @@
       "source_git_blob": "96bfff78c6fcdd2b7e1aaa0b6928ac499fad48c7",
       "source_sha256": "88eaaba9d8a148acd868eff4f886c50cb289306bec8c2815c9018db89ce0c061",
       "source_physical_lines": 59,
+      "source_physical_bytes": 713,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Int64+TaskInfo.swift",
-      "target_sha256": "88eaaba9d8a148acd868eff4f886c50cb289306bec8c2815c9018db89ce0c061",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          59,
           1,
           59
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5667,18 +5158,17 @@
       "source_git_blob": "98bc4428654d8cf11122f261923f197239904633",
       "source_sha256": "8729628ebc2f595fbf272fb3b4f0902f0fa15e94fca5564db0a3d26fdf023771",
       "source_physical_lines": 59,
+      "source_physical_bytes": 766,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/String+Hash.swift",
-      "target_sha256": "8729628ebc2f595fbf272fb3b4f0902f0fa15e94fca5564db0a3d26fdf023771",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          59,
           1,
           59
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5698,18 +5188,17 @@
       "source_git_blob": "5147598f49b2adff7bc6589228ea263aba642bb4",
       "source_sha256": "65b7812367ea65186295a0a85caa6c1b6cd1df31d89caf2544884e597fb7b1ea",
       "source_physical_lines": 49,
+      "source_physical_bytes": 892,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/UIDevice+Free.swift",
-      "target_sha256": "65b7812367ea65186295a0a85caa6c1b6cd1df31d89caf2544884e597fb7b1ea",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          49,
           1,
           49
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5729,18 +5218,17 @@
       "source_git_blob": "61fcd3636b958ca2cc7cb8c23041b0f009a5258e",
       "source_sha256": "047defb32ab6bda1d69c58a2a003bfc6a1916b39f3a794aad09bad444e6dd357",
       "source_physical_lines": 50,
+      "source_physical_bytes": 1027,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/URLSession+ResumeData.swift",
-      "target_sha256": "047defb32ab6bda1d69c58a2a003bfc6a1916b39f3a794aad09bad444e6dd357",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          50,
           1,
           50
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5760,18 +5248,17 @@
       "source_git_blob": "1ef430edcd176d6950cd16557e9a52848c1b7f83",
       "source_sha256": "31fefa3d26b920eee44f0e696fe413b86b9bf2658b362d5f1b71c971d03b9449",
       "source_physical_lines": 301,
+      "source_physical_bytes": 8793,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCache.swift",
-      "target_sha256": "31fefa3d26b920eee44f0e696fe413b86b9bf2658b362d5f1b71c971d03b9449",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          301,
           1,
           301
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5791,18 +5278,17 @@
       "source_git_blob": "1157505bb2846c9db5504bb1bebeb21a94f27a52",
       "source_sha256": "7c28013deeacc17eec2205fd3a7e320a34182e5e791222a73017abd9e4f3543f",
       "source_physical_lines": 93,
+      "source_physical_bytes": 1386,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCommon.swift",
-      "target_sha256": "7c28013deeacc17eec2205fd3a7e320a34182e5e791222a73017abd9e4f3543f",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          93,
           1,
           93
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [
         [
           77,
@@ -5827,18 +5313,17 @@
       "source_git_blob": "05f35ed620c30e32448cb5925913815d9fb5b035",
       "source_sha256": "243890fe0acfb4ca33a13a2bb808cfaccc9fcabb6b8c39e230d4d86b23337cb6",
       "source_physical_lines": 43,
+      "source_physical_bytes": 285,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRConfiguration.swift",
-      "target_sha256": "243890fe0acfb4ca33a13a2bb808cfaccc9fcabb6b8c39e230d4d86b23337cb6",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          43,
           1,
           43
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5858,18 +5343,17 @@
       "source_git_blob": "418a56cdd73c32075586a0fc1d7d71932224438f",
       "source_sha256": "3ab00258f52188c4e93383864624ddd9bde77304c71681f32301de8350e4e850",
       "source_physical_lines": 460,
+      "source_physical_bytes": 15080,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRDownloadTask.swift",
-      "target_sha256": "3ab00258f52188c4e93383864624ddd9bde77304c71681f32301de8350e4e850",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          460,
           1,
           460
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5889,18 +5373,17 @@
       "source_git_blob": "eedaf744938fa918254474c59e79057770aeb357",
       "source_sha256": "1c900e0752dca34ce9cd3735c0870fcbda54236c62ad8a17aaee21ca1a403e33",
       "source_physical_lines": 701,
+      "source_physical_bytes": 19495,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRManager.swift",
-      "target_sha256": "1c900e0752dca34ce9cd3735c0870fcbda54236c62ad8a17aaee21ca1a403e33",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          701,
           1,
           701
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5920,18 +5403,17 @@
       "source_git_blob": "5765c006eeb1465c30b8226a6991b6aed2f299e4",
       "source_sha256": "f78b7dd9fe878d1eb0aa8aa200c8cbef2aa2dd427e6b8584a20ee2721b174b21",
       "source_physical_lines": 72,
+      "source_physical_bytes": 1982,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRSessionDelegate.swift",
-      "target_sha256": "f78b7dd9fe878d1eb0aa8aa200c8cbef2aa2dd427e6b8584a20ee2721b174b21",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          72,
           1,
           72
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5951,18 +5433,17 @@
       "source_git_blob": "b7599ba4fadda0901311e325673de4a909e55276",
       "source_sha256": "0495de269c6577c66d7b640505c2ebd3c2e1b5ed4419dc065d41bd519ade34a8",
       "source_physical_lines": 339,
+      "source_physical_bytes": 8441,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/General/TRTask.swift",
-      "target_sha256": "0495de269c6577c66d7b640505c2ebd3c2e1b5ed4419dc065d41bd519ade34a8",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          339,
           1,
           339
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -5982,18 +5463,17 @@
       "source_git_blob": "c440ddf9bf72962f12c8c174101b0dc36e6ecdd9",
       "source_sha256": "38b1defac57ff89a7a6e92f9acc6e45799b24ca39d75fe4f1a26fe861a4b7663",
       "source_physical_lines": 37,
+      "source_physical_bytes": 167,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Tiercel.h",
-      "target_sha256": "38b1defac57ff89a7a6e92f9acc6e45799b24ca39d75fe4f1a26fe861a4b7663",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          37,
           1,
           37
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6013,18 +5493,17 @@
       "source_git_blob": "64bbec951531e3ca5d948ec7348b7303ae7346b8",
       "source_sha256": "1a555b7e293351bfe54b8c8ac3516b59492eae05326fde001282e7a79353b096",
       "source_physical_lines": 82,
+      "source_physical_bytes": 1661,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRChecksumHelper.swift",
-      "target_sha256": "1a555b7e293351bfe54b8c8ac3516b59492eae05326fde001282e7a79353b096",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          82,
           1,
           82
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6044,18 +5523,17 @@
       "source_git_blob": "7077837ea130fbb5cd4b127f1a97e74d578051ce",
       "source_sha256": "a9dc0c6d65b968010f93d0f3251f2302fc52d46294bc29e305f8bd3b2da29bdb",
       "source_physical_lines": 182,
+      "source_physical_bytes": 6337,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRResumeDataHelper.swift",
-      "target_sha256": "a9dc0c6d65b968010f93d0f3251f2302fc52d46294bc29e305f8bd3b2da29bdb",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          182,
           1,
           182
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6075,6 +5553,7 @@
       "source_git_blob": "127e7f31adc7af59a2a4e4a02deab9eefb5cd9c4",
       "source_sha256": "c1f497d54a21a20149b4a6a343afac35ca3a70d6da073382df19abdbeec5dd50",
       "source_physical_lines": 75,
+      "source_physical_bytes": 2382,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/STFlieManager.swift",
       "target_sha256": "c1f497d54a21a20149b4a6a343afac35ca3a70d6da073382df19abdbeec5dd50",
       "byte_identical_complete_file": true,
@@ -6106,6 +5585,7 @@
       "source_git_blob": "48ea32dea023d324f8b91412fb611291ea400801",
       "source_sha256": "dfcec528999d5adcb5279b88988d357426439be9fc170735188328e13871c11b",
       "source_physical_lines": 16,
+      "source_physical_bytes": 158,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/STLibKit.h",
       "target_sha256": "dfcec528999d5adcb5279b88988d357426439be9fc170735188328e13871c11b",
       "byte_identical_complete_file": true,
@@ -6137,6 +5617,7 @@
       "source_git_blob": "9d7d32725e27f408303e8fdf65df1f5b6bbfd4ce",
       "source_sha256": "47cd9183a20dad40b176b39ea40143bf3659c04ed43cefb01f8bbce5554f5d09",
       "source_physical_lines": 41,
+      "source_physical_bytes": 1110,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/STProjectHelper.swift",
       "target_sha256": "47cd9183a20dad40b176b39ea40143bf3659c04ed43cefb01f8bbce5554f5d09",
       "byte_identical_complete_file": true,
@@ -6173,6 +5654,7 @@
       "source_git_blob": "3fb1ecbb138016b9c9983b2e8a69df0321e8cacb",
       "source_sha256": "f1ff48ea1be227e8bfb05c05cf3766104d41384e2fb54f154186b591ac5a9610",
       "source_physical_lines": 110,
+      "source_physical_bytes": 3436,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/STScreenHelper.swift",
       "target_sha256": "f1ff48ea1be227e8bfb05c05cf3766104d41384e2fb54f154186b591ac5a9610",
       "byte_identical_complete_file": true,
@@ -6204,6 +5686,7 @@
       "source_git_blob": "5c1e093be2b08585d0cbfe86f2b1ff964f43ecb5",
       "source_sha256": "c5c4ef19b78e17c77cb2b3defc5e082b86730d7bf1b12b860e6ee375e4e306a7",
       "source_physical_lines": 90,
+      "source_physical_bytes": 2504,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/lib/STTool.swift",
       "target_sha256": "c5c4ef19b78e17c77cb2b3defc5e082b86730d7bf1b12b860e6ee375e4e306a7",
       "byte_identical_complete_file": true,
@@ -6235,6 +5718,7 @@
       "source_git_blob": "9c9894890f52bb8065fee96ae890bb86d0868653",
       "source_sha256": "1f0e0fa48b3908e31a206cc5ba962b731ca805f75d9282bf8f5a6599e1622234",
       "source_physical_lines": 26,
+      "source_physical_bytes": 455,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Extension/UIButton+STCorner.swift",
       "target_sha256": "1f0e0fa48b3908e31a206cc5ba962b731ca805f75d9282bf8f5a6599e1622234",
       "byte_identical_complete_file": true,
@@ -6266,6 +5750,7 @@
       "source_git_blob": "8d00d5bb5546c9672f13b93d7f7b469e4d61ee54",
       "source_sha256": "0d548ee4b39dd7749720590daf251c0ccb5d76d05266bd26fce5b1062051f29a",
       "source_physical_lines": 42,
+      "source_physical_bytes": 877,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Extension/UIColor+STHex.swift",
       "target_sha256": "0d548ee4b39dd7749720590daf251c0ccb5d76d05266bd26fce5b1062051f29a",
       "byte_identical_complete_file": true,
@@ -6297,6 +5782,7 @@
       "source_git_blob": "391c7bde6a5b5b8e55cf63157371e589bfad906a",
       "source_sha256": "56af9013a0ee2ab77ffa61df3973fc68fc0949ac94ebe7193c1510215a478e28",
       "source_physical_lines": 80,
+      "source_physical_bytes": 1390,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Extension/UIView+STLayout.swift",
       "target_sha256": "56af9013a0ee2ab77ffa61df3973fc68fc0949ac94ebe7193c1510215a478e28",
       "byte_identical_complete_file": true,
@@ -6328,6 +5814,7 @@
       "source_git_blob": "f62e917595c8d18e82ed05f2c7937074d18e379e",
       "source_sha256": "a5545d7b970af92fccbe72bfbec1b69b42dd0eb7f19e85843b3528aabbc792a3",
       "source_physical_lines": 63,
+      "source_physical_bytes": 1380,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopCommen.h",
       "target_sha256": "a5545d7b970af92fccbe72bfbec1b69b42dd0eb7f19e85843b3528aabbc792a3",
       "byte_identical_complete_file": true,
@@ -6359,6 +5846,7 @@
       "source_git_blob": "fd0c5ad963be5993572c2cec1ea085a59906d675",
       "source_sha256": "097a7121b465dd2f72722b1969007927b5ca40809270977cf996501b4ad7033c",
       "source_physical_lines": 54,
+      "source_physical_bytes": 1029,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopConfig.h",
       "target_sha256": "097a7121b465dd2f72722b1969007927b5ca40809270977cf996501b4ad7033c",
       "byte_identical_complete_file": true,
@@ -6390,6 +5878,7 @@
       "source_git_blob": "dc554bc78b30cd8009d13e253aedcccfaa53af34",
       "source_sha256": "e50d7ddff3dd8226e2b7e8302ff985f04307bb8ebb5d48192e8d6f37bf9a1c9b",
       "source_physical_lines": 23,
+      "source_physical_bytes": 522,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopConfig.m",
       "target_sha256": "e50d7ddff3dd8226e2b7e8302ff985f04307bb8ebb5d48192e8d6f37bf9a1c9b",
       "byte_identical_complete_file": true,
@@ -6421,6 +5910,7 @@
       "source_git_blob": "a0042ee1a64f19842a4c3f6cca18b2a29d68fb25",
       "source_sha256": "924cab1b46962fc660a7c5b737063199762d30cb46e42eea5c7e9d1470528d82",
       "source_physical_lines": 16,
+      "source_physical_bytes": 163,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopHeader.h",
       "target_sha256": "924cab1b46962fc660a7c5b737063199762d30cb46e42eea5c7e9d1470528d82",
       "byte_identical_complete_file": true,
@@ -6457,6 +5947,7 @@
       "source_git_blob": "c9907a91a14c66c8afa1d5e5409f0f75fa98ebce",
       "source_sha256": "390d36a5d2d3743fc47cf8de710a5df026e13259102ad91d7f17724d3de69caf",
       "source_physical_lines": 66,
+      "source_physical_bytes": 1205,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopView.h",
       "target_sha256": "390d36a5d2d3743fc47cf8de710a5df026e13259102ad91d7f17724d3de69caf",
       "byte_identical_complete_file": true,
@@ -6488,6 +5979,7 @@
       "source_git_blob": "efeff2967ae06f71302d3628709d92c33d1202fa",
       "source_sha256": "1724d3d4ecb27f1882ec4eaaef7bd6ee0f755ebe9d741027982335d48cc10213",
       "source_physical_lines": 131,
+      "source_physical_bytes": 6339,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopView.m",
       "target_sha256": "1724d3d4ecb27f1882ec4eaaef7bd6ee0f755ebe9d741027982335d48cc10213",
       "byte_identical_complete_file": true,
@@ -6519,6 +6011,7 @@
       "source_git_blob": "f06c18f52c0964a041d78b0a720ade42e5fa134d",
       "source_sha256": "6b697d5325fb290fabe007cd0b48065468e86228dbbecdfcaf03ed0db31f31e2",
       "source_physical_lines": 50,
+      "source_physical_bytes": 1717,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopViewController.h",
       "target_sha256": "6b697d5325fb290fabe007cd0b48065468e86228dbbecdfcaf03ed0db31f31e2",
       "byte_identical_complete_file": true,
@@ -6550,6 +6043,7 @@
       "source_git_blob": "cb028af82119e0ebd5fe3008848b43439f5e567a",
       "source_sha256": "06cd5f7c9a068898b214439b7a834621aacf1083e1f032d4b2cb3027401982ad",
       "source_physical_lines": 760,
+      "source_physical_bytes": 39079,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HLPopViewController.m",
       "target_sha256": "06cd5f7c9a068898b214439b7a834621aacf1083e1f032d4b2cb3027401982ad",
       "byte_identical_complete_file": true,
@@ -6581,6 +6075,7 @@
       "source_git_blob": "a1c1bbabf1fc420e9a1b8aacccea83215b97d5bf",
       "source_sha256": "c0b45fcfc25534c5d6c0acdf8a157e6d22690e905ca28ec3be09e5f09a56d1fd",
       "source_physical_lines": 39,
+      "source_physical_bytes": 1548,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/PopView/HlPopCommen.m",
       "target_sha256": "c0b45fcfc25534c5d6c0acdf8a157e6d22690e905ca28ec3be09e5f09a56d1fd",
       "byte_identical_complete_file": true,
@@ -6612,6 +6107,7 @@
       "source_git_blob": "0c7f4975fea8e371395da6a1f46dcab3fdb66a71",
       "source_sha256": "e5921d8bd837b5da0a4964797cc6516e242d9f2cf1933b9aecb8d6ea87c324ba",
       "source_physical_lines": 27,
+      "source_physical_bytes": 496,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/STNavigationController.swift",
       "target_sha256": "e5921d8bd837b5da0a4964797cc6516e242d9f2cf1933b9aecb8d6ea87c324ba",
       "byte_identical_complete_file": true,
@@ -6643,6 +6139,7 @@
       "source_git_blob": "f4e61fa12b1b8a4d7ae3135d56446d09310dccde",
       "source_sha256": "652dc75e03bd72edcfe0d27687d88142476538d91efc406f127d84d6cf15e4a0",
       "source_physical_lines": 16,
+      "source_physical_bytes": 156,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/STUIKit.h",
       "target_sha256": "652dc75e03bd72edcfe0d27687d88142476538d91efc406f127d84d6cf15e4a0",
       "byte_identical_complete_file": true,
@@ -6674,6 +6171,7 @@
       "source_git_blob": "ddae3eaed713d04057a0c674b6a70cbd8c37e09a",
       "source_sha256": "550b271f35b28460467be9b0d971f482bc71faf631e08dd52fd99082a7f66295",
       "source_physical_lines": 100,
+      "source_physical_bytes": 2976,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/STViewController.swift",
       "target_sha256": "550b271f35b28460467be9b0d971f482bc71faf631e08dd52fd99082a7f66295",
       "byte_identical_complete_file": true,
@@ -6705,18 +6203,17 @@
       "source_git_blob": "9e9517741833d46b7f12bf4c1cd06201433deb7d",
       "source_sha256": "f4283b53af52efd541535d55239358168000548d0a9bc6d40719315125276c18",
       "source_physical_lines": 73,
+      "source_physical_bytes": 1888,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXPermissions.swift",
-      "target_sha256": "f4283b53af52efd541535d55239358168000548d0a9bc6d40719315125276c18",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          73,
           1,
           73
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6736,18 +6233,17 @@
       "source_git_blob": "6e10d7ab2b24f1a3291d5fa9aedef3eb9e2a08d0",
       "source_sha256": "799c7b44da43728853fcf7eea01efe6425e467b52696e4ada6533d5efd106bc8",
       "source_physical_lines": 70,
+      "source_physical_bytes": 1576,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXScanLineAnimation.swift",
-      "target_sha256": "799c7b44da43728853fcf7eea01efe6425e467b52696e4ada6533d5efd106bc8",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          70,
           1,
           70
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6767,18 +6263,17 @@
       "source_git_blob": "4f89b6f8371c9912817cdea0fe9b78bc15b0ae8f",
       "source_sha256": "5d73f9b07f2f29a19e61bebd8277814e1ee922bd3f88dee557ae391901e362ea",
       "source_physical_lines": 69,
+      "source_physical_bytes": 1515,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXScanNetAnimation.swift",
-      "target_sha256": "5d73f9b07f2f29a19e61bebd8277814e1ee922bd3f88dee557ae391901e362ea",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          69,
           1,
           69
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6798,18 +6293,17 @@
       "source_git_blob": "e5ba93ee47ac9fa53fffe71c52f13141098700b5",
       "source_sha256": "d654e88d12f625a0c8ca3a83e3469fa26040f4dbd3d8797ea93ba54b75a3704f",
       "source_physical_lines": 392,
+      "source_physical_bytes": 12381,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXScanView.swift",
-      "target_sha256": "d654e88d12f625a0c8ca3a83e3469fa26040f4dbd3d8797ea93ba54b75a3704f",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          392,
           1,
           392
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6829,18 +6323,17 @@
       "source_git_blob": "530af7a9dee67393eeddc7539fc953f2c574adc7",
       "source_sha256": "f0eccbc1e158ff5055bb2e7f55451cf820f0d83b485c77b646671befe1f87128",
       "source_physical_lines": 211,
+      "source_physical_bytes": 6545,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXScanViewController.swift",
-      "target_sha256": "f0eccbc1e158ff5055bb2e7f55451cf820f0d83b485c77b646671befe1f87128",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          211,
           1,
           211
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6860,18 +6353,17 @@
       "source_git_blob": "2f3e80a16bea66a8cac29ddb53a73ecb4e162618",
       "source_sha256": "a656a3dee518616ed0fe31cae41a316003b841959d68d46e501a65df9b45597e",
       "source_physical_lines": 75,
+      "source_physical_bytes": 1136,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXScanViewStyle.swift",
-      "target_sha256": "a656a3dee518616ed0fe31cae41a316003b841959d68d46e501a65df9b45597e",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          75,
           1,
           75
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [],
       "prior_reference_overlap_subtracted": [],
       "candidate_native_core": false,
@@ -6891,18 +6383,17 @@
       "source_git_blob": "3dc5870b5fc754f34a012b7b38acc1c4cbd8a6c4",
       "source_sha256": "45b6de03d83b6a82425cec7b0e961fdc42506529b52bf238d3e8c42c5594bd4e",
       "source_physical_lines": 536,
+      "source_physical_bytes": 17564,
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/ui/Third/Scan/LBXScanWrapper.swift",
-      "target_sha256": "45b6de03d83b6a82425cec7b0e961fdc42506529b52bf238d3e8c42c5594bd4e",
-      "byte_identical_complete_file": true,
-      "byte_equal_span_map_source_start_end_target_start_end": [
+      "target_sha256": null,
+      "byte_identical_complete_file": false,
+      "byte_equal_span_map_source_start_end_target_start_end": [],
+      "unmapped_source_lines": [
         [
-          1,
-          536,
           1,
           536
         ]
       ],
-      "unmapped_source_lines": [],
       "release_excluded_source_ranges": [
         [
           82,
@@ -6939,6 +6430,7 @@
       "source_git_blob": "3a003c8b797e9dcc3290720a777e00b2f5bb5a19",
       "source_sha256": "eb10527a4efc4b7f05e2f5051c7c30d53e0964cdb80fa6b0e7f216a04551a69e",
       "source_physical_lines": 8,
+      "source_physical_bytes": 370,
       "target_path": "apps/almanac/packages/stmini_flutter/lib/src/runtime_mode.dart",
       "target_sha256": "eb10527a4efc4b7f05e2f5051c7c30d53e0964cdb80fa6b0e7f216a04551a69e",
       "byte_identical_complete_file": true,
@@ -6970,8 +6462,9 @@
       "source_git_blob": "e2fde4dfb1f279d475d3614a8dab8aa0148b5f28",
       "source_sha256": "25f08c607373f0368bf16dd90c49920af97bdf09db1b81348229e2a67cc5cfdc",
       "source_physical_lines": 225,
+      "source_physical_bytes": 8484,
       "target_path": "apps/almanac/packages/stmini_flutter/lib/stmini_flutter.dart",
-      "target_sha256": "8fe87c66898d56a02308528751dcaac249c242934e2c1cbf69e1e7dcf20bd097",
+      "target_sha256": "064794316d147bd02b4c6c03b30125c6ff1c329dd3c13b46cf3cc69a5e992318",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -6983,26 +6476,26 @@
         [
           49,
           51,
-          31,
-          33
+          37,
+          39
         ],
         [
           118,
           121,
-          44,
-          47
+          53,
+          56
         ],
         [
           127,
           129,
-          97,
-          99
+          106,
+          108
         ],
         [
           181,
           187,
-          164,
-          170
+          173,
+          179
         ]
       ],
       "unmapped_source_lines": [
@@ -7042,37 +6535,41 @@
       "qualified_source_ranges": []
     }
   ],
-  "denominator_by_source_kind": {
+  "reference_full_main_denominator_by_source_kind": {
     "android_implementation": 5133,
     "ios_implementation": 14981,
     "headers": 336,
     "shared_dart": 233
   },
+  "denominator_by_source_kind": {
+    "ios_implementation": 14981,
+    "headers": 336
+  },
   "signed_ipa_qualification": null,
   "signed_ipa_boundary": "Pending separate actual signed artifact verification; neither Android APK source nor the local unsigned iOS framework is attributed to a signed IPA.",
   "platform_totals": {
     "ios": {
-      "mapped_cumulative_conservative_lines": 8562,
-      "mapped_fourth_new_conservative_lower_bound": 8011,
-      "qualified_cumulative_conservative_lines": 8562,
-      "qualified_fourth_new_conservative_lower_bound": 8011,
+      "mapped_cumulative_conservative_lines": 6182,
+      "mapped_fourth_new_conservative_lower_bound": 5632,
+      "qualified_cumulative_conservative_lines": 6182,
+      "qualified_fourth_new_conservative_lower_bound": 5632,
       "artifact_boundary": "iOS framework/app only; signed IPA separately verified by PM"
     },
     "android": {
-      "mapped_cumulative_conservative_lines": 4952,
-      "mapped_fourth_new_conservative_lower_bound": 4456,
-      "qualified_cumulative_conservative_lines": 4952,
-      "qualified_fourth_new_conservative_lower_bound": 4456,
+      "mapped_cumulative_conservative_lines": 0,
+      "mapped_fourth_new_conservative_lower_bound": 0,
+      "qualified_cumulative_conservative_lines": 0,
+      "qualified_fourth_new_conservative_lower_bound": 0,
       "artifact_boundary": "Android APK only; never attributed to iOS IPA"
     }
   },
   "known_byte_equal_origin_sets": {
     "totals": {
-      "P_known_same_path": 320,
-      "C_qualified_current": 13514,
-      "P_retained_in_C": 317,
-      "P_not_retained_in_C": 3,
-      "N_C_minus_known_P": 13197
+      "P_known_same_path": 80,
+      "C_qualified_current": 6182,
+      "P_retained_in_C": 79,
+      "P_not_retained_in_C": 1,
+      "N_C_minus_known_P": 6103
     },
     "additive_checks": {
       "retained_previous_plus_new_equals_current": true,
@@ -7083,73 +6580,45 @@
   "release_qualification": {
     "rule": "Only primary executable native runtime core paths with current target SHA exactly matching unchanged ordinary Release build inputs are admitted. Headers, declaration-only, known no-caller network helpers, local adapters, resources, tests, Dart and release-excluded source lines do not count. This is module/source provenance, not a claim that each source line has a separate retained machine-code instruction or was individually executed.",
     "qualified_target_sha256": {
-      "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt": "4b4716fdaddfc4816889f73ff4cb559b054f5487aa8916fda5def19f357eb7eb",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt": "78d894ac77044ed6b96da598b310fc64f7d2c0081f28c341e37fc5c0670b125e",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt": "39b38928492b2cc0990e352ed79a5a8f796cbd0e2cf304fb548af00ff2f9bfbe",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniLink.kt": "54ced365714b7c8001dc8f5ae4209df7a351ba7d0ee8e3ea46e9c9156fb9cc86",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt": "0d8034b68cc4872eb1adc50dd822f5ae2ea4afbdce6edd4f9afc072eaa2a2b3e",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiRuntimePool.kt": "df34f45809b14035c5168c3258e3b8cb6690f2c650cd27b3a9987648a7422d30",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/WebOrigin.kt": "3c8d57c2b11c32b3abe45b4ffe6c80ac42dd7f0022ea6760e0046fb7b2fac496",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniBridgeOriginPolicy.kt": "73ac38e98f4ebcf0b060f195fa3d97fb0a8fbd9d62b26609d8e237f42897f4ed",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchIdentity.kt": "c71a912570715056af47e3838298725a7af7e71eeec970aec3bd16f047fe7fca",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchOverlay.kt": "3326ce0137e5e09b34076821ed09e0953c0495220c9c3b5e356bc6d2503f6c84",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchSnapshotStore.kt": "7b9887b61cae48a4816cf273d03015526ad9e63563f65c9299aa8f7f11a7d641",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniPopupBridgePolicy.kt": "466752a09e08880035b709f2c3ec0162b3b79b99d76c508121798784994e6e09",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt": "0c5e4d878defb2d9463d85ee987453089120753b897b83e4141019fc7f7e5dab",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiHomeActivity.kt": "83e46f2e8a6ac92609bdaec0359723fca48705b5a70fdb7750718f1ac491715f",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiMediaStoreWrite.kt": "9abc077392ac4c827c9e1415cc58b4ee54fa7ab97e8062c73018d3680adf0ad1",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiWebPageActivity.kt": "f122c9a5b5ce75f30131e571ae0b3010a6b0a2680880f460d208cb53b35e5567",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt": "0da1d29a0dbfca1e2d18999f671ee539b9483c727e150c6fb3fcf2810e31dcc4",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebConfiguration.kt": "1d7726b14119ec64e456e40caac4ccf9e0d4c15fd53743d4b4f1aba6cfd55396",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt": "09aa8bcb209446cb60a23b66899f0af128ddc769a9adfcd86172cab0cfd1fcad",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebHostBridge.kt": "b4def815bb12bec06f04de901effa5709221fe279b5a8493a505f74c2736da09",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebOrigin.kt": "54b415871d88cabc52d46b8ca9b0293d551fd78403d597f10be893f66d4eae25",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionBridge.kt": "cb13d0b57cc3712c4ea6f73feb3541ed50e10c674cc684550784dcd4f38e0af2",
-      "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionRegistry.kt": "7aa08cf93e22a16b847191cd15148acc1f5b2465992c13b955704f9aa49eb1e3",
-      "ios/Classes/StminiFlutterPlugin.swift": "9fc29eced2a11103ca94cfab7b3df155e4795c3c06eae64baa8b5b98e585646f",
+      "ios/Classes/StminiFlutterPlugin.swift": "020fee45dce2610a24c1204237a2b8122127c6d40b77ea68611793a78db9176a",
       "ios/Classes/Web/OnlineWebViewController.swift": "78822322f62a5ae83113612931186ce84b95dc04fbbfd9b95d2480e1c698dc52",
-      "ios/Classes/Web/STOnlineWebCore.swift": "ded6a03c6da3c15e5aa818df05efef6e0f4d5a97451be3e550e441d4d2e35bc6",
+      "ios/Classes/Web/STOnlineWebCore.swift": "86d47f036036a9d8add1147a69550141bdbf79155f3e653233c69dc0965087fd",
       "ios/STMini/classes/frame/STMiniLocalization.swift": "a64daac918a371ce618e44257c4900e9498554672b6c736141c51500b2c68756",
-      "ios/STMini/classes/frame/STWebResourceManager.swift": "d91467d5e329bf18bd1dabc241331d1bc8974825f24b7f5a4bf5ea6b59e29043",
-      "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift": "a5dffb360ec7d6c45949f0ea35f1cc60ae4bcdfc91950b9bcb99a52d1033cc4d",
+      "ios/STMini/classes/frame/STWebResourceManager.swift": "ae337627977504dfe5774406f1d8ae51265a95885e020554996b6cb109e2c80e",
+      "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift": "bdf068b1b6bd47c52e5cae5a6c0770cbfcc8d50808dbe49678ce3b2d267ad7d5",
       "ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift": "081caccb58962d8430bf44426ef266228c97ee70bc051d749bb00b7f461412bd",
-      "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift": "d6ba2853545cd9d009fab93b119f3f554d3212777fbdd25b1610316041686495",
+      "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift": "44bad6c661c0f7f2daa67b348f5f9eebf89133851e224901c32f37fa6b937828",
       "ios/STMini/classes/frame/WebView/Api/STWebUIApi.swift": "cbfd74b8459bcc03919e643f0db82029abfa130fb430359c572166d7b85a880b",
       "ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift": "4b1e65dfc52edd640568d525e7f02e1b09c730f9ad1f38ae4dd4a382187fe713",
       "ios/STMini/classes/frame/WebView/Handler/STWebScriptHandler.swift": "69329d15703ea7890b3eaa76fa5d1a4245e307dc255fc480630792df4345b3e9",
-      "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift": "d7e001fb69a60d294c0da773c4fc0f8ced31fb91a86a0de56d330bebc6150a1f",
+      "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift": "8dc5abb2b6f6f87b8b05e0cef1a6be66cdd0085210d1c8378ab985ceef812931",
       "ios/STMini/classes/frame/WebView/LoadAnimation/STWebMiniLoadAnimationView.swift": "184df34785236066baa376415b7aad8aa8232ef7dca24d1afedae24d740c6592",
-      "ios/STMini/classes/frame/WebView/Navi/STWebNavigationController.swift": "dac6cfd11d410bea171ca26b9611b70c8507b29063c917f7af0b71261e239198",
+      "ios/STMini/classes/frame/WebView/Navi/STWebNavigationController.swift": "97a3a5ded08a43f2fecd8ffe6111f8a7db0e3c3c0a3f1a17fc92a75026f61cea",
       "ios/STMini/classes/frame/WebView/Open/STWebInfoStorage.swift": "1f0b1d9a95cef9efb5483937b981224977022e77810da84e581401f7ce336372",
-      "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift": "38aa709be9849a8889775d80cb20f67c20bc3c06b95dab9ecd7201b9cd3d5521",
-      "ios/STMini/classes/frame/WebView/PersonalHandle/STWebPersonalHandle.swift": "0092ca8151f1bd001c257259d7be369556a6ca36b69134209c6e047f094ae2ce",
+      "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift": "7b5051657a49c9d569984c74f28b38192cc6dd9cf3489bc26c34bae4e54d539d",
+      "ios/STMini/classes/frame/WebView/PersonalHandle/STWebPersonalHandle.swift": "626ff8d576688fa0c664a2a0992ab516854c65a6770019a001e10374672b6e2b",
       "ios/STMini/classes/frame/WebView/Setting/STWebCommonConfig.swift": "3274a3901a50520e28485a74cfcd15c392170e9fba86060f270163d99bf47131",
       "ios/STMini/classes/frame/WebView/Setting/STWebConfig.swift": "5ca5f0491bbb1b0b7ddd1b54c18db8931b7e1f7b724c63ed7dbc7154bca1a262",
-      "ios/STMini/classes/frame/WebView/Trans/STWebTransAnimation.swift": "2891523804eee36053ff4d04a50569e4c217dbe477132b45c55bd06bbf9618fc",
-      "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift": "78239956f07c0bab4c5266227bdc9bb33dc6847e4c58e10d8613611f0d64019c",
       "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift": "ff7ea475d23e7aecb44fe5bc08b3cc18d0801bb088cf8ea4c4af045c0e4efdaa",
-      "ios/STMini/classes/frame/WebView/Views/STWebCardView.swift": "857254b529307e5e05a96834b0df274139eaa2dde79118d38be9485f9dd19fb2",
       "ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift": "1e3372db7ff2da74845384f6abf66638a1a255839cec6d0324ac9eb2031f0b4d",
       "ios/STMini/classes/frame/WebView/Views/STWebPopView.swift": "0b5ddbb883b65d64a43fbbd37f8aaf21e55adf0d0adf5c39804e98b4380f3301",
       "ios/STMini/classes/frame/WebView/Views/STWebToolView.swift": "8bccf013767ffb71400a7664776f777e537a843297a0bc3d681a126b676be636",
       "ios/STMini/classes/frame/WebView/WebCrl/H5/STWebH5Crl.swift": "a872bfd1196515f6ae7157ffd587da44330add73fedd867f347b7add618cd4a8",
-      "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift": "194e0363ca727c7e4fdb7afb3683166c2b2d54ab49a80529dcb3ac2ec6ef9897"
+      "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift": "2de21a8a18f8fb1ac1e744cfa8acd2679d7104f80ba7770a7bc5d347f5eb8b2c"
     },
     "native_entry_chains": {
-      "android": "GeneratedPluginRegistrant -> StminiFlutterPlugin.onAttachedToEngine/onMethodCall -> StminiContainerActivity/Home/WebPage and OnlineWebActivity; container -> MiniPackageStore, MiniLink, pool, overlay, StminiWebBridge and SharedOnlineWeb. Activities are retained manifest entry points; R8 mapping/dex evidence is platform-specific.",
-      "ios": "GeneratedPluginRegistrant -> StminiFlutterPlugin.register/handle -> STWebOpenHandler and STWebMiniprogramCrl/H5/OnlineWebViewController -> STWebResourceManager, scheme handler, views/navigation/instance pool and STWebApiManager/SharedOnlineWeb. Runner dynamically loads the native framework; core exported types are retained."
+      "ios": "GeneratedPluginRegistrant -> StminiFlutterPlugin.register/handle -> read-only qualified local Mini via STWebOpenHandler/STWebMiniprogramCrl; active Mini child H5 -> shared OnlineWeb core; current document/session leases, resource scheme, scoped storage and Bridge. Standalone Flutter Web presentation, closed Mini cache, scanner and package mutation are removed."
     },
-    "production_manifest_sha256": "e2ad425047b588cbd90b18ad53f04fc691444dede0cb4c40cb06d50718d7a2d3",
-    "artifact_boundary": "Android source counts apply to APK only. iOS source counts apply to the local unsigned Runner.app/framework only; actual signed IPA is a separate PM gate.",
+    "production_manifest_sha256": "fb4cc1d2402f6ba020534a423639bfda1b7307ddaf26c2cdf5d8c80468af6a10",
+    "artifact_boundary": "Only fixed native iOS implementation source receives credit, bound to the current local unsigned Runner.app/framework. Android foundation Release is verified separately with zero iOS source credit. Signed IPA remains a separate PM gate.",
     "artifacts": {
       "ios": {
-        "bytes": 2557200,
-        "sha256": "21a849efb5d8b0ebbbc421d4f648860480e6100a016a700823eea2650d50d668"
+        "bytes": 1614336,
+        "sha256": "954e28c4d562dea900f511532fde6f35847397a24f5c170bef246771bdaa0fa6"
       },
       "android": {
-        "bytes": 17538362,
-        "sha256": "74037c54af7739fd683d2b46890007b96008e342b92fe08bc02922c0dde0f495"
+        "bytes": 17437985,
+        "sha256": "07c3b6784a5fe7e253ab1cd2d34f99051795c7458c97ddd01c454825a2dd8c21"
       }
     },
     "ordinary_build_commands": {
@@ -7159,59 +6628,54 @@
     "consumer_boundary": "Controlled real native SDK/WebView/CMS consumers and native tests are distinct from ordinary Dart main/AOT and from signed IPA/device/store evidence. This map does not assert each method/source line was individually executed.",
     "host_purpose_declarations": {
       "values": {
-        "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
-        "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+        "NSPhotoLibraryUsageDescription": "Photo library access is used to save an image when you choose to save it.",
         "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
       },
-      "source_info_sha256": "f5b477d63be5673304719782e437281fc82234d5958a55e59abc73a71a9e6a84",
-      "packaged_info_sha256": "71cb35a72d9575210edf7aac13603cdf0c29352c2f5df711341046c3bad57292",
+      "source_info_sha256": "923e4232d48fa50087af341e571345a10a6a05a7396e024ef8665048ba41321d",
+      "packaged_info_sha256": "0200e8d2fd8f2e33c83d4af786ab3c9a3f1ad007f3f25a44ae2ba32367a0f990",
       "localizations": {
         "en": {
           "values": {
-            "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
-            "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+            "NSPhotoLibraryUsageDescription": "Photo library access is used to save an image when you choose to save it.",
             "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
           },
-          "source_sha256": "0a03b19473e3642ac8a0212269d969129b781fdb7b4e36d53bce9555ddd6458f",
-          "packaged_sha256": "cda1ec4f52c73278ff61c372543805cba1d3f0e12d342f8fe9cc94e5c689a454"
+          "source_sha256": "9aa4eb2f9855ce200c064a4bd3bf7d8e68ad3f00039436d1e689f6d995b9fbe8",
+          "packaged_sha256": "d72f5c76dca3774dbbc7c6b52c888d67f38375a7ccdcae96c3f6f05cc80d4244"
         },
         "zh-Hans": {
           "values": {
-            "NSCameraUsageDescription": "仅在你主动打开扫码器时使用相机识别二维码。",
-            "NSPhotoLibraryUsageDescription": "读取你在扫码器中选择的照片，以识别其中的二维码。",
+            "NSPhotoLibraryUsageDescription": "仅在你选择保存图片时请求相册授权，以将图片存入相册。",
             "NSPhotoLibraryAddUsageDescription": "仅在你选择保存图片时将图片存入相册。"
           },
-          "source_sha256": "df691df014e4e6da8db61a5e9b76cdf9e60d0ffc240fab35171428ca90b56c1c",
-          "packaged_sha256": "f4cc2ca745ca0ad8eef13e433093c5ca09c68596f1543d4246b41640f28c41cf"
+          "source_sha256": "db0addcdd60badd027908ddd9e8ed18f40aa38e4849ffda776d08800782158f9",
+          "packaged_sha256": "6040894283b27bbac10845db81c48f9cc8e10a785ef9dd5f9ba26791ab9bd7d8"
         }
       },
-      "boundary": "Camera/video and photo-read scanner APIs are compiled SDK references, not a Deynu startup scanner entry or an automatic permission request. Add-only applies to the explicit save path. No microphone purpose or audio recording is introduced."
+      "boundary": "Scanner implementation and Camera purpose are removed. Explicit save uses add-only on iOS14+; the Pod13 legacy Photos authorization selector remains for older hosts, so accurate save-related Photo Library and Add purposes remain. No microphone purpose is introduced."
     },
-    "runtime_validation_reuse": {
-      "not_reexecuted": true,
-      "reason": "Only host purpose strings, localized resources and resource project references changed. Native/Dart/Android/test/lock inputs exactly match the prior completed validation; current ordinary iOS Release packaging is newly verified.",
-      "unchanged_qualified_native_paths": 52,
-      "unchanged_dart_and_fixture_inputs": 57,
-      "native_framework_sha256_unchanged": true,
-      "android_apk_sha256_unchanged": true,
-      "reused_results": {
-        "ios_native": {
-          "tests": 40,
-          "failures": 0,
-          "skipped": 0
+    "platform_scope": {
+      "ios": "qualified existing local Mini only; no package mutation, standalone Flutter Web or closed Mini cache",
+      "android": "third-batch inventory/local-renderer foundation with explicit unsupported full Mini/Web; excluded from source qualification"
+    },
+    "mechanical_eof_consumer_reuse": {
+      "rule": "Two exact EOF-only source differences: after bytes equal before.rstrip(LF)+LF; all body bytes unchanged.",
+      "files": [
+        {
+          "path": "apps/almanac/packages/stmini_flutter/ios/Classes/Web/STOnlineWebCore.swift",
+          "before_bytes": 13062,
+          "after_bytes": 13061,
+          "before_sha256": "f4dab7184b21a653a1000ebacc60ccb92c525bed934215c2df23f7addd4b2e27",
+          "after_sha256": "86d47f036036a9d8add1147a69550141bdbf79155f3e653233c69dc0965087fd"
         },
-        "android_jvm": {
-          "tests": 92,
-          "failures": 0,
-          "skipped": 0
-        },
-        "dart_full": 119,
-        "dart_post_full_fake_overlapping_subset": 50,
-        "full_sdk": {
-          "both_platforms": "A/B each17 checks, closedBoth; iOS lifecycle onlyA, Android onlyB"
+        {
+          "path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
+          "before_bytes": 280,
+          "after_bytes": 279,
+          "before_sha256": "e9b238779860dd2cbad0d1aea1e605429598d7d9e04b35b13c11e51a6d955647",
+          "after_sha256": "8dc5abb2b6f6f87b8b05e0cef1a6be66cdd0085210d1c8378ab985ceef812931"
         }
-      },
-      "boundary": "No new camera or photo access execution, no physical-device claim, and no signed IPA ingest acceptance implied. Runtime methods and source counts are separate from host declarations."
+      ],
+      "boundary": "Native/SDK semantic execution evidence retains the observed earlier source SHA and is reused only for these exact trailing-LF changes. The current ordinary iOS Release was rebuilt with the new source SHA. No runtime test is relabeled as having executed the new SHA."
     }
   }
 }

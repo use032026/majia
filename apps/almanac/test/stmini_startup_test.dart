@@ -262,6 +262,10 @@ void main() {
       final nativeState = <String, dynamic>{
         'stage': 'mini',
         'runtimeMode': 'mini',
+        'miniPackageMode': 'local_only',
+        'miniPackageDownloadAvailable': false,
+        'miniPackageInstallAvailable': false,
+        'miniPackageUpdateAvailable': false,
         'initialized': true,
         'packageName': 'com.almanac.lite',
       };
@@ -286,7 +290,7 @@ void main() {
         await tester.pump();
         await startup.initializeOnce();
 
-        expect(StminiFlutter.runtimeStage, 'mini');
+        expect(StminiFlutter.runtimeStage, 'foundation');
         expect(calls.map((call) => call.method), <String>[
           'initialize',
           'installedPackages',

@@ -1,122 +1,148 @@
 {
   "schema_version": 2,
   "source_sha": "b4462f63a33acf6c3fff63f0e67b3713bc00dff8",
-  "stage": "full_main_runtime_and_bridge",
-  "not_full_main_runtime": false,
+  "stage": "ios_local_only_mini_runtime_android_foundation",
+  "not_full_main_runtime": true,
   "runtime_capabilities": {
-    "mini_loading": true,
-    "web_loading": true,
+    "ios": {
+      "stage": "mini",
+      "miniLoadingAvailable": true,
+      "miniLoadingScope": "qualified already-existing local packages only; never auto-opened",
+      "webLoadingAvailable": false,
+      "miniChildWebAvailable": true,
+      "closedMiniCacheAvailable": false,
+      "miniPackageDownloadAvailable": false,
+      "miniPackageInstallAvailable": false,
+      "miniPackageUpdateAvailable": false,
+      "miniPackageMode": "local_only",
+      "capabilities": [
+        "local_mini_runtime",
+        "local_renderer"
+      ],
+      "reopen": "fresh controller/document; normal UIKit fullScreen transition"
+    },
+    "android": {
+      "stage": "foundation",
+      "initializationEvent": "foundation_initialized",
+      "miniLoadingAvailable": false,
+      "webLoadingAvailable": false,
+      "miniChildWebAvailable": false,
+      "closedMiniCacheAvailable": false,
+      "miniPackageDownloadAvailable": false,
+      "miniPackageInstallAvailable": false,
+      "miniPackageUpdateAvailable": false,
+      "localRendererAvailable": true,
+      "scope": "Third-batch strict inventory/limited local renderer/event lease; fourth-batch full Mini/Web not integrated"
+    },
     "strict_inventory": true,
-    "local_renderer": true,
     "default_product_entry": "Deynu original home; initialize/state/inventory only; no Mini URL/automatic or remote activation"
   },
   "host_boundaries": {
     "account_or_trading_provider": "not installed; recognized methods fail by contract",
-    "sdk_storage": "SHA256 native Mini/origin domains independent of host schema",
-    "android_save_album": "API24-28 permission denied because Deynu removes READ/WRITE external storage; API29+ scoped MediaStore implementation, actual OS save not tested",
-    "ios_photos": "Explicit save path uses add-only authorization. Retained scanner library separately references ordinary photo-library read access for selected-image QR recognition; host has camera/read/add purposes in en and zh-Hans. Current Deynu has no scanner entry or automatic permission request; actual protected-data access is untested",
-    "ios_camera": "Retained public SDK scanner uses video capture for QR scanning. A host purpose declaration is packaging compliance, not a new Deynu scanner entry or startup permission request; no microphone purpose or audio recording added",
-    "fifth_batch": "local whole-system validation and gap filling only, no signing/upload/store submission"
+    "sdk_storage": "iOS SHA256 native Mini/origin domains independent of host schema; optional legacy host WebStorage mirror/profile caches removed; direct getUserInfo provider and standard mini_notifySessionChanged document leases retained",
+    "android_save_album": "Full Mini/online-Web Bridge not integrated; no Android save/share/runtime capability is claimed from removed fourth-batch implementation",
+    "ios_photos": "Explicit save uses add-only authorization on iOS14+; unchanged Pod13 legacy fallback retains ordinary Photos selectors, with accurate save-related Read/Add purposes in en and zh-Hans. No automatic permission request or actual protected-data access claim.",
+    "ios_camera": "LBX scanner implementation and its exclusive images are removed; current unsigned plugin/App-bundle scan and Camera-purpose absence are verified separately. No microphone purpose or audio recording added",
+    "fifth_batch": "local whole-system validation and gap filling only, no signing/upload/store submission; scanner, package download/ZIP install/update and Tiercel remain removed unless user explicitly requests them again",
+    "package_mutation": "Permanently removed for current scope: no Mini download, unzip, install or update. Nonempty downloadURL even for installed Mini and force-update are unsupported; missing/invalid/below-floor local Mini fails without package metadata writes or ordinary Web fallback. Legacy update methods reply code string 0, data.msg unsupported and supported false."
   },
   "source_denominator": {
-    "files": 113,
-    "physical_lines": 20683,
-    "bytes": 823442,
+    "files": 86,
+    "physical_lines": 15317,
+    "bytes": 573309,
     "by_source_kind": {
-      "android_implementation": 5133,
       "ios_implementation": 14981,
-      "headers": 336,
-      "shared_dart": 233
+      "headers": 336
     },
-    "optional_ios_implementation_headers_shared_dart_denominator": 15550
+    "scope": "Fixed native-only iOS main implementation plus headers; Android and shared Dart are excluded by user decision",
+    "reference_full_main_files": 113,
+    "reference_full_main_lines": 20683
   },
   "signed_ipa_qualification": null,
   "host_purpose_declarations": {
     "values": {
-      "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
-      "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+      "NSPhotoLibraryUsageDescription": "Photo library access is used to save an image when you choose to save it.",
       "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
     },
-    "source_info_sha256": "f5b477d63be5673304719782e437281fc82234d5958a55e59abc73a71a9e6a84",
-    "packaged_info_sha256": "71cb35a72d9575210edf7aac13603cdf0c29352c2f5df711341046c3bad57292",
+    "source_info_sha256": "923e4232d48fa50087af341e571345a10a6a05a7396e024ef8665048ba41321d",
+    "packaged_info_sha256": "0200e8d2fd8f2e33c83d4af786ab3c9a3f1ad007f3f25a44ae2ba32367a0f990",
     "localizations": {
       "en": {
         "values": {
-          "NSCameraUsageDescription": "Camera access is used to scan QR codes only when you choose to open a scanner.",
-          "NSPhotoLibraryUsageDescription": "Photo access is used to recognize a QR code in a photo you choose in the scanner.",
+          "NSPhotoLibraryUsageDescription": "Photo library access is used to save an image when you choose to save it.",
           "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
         },
-        "source_sha256": "0a03b19473e3642ac8a0212269d969129b781fdb7b4e36d53bce9555ddd6458f",
-        "packaged_sha256": "cda1ec4f52c73278ff61c372543805cba1d3f0e12d342f8fe9cc94e5c689a454"
+        "source_sha256": "9aa4eb2f9855ce200c064a4bd3bf7d8e68ad3f00039436d1e689f6d995b9fbe8",
+        "packaged_sha256": "d72f5c76dca3774dbbc7c6b52c888d67f38375a7ccdcae96c3f6f05cc80d4244"
       },
       "zh-Hans": {
         "values": {
-          "NSCameraUsageDescription": "仅在你主动打开扫码器时使用相机识别二维码。",
-          "NSPhotoLibraryUsageDescription": "读取你在扫码器中选择的照片，以识别其中的二维码。",
+          "NSPhotoLibraryUsageDescription": "仅在你选择保存图片时请求相册授权，以将图片存入相册。",
           "NSPhotoLibraryAddUsageDescription": "仅在你选择保存图片时将图片存入相册。"
         },
-        "source_sha256": "df691df014e4e6da8db61a5e9b76cdf9e60d0ffc240fab35171428ca90b56c1c",
-        "packaged_sha256": "f4cc2ca745ca0ad8eef13e433093c5ca09c68596f1543d4246b41640f28c41cf"
+        "source_sha256": "db0addcdd60badd027908ddd9e8ed18f40aa38e4849ffda776d08800782158f9",
+        "packaged_sha256": "6040894283b27bbac10845db81c48f9cc8e10a785ef9dd5f9ba26791ab9bd7d8"
       }
     },
-    "boundary": "Camera/video and photo-read scanner APIs are compiled SDK references, not a Deynu startup scanner entry or an automatic permission request. Add-only applies to the explicit save path. No microphone purpose or audio recording is introduced."
+    "boundary": "Scanner implementation and Camera purpose are removed. Explicit save uses add-only on iOS14+; the Pod13 legacy Photos authorization selector remains for older hosts, so accurate save-related Photo Library and Add purposes remain. No microphone purpose is introduced."
   },
-  "runtime_validation_reuse": {
-    "not_reexecuted": true,
-    "reason": "Only host purpose strings, localized resources and resource project references changed. Native/Dart/Android/test/lock inputs exactly match the prior completed validation; current ordinary iOS Release packaging is newly verified.",
-    "unchanged_qualified_native_paths": 52,
-    "unchanged_dart_and_fixture_inputs": 57,
-    "native_framework_sha256_unchanged": true,
-    "android_apk_sha256_unchanged": true,
-    "reused_results": {
-      "ios_native": {
-        "tests": 40,
-        "failures": 0,
-        "skipped": 0
+  "platform_scope": {
+    "ios": "qualified existing local Mini only; no package mutation, standalone Flutter Web or closed Mini cache",
+    "android": "third-batch inventory/local-renderer foundation with explicit unsupported full Mini/Web; excluded from source qualification"
+  },
+  "mechanical_eof_consumer_reuse": {
+    "rule": "Two exact EOF-only source differences: after bytes equal before.rstrip(LF)+LF; all body bytes unchanged.",
+    "files": [
+      {
+        "path": "apps/almanac/packages/stmini_flutter/ios/Classes/Web/STOnlineWebCore.swift",
+        "before_bytes": 13062,
+        "after_bytes": 13061,
+        "before_sha256": "f4dab7184b21a653a1000ebacc60ccb92c525bed934215c2df23f7addd4b2e27",
+        "after_sha256": "86d47f036036a9d8add1147a69550141bdbf79155f3e653233c69dc0965087fd"
       },
-      "android_jvm": {
-        "tests": 92,
-        "failures": 0,
-        "skipped": 0
-      },
-      "dart_full": 119,
-      "dart_post_full_fake_overlapping_subset": 50,
-      "full_sdk": {
-        "both_platforms": "A/B each17 checks, closedBoth; iOS lifecycle onlyA, Android onlyB"
+      {
+        "path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
+        "before_bytes": 280,
+        "after_bytes": 279,
+        "before_sha256": "e9b238779860dd2cbad0d1aea1e605429598d7d9e04b35b13c11e51a6d955647",
+        "after_sha256": "8dc5abb2b6f6f87b8b05e0cef1a6be66cdd0085210d1c8378ab985ceef812931"
       }
-    },
-    "boundary": "No new camera or photo access execution, no physical-device claim, and no signed IPA ingest acceptance implied. Runtime methods and source counts are separate from host declarations."
+    ],
+    "boundary": "Native/SDK semantic execution evidence retains the observed earlier source SHA and is reused only for these exact trailing-LF changes. The current ordinary iOS Release was rebuilt with the new source SHA. No runtime test is relabeled as having executed the new SHA."
   },
   "source_map": {
     "path": "SOURCE_MAP.json",
-    "sha256": "dfc7cfbf2a89cce605494caff26d12bf06604e487f8c167d9d95220aedc73681",
-    "qualified_cumulative_source_lower_bound": 13514,
-    "extra_reference_subtracted_fourth_new_lower_bound": 12467,
-    "minimum_fourth_source_lines": 10342,
+    "sha256": "4786a91f2c30b7c22804a397e76d5380780903568e5e9b8a900de520555c5c6b",
+    "qualified_cumulative_source_lower_bound": 6182,
+    "extra_reference_subtracted_fourth_new_lower_bound": 5632,
+    "minimum_fourth_source_lines": 4596,
+    "maximum_fourth_source_lines": 6126,
+    "new_upper_relative_known_P": 6103,
+    "entire_interval_within_user_target": true,
     "floor_met": true,
     "platform_totals": {
       "ios": {
-        "mapped_cumulative_conservative_lines": 8562,
-        "mapped_fourth_new_conservative_lower_bound": 8011,
-        "qualified_cumulative_conservative_lines": 8562,
-        "qualified_fourth_new_conservative_lower_bound": 8011,
+        "mapped_cumulative_conservative_lines": 6182,
+        "mapped_fourth_new_conservative_lower_bound": 5632,
+        "qualified_cumulative_conservative_lines": 6182,
+        "qualified_fourth_new_conservative_lower_bound": 5632,
         "artifact_boundary": "iOS framework/app only; signed IPA separately verified by PM"
       },
       "android": {
-        "mapped_cumulative_conservative_lines": 4952,
-        "mapped_fourth_new_conservative_lower_bound": 4456,
-        "qualified_cumulative_conservative_lines": 4952,
-        "qualified_fourth_new_conservative_lower_bound": 4456,
+        "mapped_cumulative_conservative_lines": 0,
+        "mapped_fourth_new_conservative_lower_bound": 0,
+        "qualified_cumulative_conservative_lines": 0,
+        "qualified_fourth_new_conservative_lower_bound": 0,
         "artifact_boundary": "Android APK only; never attributed to iOS IPA"
       }
     },
     "known_byte_equal_origin_sets": {
       "totals": {
-        "P_known_same_path": 320,
-        "C_qualified_current": 13514,
-        "P_retained_in_C": 317,
-        "P_not_retained_in_C": 3,
-        "N_C_minus_known_P": 13197
+        "P_known_same_path": 80,
+        "C_qualified_current": 6182,
+        "P_retained_in_C": 79,
+        "P_not_retained_in_C": 1,
+        "N_C_minus_known_P": 6103
       },
       "additive_checks": {
         "retained_previous_plus_new_equals_current": true,
@@ -125,23 +151,65 @@
       "boundary": "P is only verified byte-equal same-path baseline provenance under the same native source eligibility filter, not all previous batches or asserted old binary linkage. Cross-path/equivalent-derived baseline remains unknown. N is exact relative to known P only. References never form P; the extra reference-subtracted fourth-new lower bound is a separate non-additive quantity."
     }
   },
-  "source_metric_boundary": "Unique fixed source path+line spans only. Changed equivalent lines, local adapters/resources/tests and dead/declaration-only or Release-excluded modules do not receive source credit. Extra reference subtraction is a separate conservative non-additive lower bound. Known same-path previous subset is not all previous batches; cross-path derived provenance remains unknown. Counts are provenance, not feature percentage or line-by-line retained machine-code/execution coverage. Android counts apply only to APK; iOS only to the local unsigned app/framework until separate signed IPA verification.",
+  "source_metric_boundary": "Fixed iOS implementation plus headers denominator 86 files/15317 lines; only primary executable native iOS byte-equal source spans receive credit. Android/shared Dart, local adapters/supporting UI/resources/tests and dead/declaration-only or Release-excluded modules receive zero credit. Extra reference subtraction is a separate conservative non-additive lower bound. Known same-path previous subset is not all previous batches; cross-path derived provenance remains unknown. Counts are provenance, not feature percentage or line-by-line retained machine-code/execution coverage. iOS qualification applies only to the current local unsigned app/framework until separate signed IPA verification.",
+  "removed_fixed_source_paths": [
+    "android/src/main/kotlin/com/fsst/stmini_flutter/StminiDebugLog.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiRuntimePool.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniBridgeOriginPolicy.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchIdentity.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchOverlay.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchSnapshotStore.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniPopupBridgePolicy.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiHomeActivity.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiMediaStoreWrite.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiWebPageActivity.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebConfiguration.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebHostBridge.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebOrigin.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionBridge.kt",
+    "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionRegistry.kt",
+    "ios/STMini/classes/frame/WebView/Trans/STWebTransAnimation.swift",
+    "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift",
+    "ios/STMini/classes/frame/WebView/Views/STWebCardView.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Array+Safe.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Data+Hash.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/DispatchQueue+Safe.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Double+TaskInfo.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Int64+TaskInfo.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/String+Hash.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/UIDevice+Free.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/URLSession+ResumeData.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCache.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCommon.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRConfiguration.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRDownloadTask.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRManager.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRSessionDelegate.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRTask.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Tiercel.h",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRChecksumHelper.swift",
+    "ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRResumeDataHelper.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXPermissions.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXScanLineAnimation.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXScanNetAnimation.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXScanView.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXScanViewController.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXScanViewStyle.swift",
+    "ios/STMini/classes/ui/Third/Scan/LBXScanWrapper.swift"
+  ],
   "current_production_source_files": [
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiDebugLog.kt",
-      "source_git_blob": "be6a4a842d6eda391f236b5254de9c1b5d2ada1f",
-      "source_sha256": "80cf851e1d3a4822a2dfdade9c5b68542c59141cc8508c088fa6b3dd0bda5044",
-      "integrated_sha256": "80cf851e1d3a4822a2dfdade9c5b68542c59141cc8508c088fa6b3dd0bda5044",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
     {
       "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
       "source_git_blob": "01669f49ac2c1f793d4a9622d6cc573ae4ed02b6",
       "source_sha256": "a3b842e190ea1295d45d19bc13a7a4d2f8e6a1f8012c816e1a33f39540e4369c",
-      "integrated_sha256": "4b4716fdaddfc4816889f73ff4cb559b054f5487aa8916fda5def19f357eb7eb",
+      "integrated_sha256": "6848aff9cc1621bef9c2a1aa06d5a4af623ba2b3a4d96e9b8d682cf931d97ee0",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 144
+      "qualified_source_lines": 0
     },
     {
       "path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
@@ -149,15 +217,7 @@
       "source_sha256": "62cb497bf80095b45bf921558b8035b052e110c678f0025580aa6d6cee8fa148",
       "integrated_sha256": "78d894ac77044ed6b96da598b310fc64f7d2c0081f28c341e37fc5c0670b125e",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 7
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt",
-      "source_git_blob": "e85a6fdefda32eed8328dd5111193a6c88c3e2a3",
-      "source_sha256": "15086cbb9be6f12d1c3bd1122baf10c17a54ece4d16ecdbf9b2d9d4dbcca4874",
-      "integrated_sha256": "39b38928492b2cc0990e352ed79a5a8f796cbd0e2cf304fb548af00ff2f9bfbe",
-      "byte_identical_complete_file": false,
-      "qualified_source_lines": 478
+      "qualified_source_lines": 0
     },
     {
       "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniLink.kt",
@@ -165,15 +225,7 @@
       "source_sha256": "54ced365714b7c8001dc8f5ae4209df7a351ba7d0ee8e3ea46e9c9156fb9cc86",
       "integrated_sha256": "54ced365714b7c8001dc8f5ae4209df7a351ba7d0ee8e3ea46e9c9156fb9cc86",
       "byte_identical_complete_file": true,
-      "qualified_source_lines": 76
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
-      "source_git_blob": "cd20cc82b109fd6635a91086b1a3e8eeb5385a0a",
-      "source_sha256": "237734d7c047f00f0a2a868423db6c2c9575ba7971695a8e6cdd4d9086105e7e",
-      "integrated_sha256": "0d8034b68cc4872eb1adc50dd822f5ae2ea4afbdce6edd4f9afc072eaa2a2b3e",
-      "byte_identical_complete_file": false,
-      "qualified_source_lines": 382
+      "qualified_source_lines": 0
     },
     {
       "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt",
@@ -181,15 +233,7 @@
       "source_sha256": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
       "integrated_sha256": "b6b0cbe904900be7f6fe569e0aa58dab016e16ef854d5aa120c4840c876a4dc7",
       "byte_identical_complete_file": true,
-      "qualified_source_lines": 108
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiRuntimePool.kt",
-      "source_git_blob": "e0781da3d7b706f78ea3588196f2b7a01f106eba",
-      "source_sha256": "df34f45809b14035c5168c3258e3b8cb6690f2c650cd27b3a9987648a7422d30",
-      "integrated_sha256": "df34f45809b14035c5168c3258e3b8cb6690f2c650cd27b3a9987648a7422d30",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 272
+      "qualified_source_lines": 0
     },
     {
       "path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/WebOrigin.kt",
@@ -197,143 +241,15 @@
       "source_sha256": "3c8d57c2b11c32b3abe45b4ffe6c80ac42dd7f0022ea6760e0046fb7b2fac496",
       "integrated_sha256": "3c8d57c2b11c32b3abe45b4ffe6c80ac42dd7f0022ea6760e0046fb7b2fac496",
       "byte_identical_complete_file": true,
-      "qualified_source_lines": 32
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniBridgeOriginPolicy.kt",
-      "source_git_blob": "f146189886f257f47cd4ceabcf18bb0528e286b0",
-      "source_sha256": "73ac38e98f4ebcf0b060f195fa3d97fb0a8fbd9d62b26609d8e237f42897f4ed",
-      "integrated_sha256": "73ac38e98f4ebcf0b060f195fa3d97fb0a8fbd9d62b26609d8e237f42897f4ed",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 23
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchIdentity.kt",
-      "source_git_blob": "88ff66280062f586769b3cab4c8631b1914252e8",
-      "source_sha256": "c71a912570715056af47e3838298725a7af7e71eeec970aec3bd16f047fe7fca",
-      "integrated_sha256": "c71a912570715056af47e3838298725a7af7e71eeec970aec3bd16f047fe7fca",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 48
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchOverlay.kt",
-      "source_git_blob": "b02471c8ad1c8c7990333876117d7b9fd2445d5f",
-      "source_sha256": "3326ce0137e5e09b34076821ed09e0953c0495220c9c3b5e356bc6d2503f6c84",
-      "integrated_sha256": "3326ce0137e5e09b34076821ed09e0953c0495220c9c3b5e356bc6d2503f6c84",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 329
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchSnapshotStore.kt",
-      "source_git_blob": "1b03d3a40d0a68b70d3b5085a7830f199615d72e",
-      "source_sha256": "7b9887b61cae48a4816cf273d03015526ad9e63563f65c9299aa8f7f11a7d641",
-      "integrated_sha256": "7b9887b61cae48a4816cf273d03015526ad9e63563f65c9299aa8f7f11a7d641",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 93
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniPopupBridgePolicy.kt",
-      "source_git_blob": "4fd455b55f91fb10df4dc9a7d1958e1cd8a34a37",
-      "source_sha256": "466752a09e08880035b709f2c3ec0162b3b79b99d76c508121798784994e6e09",
-      "integrated_sha256": "466752a09e08880035b709f2c3ec0162b3b79b99d76c508121798784994e6e09",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 31
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
-      "source_git_blob": "afeef71ce6974a1174ec481762d62a13c879062e",
-      "source_sha256": "bffbb7d37a54e86b592d83c181f76ec861f5557d27f73bae6828f1a37419f180",
-      "integrated_sha256": "0c5e4d878defb2d9463d85ee987453089120753b897b83e4141019fc7f7e5dab",
-      "byte_identical_complete_file": false,
-      "qualified_source_lines": 1945
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiHomeActivity.kt",
-      "source_git_blob": "69db1bf4067e86d5f0b99cc02300e9eec85d3ae0",
-      "source_sha256": "83e46f2e8a6ac92609bdaec0359723fca48705b5a70fdb7750718f1ac491715f",
-      "integrated_sha256": "83e46f2e8a6ac92609bdaec0359723fca48705b5a70fdb7750718f1ac491715f",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 10
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiMediaStoreWrite.kt",
-      "source_git_blob": "53483cf0f66c746a5fca519add536c0ba3c464d8",
-      "source_sha256": "9abc077392ac4c827c9e1415cc58b4ee54fa7ab97e8062c73018d3680adf0ad1",
-      "integrated_sha256": "9abc077392ac4c827c9e1415cc58b4ee54fa7ab97e8062c73018d3680adf0ad1",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 25
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiWebPageActivity.kt",
-      "source_git_blob": "7a8d0ce04493106aad6a523b75f1b78a9fef95c7",
-      "source_sha256": "f122c9a5b5ce75f30131e571ae0b3010a6b0a2680880f460d208cb53b35e5567",
-      "integrated_sha256": "f122c9a5b5ce75f30131e571ae0b3010a6b0a2680880f460d208cb53b35e5567",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 8
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt",
-      "source_git_blob": "d1b334cf8a2a14c1f35ccb45b8c8f9f951a47e40",
-      "source_sha256": "1f35de09784255424744dae0a6b8a6363ac910f663bab3ccae456d121dd5bd00",
-      "integrated_sha256": "0da1d29a0dbfca1e2d18999f671ee539b9483c727e150c6fb3fcf2810e31dcc4",
-      "byte_identical_complete_file": false,
-      "qualified_source_lines": 328
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebConfiguration.kt",
-      "source_git_blob": "8fe756b6875f48087905449ae5b879fe31a65882",
-      "source_sha256": "1d7726b14119ec64e456e40caac4ccf9e0d4c15fd53743d4b4f1aba6cfd55396",
-      "integrated_sha256": "1d7726b14119ec64e456e40caac4ccf9e0d4c15fd53743d4b4f1aba6cfd55396",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 17
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt",
-      "source_git_blob": "ebda2ecedb4754d6002d72a77a78b8276ad8b24d",
-      "source_sha256": "f269dfde2c60dd79b6fef5039588fd96a463175881b6dbd92fbfc941f245ece3",
-      "integrated_sha256": "09aa8bcb209446cb60a23b66899f0af128ddc769a9adfcd86172cab0cfd1fcad",
-      "byte_identical_complete_file": false,
-      "qualified_source_lines": 211
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebHostBridge.kt",
-      "source_git_blob": "ea199974a5c728f077ed70c492a7cbb37757405e",
-      "source_sha256": "b4def815bb12bec06f04de901effa5709221fe279b5a8493a505f74c2736da09",
-      "integrated_sha256": "b4def815bb12bec06f04de901effa5709221fe279b5a8493a505f74c2736da09",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 111
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebOrigin.kt",
-      "source_git_blob": "1498493a6c2c4d608da0e959573e606ffbf7759b",
-      "source_sha256": "54b415871d88cabc52d46b8ca9b0293d551fd78403d597f10be893f66d4eae25",
-      "integrated_sha256": "54b415871d88cabc52d46b8ca9b0293d551fd78403d597f10be893f66d4eae25",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 59
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionBridge.kt",
-      "source_git_blob": "415ce6f3a2a740c0ac7405b9f42d22786823c7f0",
-      "source_sha256": "dcfd0e82ae1898d40100a7b223ab20d53d6beba639c05667d966b443be4c5c66",
-      "integrated_sha256": "cb13d0b57cc3712c4ea6f73feb3541ed50e10c674cc684550784dcd4f38e0af2",
-      "byte_identical_complete_file": false,
-      "qualified_source_lines": 101
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionRegistry.kt",
-      "source_git_blob": "b53a5c64aa66970e7218cdbcca0ab50ae105abe8",
-      "source_sha256": "7aa08cf93e22a16b847191cd15148acc1f5b2465992c13b955704f9aa49eb1e3",
-      "integrated_sha256": "7aa08cf93e22a16b847191cd15148acc1f5b2465992c13b955704f9aa49eb1e3",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 114
+      "qualified_source_lines": 0
     },
     {
       "path": "ios/Classes/StminiFlutterPlugin.swift",
       "source_git_blob": "77e2607a941d5010fe5b4f69f618a9beb2e5df0e",
       "source_sha256": "0768d6903abb6ab8f693b86864b691e617ca5434362d218a6dba98687ab9ee72",
-      "integrated_sha256": "9fc29eced2a11103ca94cfab7b3df155e4795c3c06eae64baa8b5b98e585646f",
+      "integrated_sha256": "020fee45dce2610a24c1204237a2b8122127c6d40b77ea68611793a78db9176a",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 1071
+      "qualified_source_lines": 814
     },
     {
       "path": "ios/Classes/Web/OnlineWebViewController.swift",
@@ -347,9 +263,9 @@
       "path": "ios/Classes/Web/STOnlineWebCore.swift",
       "source_git_blob": "d148b03f0e0f36ffa3551b4121fb81a7c189d39d",
       "source_sha256": "57ff95c0a930e49ca6963f0b1948899f3e290c12a3fa96780552229a3fffa104",
-      "integrated_sha256": "ded6a03c6da3c15e5aa818df05efef6e0f4d5a97451be3e550e441d4d2e35bc6",
+      "integrated_sha256": "86d47f036036a9d8add1147a69550141bdbf79155f3e653233c69dc0965087fd",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 350
+      "qualified_source_lines": 269
     },
     {
       "path": "ios/STMini/classes/frame/STFrameKit.h",
@@ -371,17 +287,17 @@
       "path": "ios/STMini/classes/frame/STWebResourceManager.swift",
       "source_git_blob": "d3f979a442a4c1956d1b57f85a8a65720d9ae84f",
       "source_sha256": "feba3613986a042ec6254741998728e9eb67bc6bd111185ad6e7cc6c5f50567e",
-      "integrated_sha256": "d91467d5e329bf18bd1dabc241331d1bc8974825f24b7f5a4bf5ea6b59e29043",
+      "integrated_sha256": "ae337627977504dfe5774406f1d8ae51265a95885e020554996b6cb109e2c80e",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 768
+      "qualified_source_lines": 500
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift",
       "source_git_blob": "ce3bb8c2ed7dc6b43332841fd93e7acd01ca2352",
       "source_sha256": "8ff448a4c792807953eade49cd1fdc8c58fa0d1ed5408499e2ae84e17809f04e",
-      "integrated_sha256": "a5dffb360ec7d6c45949f0ea35f1cc60ae4bcdfc91950b9bcb99a52d1033cc4d",
+      "integrated_sha256": "bdf068b1b6bd47c52e5cae5a6c0770cbfcc8d50808dbe49678ce3b2d267ad7d5",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 646
+      "qualified_source_lines": 469
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift",
@@ -411,7 +327,7 @@
       "path": "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift",
       "source_git_blob": "9b3f6e8c6174b26d714299ac513ebe38cc00b9e5",
       "source_sha256": "02ddc600e59874b66dbecec7237084270afbaf540877fa0b34733d883a71e963",
-      "integrated_sha256": "d6ba2853545cd9d009fab93b119f3f554d3212777fbdd25b1610316041686495",
+      "integrated_sha256": "44bad6c661c0f7f2daa67b348f5f9eebf89133851e224901c32f37fa6b937828",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 299
     },
@@ -451,9 +367,9 @@
       "path": "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
       "source_git_blob": "28fdc72793689a171b7fb20ee83fd5c3889a2a93",
       "source_sha256": "c4e6223a5f885660461d363bb557d129854bde93bb05a57422c60444fd3cf0fb",
-      "integrated_sha256": "d7e001fb69a60d294c0da773c4fc0f8ced31fb91a86a0de56d330bebc6150a1f",
+      "integrated_sha256": "8dc5abb2b6f6f87b8b05e0cef1a6be66cdd0085210d1c8378ab985ceef812931",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 442
+      "qualified_source_lines": 23
     },
     {
       "path": "ios/STMini/classes/frame/WebView/LoadAnimation/STWebLoadProtocol.swift",
@@ -475,9 +391,9 @@
       "path": "ios/STMini/classes/frame/WebView/Navi/STWebNavigationController.swift",
       "source_git_blob": "b46a67b788eb261db7e5f9db3318dd83e4148ee3",
       "source_sha256": "ef69f394a04943e75b496cd926710651d8ff267f2bf44595e46481de88f277fe",
-      "integrated_sha256": "dac6cfd11d410bea171ca26b9611b70c8507b29063c917f7af0b71261e239198",
+      "integrated_sha256": "97a3a5ded08a43f2fecd8ffe6111f8a7db0e3c3c0a3f1a17fc92a75026f61cea",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 49
+      "qualified_source_lines": 37
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Network/STWebApiRequest.swift",
@@ -507,17 +423,17 @@
       "path": "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift",
       "source_git_blob": "a6e836988a0df0e4b70d4343ad6c81a7e236039a",
       "source_sha256": "38aa709be9849a8889775d80cb20f67c20bc3c06b95dab9ecd7201b9cd3d5521",
-      "integrated_sha256": "38aa709be9849a8889775d80cb20f67c20bc3c06b95dab9ecd7201b9cd3d5521",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 451
+      "integrated_sha256": "7b5051657a49c9d569984c74f28b38192cc6dd9cf3489bc26c34bae4e54d539d",
+      "byte_identical_complete_file": false,
+      "qualified_source_lines": 421
     },
     {
       "path": "ios/STMini/classes/frame/WebView/PersonalHandle/STWebPersonalHandle.swift",
       "source_git_blob": "0bb90b1762f7774d5a0909f40b552ebe434c50c3",
       "source_sha256": "0092ca8151f1bd001c257259d7be369556a6ca36b69134209c6e047f094ae2ce",
-      "integrated_sha256": "0092ca8151f1bd001c257259d7be369556a6ca36b69134209c6e047f094ae2ce",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 44
+      "integrated_sha256": "626ff8d576688fa0c664a2a0992ab516854c65a6770019a001e10374672b6e2b",
+      "byte_identical_complete_file": false,
+      "qualified_source_lines": 43
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Setting/STWebCommonConfig.swift",
@@ -536,36 +452,12 @@
       "qualified_source_lines": 76
     },
     {
-      "path": "ios/STMini/classes/frame/WebView/Trans/STWebTransAnimation.swift",
-      "source_git_blob": "630ba9e06fdfb793f2b59aa8f0efecb37395b2d8",
-      "source_sha256": "2891523804eee36053ff4d04a50569e4c217dbe477132b45c55bd06bbf9618fc",
-      "integrated_sha256": "2891523804eee36053ff4d04a50569e4c217dbe477132b45c55bd06bbf9618fc",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 153
-    },
-    {
-      "path": "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift",
-      "source_git_blob": "708fe2843dbaf210ae4dd1a885fb9f949bf41483",
-      "source_sha256": "78239956f07c0bab4c5266227bdc9bb33dc6847e4c58e10d8613611f0d64019c",
-      "integrated_sha256": "78239956f07c0bab4c5266227bdc9bb33dc6847e4c58e10d8613611f0d64019c",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 93
-    },
-    {
       "path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
       "source_git_blob": "2c8ffddf08fd27a9bf4f815f4acead17097ab92c",
       "source_sha256": "937e59755d8a2fbb31f9efa32f06ca3e3b684ff8bdf986d56eba72b52a346507",
       "integrated_sha256": "ff7ea475d23e7aecb44fe5bc08b3cc18d0801bb088cf8ea4c4af045c0e4efdaa",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 553
-    },
-    {
-      "path": "ios/STMini/classes/frame/WebView/Views/STWebCardView.swift",
-      "source_git_blob": "36692af6c51247069622e180ab6a7b47efcb71d0",
-      "source_sha256": "857254b529307e5e05a96834b0df274139eaa2dde79118d38be9485f9dd19fb2",
-      "integrated_sha256": "857254b529307e5e05a96834b0df274139eaa2dde79118d38be9485f9dd19fb2",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 73
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift",
@@ -603,9 +495,9 @@
       "path": "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift",
       "source_git_blob": "72dbc451f72e8105b8a3475bc017d803866397bc",
       "source_sha256": "d3cb9d1b91ab538009eeef18b3763221fdd02e7743ea046a78931335d695d613",
-      "integrated_sha256": "194e0363ca727c7e4fdb7afb3683166c2b2d54ab49a80529dcb3ac2ec6ef9897",
+      "integrated_sha256": "2de21a8a18f8fb1ac1e744cfa8acd2679d7104f80ba7770a7bc5d347f5eb8b2c",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 1986
+      "qualified_source_lines": 1170
     },
     {
       "path": "ios/STMini/classes/frame/WebView/WebCrl/STWebCrlProtocol.swift",
@@ -652,150 +544,6 @@
       "source_git_blob": "88e62ace2cbd469a7a9dae626c7b44c44753da47",
       "source_sha256": "587645ffe014a3c81d71400771c9282c96dfb6307ac05e89167f116bee2fb153",
       "integrated_sha256": "587645ffe014a3c81d71400771c9282c96dfb6307ac05e89167f116bee2fb153",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Array+Safe.swift",
-      "source_git_blob": "069f75d62b746cce23fa0473520a3e2b9c19a4be",
-      "source_sha256": "aefc00e1b744a80f34de32ce82e7f8c9d0dbd1122ff6a41d245674e0fb0f93e6",
-      "integrated_sha256": "aefc00e1b744a80f34de32ce82e7f8c9d0dbd1122ff6a41d245674e0fb0f93e6",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Data+Hash.swift",
-      "source_git_blob": "5005da1871c95606855d5ba613e9a94436bd31fe",
-      "source_sha256": "19d9bda72afda035da4da304f24b189e251cf25ab58d31b4d946befc2ebf19b6",
-      "integrated_sha256": "19d9bda72afda035da4da304f24b189e251cf25ab58d31b4d946befc2ebf19b6",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/DispatchQueue+Safe.swift",
-      "source_git_blob": "f3ef2bd6f5e46403b5f9f625a9c0bbf4cef6f64c",
-      "source_sha256": "899d185e6eea3f7cc6acee1765a9265455bd96bb10319a8c81fb82dee8dcc0cd",
-      "integrated_sha256": "899d185e6eea3f7cc6acee1765a9265455bd96bb10319a8c81fb82dee8dcc0cd",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Double+TaskInfo.swift",
-      "source_git_blob": "afb316f0cd7cd480630d9e6545a148543432ee98",
-      "source_sha256": "49de198117390ce1a6db74e03d0f0a6552087bb0f3af35fc0cb4463dc33d2d6b",
-      "integrated_sha256": "49de198117390ce1a6db74e03d0f0a6552087bb0f3af35fc0cb4463dc33d2d6b",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Int64+TaskInfo.swift",
-      "source_git_blob": "96bfff78c6fcdd2b7e1aaa0b6928ac499fad48c7",
-      "source_sha256": "88eaaba9d8a148acd868eff4f886c50cb289306bec8c2815c9018db89ce0c061",
-      "integrated_sha256": "88eaaba9d8a148acd868eff4f886c50cb289306bec8c2815c9018db89ce0c061",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/String+Hash.swift",
-      "source_git_blob": "98bc4428654d8cf11122f261923f197239904633",
-      "source_sha256": "8729628ebc2f595fbf272fb3b4f0902f0fa15e94fca5564db0a3d26fdf023771",
-      "integrated_sha256": "8729628ebc2f595fbf272fb3b4f0902f0fa15e94fca5564db0a3d26fdf023771",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/UIDevice+Free.swift",
-      "source_git_blob": "5147598f49b2adff7bc6589228ea263aba642bb4",
-      "source_sha256": "65b7812367ea65186295a0a85caa6c1b6cd1df31d89caf2544884e597fb7b1ea",
-      "integrated_sha256": "65b7812367ea65186295a0a85caa6c1b6cd1df31d89caf2544884e597fb7b1ea",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/URLSession+ResumeData.swift",
-      "source_git_blob": "61fcd3636b958ca2cc7cb8c23041b0f009a5258e",
-      "source_sha256": "047defb32ab6bda1d69c58a2a003bfc6a1916b39f3a794aad09bad444e6dd357",
-      "integrated_sha256": "047defb32ab6bda1d69c58a2a003bfc6a1916b39f3a794aad09bad444e6dd357",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCache.swift",
-      "source_git_blob": "1ef430edcd176d6950cd16557e9a52848c1b7f83",
-      "source_sha256": "31fefa3d26b920eee44f0e696fe413b86b9bf2658b362d5f1b71c971d03b9449",
-      "integrated_sha256": "31fefa3d26b920eee44f0e696fe413b86b9bf2658b362d5f1b71c971d03b9449",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCommon.swift",
-      "source_git_blob": "1157505bb2846c9db5504bb1bebeb21a94f27a52",
-      "source_sha256": "7c28013deeacc17eec2205fd3a7e320a34182e5e791222a73017abd9e4f3543f",
-      "integrated_sha256": "7c28013deeacc17eec2205fd3a7e320a34182e5e791222a73017abd9e4f3543f",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRConfiguration.swift",
-      "source_git_blob": "05f35ed620c30e32448cb5925913815d9fb5b035",
-      "source_sha256": "243890fe0acfb4ca33a13a2bb808cfaccc9fcabb6b8c39e230d4d86b23337cb6",
-      "integrated_sha256": "243890fe0acfb4ca33a13a2bb808cfaccc9fcabb6b8c39e230d4d86b23337cb6",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRDownloadTask.swift",
-      "source_git_blob": "418a56cdd73c32075586a0fc1d7d71932224438f",
-      "source_sha256": "3ab00258f52188c4e93383864624ddd9bde77304c71681f32301de8350e4e850",
-      "integrated_sha256": "3ab00258f52188c4e93383864624ddd9bde77304c71681f32301de8350e4e850",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRManager.swift",
-      "source_git_blob": "eedaf744938fa918254474c59e79057770aeb357",
-      "source_sha256": "1c900e0752dca34ce9cd3735c0870fcbda54236c62ad8a17aaee21ca1a403e33",
-      "integrated_sha256": "1c900e0752dca34ce9cd3735c0870fcbda54236c62ad8a17aaee21ca1a403e33",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRSessionDelegate.swift",
-      "source_git_blob": "5765c006eeb1465c30b8226a6991b6aed2f299e4",
-      "source_sha256": "f78b7dd9fe878d1eb0aa8aa200c8cbef2aa2dd427e6b8584a20ee2721b174b21",
-      "integrated_sha256": "f78b7dd9fe878d1eb0aa8aa200c8cbef2aa2dd427e6b8584a20ee2721b174b21",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRTask.swift",
-      "source_git_blob": "b7599ba4fadda0901311e325673de4a909e55276",
-      "source_sha256": "0495de269c6577c66d7b640505c2ebd3c2e1b5ed4419dc065d41bd519ade34a8",
-      "integrated_sha256": "0495de269c6577c66d7b640505c2ebd3c2e1b5ed4419dc065d41bd519ade34a8",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Tiercel.h",
-      "source_git_blob": "c440ddf9bf72962f12c8c174101b0dc36e6ecdd9",
-      "source_sha256": "38b1defac57ff89a7a6e92f9acc6e45799b24ca39d75fe4f1a26fe861a4b7663",
-      "integrated_sha256": "38b1defac57ff89a7a6e92f9acc6e45799b24ca39d75fe4f1a26fe861a4b7663",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRChecksumHelper.swift",
-      "source_git_blob": "64bbec951531e3ca5d948ec7348b7303ae7346b8",
-      "source_sha256": "1a555b7e293351bfe54b8c8ac3516b59492eae05326fde001282e7a79353b096",
-      "integrated_sha256": "1a555b7e293351bfe54b8c8ac3516b59492eae05326fde001282e7a79353b096",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRResumeDataHelper.swift",
-      "source_git_blob": "7077837ea130fbb5cd4b127f1a97e74d578051ce",
-      "source_sha256": "a9dc0c6d65b968010f93d0f3251f2302fc52d46294bc29e305f8bd3b2da29bdb",
-      "integrated_sha256": "a9dc0c6d65b968010f93d0f3251f2302fc52d46294bc29e305f8bd3b2da29bdb",
       "byte_identical_complete_file": true,
       "qualified_source_lines": 0
     },
@@ -960,62 +708,6 @@
       "qualified_source_lines": 0
     },
     {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXPermissions.swift",
-      "source_git_blob": "9e9517741833d46b7f12bf4c1cd06201433deb7d",
-      "source_sha256": "f4283b53af52efd541535d55239358168000548d0a9bc6d40719315125276c18",
-      "integrated_sha256": "f4283b53af52efd541535d55239358168000548d0a9bc6d40719315125276c18",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXScanLineAnimation.swift",
-      "source_git_blob": "6e10d7ab2b24f1a3291d5fa9aedef3eb9e2a08d0",
-      "source_sha256": "799c7b44da43728853fcf7eea01efe6425e467b52696e4ada6533d5efd106bc8",
-      "integrated_sha256": "799c7b44da43728853fcf7eea01efe6425e467b52696e4ada6533d5efd106bc8",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXScanNetAnimation.swift",
-      "source_git_blob": "4f89b6f8371c9912817cdea0fe9b78bc15b0ae8f",
-      "source_sha256": "5d73f9b07f2f29a19e61bebd8277814e1ee922bd3f88dee557ae391901e362ea",
-      "integrated_sha256": "5d73f9b07f2f29a19e61bebd8277814e1ee922bd3f88dee557ae391901e362ea",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXScanView.swift",
-      "source_git_blob": "e5ba93ee47ac9fa53fffe71c52f13141098700b5",
-      "source_sha256": "d654e88d12f625a0c8ca3a83e3469fa26040f4dbd3d8797ea93ba54b75a3704f",
-      "integrated_sha256": "d654e88d12f625a0c8ca3a83e3469fa26040f4dbd3d8797ea93ba54b75a3704f",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXScanViewController.swift",
-      "source_git_blob": "530af7a9dee67393eeddc7539fc953f2c574adc7",
-      "source_sha256": "f0eccbc1e158ff5055bb2e7f55451cf820f0d83b485c77b646671befe1f87128",
-      "integrated_sha256": "f0eccbc1e158ff5055bb2e7f55451cf820f0d83b485c77b646671befe1f87128",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXScanViewStyle.swift",
-      "source_git_blob": "2f3e80a16bea66a8cac29ddb53a73ecb4e162618",
-      "source_sha256": "a656a3dee518616ed0fe31cae41a316003b841959d68d46e501a65df9b45597e",
-      "integrated_sha256": "a656a3dee518616ed0fe31cae41a316003b841959d68d46e501a65df9b45597e",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
-      "path": "ios/STMini/classes/ui/Third/Scan/LBXScanWrapper.swift",
-      "source_git_blob": "3dc5870b5fc754f34a012b7b38acc1c4cbd8a6c4",
-      "source_sha256": "45b6de03d83b6a82425cec7b0e961fdc42506529b52bf238d3e8c42c5594bd4e",
-      "integrated_sha256": "45b6de03d83b6a82425cec7b0e961fdc42506529b52bf238d3e8c42c5594bd4e",
-      "byte_identical_complete_file": true,
-      "qualified_source_lines": 0
-    },
-    {
       "path": "lib/src/runtime_mode.dart",
       "source_git_blob": "3a003c8b797e9dcc3290720a777e00b2f5bb5a19",
       "source_sha256": "eb10527a4efc4b7f05e2f5051c7c30d53e0964cdb80fa6b0e7f216a04551a69e",
@@ -1027,7 +719,7 @@
       "path": "lib/stmini_flutter.dart",
       "source_git_blob": "e2fde4dfb1f279d475d3614a8dab8aa0148b5f28",
       "source_sha256": "25f08c607373f0368bf16dd90c49920af97bdf09db1b81348229e2a67cc5cfdc",
-      "integrated_sha256": "8fe87c66898d56a02308528751dcaac249c242934e2c1cbf69e1e7dcf20bd097",
+      "integrated_sha256": "064794316d147bd02b4c6c03b30125c6ff1c329dd3c13b46cf3cc69a5e992318",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 0
     }
@@ -1083,20 +775,6 @@
       "source_credit": 0
     },
     {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/BridgeDocumentLease.kt",
-      "sha256": "484c606013a55d7f31e0cacd0cad06c9d8afc02bec09f6e1a66bb403e6755b25",
-      "bytes": 580,
-      "physical_lines": 13,
-      "source_credit": 0
-    },
-    {
-      "path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/ScopedWebStorage.kt",
-      "sha256": "3bbc41ac176ba19d0a0fd67449d28e77aae98f13d496bd3c1eadd955ad9f8dfb",
-      "bytes": 708,
-      "physical_lines": 14,
-      "source_credit": 0
-    },
-    {
       "path": "ios/Classes/LocalMiniResource.swift",
       "sha256": "3371391f1293712430f2cf011438ce690c75cb67dc6db9bd97b24d4d71c3a9ad",
       "bytes": 8573,
@@ -1129,8 +807,7 @@
     "HXWRefresh": "1.1.0",
     "Masonry": "1.1.0",
     "SDWebImage": "5.21.7",
-    "Toast-Swift": "5.1.1",
-    "ZIPFoundation": "0.9.20"
+    "Toast-Swift": "5.1.1"
   },
   "license_status": "Upstream LICENSE is TODO placeholder; original preserved; no external distribution license authorization asserted.",
   "historical_through_batch3": {

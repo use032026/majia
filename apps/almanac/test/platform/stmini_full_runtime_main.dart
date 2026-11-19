@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
 
 import 'stmini_full_report_writer.dart';
@@ -58,10 +59,20 @@ Future<void> _probeThenVerify() async {
 
 Future<void> _verify(FullRuntimeReportWriter writer) async {
   final reports = <Map<String, dynamic>>[];
+  final packageMutationEvents = <String>[];
   final lifecycle = <String, Set<String>>{};
   Completer<Map<String, dynamic>>? waiting;
   String? expectedMiniId;
   final subscription = StminiFlutter.events.listen((event) {
+    if (const {
+      'mini_download_started',
+      'mini_download_progress',
+      'mini_download_completed',
+      'mini_package_installed',
+      'installed_packages_changed',
+    }.contains(event.name)) {
+      packageMutationEvents.add(event.name);
+    }
     final text = event.payload['message'];
     if (event.name != 'native_log' || text is! String) return;
     if (text.startsWith('FULL_RUNTIME_LIFECYCLE ')) {
@@ -99,8 +110,31 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
     final state = await StminiFlutter.foundationState;
     result['fullState'] =
         state['runtimeMode'] == 'mini' &&
+        state['miniPackageMode'] == 'local_only' &&
+        state['miniPackageDownloadAvailable'] == false &&
+        state['miniPackageInstallAvailable'] == false &&
+        state['miniPackageUpdateAvailable'] == false &&
         state['miniLoadingAvailable'] == true &&
-        state['webLoadingAvailable'] == true;
+        state['webLoadingAvailable'] == false &&
+        state['miniChildWebAvailable'] == true &&
+        state['closedMiniCacheAvailable'] == false;
+    final rejected = <String, bool>{};
+    for (final entry in <String, String>{
+      'mini://runtime_fixture?downloadUrl=https://127.0.0.1:1/forbidden.zip':
+          'unsupported',
+      'mini://runtime_fixture?__st_force_self_update=1': 'unsupported',
+      'mini://missing_fixture': 'mini_package_unavailable',
+      'mini://runtime_fixture?minSupportVersion=2.0':
+          'mini_package_unavailable',
+    }.entries) {
+      try {
+        await StminiFlutter.openMini(entry.key);
+        rejected[entry.key] = false;
+      } on PlatformException catch (error) {
+        rejected[entry.key] = error.code == entry.value;
+      }
+    }
+    result['localOnlyRejections'] = rejected.values.every((value) => value);
     final packages = await StminiFlutter.installedPackages();
     result['fixturePresent'] = packages.any(
       (item) => item.miniId == 'runtime_fixture',
@@ -123,9 +157,12 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
     }
     result['reports'] = reports;
     result['closedBoth'] = true;
+    result['packageMutationEvents'] = packageMutationEvents;
     result['passed'] =
         result['fullState'] == true &&
         result['fixturePresent'] == true &&
+        result['localOnlyRejections'] == true &&
+        packageMutationEvents.isEmpty &&
         reports.length == 2 &&
         reports.every((item) => item['passed'] == true) &&
         reports[0]['miniId'] == 'runtime_fixture' &&

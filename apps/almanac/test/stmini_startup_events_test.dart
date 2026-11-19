@@ -14,15 +14,65 @@ StminiEvent _ready({
   'payload': {
     'stage': 'mini',
     'runtimeMode': 'mini',
+    'miniPackageMode': 'local_only',
+    'miniPackageDownloadAvailable': false,
+    'miniPackageInstallAvailable': false,
+    'miniPackageUpdateAvailable': false,
     'initialized': initialized,
     'packageName': 'com.almanac.lite',
     'miniLoadingAvailable': true,
-    'webLoadingAvailable': true,
+    'webLoadingAvailable': false,
+    'miniChildWebAvailable': true,
+    'closedMiniCacheAvailable': false,
+    'localRendererAvailable': true,
   },
 });
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test(
+    'Android foundation event retains renderer without advertising full Mini',
+    () async {
+      final events = StreamController<StminiEvent>.broadcast(sync: true);
+      final startup = StminiStartup(
+        initialize: (_) async {},
+        events: events.stream,
+        loadInstalledPackages: () async => const <StminiPackage>[],
+      );
+      addTearDown(events.close);
+      addTearDown(startup.dispose);
+      await startup.initializeOnce();
+      events.add(
+        StminiEvent.fromMap({
+          'name': 'foundation_initialized',
+          'payload': {
+            'stage': 'foundation',
+            'initialized': true,
+            'packageName': 'com.almanac.lite',
+            'miniLoadingAvailable': false,
+            'webLoadingAvailable': false,
+            'miniChildWebAvailable': false,
+            'closedMiniCacheAvailable': false,
+            'localRendererAvailable': true,
+            'miniPackageDownloadAvailable': false,
+            'miniPackageInstallAvailable': false,
+            'miniPackageUpdateAvailable': false,
+            'capabilities': [
+              'local_renderer',
+              'online_web',
+              'local_mini_runtime',
+            ],
+          },
+        }),
+      );
+      final state = startup.diagnostics['foundationState'] as Map;
+      expect(state['stage'], 'foundation');
+      expect(state['miniLoadingAvailable'], false);
+      expect(state['capabilities'], ['local_renderer']);
+      expect(startup.diagnostics['eventCount'], 1);
+    },
+  );
 
   test(
     'service consumes only verified current foundation events into immutable diagnostics',

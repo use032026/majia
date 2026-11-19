@@ -35,12 +35,13 @@ Future<void> _verify(StminiStartup startup) async {
     final packages = await StminiFlutter.installedPackages().timeout(
       const Duration(seconds: 10),
     );
+    final ios = Platform.isIOS;
     const methods = MethodChannel('stmini_flutter/methods');
     var unsupportedRejected = true;
-    for (final entry in const {
-      'openMini': 'invalid_mini_link',
-      'openWeb': 'invalid_web_url',
-      'notifyWebSessionChanged': 'invalid_reason',
+    for (final entry in {
+      'openMini': ios ? 'invalid_mini_link' : 'unsupported_capability',
+      'openWeb': ios ? 'unsupported' : 'unsupported_capability',
+      'notifyWebSessionChanged': ios ? 'unsupported' : 'unsupported_capability',
     }.entries) {
       try {
         await methods
@@ -60,11 +61,10 @@ Future<void> _verify(StminiStartup startup) async {
     final eventState = startup.diagnostics['foundationState'] as Map?;
     result['passed'] =
         native['initialized'] == true &&
-        native['stage'] == 'mini' &&
-        native['runtimeMode'] == 'mini' &&
+        native['stage'] == (ios ? 'mini' : 'foundation') &&
         native['packageName'] == 'com.almanac.lite' &&
-        native['miniLoadingAvailable'] == true &&
-        native['webLoadingAvailable'] == true &&
+        native['miniLoadingAvailable'] == ios &&
+        native['webLoadingAvailable'] == false &&
         eventState?['initialized'] == true &&
         eventState?['packageName'] == native['packageName'] &&
         (native['capabilities'] as List?)?.contains('local_inventory') ==

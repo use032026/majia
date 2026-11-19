@@ -28,10 +28,8 @@
 	<false/>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Save an image to your photo library when you choose to save it.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Camera access is used to scan QR codes only when you choose to open a scanner.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo access is used to recognize a QR code in a photo you choose in the scanner.</string>
+	<string>Photo library access is used to save an image when you choose to save it.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

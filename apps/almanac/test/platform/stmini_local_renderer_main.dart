@@ -212,8 +212,8 @@ Future<void> _verify(_FixturePaintDiagnostics paint) async {
     );
     final native = await StminiFlutter.foundationState;
     if (native['localRendererAvailable'] != true ||
-        native['miniLoadingAvailable'] != true ||
-        native['webLoadingAvailable'] != true ||
+        native['miniLoadingAvailable'] != Platform.isIOS ||
+        native['webLoadingAvailable'] != false ||
         native['capabilities'] is! List ||
         !(native['capabilities'] as List).contains('local_renderer')) {
       throw StateError('Local renderer capability unavailable.');
