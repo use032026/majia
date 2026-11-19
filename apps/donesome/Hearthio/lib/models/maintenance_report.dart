@@ -172,14 +172,14 @@ class MaintenanceReportSnapshot {
       );
     }
 
-    final overdueTasks = tasks.where(
-      (task) => task.status.dueState == MaintenanceTaskState.overdue,
-    );
-    final currentOverdueCount = overdueTasks.length;
-    final cumulativeOverdueDays = overdueTasks.fold<int>(0, (sum, task) {
+    var currentOverdueCount = 0;
+    var cumulativeOverdueDays = 0;
+    for (final task in tasks) {
+      if (task.status.dueState != MaintenanceTaskState.overdue) continue;
+      currentOverdueCount++;
       final daysUntilDue = task.status.daysUntilDue ?? 0;
-      return sum + (daysUntilDue < 0 ? -daysUntilDue : 0);
-    });
+      cumulativeOverdueDays += daysUntilDue < 0 ? -daysUntilDue : 0;
+    }
     final dueNextThirtyDays = tasks.where((task) {
       final dueDate = maintenanceDateOnly(task.dueDate);
       return !dueDate.isBefore(today) && dueDate.isBefore(nextThirtyDaysEnd);
