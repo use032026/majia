@@ -5,6 +5,7 @@ import 'package:photo_report/app_controller.dart';
 import 'package:photo_report/models.dart';
 import 'package:photo_report/ui/app_theme.dart';
 import 'package:photo_report/ui/project_detail_screen.dart';
+import 'package:photo_report/ui/issue_form_screen.dart';
 
 void main() {
   Widget app({
@@ -113,6 +114,97 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('filtered long lists keep the matching order while scrolling', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(402, 874));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = _project();
+    final controller = _DetailController(
+      List.generate(
+        40,
+        (index) => _issue(
+          project.id,
+          sequence: index + 1,
+          category: index.isEven ? '漏水检查' : '地面检查',
+        ),
+      ),
+    );
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(app(controller: controller, project: project));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('detail-filter-toggle')));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), '漏水');
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<SliverList>(find.byType(SliverList))
+          .delegate
+          .estimatedChildCount,
+      39,
+    );
+    final scrollable = find
+        .descendant(
+          of: find.byType(CustomScrollView),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    await tester.scrollUntilVisible(
+      find.text('A-039'),
+      500,
+      scrollable: scrollable,
+    );
+    expect(find.text('A-039'), findsOneWidget);
+    expect(find.text('地面检查'), findsNothing);
+    expect(find.text('A-040'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('filtered records refresh after returning from editing', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(402, 1100));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = _project();
+    final controller = _DetailController([
+      _issue(project.id, category: '漏水检查'),
+      _issue(project.id, sequence: 2, category: '地面检查'),
+    ]);
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(app(controller: controller, project: project));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('detail-filter-toggle')));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), '漏水');
+    await tester.pumpAndSettle();
+    expect(find.text('A-001'), findsOneWidget);
+    expect(find.text('A-002'), findsNothing);
+    await tester.ensureVisible(find.text('A-001'));
+    await tester.tap(find.text('A-001'));
+    await tester.pumpAndSettle();
+    expect(find.byType(IssueFormScreen), findsOneWidget);
+    controller.issueRecords = [
+      _issue(project.id, category: '已修复'),
+      _issue(project.id, sequence: 2, category: '漏水检查'),
+    ];
+    Navigator.of(
+      tester.element(find.byType(IssueFormScreen)),
+    ).pop(IssueFormResult.saved);
+    await tester.pumpAndSettle();
+    expect(controller.loadCount, 2);
+    expect(find.text('A-001'), findsNothing);
+    expect(find.text('A-002'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), '不存在');
+    await tester.pumpAndSettle();
+    expect(find.text('当前筛选下没有记录'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), '');
+    await tester.pumpAndSettle();
+    expect(find.text('A-001'), findsOneWidget);
+    expect(find.text('A-002'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('multiple records expose filters only after explicit request', (
     tester,
   ) async {
@@ -141,10 +233,14 @@ void main() {
 class _DetailController extends PhotoReportController {
   _DetailController(this.issueRecords);
 
-  final List<IssueRecord> issueRecords;
+  List<IssueRecord> issueRecords;
+  int loadCount = 0;
 
   @override
-  Future<List<IssueRecord>> loadIssues(String projectId) async => issueRecords;
+  Future<List<IssueRecord>> loadIssues(String projectId) async {
+    loadCount++;
+    return issueRecords;
+  }
 }
 
 ProjectRecord _project({int formalFlowStep = 0}) {
@@ -169,6 +265,7 @@ IssueRecord _issue(
   String projectId, {
   int sequence = 1,
   IssueSeverity severity = IssueSeverity.unspecified,
+  String category = '需要处理这个位置',
 }) {
   final now = DateTime(2026, 8, 28, 10, 31);
   return IssueRecord(
@@ -178,7 +275,7 @@ IssueRecord _issue(
     code: 'A-${sequence.toString().padLeft(3, '0')}',
     room: '未分类',
     location: '',
-    category: '需要处理这个位置',
+    category: category,
     severity: severity,
     description: '现场情况说明',
     status: IssueStatus.unspecified,

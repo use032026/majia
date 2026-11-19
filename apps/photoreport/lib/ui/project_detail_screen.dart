@@ -296,6 +296,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
             .toList()
           ..sort();
     final hasIssues = issues.isNotEmpty;
+    final visibleIssues = filteredIssues;
     final entryMode = formalFlowActive
         ? IssueEntryMode.formal
         : IssueEntryMode.quick;
@@ -370,7 +371,7 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                         onCreate: () => openIssue(entryMode: entryMode),
                       ),
                     )
-                  else if (filteredIssues.isEmpty)
+                  else if (visibleIssues.isEmpty)
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.all(34),
@@ -394,10 +395,10 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverList.separated(
-                        itemCount: filteredIssues.length,
+                        itemCount: visibleIssues.length,
                         separatorBuilder: (_, _) => const SizedBox(height: 10),
                         itemBuilder: (context, index) {
-                          final issue = filteredIssues[index];
+                          final issue = visibleIssues[index];
                           return _IssueCard(
                             issue: issue,
                             onOpen: () => openIssue(issue: issue),

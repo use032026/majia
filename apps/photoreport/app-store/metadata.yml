@@ -1,0 +1,2 @@
+# Store-only release keeps existing listing and media.
+uses_non_exempt_encryption: false

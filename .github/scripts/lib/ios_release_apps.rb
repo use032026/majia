@@ -7,6 +7,14 @@ module MajiaCI
     module_function
 
     APPS = {
+      "photoreport-production" => {
+        "app_key" => "photoreport",
+        "app_name" => "JOVFX",
+        "project_directory" => "apps/photoreport",
+        "container_path" => "apps/photoreport/ios/Runner.xcworkspace",
+        "targets" => [{ "suffix" => "", "target" => "Runner", "profile_alias" => "app" }],
+        "metadata_template" => "apps/photoreport/app-store/metadata.yml"
+      },
       "almanac-production" => {
         "app_key" => "almanac",
         "app_name" => "Deynu",

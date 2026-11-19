@@ -15,6 +15,7 @@ on:
           - sdpacket-production
           - steady-production
           - photo-production
+          - photoreport-production
           - plotproof_lab-production
       marketing_version:
         description: Existing App Store version to submit, for example 1.0.0

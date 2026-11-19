@@ -16,6 +16,7 @@ on:
           - sdpacket-production
           - steady-production
           - photo-production
+          - photoreport-production
           - plotproof_lab-production
           - cleantrail-production
           - langpack-production

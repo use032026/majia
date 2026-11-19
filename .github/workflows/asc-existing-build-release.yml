@@ -12,6 +12,7 @@ on:
           - cleantrail-production
           - filepeek-production
           - photo-production
+          - photoreport-production
           - hearthio-production
           - tripcost-production
           - tripdelta-production
