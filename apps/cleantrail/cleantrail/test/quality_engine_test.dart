@@ -13,6 +13,37 @@ void main() {
 2026-05-01,18,East
 ''';
 
+  test(
+    'inspection reuses trimmed cells without changing issue order or source',
+    () {
+      final project = engine.importCsv(
+        fileName: 'trim.csv',
+        source:
+            'date,value,note\n2026-01-01,1,a\n2026-02-01,2,b\n2026-03-01,3,c\n 2026/04/01 , bad ,\u00a0 \t',
+      );
+      final last = project.records.last;
+      final issues = project.issues
+          .where((issue) => issue.rowId == last.id)
+          .toList();
+      expect(issues.map((issue) => issue.kind), [
+        IssueKind.surroundingWhitespace,
+        IssueKind.inconsistentDate,
+        IssueKind.surroundingWhitespace,
+        IssueKind.inconsistentType,
+        IssueKind.surroundingWhitespace,
+      ]);
+      expect(issues.map((issue) => issue.suggestion), [
+        '2026/04/01',
+        '2026-04-01',
+        'bad',
+        null,
+        '',
+      ]);
+      expect(last.values, [' 2026/04/01 ', ' bad ', '\u00a0 \t']);
+      expect(project.originalRecords.last.values, last.values);
+    },
+  );
+
   test('detects each supported issue type without changing source rows', () {
     final project = engine.importCsv(
       fileName: 'sample.csv',

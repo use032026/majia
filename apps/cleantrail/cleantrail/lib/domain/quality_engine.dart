@@ -193,7 +193,8 @@ class QualityEngine {
           );
           continue;
         }
-        if (value != value.trim()) {
+        final inspectedValue = value.trim();
+        if (value != inspectedValue) {
           addIssue(
             DataIssue(
               id: 'whitespace-$idBase',
@@ -201,11 +202,10 @@ class QualityEngine {
               rowId: row.id,
               columnIndex: column,
               originalValue: value,
-              suggestion: value.trim(),
+              suggestion: inspectedValue,
             ),
           );
         }
-        final inspectedValue = value.trim();
         if (dateColumns.contains(column)) {
           final parsed = _parseDate(inspectedValue);
           if (parsed == null ||
