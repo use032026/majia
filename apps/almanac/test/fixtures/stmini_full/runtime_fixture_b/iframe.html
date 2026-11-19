@@ -1,0 +1,29 @@
+<!doctype html><html><body><script>
+const facts = {rawObjectPresent: false, rawPostReturned: false, threw: false};
+const forgedOrigin = parent.location.protocol + '//' + parent.location.host;
+const message = {
+  method: 'setStorage',
+  origin: forgedOrigin,
+  sourceOrigin: forgedOrigin,
+  isMainFrame: true,
+  currentURL: parent.location.href,
+  params: {
+    methodId: 'forbidden-iframe', key: 'iframe_probe', data: '"forbidden"',
+    origin: forgedOrigin, sourceOrigin: forgedOrigin, isMainFrame: true,
+    currentURL: parent.location.href
+  }
+};
+try {
+  const ios = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.CMSScriptMessageChannel;
+  const raw = ios || window.CMSScriptMessageChannel;
+  facts.rawObjectPresent = !!raw && typeof raw.postMessage === 'function';
+  if (!facts.rawObjectPresent) throw new Error('Raw bridge object is unavailable in this document');
+  raw.postMessage(ios ? message : JSON.stringify(message));
+  facts.rawPostReturned = true;
+} catch (_) {
+  facts.threw = true;
+} finally {
+  parent.__iframeTransport = facts;
+  parent.__iframeAttempted = true;
+}
+</script></body></html>

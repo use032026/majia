@@ -5,16 +5,19 @@ import 'package:flutter/services.dart';
 import 'src/safe_event_stream.dart';
 import 'src/stmini_event.dart';
 import 'src/stmini_package.dart';
+import 'src/runtime_mode.dart';
 
 export 'src/stmini_event.dart';
 export 'src/stmini_package.dart';
 export 'src/stmini_local_view.dart';
+export 'src/runtime_mode.dart';
 
-/// Foundation, read-only inventory and verified local PlatformViews.
-/// Full openMini/openWeb link loading remains unavailable.
+/// Complete native Mini/Web runtime plus strict inventory and local PlatformViews.
 class StminiFlutter {
   StminiFlutter._();
-  static const runtimeStage = 'foundation';
+  static const runtimeStage = 'mini';
+  static const runtimeMode = configuredStminiRuntimeMode;
+  static WebBridgeHandler? _webBridgeHandler;
   static const _methods = MethodChannel('stmini_flutter/methods');
   static final Stream<StminiEvent> _events = SafeStminiEventStream();
 
@@ -23,8 +26,8 @@ class StminiFlutter {
   /// await cancellation to handle a native cancellation failure locally.
   static Stream<StminiEvent> get events => _events;
 
-  /// Configures the native foundation. Only packageName is supported here.
-  /// Native rejects capabilities/parameters that are not part of this stage.
+  /// Configures the native foundation. Only the Deynu packageName context is configured by this embedding app.
+  /// No page is opened and no business provider is installed by initialization.
   static Future<void> initialize({
     String? loadingImage,
     Map<String, dynamic>? bridgeContext,
@@ -32,6 +35,67 @@ class StminiFlutter {
     if (loadingImage != null) 'loadingImage': loadingImage,
     if (bridgeContext != null) 'bridgeContext': bridgeContext,
   });
+
+  /// Presents a verified Mini through the native complete container.
+  /// The application must explicitly supply a link; initialization never opens one.
+  static Future<void> openMini(String link) =>
+      _methods.invokeMethod<void>('openMini', {'link': link});
+
+  static Future<void> openWeb(
+    String url, {
+    String? title,
+    bool showNavigationBar = true,
+  }) => _methods.invokeMethod<void>('openWeb', {
+    'url': url,
+    if (title != null && title.isNotEmpty) 'title': title,
+    'showNavigationBar': showNavigationBar,
+  });
+
+  static Future<void> closeMini() => _methods.invokeMethod<void>('closeMini');
+  static Future<void> closeWeb() => _methods.invokeMethod<void>('closeWeb');
+  static Future<bool> get isAvailable async =>
+      (await _methods.invokeMethod<bool>('isAvailable')) == true;
+
+  static Future<int> notifyWebSessionChanged(String reason) async {
+    final count = await _methods.invokeMethod<int>('notifyWebSessionChanged', {
+      'reason': reason,
+    });
+    if (count == null || count < 0) {
+      throw const FormatException('Invalid session notification count.');
+    }
+    return count;
+  }
+
+  /// Only native-verified ordinary Web documents can reach this callback.
+  /// No handler means a defined failure, never an invented business success.
+  static void setWebBridgeHandler(WebBridgeHandler? handler) {
+    _webBridgeHandler = handler;
+    _methods.setMethodCallHandler((call) async {
+      if (call.method != 'webBridgeRequest') {
+        throw MissingPluginException('Unsupported native request.');
+      }
+      final request = WebBridgeRequest.fromMap(call.arguments);
+      final activeHandler = _webBridgeHandler;
+      if (activeHandler == null) {
+        return const {
+          'code': '0',
+          'data': {'msg': 'Host did not handle the web request.'},
+        };
+      }
+      try {
+        return await activeHandler(request) ??
+            const {
+              'code': '0',
+              'data': {'msg': 'Host did not handle the web request.'},
+            };
+      } catch (_) {
+        return const {
+          'code': '0',
+          'data': {'msg': 'Host web request failed.'},
+        };
+      }
+    });
+  }
 
   /// Reads validated local metadata only. Rendering uses StminiLocalView and
   /// independently revalidates package identity and local resource boundaries.
@@ -67,3 +131,40 @@ class StminiFlutter {
     return Map<String, dynamic>.unmodifiable(value);
   }
 }
+
+/// Origin is native-derived from the committed main document, never H5 params.
+final class WebBridgeRequest {
+  WebBridgeRequest._(this.method, this.params, this.origin);
+  factory WebBridgeRequest.fromMap(Object? value) {
+    if (value is! Map ||
+        value['method'] is! String ||
+        value['params'] is! Map ||
+        value['origin'] is! String) {
+      throw const FormatException('Invalid native web request.');
+    }
+    final origin = value['origin'] as String;
+    final uri = Uri.tryParse(origin);
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
+        uri.path.isNotEmpty ||
+        uri.hasQuery ||
+        uri.hasFragment) {
+      throw const FormatException('Invalid native web origin.');
+    }
+    return WebBridgeRequest._(
+      value['method'] as String,
+      Map<String, dynamic>.unmodifiable(
+        Map<String, dynamic>.from(value['params'] as Map),
+      ),
+      origin,
+    );
+  }
+  final String method;
+  final Map<String, dynamic> params;
+  final String origin;
+}
+
+typedef WebBridgeHandler =
+    FutureOr<Map<String, dynamic>?> Function(WebBridgeRequest request);

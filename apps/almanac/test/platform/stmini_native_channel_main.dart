@@ -37,21 +37,18 @@ Future<void> _verify(StminiStartup startup) async {
     );
     const methods = MethodChannel('stmini_flutter/methods');
     var unsupportedRejected = true;
-    for (final method in [
-      'openMini',
-      'openWeb',
-      'closeMini',
-      'closeWeb',
-      'notifyWebSessionChanged',
-      'setWebBridgeHandler',
-    ]) {
+    for (final entry in const {
+      'openMini': 'invalid_mini_link',
+      'openWeb': 'invalid_web_url',
+      'notifyWebSessionChanged': 'invalid_reason',
+    }.entries) {
       try {
         await methods
-            .invokeMethod<Object?>(method)
+            .invokeMethod<Object?>(entry.key)
             .timeout(const Duration(seconds: 5));
         unsupportedRejected = false;
       } on PlatformException catch (error) {
-        if (error.code != 'unsupported_capability') unsupportedRejected = false;
+        if (error.code != entry.value) unsupportedRejected = false;
       } catch (_) {
         unsupportedRejected = false;
       }
@@ -63,10 +60,11 @@ Future<void> _verify(StminiStartup startup) async {
     final eventState = startup.diagnostics['foundationState'] as Map?;
     result['passed'] =
         native['initialized'] == true &&
-        native['stage'] == 'foundation' &&
+        native['stage'] == 'mini' &&
+        native['runtimeMode'] == 'mini' &&
         native['packageName'] == 'com.almanac.lite' &&
-        native['miniLoadingAvailable'] == false &&
-        native['webLoadingAvailable'] == false &&
+        native['miniLoadingAvailable'] == true &&
+        native['webLoadingAvailable'] == true &&
         eventState?['initialized'] == true &&
         eventState?['packageName'] == native['packageName'] &&
         (native['capabilities'] as List?)?.contains('local_inventory') ==

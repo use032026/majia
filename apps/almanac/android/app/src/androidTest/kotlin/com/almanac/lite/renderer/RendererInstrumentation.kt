@@ -66,6 +66,309 @@ class RendererInstrumentation : Instrumentation() {
         }
         check(called); answer
     }
+    private fun verifyFullRuntimeSafety(pack: File, report: JSONObject) {
+        val host = targetContext.getSharedPreferences("FlutterSharedPreferences", android.content.Context.MODE_PRIVATE)
+        val key = "flutter.almanac_state_v1"
+        host.edit().putString(key, "synthetic-host-schema-sentinel").commit()
+        val type = Class.forName("com.fsst.stmini_flutter.web.ScopedWebStorage")
+        val singleton = type.getField("INSTANCE").get(null)
+        val method = type.getDeclaredMethod("preferences", android.content.Context::class.java, String::class.java)
+        method.isAccessible = true
+        fun scoped(subject: String) = method.invoke(singleton, targetContext, subject) as android.content.SharedPreferences
+        val a = scoped("mini:full_fixture|local")
+        val b = scoped("mini:other_fixture|local")
+        val origin = scoped("web:https://fixture.invalid")
+        try {
+            check(a.getString(key, null) == null)
+            a.edit().putString(key, "synthetic-sdk-value").commit()
+            check(a.getString(key, null) == "synthetic-sdk-value")
+            check(b.getString(key, null) == null && origin.getString(key, null) == null)
+            a.edit().remove(key).commit()
+            check(host.getString(key, null) == "synthetic-host-schema-sentinel")
+            val longSubject = "web:https://" + "a".repeat(200) + ".invalid"
+            scoped(longSubject).edit().putString("probe", "synthetic").commit()
+            check(scoped(longSubject).getString("probe", null) == "synthetic")
+            scoped(longSubject).edit().remove("probe").commit()
+            val store = com.fsst.stmini_flutter.runtime.MiniPackageStore(targetContext)
+            check(store.installed("renderer_fixture") != null)
+            for (url in listOf("https://user@renderer_fixture.stmini.local/index.html", "https://renderer_fixture.stmini.local:443/index.html", "https://renderer_fixture.stmini.local//index.html", "https://renderer_fixture.stmini.local/%2findex.html")) {
+                check(store.resolveLocalPage("renderer_fixture", url) == null)
+            }
+            check(store.resolveLocalPage("renderer_fixture", "https://renderer_fixture.stmini.local/index.html?synthetic=1") != null)
+            report.put("fullLocalUriRejectsMalformedAuthorityAndPath", true)
+            val file = File(pack, "mini-manifest.json")
+            val original = file.readText()
+            try {
+                file.writeText(JSONObject(original).put("version", "2.0").toString())
+                check(store.installed("renderer_fixture") == null)
+            } finally { file.writeText(original) }
+            check(store.installed("renderer_fixture") != null)
+            report.put("fullStorageHostMiniOriginIsolation", true).put("fullStoreUncachedIdentity", true)
+        } finally {
+            host.edit().remove(key).commit()
+            for (prefs in listOf(a, b, origin)) prefs.edit().remove(key).commit()
+        }
+    }
+
+    /** Real MiniPackageStore installer with a test-process-only HTTPS stream
+     * handler. No production TLS, URL or connection provider is changed. */
+    private fun verifyFullArchiveInstall(report: JSONObject) {
+        val reply = AtomicReference(Triple(ByteArray(0), 200, ""))
+        val declaredLength = java.util.concurrent.atomic.AtomicLong(-1)
+        val opened = AtomicInteger(0)
+        java.net.URL.setURLStreamHandlerFactory { protocol ->
+            if (protocol != "https") null else object : java.net.URLStreamHandler() {
+                override fun openConnection(url: java.net.URL): java.net.URLConnection {
+                    check(url.host == "fixture.invalid") { "Only synthetic fixture HTTPS is permitted in this test process" }
+                    opened.incrementAndGet()
+                    val value = reply.get()
+                    return object : javax.net.ssl.HttpsURLConnection(url) {
+                        override fun connect() {}
+                        override fun disconnect() {}
+                        override fun usingProxy() = false
+                        override fun getCipherSuite() = "TEST-TRANSPORT-NO-TLS"
+                        override fun getLocalCertificates(): Array<java.security.cert.Certificate>? = null
+                        override fun getServerCertificates(): Array<java.security.cert.Certificate> = emptyArray()
+                        override fun getResponseCode() = value.second
+                        override fun getContentLengthLong() = declaredLength.get().takeIf { it >= 0 } ?: value.first.size.toLong()
+                        override fun getInputStream(): java.io.InputStream = java.io.ByteArrayInputStream(value.first)
+                        override fun getHeaderField(name: String?): String? = if (name.equals("Location", true)) value.third else null
+                    }
+                }
+            }
+        }
+        fun zip(version: String, miniId: String = "full_install_fixture", channel: String = "fixture", traversal: Boolean = false): ByteArray {
+            val output = java.io.ByteArrayOutputStream()
+            java.util.zip.ZipOutputStream(output).use { archive ->
+                fun add(name: String, value: ByteArray) {
+                    archive.putNextEntry(java.util.zip.ZipEntry(name)); archive.write(value); archive.closeEntry()
+                }
+                add("index.html", "<html>synthetic installer</html>".toByteArray())
+                add("pixel.png", RendererFixture.files.getValue("pixel.png"))
+                val manifest = JSONObject().put("miniId", miniId).put("miniName", "Synthetic installer")
+                    .put("version", version).put("entry", "index.html").put("icon", "pixel.png")
+                    .put("channel", channel).put("updateself", "1").put("ishome", "0")
+                add("mini-manifest.json", manifest.toString().toByteArray())
+                if (traversal) add("../synthetic-escape", byteArrayOf(1))
+            }
+            return output.toByteArray()
+        }
+        val root = File(targetContext.filesDir, "STMini")
+        val target = File(root, "full_install_fixture")
+        check(!target.exists())
+        val store = com.fsst.stmini_flutter.runtime.MiniPackageStore(targetContext)
+        com.fsst.stmini_flutter.runtime.StminiHostConfiguration.configure(mapOf("packageName" to targetContext.packageName))
+        fun install(bytes: ByteArray, required: String? = null, status: Int = 200, location: String = "", length: Long = -1, minimum: String? = null): Result<com.fsst.stmini_flutter.runtime.MiniPackageStore.InstalledPackage> {
+            reply.set(Triple(bytes, status, location)); declaredLength.set(length)
+            val latch = CountDownLatch(1)
+            val answer = AtomicReference<Result<com.fsst.stmini_flutter.runtime.MiniPackageStore.InstalledPackage>>()
+            val parameters = "downloadUrl=https%3A%2F%2Ffixture.invalid%2Farchive.zip" +
+                (required?.let { "&currentVersion=$it" } ?: "") + (minimum?.let { "&minSupportVersion=$it" } ?: "")
+            val link = com.fsst.stmini_flutter.runtime.MiniLink.parse("mini://full_install_fixture?$parameters")!!
+            store.installAsync(link, { _, _ -> }) { result -> answer.set(result); latch.countDown() }
+            check(latch.await(12, TimeUnit.SECONDS)) { "Synthetic installer did not complete" }
+            return answer.get()
+        }
+        fun update(bytes: ByteArray, snapshot: com.fsst.stmini_flutter.runtime.MiniPackageStore.InstalledPackage,
+                   force: Boolean = false): Result<com.fsst.stmini_flutter.runtime.MiniPackageStore.InstalledPackage> {
+            reply.set(Triple(bytes, 200, "")); declaredLength.set(-1)
+            val latch = CountDownLatch(1)
+            val answer = AtomicReference<Result<com.fsst.stmini_flutter.runtime.MiniPackageStore.InstalledPackage>>()
+            store.installUpdateAsync(snapshot, "https://fixture.invalid/update.zip", force, { _, _ -> }) {
+                answer.set(it); latch.countDown()
+            }
+            check(latch.await(12, TimeUnit.SECONDS)); return answer.get()
+        }
+        fun canRun(parameters: String): Boolean = store.canRunInstalled(store.installed("full_install_fixture")!!,
+            com.fsst.stmini_flutter.runtime.MiniLink.parse("mini://full_install_fixture$parameters")!!)
+        fun openContainer(parameters: String): com.fsst.stmini_flutter.ui.StminiContainerActivity =
+            startActivitySync(Intent(targetContext, com.fsst.stmini_flutter.ui.StminiContainerActivity::class.java)
+                .putExtra("stmini.miniLink", "mini://full_install_fixture$parameters")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as com.fsst.stmini_flutter.ui.StminiContainerActivity
+        fun ready(container: Activity): Boolean = ui {
+            com.fsst.stmini_flutter.ui.StminiContainerActivity::class.java.getDeclaredField("firstContentReady")
+                .apply { isAccessible = true }.getBoolean(container)
+        }
+        try {
+            check(install(zip("1.0"), minimum = "2.0").isFailure)
+            check(store.installed("full_install_fixture") == null)
+            check(install(zip("1.0"), minimum = "1.0").getOrThrow().installationChanged)
+            check(!canRun("?minSupportVersion=2.0"))
+            check(canRun("?minSupportVersion=1.0"))
+            check(canRun("?currentVersion=2.0&minSupportVersion=1.0"))
+            check(!canRun("?currentVersion=2.0")); check(canRun(""))
+            val rejected = openContainer("?minSupportVersion=2.0")
+            check(!ready(rejected)); check(ui { web(rejected.window.decorView)?.url } == null)
+            ui { rejected.finish() }; waitForIdleSync()
+            var warm = openContainer("?minSupportVersion=1.0")
+            until { ready(warm) }
+            val retainedWeb = ui { web(warm.window.decorView) }!!
+            ui { com.fsst.stmini_flutter.ui.StminiContainerActivity.closeActive() }
+            until { warm.isDestroyed }
+            val rejectedRetained = openContainer("?minSupportVersion=2.0")
+            check(!ready(rejectedRetained))
+            check(ui { web(rejectedRetained.window.decorView) } !== retainedWeb)
+            ui { rejectedRetained.finish() }; waitForIdleSync()
+            warm = openContainer("?minSupportVersion=1.0")
+            until { ready(warm) }
+            check(ui { web(warm.window.decorView) } === retainedWeb) { "A compatible min-only reopening must actually reuse its retained WebView" }
+            // A legal weak descriptor must preserve this already-ready root.
+            ui {
+                com.fsst.stmini_flutter.ui.StminiContainerActivity::class.java
+                    .getDeclaredMethod("onNewIntent", Intent::class.java).apply { isAccessible = true }
+                    .invoke(warm, Intent().putExtra("stmini.miniLink", "mini://full_install_fixture?currentVersion=2.0&minSupportVersion=1.0"))
+            }
+            check(ready(warm))
+            // Exercise the real existing-root onNewIntent path, not only the
+            // compatibility helper: it must retire readiness below a new floor.
+            ui {
+                com.fsst.stmini_flutter.ui.StminiContainerActivity::class.java
+                    .getDeclaredMethod("onNewIntent", Intent::class.java).apply { isAccessible = true }
+                    .invoke(warm, Intent().putExtra("stmini.miniLink", "mini://full_install_fixture?minSupportVersion=2.0"))
+            }
+            check(!ready(warm)); ui { warm.finish() }; waitForIdleSync()
+            check(install(ByteArray(0), minimum = "2.0", status = 404).isFailure)
+            check(store.installed("full_install_fixture")?.version == "1.0")
+            check(!canRun("?minSupportVersion=2.0"))
+            check(install(zip("1.0"), minimum = "2.0").isFailure)
+            check(install(zip("2.0"), minimum = "2.0").getOrThrow().installationChanged)
+            check(canRun("?minSupportVersion=2.0"))
+            val snapshot = store.installed("full_install_fixture")!!
+            val baseline = File(target, "mini-manifest.json").readBytes()
+            for (force in listOf(false, true)) {
+                val same = update(zip("2.0"), snapshot, force).getOrThrow()
+                check(same.version == "2.0" && !same.installationChanged)
+                check(File(target, "mini-manifest.json").readBytes().contentEquals(baseline))
+            }
+            val weakLow = update(zip("1.0"), snapshot).getOrThrow()
+            check(weakLow.version == "2.0" && !weakLow.installationChanged)
+            check(update(zip("1.0"), snapshot, true).isFailure)
+            check(File(target, "mini-manifest.json").readBytes().contentEquals(baseline))
+            check(update(zip("3.0"), snapshot, true).getOrThrow().installationChanged)
+            check(update(zip("2.5"), snapshot).getOrThrow().let { it.version == "3.0" && !it.installationChanged })
+            check(update(zip("2.5"), snapshot, true).isFailure)
+            check(store.installed("full_install_fixture")?.version == "3.0")
+            // Return to the original rollback scenario with a fresh synthetic
+            // root; production never deletes a package to accept a downgrade.
+            target.deleteRecursively()
+            check(install(zip("1.0"), "1.0").isSuccess)
+            check(store.installed("full_install_fixture")?.version == "1.0")
+            check(install(zip("2.0"), "2.0").isSuccess)
+            check(install(zip("1.0"), "3.0").isFailure)
+            check(install(zip("3.0", miniId = "other_fixture"), "3.0").isFailure)
+            check(install(zip("3.0", traversal = true), "3.0").isFailure)
+            // Valid source manifest, but final strict channel limit fails after
+            // the rename; the old verified version must be atomically restored.
+            check(install(zip("3.0", channel = "x".repeat(129)), "3.0").isFailure)
+            check(store.installed("full_install_fixture")?.version == "2.0")
+            check(install(zip("3.0"), "3.0", length = 80L * 1024L * 1024L + 1).isFailure)
+            val before = opened.get()
+            check(install(ByteArray(0), "3.0", status = 302, location = "http://fixture.invalid/rejected").isFailure)
+            check(opened.get() == before + 1) { "Insecure redirect must be rejected before another connection" }
+            check(store.installed("full_install_fixture")?.version == "2.0")
+            check(root.listFiles().orEmpty().none { it.name.startsWith(".full_install_fixture.") })
+            report.put("fullInstaller", JSONObject().put("passed", true)
+                .put("transport", "test_process_HttpsURLConnection_no_real_TLS")
+                .put("zipInstallAndUpgrade", true).put("idTraversalVersionReject", true)
+                .put("postMoveRollback", true).put("sizeAndInsecureRedirectReject", true)
+                .put("minOnlyFirstExistingNoURLFailureArchiveAndWarmGate", true)
+                .put("weakForceLowEqualHighAndStaleSnapshot", true)
+                .put("equalOutcome", "kept_no_replacement_force_may_reload"))
+        } finally {
+            ui {
+                val pool = Class.forName("com.fsst.stmini_flutter.runtime.StminiRuntimePool")
+                pool.getDeclaredMethod("discard", String::class.java, WebView::class.java).apply { isAccessible = true }
+                    .invoke(pool.getField("INSTANCE").get(null), "full_install_fixture", null)
+            }
+            target.deleteRecursively()
+            // URLStreamHandlerFactory cannot be reset. The runner must stop
+            // this private instrumentation process before the Engine target.
+        }
+    }
+
+    /** Actual popup WebView/WebMessage entry plus explicitly controlled queued
+     * delegate replay. The replay does not claim OS-spontaneous race ordering. */
+    private fun verifyFullPopupRuntime(pack: File, report: JSONObject) {
+        val ownerClass = com.fsst.stmini_flutter.ui.StminiContainerActivity::class.java
+        val owner = startActivitySync(Intent(targetContext, ownerClass)
+            .putExtra("stmini.miniLink", "mini://renderer_fixture")
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) as com.fsst.stmini_flutter.ui.StminiContainerActivity
+        fun field(name: String): Any? = ownerClass.getDeclaredField(name).apply { isAccessible = true }.get(owner)
+        fun popup(): WebView? = ui { field("popupWebView") as? WebView }
+        fun dismiss() = ui { (field("popupDialog") as? android.app.Dialog)?.dismiss() }
+        fun show(url: String): Boolean = ui { owner.showStminiPopup(url, 8, 8, 1f) }
+        fun request(url: String, method: String = "GET") = object : android.webkit.WebResourceRequest {
+            override fun getUrl() = android.net.Uri.parse(url)
+            override fun isForMainFrame() = true
+            override fun isRedirect() = false
+            override fun hasGesture() = true
+            override fun getMethod() = method
+            override fun getRequestHeaders(): Map<String, String> = emptyMap()
+        }
+        val base = "https://renderer_fixture.stmini.local/"
+        try {
+            until { ui { field("firstContentReady") == true } }
+            for (url in listOf(base + "missing.html", base + "%2e%2e/index.html", base + "pages%2Fdetail.html",
+                "https://user@renderer_fixture.stmini.local/index.html", "https://renderer_fixture.stmini.local:443/index.html",
+                "https://other.stmini.local/index.html")) check(!show(url)) { "Rejected reserved target must not become online: $url" }
+            check(show(base + "index.html"))
+            var view = popup()!!
+            until { js(view, "document.readyState==='complete' && typeof window.__rendererProbe==='object'") == "true" }
+            check(js(view, "document.getElementById('pixel').naturalWidth===1 && getComputedStyle(document.getElementById('content')).color==='rgb(13, 47, 83)'") == "true")
+            val identity = com.fsst.stmini_flutter.runtime.MiniPackageStore(targetContext).installed("renderer_fixture")!!
+            val intercept = ownerClass.getDeclaredMethod("popupLocalResource", identity.javaClass, android.webkit.WebResourceRequest::class.java).apply { isAccessible = true }
+            fun response(url: String, method: String = "GET") = intercept.invoke(owner, identity, request(url, method)) as? android.webkit.WebResourceResponse
+            for ((file, mime) in mapOf("index.html" to "text/html", "probe.js" to "application/javascript", "style.css" to "text/css", "pixel.png" to "image/png")) {
+                val result = response(base + file)!!; check(result.mimeType == mime); result.data.close()
+            }
+            for (url in listOf(base + "missing.html", base + "%2e%2e/index.html", base + "pages%2Fdetail.html",
+                "https://other.stmini.local/index.html", "https://user@renderer_fixture.stmini.local/index.html",
+                "https://renderer_fixture.stmini.local:443/index.html")) {
+                val denied = response(url)!!; check(denied.statusCode == 403); denied.data.close()
+            }
+            response(base + "index.html", "POST")!!.also { check(it.statusCode == 403); it.data.close() }
+            check(response("https://fixture.invalid/ordinary") == null) // ordinary HTTPS contract, not TLS success
+            check(!ui { view.webViewClient.shouldOverrideUrlLoading(view, request("https://fixture.invalid/ordinary")) })
+            js(view, "window.__popupDenied=0; fetch('${base}missing.html').then(r=>window.__popupDenied=r.status); true")
+            until { js(view, "window.__popupDenied===403") == "true" }
+            val manifest = File(pack, "mini-manifest.json"); val original = manifest.readBytes()
+            try {
+                manifest.writeText(JSONObject(String(original)).put("version", "2.0").toString())
+                response(base + "index.html")!!.also { check(it.statusCode == 403); it.data.close() }
+            } finally { manifest.writeBytes(original) }
+            // A genuine same-origin iframe has the raw object but cannot forge
+            // the listener's native isMainFrame/sourceOrigin metadata.
+            js(view, "window.__popupIframePosted=false; var f=document.createElement('iframe'); f.src='${base}index.html#iframe'; f.onload=function(){f.contentWindow.eval(\"CMSScriptMessageChannel.postMessage(JSON.stringify({method:'codeVerifSucc',origin:'https://renderer_fixture.stmini.local',sourceOrigin:'https://renderer_fixture.stmini.local',isMainFrame:true,params:{synthetic:true}}))\");window.__popupIframePosted=true};document.body.appendChild(f);true")
+            until { js(view, "window.__popupIframePosted===true") == "true" }; waitForIdleSync()
+            check(popup() === view)
+            val targetClass = Class.forName("com.fsst.stmini_flutter.ui.MiniPopupBridgePolicy\$Target")
+            val target = targetClass.getDeclaredConstructor(String::class.java, String::class.java)
+                .newInstance("https://renderer_fixture.stmini.local", "renderer_fixture")
+            val queued = ownerClass.getDeclaredMethod("queuePopupVerification", WebView::class.java, targetClass,
+                identity.javaClass, String::class.java, android.net.Uri::class.java, Boolean::class.javaPrimitiveType).apply { isAccessible = true }
+            fun enqueue(current: WebView) { queued.invoke(owner, current, target, identity,
+                "{\"method\":\"codeVerifSucc\",\"params\":{\"synthetic\":true}}", android.net.Uri.parse(base), true) }
+            // Hold one UI turn: actual handler posts, then the controlled real
+            // delegate invalidates a same-URL reload before that post drains.
+            ui { enqueue(view); view.webViewClient.onPageStarted(view, view.url, null) }; waitForIdleSync()
+            check(popup() === view)
+            // Real close/replacement invalidates the old object/epoch. Its
+            // pending accepted verification cannot dismiss the replacement.
+            ui { enqueue(view); (field("popupDialog") as android.app.Dialog).dismiss(); check(owner.showStminiPopup(base + "index.html", 8, 8, 1f)) }
+            waitForIdleSync(); check(popup() !== view)
+            view = popup()!!
+            until { js(view, "document.readyState==='complete' && typeof CMSScriptMessageChannel==='object'") == "true" }
+            // Current native top-frame metadata succeeds despite untrusted
+            // payload metadata claiming something else.
+            ui { view.evaluateJavascript("CMSScriptMessageChannel.postMessage(JSON.stringify({method:'codeVerifSucc',origin:'https://forged.invalid',isMainFrame:false,params:{synthetic:true}}));true", null) }
+            until { popup() == null }
+            report.put("fullPopup", JSONObject().put("passed", true).put("actualRawTopAndIframe", true)
+                .put("controlledQueuedReloadCloseReplaceReject", true).put("strictLocal403AndMIME", true)
+                .put("ordinaryHTTPS", "navigation_allowed_dispatch_null_no_TLS_claim")
+                .put("deniedReservedDispatchFallbacks", 0))
+        } finally { dismiss(); ui { owner.finish() }; waitForIdleSync() }
+    }
+
     override fun onStart() {
         val report = JSONObject().put("kind", "real_android_instrumentation_production_local_webview")
         var activity: Activity? = null; var renderer: LocalMiniView? = null; var server: ServerSocket? = null
@@ -75,6 +378,9 @@ class RendererInstrumentation : Instrumentation() {
             check(!root.exists()) { "task-native-root-must-start-absent" }
             check(pack.mkdirs())
             for ((name, bytes) in RendererFixture.files) File(pack, name).writeBytes(bytes)
+            verifyFullRuntimeSafety(pack, report)
+            verifyFullPopupRuntime(pack, report)
+            verifyFullArchiveInstall(report)
             val count = AtomicInteger(0)
             val listener = ServerSocket(0, 10, java.net.InetAddress.getByName("127.0.0.1")); server = listener
             val accept = Thread {

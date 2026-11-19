@@ -7,16 +7,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
 
 StminiEvent _ready({
-  String name = 'foundation_initialized',
+  String name = 'runtime_initialized',
   bool initialized = true,
 }) => StminiEvent.fromMap({
   'name': name,
   'payload': {
-    'stage': 'foundation',
+    'stage': 'mini',
+    'runtimeMode': 'mini',
     'initialized': initialized,
     'packageName': 'com.almanac.lite',
-    'miniLoadingAvailable': false,
-    'webLoadingAvailable': false,
+    'miniLoadingAvailable': true,
+    'webLoadingAvailable': true,
   },
 });
 

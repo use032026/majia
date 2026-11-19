@@ -260,7 +260,8 @@ void main() {
       const channel = MethodChannel('stmini_flutter/methods');
       final calls = <MethodCall>[];
       final nativeState = <String, dynamic>{
-        'stage': 'foundation',
+        'stage': 'mini',
+        'runtimeMode': 'mini',
         'initialized': true,
         'packageName': 'com.almanac.lite',
       };
@@ -285,7 +286,7 @@ void main() {
         await tester.pump();
         await startup.initializeOnce();
 
-        expect(StminiFlutter.runtimeStage, 'foundation');
+        expect(StminiFlutter.runtimeStage, 'mini');
         expect(calls.map((call) => call.method), <String>[
           'initialize',
           'installedPackages',

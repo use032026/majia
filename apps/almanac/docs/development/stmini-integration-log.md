@@ -194,3 +194,46 @@ AOT 可达范围另行分层：实际检索保留 StminiStartup、StminiPackage�
 最终只读回查 #216 / `44249151572` / artifact `14403505420` 已 completed/success：`2026-11-18T06:09:01Z` 状态与 `06:09:04Z` metadata 均对应同一 App、1.0.11/build 1、version `bac3b2d9-28c8-4135-b8c0-625fa9e92f0f`、build `130d4983-6020-41a3-a25a-f45dce28cfee`，版本 **WAITING_FOR_REVIEW**、release type **AFTER_APPROVAL**，build **VALID**、`expired=false`，en-US 更新说明精确为 `fix bug`，metadata errors 为空。该只读状态中的 review-submission relationship 为 null，仅表示此关系查询未给出对象，不推翻前述真实提交回执，不据此重复提交。
 
 第三批当前结论是**已正式送审、等待审核**，尚未获批或公开上线；`AFTER_APPROVAL` 表示审核通过后的发布策略，不是现在已经发布。前述 90725 未来 SDK 要求仍保留为警告，当前 build VALID。此次只收集真实发行回执与精确终读，没有重跑 SDK/设备测试，也没有改变此前签名制品和本地验证的已说明限制。
+
+
+## 2026-11-19：第四批完整容器与 Bridge 接入（当前验证与独立审核进行中）
+
+本条更新第三批 foundation/local-renderer 的能力现状，旧条目保留为当时的范围与发行证据。固定 main 来源仍为 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`；本次从固定 Git 来源迁入完整 Mini runtime、MiniLink、版本/下载/ZIP 原子安装、栈/保活/overlay 与 OnlineWeb 自然闭包，并真实接上 Dart SDK 和原生 CMS Bridge。未恢复保护 stash，也未复制主控端过程文档到打包机。
+
+双端初始化状态现在为真实 mini runtime、Mini/Web 能力 true。普通 startup 只初始化、消费状态并读严格五字段库存，Deynu 原首页无 Mini URL、自动/隐藏/远程激活入口；旧 LocalView、严格库存、事件所有权及地区 alias 保留。完整 dispatcher 的 provider 能力有宿主前提，未提供按合同失败；Deynu 没有账号/交易 provider。Mini 与 HTTPS origin 使用原生主体 SHA256 独立存储域；异步回包和 UI/Photos 等副作用沿用最初 document generation/URL，写入前重验。完整 iOS WK 绑定初始 id/version/entry；Android 保留本地域非法资源拒绝而不回退网络。
+
+独立部分预审发现两项 P2：minSupport-only 绕过运行下限与 Android self-update 可降级。本次五个生产文件窄修已落盘，当前执行门槛为 `minSupportVersion ?? currentVersion`，下载同时守两个版本声明，安装提交前重读磁盘、低版不得覆盖、同版 kept/强同版可冷重载，Android 只有 changed 发安装事件；iOS kept 补充 launchLink 时保留 Home 注册表通知。生产冻结后仅测试环境适配，不以编译通过或实现者完成替代 P2 独立关闭；完整余审仍待结论。
+
+当前 P2 Android Kotlin compile exit0/10.73s、iOS 普通 Simulator Debug exit0/15.80s；后续真实 JVM 首轮 92 项有 5 失败，iOS native 首轮31项有1失败，均已保留原始失败后窄修测试并复测。iOS 首轮实际 ZIP/min-only cold/keepalive 已过，失败回退测试未实际拦截下载，不记为通过；普通 target 恢复0/22.41s且私有模拟器已删除。报告 writer 真实 IO 3项再次通过0/2.01s。旧完整 SDK 报告采集的日志截断、Android路径误取、iOS重装container换代失败仍是失败；当前按显式私有目录、nonce、probe/reader ack 和安装后 container 采集，尚待当前双端整轮实际结果。
+
+HXWRefresh1.1.0、Masonry1.1.0、SDWebImage5.21.7、Toast-Swift5.1.1、ZIPFoundation0.9.20 已解析；iOS仍15.0，Photos add描述只为显式save调用。Android宿主移除宽存储权限，原生组件须以最终合并manifest/APK核验，旧pre-P2发行制品不得代替当前修复后的Release。真实TLS/生产Mini/物理设备/账号交易/系统相册写入或分享发送未测；模拟transport不冒充真实HTTPS。
+
+来源规模按固定 source path+line 真实去重、派生改行不计，且须绑定当前普通 Release source SHA；iOS与Android各自归属制品。前三批 known byte-equal同path子集与跨path派生unknown分列，不把额外reference扣重差额1048当成前三批全部规模或5.1%。当前P2最终来源量/资格待受影响Release重算，旧pre-P2的13707和12659是两个不可相加下界。完整独立QA/cross、精确中文提交及普通push尚未完成；实际签名IPA、商店内容/送审由PM独立发行门禁处理，第五批仅本地完整整体验证/补缺。
+
+
+### 当前平台权限能力说明
+
+Android minSdk24，插件虽保留来源 `WRITE_EXTERNAL_STORAGE maxSdkVersion=28`，Deynu 宿主显式 remove READ/WRITE。因此 API24–28 的 saveAlbum 真实实现会进入权限请求并以无权限失败，不能把 API33 模拟器或 MediaStore helper 测试写成旧系统相册保存成功；API29+ 使用 scoped MediaStore，实际系统写入仍未测。本批保持宿主无外存读写权限，未因完整 Bridge 入口增加旧系统宽写授权；此差异随当前交接与独立审核明列。iOS Photos add 仍仅显式保存调用的权限描述，不等于已验证真实相册保存。
+
+
+### 当前完整 iOS 运行验证发现的析构缺口
+
+本轮完整原生 XCTest 实际为37项中34通过、3失败，完整 SDK 测试尚未进入。一个真实缺陷是 Mini 根控制器在 UIKit 尚未加载 view 时即释放，其析构将空 WebView 当成必需值使用导致崩溃；这不是已证实的线上 Deynu 用户故障，也不能仅由测试强制加载页面掩盖。崩溃重启后的下一测试遇到私有 fixture 残留；会话断言另需区分测试主动关闭导致的正常 epoch/清理与随后排队的旧副作用。失败分层保存，当前仍待最小修复、完整复测及独立关闭。普通主入口构建已经恢复成功，本任务私有模拟器已清理；不据此前编译通过宣称本轮原生或 SDK 通过。
+
+
+### 第四批当前源码复测与来源资格
+
+根控制器析构改为只捕获可选 WebView 做原生清理，移除不必要异步 JavaScript；未加载 view 的真实构造/释放、取消未呈现导航和已加载重复清理均有回归。新增已加载回归曾误将 UIKit 释放期间的清理次数固定为一次而失败：实际 root 清理后 removeFromSuperview 又触发 willMove(toSuperview:nil) 的合法幂等清理。该轮40项39通过、1测试断言失败保留；修正只约束显式两次清理精确失效、真实对象释放/委托清除及释放确有失效，不盲改固定次数，也不改变产品清理或安全门禁，测试标记改为中性完成，正式 XCTest 结果决定通过。
+
+当前冻结后的完整 iOS 原生测试实际40/40通过、0失败、0跳过；完整 SDK 两个 Mini 各17项检查通过、closedBoth=true，iframe 的原生对象可用且实际投递后由 native gate 拒绝。完整1443字节 nonce 报告SHA256为 `7c58c651bc00bc5e09674587f5311cb86d6e507a7eab054b98c1486793c9b455`；CMS appHide/appShow仅A实际观测，普通主入口恢复构建成功且任务私有模拟器已删除。Android当前 JVM 92/0/0skip，完整SDK A/B各17项、closedBoth=true，CMS仅B实际观测；原生矩阵按相同生产/测试/依赖锁逐SHA复用已执行结果，明确没有再执行一遍。旧SDK B超时与早期编译/传输失败不回写成功；B生命周期准备时机修正只在测试runner，不修改产品前台/关闭语义。
+
+受影响普通 iOS设备 Release构建退出0，当前双端Release全部模块输入与三锁保持；本地原生framework为2,557,200字节、SHA256 `21a849efb5d8b0ebbbc421d4f648860480e6100a016a700823eea2650d50d668`，Runner动态加载、11个主要原生类型符号及STMini资源均在。Android APK为17,538,362字节、SHA256 `74037c54af7739fd683d2b46890007b96008e342b92fe08bc02922c0dde0f495`，合并及最终manifest没有宽存储权限，Mini组件non-exported。R8映射112类中检出103个DEX描述符，不能据此声称全部原始类或每行机器码均保留。普通制品没有测试fixture；iOS最低15.0、Photos add描述有、camera/microphone描述无。这里是无签名本地App/framework，不是签名IPA。
+
+正式 `UPSTREAM.json` / `SOURCE_MAP.json` 已按当前源码、普通Release输入/原生注册链接及真实受控消费者重新生成，保留前三批历史。当前准入来源C=13,514行，额外扣除所有此前引用范围后的第四批保守新增下界12,467行，达到10,342门槛；两者不可相加。平台分别为iOS当前8,562/新增下界8,011、Android当前4,952/新增下界4,456，各自只归属本地unsigned iOS App/framework和Android APK。固定20683分母仍是Android实现5133+iOS实现14981+headers336+sharedDart233，Android行不归入iOSIPA。已知前三批同path byte-equal子集P=320，当前保留317、移出3、相对已知P的新行N=13,197，317+13,197=13,514及320−3+13,197=13,514成立；P不是前三批全部来源量，跨path派生与等价改行未知，额外reference扣重下界不参与该加法。旧pre-P2的13707/12659仅历史，不沿用为当前资格或功能比例。
+
+本批普通首页仍为原Deynu，初始化/状态/严格库存以外没有自动或远程Mini入口，账号交易provider未注入；系统真实相册写入、分享发送、真实TLS/线上Mini、物理设备仍未由本轮获得验证。后续签名IPA、CI/商店披露与发行状态单独记录，第五批仅本地完整整体验证与补缺。
+
+
+最终 Dart 格式检查36文件/0、静态分析无问题、全量119项通过；全量后五文件fake回归50项通过，是重叠子集，不相加，也不沿用旧59项数字。57份Dart/fixture输入前后逐SHA一致。
+
+旧pre-P2的13,707到当前13,514减少193条来源资格，是累计P2-01至P2-06在九份生产文件中的本地安全修复改变了逐字匹配来源span，并非P6单独删除193行，也不是来源资格过滤规则缩放：本轮candidate/module exclusion/Release排除/资格状态均未变，改为本地等价实现的行依旧不给来源信用。九文件来源行差额依次为Android MiniPackageStore −12、Container −40；iOS Plugin −40、ResourceManager −13、ApiManager −11、Router −4、InstanceManager −19、WebView −12、根控制器累计 −42，总计−193。P6单独逆向重建旧根控制器的内存字节并与当时冻结SHA严格一致后重算，来源资格仅从1,992到1,986、减少6行；没有恢复或写入旧源码。对应保守新增下界从12,659到12,467减少192行，差1来自此前引用重叠区，仍不是前三批全部规模。

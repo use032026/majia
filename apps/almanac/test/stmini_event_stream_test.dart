@@ -8,13 +8,14 @@ import 'package:stmini_flutter/stmini_flutter.dart';
 
 const _codec = StandardMethodCodec();
 const _state = <String, dynamic>{
-  'stage': 'foundation',
+  'stage': 'mini',
+  'runtimeMode': 'mini',
   'initialized': true,
   'packageName': 'com.almanac.lite',
 };
 
 Map<String, dynamic> _event() => <String, dynamic>{
-  'name': 'foundation_initialized',
+  'name': 'runtime_initialized',
   'payload': _state,
 };
 
@@ -73,7 +74,7 @@ void main() {
       expect(messenger.calls.map((call) => call.method), ['listen']);
       expect(messenger.calls.single.arguments, isNull);
       await messenger.emit(_event());
-      expect(firstEvents.single.name, 'foundation_initialized');
+      expect(firstEvents.single.name, 'runtime_initialized');
       expect(secondEvents.single.payload, _state);
       expect(
         () => secondEvents.single.payload['initialized'] = false,
@@ -105,9 +106,9 @@ void main() {
         'not a map',
         {'name': 7, 'payload': _state},
         {'name': '', 'payload': _state},
-        {'name': 'foundation_initialized', 'payload': false},
+        {'name': 'runtime_initialized', 'payload': false},
         {
-          'name': 'foundation_initialized',
+          'name': 'runtime_initialized',
           'payload': {7: 'invalid key'},
         },
       ]) {

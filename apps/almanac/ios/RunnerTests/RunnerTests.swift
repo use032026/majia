@@ -3,7 +3,9 @@ import XCTest
 import UIKit
 import WebKit
 import Network
-import stmini_flutter
+import Photos
+import ObjectiveC.runtime
+@testable import stmini_flutter
 
 final class RunnerTests: XCTestCase {
   private func invoke(_ plugin: StminiFlutterPlugin, _ method: String, _ arguments: Any? = nil) -> Any? {
@@ -27,12 +29,12 @@ final class RunnerTests: XCTestCase {
     XCTAssertEqual(before["initialized"] as? Bool, false)
     XCTAssertNil(invoke(plugin, "initialize", configuration))
     let state = invoke(plugin, "foundationState") as! [String: Any]
-    XCTAssertEqual(state["stage"] as? String, "foundation")
+    XCTAssertEqual(state["stage"] as? String, "mini")
     XCTAssertEqual(state["initialized"] as? Bool, true)
     XCTAssertEqual(state["packageName"] as? String, Bundle.main.bundleIdentifier)
     XCTAssertFalse((state["localizedClose"] as? String ?? "").isEmpty)
-    XCTAssertEqual(state["miniLoadingAvailable"] as? Bool, false)
-    XCTAssertEqual(state["webLoadingAvailable"] as? Bool, false)
+    XCTAssertEqual(state["miniLoadingAvailable"] as? Bool, true)
+    XCTAssertEqual(state["webLoadingAvailable"] as? Bool, true)
     XCTAssertNil(invoke(plugin, "initialize", configuration))
     let repeated = invoke(plugin, "foundationState") as! NSDictionary
     XCTAssertEqual(repeated, state as NSDictionary)
@@ -65,7 +67,7 @@ final class RunnerTests: XCTestCase {
     XCTAssertTrue(earlyEvents.isEmpty)
     XCTAssertNil(invoke(early, "initialize", configuration))
     XCTAssertEqual(earlyEvents.count, 1)
-    XCTAssertEqual(earlyEvents[0]["name"] as? String, "foundation_initialized")
+    XCTAssertEqual(earlyEvents[0]["name"] as? String, "runtime_initialized")
     let earlyPayload = earlyEvents[0]["payload"] as! [String: Any]
     XCTAssertEqual(earlyPayload["initialized"] as? Bool, true)
     XCTAssertEqual(earlyPayload["packageName"] as? String, "com.almanac.lite")
@@ -99,12 +101,15 @@ final class RunnerTests: XCTestCase {
     XCTAssertEqual(secondCount, 1)
   }
 
-  func testUnsupportedCapabilitiesAreErrorsRatherThanFakeSuccess() {
+  func testCompleteRuntimeRejectsUninitializedOpeningAndInvalidDispatch() {
     let plugin = StminiFlutterPlugin()
-    for method in ["openMini", "openWeb", "closeMini", "closeWeb", "notifyWebSessionChanged", "isAvailable"] {
+    for method in ["openMini", "openWeb"] {
       let error = invoke(plugin, method, ["link": "mini://not-opened"]) as? FlutterError
-      XCTAssertEqual(error?.code, "unsupported_capability", method)
+      XCTAssertEqual(error?.code, "not_initialized", method)
     }
+    XCTAssertEqual(invoke(plugin, "isAvailable") as? Bool, true)
+    XCTAssertEqual((invoke(plugin, "notifyWebSessionChanged", [:]) as? FlutterError)?.code, "invalid_reason")
+    XCTAssertTrue((invoke(plugin, "unknownCapability") as AnyObject?) === FlutterMethodNotImplemented)
     let state = invoke(plugin, "foundationState") as! [String: Any]
     XCTAssertEqual(state["initialized"] as? Bool, false)
   }
@@ -114,12 +119,12 @@ final class RunnerTests: XCTestCase {
     let invalid: [[String: Any]] = [
       ["bridgeContext": ["packageName": "com.other.app"]],
       ["bridgeContext": ["packageName": "com.almanac.lite", "storageReset": ["version": "x"]]],
-      ["bridgeContext": ["packageName": "com.almanac.lite"], "loadingImage": "unsupported"],
+      ["bridgeContext": ["packageName": "com.almanac.lite"], "loadingImage": 123],
       [:]
     ]
     for arguments in invalid {
       let error = invoke(plugin, "initialize", arguments) as? FlutterError
-      XCTAssertEqual(error?.code, "unsupported_foundation_configuration")
+      XCTAssertEqual(error?.code, "unsupported_host_configuration")
     }
     let state = invoke(plugin, "foundationState") as! [String: Any]
     XCTAssertEqual(state["initialized"] as? Bool, false)
@@ -748,4 +753,783 @@ private final class RendererSchemeTask: NSObject, WKURLSchemeTask {
   func didReceive(_ data: Data) { callbacks += 1; bytes += data.count }
   func didFinish() { callbacks += 1; finished += 1 }
   func didFailWithError(_ error: Error) { callbacks += 1; failed += 1 }
+}
+
+
+/// Native SDK safety checks use synthetic data in the runner's fresh simulator.
+final class FullRuntimeBridgeSafetyTests: XCTestCase {
+  private func session(_ method: String, _ params: [String: Any], scope: String?) -> [String: Any] {
+    STOnlineWebSessionBridge.handle(method: method, params: params,
+      bridgeContext: ["packageName": "com.almanac.lite"], deviceType: "ios",
+      darkMode: false, languageCode: "en-US", storageScope: scope) ?? [:]
+  }
+
+  func testSDKStorageCannotReadWriteOrRemoveHostSchema() throws {
+    let key = "flutter.almanac_state_v1"
+    let syntheticHostValue = "synthetic-host-schema-sentinel"
+    UserDefaults.standard.set(syntheticHostValue, forKey: key)
+    defer { UserDefaults.standard.removeObject(forKey: key) }
+    let a = "mini:full_fixture|local", b = "mini:other_fixture|local"
+    let origin = "web:https://fixture.invalid"
+    defer {
+      for scope in [a, b, origin] { STMiniScopedStorage.defaults(for: scope)?.removeObject(forKey: key) }
+    }
+    XCTAssertEqual(session("getStorage", ["key": key], scope: a)["code"] as? String, "0")
+    XCTAssertEqual(session("setStorage", ["key": key, "data": "{\"synthetic\":true}"], scope: a)["code"] as? String, "1")
+    XCTAssertEqual((session("getStorage", ["key": key], scope: a)["data"] as? [String: Any])?["synthetic"] as? Bool, true)
+    for scope in [b, origin] {
+      XCTAssertEqual(session("getStorage", ["key": key], scope: scope)["code"] as? String, "0")
+    }
+    XCTAssertEqual(session("getStorage", ["key": key, "scope": a], scope: nil)["code"] as? String, "0")
+    XCTAssertEqual(session("removeStorage", ["key": key], scope: a)["code"] as? String, "1")
+    XCTAssertEqual(UserDefaults.standard.string(forKey: key), syntheticHostValue)
+    print("STMINI_FULL_NATIVE_STORAGE_RESULT {\"passed\":true,\"scope\":\"synthetic_only_sdk_domains_host_schema_mini_origin\"}")
+  }
+
+  func testLongVerifiedSubjectUsesBoundedCollisionResistantDomain() throws {
+    let subject = "web:https://" + String(repeating: "a", count: 200) + ".invalid"
+    let storage = try XCTUnwrap(STMiniScopedStorage.defaults(for: subject))
+    storage.set("synthetic", forKey: "probe")
+    defer { storage.removeObject(forKey: "probe") }
+    XCTAssertEqual(storage.string(forKey: "probe"), "synthetic")
+    XCTAssertNil(STMiniScopedStorage.defaults(for: subject + "b")?.string(forKey: "probe"))
+  }
+
+  func testMalformedBridgeModelAndCapturedDocumentEpochAreSafe() {
+    let malformed = STWebApiModel(dict: ["method": 123, "params": ["methodId": 456]])
+    XCTAssertEqual(malformed.method, "")
+    XCTAssertEqual(malformed.methodId, "")
+    let web = STMiniWebView(frame: .zero, bindCrl: nil)
+    defer { web.cleanup() }
+    var request = STWebApiModel(dict: ["method": "synthetic", "params": ["methodId": "captured"]])
+    request.webview = web
+    let original = request.documentGeneration
+    web.invalidateBridgeDocumentSession()
+    XCTAssertNotEqual(request.documentGeneration, web.bridgeDocumentGeneration)
+    XCTAssertEqual(request.documentGeneration, original)
+    STWebApiManager.dealWithApiMessage(["method": "setStorage", "params": ["methodId": 1]], webView: web)
+    XCTAssertFalse(STOnlineWebCore.allowsBridgeMessage(documentURL: URL(string: "https://fixture.invalid"), isMainFrame: false))
+    XCTAssertFalse(STOnlineWebCore.matchesCurrentDocumentOrigin(messageDocumentURL: URL(string: "https://old.invalid"), currentDocumentURL: URL(string: "https://new.invalid")))
+  }
+
+  func testCompleteRuntimeRevalidatesModifiedPackageRatherThanPositiveCache() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let folder = root.appendingPathComponent("full_policy_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: folder.path))
+    try manager.createDirectory(at: folder, withIntermediateDirectories: true)
+    defer {
+      try? manager.removeItem(at: folder)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    for (name, bytes) in RendererFixture.files {
+      let output: Data
+      if name == "mini-manifest.json" || name == ".st-mini-package.json" {
+        output = Data(String(decoding: bytes, as: UTF8.self).replacingOccurrences(of: "renderer_fixture", with: "full_policy_fixture").utf8)
+      } else { output = bytes }
+      try output.write(to: folder.appendingPathComponent(name))
+    }
+    XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_policy_fixture"))
+    for raw in ["stmini://user@full_policy_fixture.stmini.local/index.html", "stmini://full_policy_fixture.stmini.local:443/index.html", "stmini://full_policy_fixture.stmini.local//index.html", "stmini://full_policy_fixture.stmini.local/%2findex.html"] {
+      XCTAssertNil(STWebResourceManager.installedMiniPackageResourceURL(forInternalURL: try XCTUnwrap(URL(string: raw))))
+    }
+    XCTAssertNotNil(STWebResourceManager.installedMiniPackageResourceURL(forInternalURL: try XCTUnwrap(URL(string: "stmini://full_policy_fixture.stmini.local/index.html?synthetic=1"))))
+    let manifest = folder.appendingPathComponent("mini-manifest.json")
+    let original = try Data(contentsOf: manifest)
+    var json = try XCTUnwrap(JSONSerialization.jsonObject(with: original) as? [String: Any])
+    json["version"] = "2.0"
+    try JSONSerialization.data(withJSONObject: json).write(to: manifest)
+    XCTAssertFalse(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_policy_fixture"))
+    try original.write(to: manifest)
+    XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_policy_fixture"))
+    let alias = folder.appendingPathComponent("alias.html")
+    try manager.createSymbolicLink(at: alias, withDestinationURL: folder.appendingPathComponent("index.html"))
+    XCTAssertNil(STWebResourceManager.installedMiniPackageLocalPageURL(name: "full_policy_fixture", path: "alias.html"))
+  }
+}
+
+
+/// These are real ZIPFoundation installs of synthetic, test-only archives.
+/// They prove installer/rollback logic, not HTTPS downloading or physical media.
+final class FullRuntimeInstallerTests: XCTestCase {
+  private func install(_ fixture: String, minimum: String? = nil, force: Bool = false) throws -> STDirectMiniPackageInstallOutcome {
+    let file = FileManager.default.temporaryDirectory.appendingPathComponent("full-install-\(UUID().uuidString).zip")
+    try XCTUnwrap(Data(base64Encoded: FullInstallArchive.bytes[fixture]!)).write(to: file)
+    let done = expectation(description: "real native archive install")
+    var outcome: Result<STDirectMiniPackageInstallOutcome, Error>?
+    STWebResourceManager.installDirectMiniPackage(archivePath: file.path, name: "full_install_fixture",
+      minimumVersion: minimum, requiresNewerVersion: force) { result in outcome = result; done.fulfill() }
+    wait(for: [done], timeout: 12)
+    XCTAssertFalse(FileManager.default.fileExists(atPath: file.path), "Archive inputs are removed at every terminal outcome.")
+    return try XCTUnwrap(outcome).get()
+  }
+
+  func testLiveFullWKCannotReadAReplacementInstalledIdentity() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let target = root.appendingPathComponent("full_install_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: target.path))
+    defer {
+      try? manager.removeItem(at: target)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    _ = try install("v1")
+    let config = STWebConfig(webMode: .online)
+    let controller = STWebMiniprogramCrl(name: "full_install_fixture", config: config, isChild: false)
+    let web = STMiniWebView(frame: CGRect(x: 0, y: 0, width: 320, height: 480), bindCrl: controller)
+    controller.webView = web
+    web.configureBridgePolicy(.localMini)
+    defer { web.stopLoading(); web.cleanup() }
+    let url = try XCTUnwrap(STWebResourceManager.installedMiniPackageRootURL(name: "full_install_fixture", entry: "index.html"))
+    _ = web.load(URLRequest(url: url))
+    let deadline = Date().addingTimeInterval(10)
+    while web.verifiedBoundResource(url) == nil && Date() < deadline {
+      RunLoop.current.run(until: Date().addingTimeInterval(0.02))
+    }
+    XCTAssertNotNil(web.verifiedBoundResource(url), "The real WK policy must bind the original installed identity.")
+    web.stopLoading()
+    _ = try install("v2")
+    XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_install_fixture"))
+    XCTAssertNil(web.verifiedBoundResource(url), "The old WK must not silently consume the new version.")
+    print("STMINI_FULL_BOUND_IDENTITY_RESULT {\"passed\":true,\"originalBound\":true,\"replacementRejectedByOldWK\":true}")
+  }
+
+  private func waitUntil(_ condition: () -> Bool, timeout: TimeInterval = 10) -> Bool {
+    let deadline = Date().addingTimeInterval(timeout)
+    while !condition() && Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.02)) }
+    return condition()
+  }
+
+  func testMinOnlyActualColdOpenAndRetainedReuseRespectRuntimeFloor() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let target = root.appendingPathComponent("full_install_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: target.path))
+    defer {
+      try? manager.removeItem(at: target)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    // min-only still supplies the real installer's minimumVersion; a missing
+    // currentVersion must never erase that requirement.
+    let floor = STWebResourceManager.requiredMiniDownloadVersion(currentVersion: nil, minSupportVersion: "2.0")
+    XCTAssertThrowsError(try install("v1", minimum: floor))
+    XCTAssertNil(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"))
+    _ = try install("v1")
+    XCTAssertThrowsError(try install("v1", minimum: floor))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "1.0")
+    XCTAssertEqual(STWebResourceManager.requiredMiniDownloadVersion(currentVersion: "3.0", minSupportVersion: "2.0"), "3.0")
+    XCTAssertEqual(STWebResourceManager.requiredMiniDownloadVersion(currentVersion: "1.0", minSupportVersion: "2.0"), "2.0")
+
+    var controllers: [STWebMiniprogramCrl] = []
+    func cold(_ params: [String: String]) -> (STWebMiniprogramCrl, STWebNavigationController) {
+      let config = STWebConfig(webMode: .online, params: params)
+      let controller = STWebMiniprogramCrl(name: "full_install_fixture", config: config, isChild: false)
+      let navigation = STWebNavigationController(rootViewController: controller)
+      controllers.append(controller)
+      controller.loadViewIfNeeded()
+      controller.viewDidAppear(false) // actual asynchronous production cold-load path
+      return (controller, navigation)
+    }
+    defer { controllers.forEach { $0.webView.stopLoading(); $0.webView.cleanup() } }
+    let below = cold(["minSupportVersion": "2.0"])
+    RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+    XCTAssertNil(below.0.webView.url)
+    XCTAssertFalse(below.0.isKeepAliveRuntimeUsable)
+    let currentOnly = cold(["currentVersion": "2.0"])
+    RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+    XCTAssertNil(currentOnly.0.webView.url)
+
+    let compatible = cold(["currentVersion": "2.0", "minSupportVersion": "1.0"])
+    XCTAssertTrue(waitUntil { compatible.0.isKeepAliveRuntimeUsable })
+    XCTAssertNotNil(compatible.0.webView.url)
+    STWebMiniProgramKeepAliveStore.shared.cache(compatible.0, navigationController: compatible.1)
+    XCTAssertNil(STWebMiniProgramKeepAliveStore.shared.take(miniId: "full_install_fixture",
+      config: STWebConfig(webMode: .online, params: ["minSupportVersion": "2.0"])))
+
+    let bare = cold([:])
+    XCTAssertTrue(waitUntil { bare.0.isKeepAliveRuntimeUsable })
+    STWebMiniProgramKeepAliveStore.shared.cache(bare.0, navigationController: bare.1)
+    let weakConfig = STWebConfig(webMode: .online, params: ["currentVersion": "2.0", "minSupportVersion": "1.0"])
+    XCTAssertTrue(STWebMiniProgramKeepAliveStore.shared.take(miniId: "full_install_fixture", config: weakConfig) === bare.1)
+    STWebMiniProgramKeepAliveStore.shared.cache(bare.0, navigationController: bare.1)
+    XCTAssertTrue(STWebMiniProgramKeepAliveStore.shared.take(miniId: "full_install_fixture",
+      config: STWebConfig(webMode: .online, params: ["minSupportVersion": "1.0"])) === bare.1)
+
+    _ = try install("v2", minimum: floor)
+    let upgraded = cold(["minSupportVersion": "2.0"])
+    XCTAssertTrue(waitUntil { upgraded.0.isKeepAliveRuntimeUsable })
+    XCTAssertEqual(upgraded.0.loadedMiniPackageVersion, "2.0")
+    print("STMINI_FULL_MIN_ONLY_RESULT {\"passed\":true,\"realZIP\":true,\"coldOpen\":true,\"warmReuse\":true,\"weakCompatibility\":true}")
+  }
+
+  func testMinOnlyDownloadFailureDoesNotOpenBelowFloor() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let target = root.appendingPathComponent("full_install_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: target.path))
+    _ = try install("v1")
+    FullRuntimeRejectedDownloadProtocol.requests = 0
+    XCTAssertTrue(URLProtocol.registerClass(FullRuntimeRejectedDownloadProtocol.self))
+    defer { URLProtocol.unregisterClass(FullRuntimeRejectedDownloadProtocol.self) }
+    // registerClass alone does not add this protocol to the production
+    // downloader's fresh ephemeral configuration. Intercept only this test's
+    // configuration factory; never add a provider/hook to production source.
+    let original = try XCTUnwrap(class_getClassMethod(URLSessionConfiguration.self,
+      NSSelectorFromString("ephemeralSessionConfiguration")))
+    let replacement = try XCTUnwrap(class_getClassMethod(URLSessionConfiguration.self,
+      #selector(URLSessionConfiguration.stmini_fixtureEphemeralSessionConfiguration)))
+    method_exchangeImplementations(original, replacement)
+    defer { method_exchangeImplementations(original, replacement) }
+    let controlled = URLSessionConfiguration.ephemeral
+    XCTAssertTrue(controlled.protocolClasses?.contains {
+      ObjectIdentifier($0) == ObjectIdentifier(FullRuntimeRejectedDownloadProtocol.self)
+    } == true, "The configuration actually used by the production factory must contain the test interceptor.")
+    let config = STWebConfig(webMode: .online, params: ["minSupportVersion": "2.0", "downloadUrl": "https://fixture.invalid/min-only-failure.zip"])
+    let controller = STWebMiniprogramCrl(name: "full_install_fixture", config: config, isChild: false)
+    let navigation = STWebNavigationController(rootViewController: controller)
+    defer {
+      withExtendedLifetime(navigation) {}
+      controller.webView.stopLoading(); controller.webView.cleanup()
+      try? manager.removeItem(at: target)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    controller.loadViewIfNeeded(); controller.viewDidAppear(false)
+    XCTAssertTrue(waitUntil({ FullRuntimeRejectedDownloadProtocol.requests > 0 }, timeout: 4), "The synthetic protocol must actually intercept the production URLSession request.")
+    // This is controlled transport failure, not real HTTPS/TLS evidence.
+    RunLoop.current.run(until: Date().addingTimeInterval(2.5))
+    XCTAssertNil(controller.webView.url)
+    XCTAssertNil(controller.loadedMiniPackageVersion)
+    XCTAssertFalse(controller.isKeepAliveRuntimeUsable)
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "1.0")
+  }
+
+  /// Gate the actual serial transaction owner, submit both real asynchronous
+  /// installer calls, then release them without timing/sleep-based ordering.
+  private func concurrentInstalls(_ requests: [(fixture: String, miniId: String)]) throws -> [Result<STDirectMiniPackageInstallOutcome, Error>] {
+    var inputs: [URL] = []
+    for request in requests {
+      let file = FileManager.default.temporaryDirectory.appendingPathComponent("full-concurrent-\(UUID().uuidString).zip")
+      try XCTUnwrap(Data(base64Encoded: FullInstallArchive.bytes[request.fixture]!)).write(to: file)
+      inputs.append(file)
+    }
+    defer { inputs.forEach { try? FileManager.default.removeItem(at: $0) } }
+    let entered = expectation(description: "real install transaction queue held")
+    let release = DispatchSemaphore(value: 0)
+    STWebResourceManager.directMiniPackageInstallQueue.async {
+      entered.fulfill()
+      if release.wait(timeout: .now() + 10) != .success { XCTFail("Test did not release the transaction barrier") }
+    }
+    wait(for: [entered], timeout: 4)
+    var released = false
+    defer { if !released { release.signal() } }
+    let completed = expectation(description: "all real concurrent installer outcomes")
+    completed.expectedFulfillmentCount = requests.count
+    completed.assertForOverFulfill = true
+    var answers: [Int: Result<STDirectMiniPackageInstallOutcome, Error>] = [:]
+    for (index, request) in requests.enumerated() {
+      STWebResourceManager.installDirectMiniPackage(archivePath: inputs[index].path, name: request.miniId) { result in
+        XCTAssertTrue(Thread.isMainThread)
+        XCTAssertNil(answers[index], "One terminal outcome per installation")
+        answers[index] = result
+        completed.fulfill()
+      }
+    }
+    XCTAssertTrue(answers.isEmpty, "No installer may commit/complete across the held transaction barrier")
+    release.signal(); released = true
+    wait(for: [completed], timeout: 15)
+    // Completion is enqueued on main before the transaction's defer removes
+    // staging. Drain its owner rather than guessing a cleanup delay.
+    STWebResourceManager.directMiniPackageInstallQueue.sync {}
+    XCTAssertEqual(answers.count, requests.count)
+    XCTAssertTrue(inputs.allSatisfy { !FileManager.default.fileExists(atPath: $0.path) })
+    return try requests.indices.map { try XCTUnwrap(answers[$0]) }
+  }
+
+  func testConcurrentHigherThenLowerInstallKeepsVerifiedHighestAndIndependentMini() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let target = root.appendingPathComponent("full_install_fixture", isDirectory: true)
+    let other = root.appendingPathComponent("other_install_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: target.path)); XCTAssertFalse(manager.fileExists(atPath: other.path))
+    defer {
+      try? manager.removeItem(at: target); try? manager.removeItem(at: other)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    _ = try install("v1")
+    let outcomes = try concurrentInstalls([("v3", "full_install_fixture"), ("v2", "full_install_fixture"), ("other", "other_install_fixture")])
+    if case .installed(let version) = try outcomes[0].get() { XCTAssertEqual(version, "3.0") }
+    else { XCTFail("The higher candidate must actually commit") }
+    if case .keptInstalled(let version) = try outcomes[1].get() { XCTAssertEqual(version, "3.0") }
+    else { XCTFail("The later lower candidate must read the current disk version inside its transaction") }
+    if case .installed(let version) = try outcomes[2].get() { XCTAssertEqual(version, "1.0") }
+    else { XCTFail("Another Mini must retain its independent package") }
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "3.0")
+    XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_install_fixture"))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "other_install_fixture"), "1.0")
+    STWebResourceManager.rememberInstalledMiniPackageLaunchLink(name: "full_install_fixture", launchLink: "mini://full_install_fixture?currentVersion=3.0")
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageLaunchLink(name: "full_install_fixture"), "mini://full_install_fixture?currentVersion=3.0", "Synchronous metadata visibility is preserved")
+    let reentrant = expectation(description: "metadata update inside install owner does not deadlock")
+    STWebResourceManager.directMiniPackageInstallQueue.async {
+      STWebResourceManager.rememberInstalledMiniPackageLaunchLink(name: "full_install_fixture", launchLink: "mini://full_install_fixture?minSupportVersion=3.0")
+      let recorded = STWebResourceManager.installedMiniPackageLaunchLink(name: "full_install_fixture")
+      DispatchQueue.main.async {
+        XCTAssertEqual(recorded, "mini://full_install_fixture?minSupportVersion=3.0")
+        reentrant.fulfill()
+      }
+    }
+    wait(for: [reentrant], timeout: 4)
+    XCTAssertFalse(try manager.contentsOfDirectory(atPath: root.path).contains { $0.hasPrefix(".staging-") || $0.hasPrefix(".backup-") })
+    print("STMINI_FULL_CONCURRENT_INSTALL_RESULT {\"passed\":true,\"higherThenLower\":true,\"verifiedHighest\":true,\"independentMini\":true,\"exactlyOnce\":true}")
+  }
+
+  func testConcurrentPostMoveRollbackCannotRemoveAnotherSuccessfulCommit() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let target = root.appendingPathComponent("full_install_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: target.path))
+    defer {
+      try? manager.removeItem(at: target)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    // Both are outstanding together. Exercise failure before and after the
+    // successful3.0 transaction, using the real strict post-move rejection.
+    for failureFirst in [true, false] {
+      _ = try install("v1")
+      let requests: [(fixture: String, miniId: String)] = failureFirst
+        ? [("rollback4", "full_install_fixture"), ("v3", "full_install_fixture")]
+        : [("v3", "full_install_fixture"), ("rollback4", "full_install_fixture")]
+      let outcomes = try concurrentInstalls(requests)
+      XCTAssertThrowsError(try outcomes[failureFirst ? 0 : 1].get())
+      if case .installed(let version) = try outcomes[failureFirst ? 1 : 0].get() { XCTAssertEqual(version, "3.0") }
+      else { XCTFail("The independent successful transaction must remain installed") }
+      XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "3.0")
+      XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_install_fixture"))
+      XCTAssertFalse(try manager.contentsOfDirectory(atPath: root.path).contains { $0.hasPrefix(".staging-") || $0.hasPrefix(".backup-") })
+      try manager.removeItem(at: target)
+    }
+    print("STMINI_FULL_CONCURRENT_ROLLBACK_RESULT {\"passed\":true,\"bothCommitOrders\":true,\"verifiedHighestPreserved\":true,\"stagingAndBackupClean\":true}")
+  }
+
+  func testRealAtomicInstallVersionRejectionAndRollbackKeepVerifiedPackage() throws {
+    let manager = FileManager.default
+    let root = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true)
+    let target = root.appendingPathComponent("full_install_fixture", isDirectory: true)
+    XCTAssertFalse(manager.fileExists(atPath: target.path))
+    defer {
+      try? manager.removeItem(at: target)
+      if (try? manager.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? manager.removeItem(at: root) }
+    }
+    if case .installed(let version) = try install("v1") { XCTAssertEqual(version, "1.0") } else { XCTFail("First install must install.") }
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "1.0")
+    for invalid in ["wrongID", "traversal", "symlink"] {
+      XCTAssertThrowsError(try install(invalid))
+      XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "1.0")
+    }
+    XCTAssertThrowsError(try install("v1", minimum: "2.0", force: true))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "1.0")
+    if case .installed(let version) = try install("v2") { XCTAssertEqual(version, "2.0") } else { XCTFail("New version must install.") }
+    XCTAssertThrowsError(try install("v1", force: true))
+    for force in [false, true] {
+      if case .keptInstalled(let version) = try install("v2", force: force) { XCTAssertEqual(version, "2.0") }
+      else { XCTFail("Same version must keep the verified disk package; force may cold-reload it.") }
+    }
+    if case .keptInstalled(let version) = try install("v1") { XCTAssertEqual(version, "2.0") }
+    else { XCTFail("Weak lower archive must keep the verified package.") }
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "2.0")
+    // The source's legacy path check accepts dir//index.html; the final
+    // strict installed-record check rejects it after move and restores backup.
+    XCTAssertThrowsError(try install("rollback"))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: "full_install_fixture"), "2.0")
+    XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: "full_install_fixture"))
+    let leftovers = try manager.contentsOfDirectory(atPath: root.path)
+    XCTAssertFalse(leftovers.contains { $0.hasPrefix(".staging-") || $0.hasPrefix(".backup-") })
+    print("STMINI_FULL_INSTALL_RESULT {\"passed\":true,\"realZipInstall\":true,\"traversalSymlinkIDReject\":true,\"minimumAndForcedVersionReject\":true,\"postMoveRollback\":true}")
+  }
+}
+
+private extension URLSessionConfiguration {
+  /// After the exchange this name invokes the original ephemeral factory.
+  /// The exchange is scoped to one serial XCTest and always reversed.
+  @objc(stmini_fixtureEphemeralSessionConfiguration)
+  dynamic class func stmini_fixtureEphemeralSessionConfiguration() -> URLSessionConfiguration {
+    let configuration = self.stmini_fixtureEphemeralSessionConfiguration()
+    configuration.protocolClasses = [FullRuntimeRejectedDownloadProtocol.self] +
+      (configuration.protocolClasses ?? []).filter {
+        ObjectIdentifier($0) != ObjectIdentifier(FullRuntimeRejectedDownloadProtocol.self)
+      }
+    return configuration
+  }
+}
+
+/// Only synthetic fixture.invalid requests are intercepted. No account,
+/// provider, system opener, or production TLS implementation is used.
+private final class FullRuntimeRejectedDownloadProtocol: URLProtocol {
+  private static let lock = NSLock()
+  private static var requestCount = 0
+  static var requests: Int {
+    get { lock.lock(); defer { lock.unlock() }; return requestCount }
+    set { lock.lock(); defer { lock.unlock() }; requestCount = newValue }
+  }
+  override class func canInit(with request: URLRequest) -> Bool {
+    request.url?.scheme?.lowercased() == "https" && request.url?.host == "fixture.invalid"
+  }
+  override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+  override func startLoading() {
+    Self.lock.lock(); Self.requestCount += 1; Self.lock.unlock()
+    client?.urlProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorCannotConnectToHost))
+  }
+  override func stopLoading() {}
+}
+
+
+/// Controlled native effect tests. WK policy/document and UI/Photos endpoints
+/// are explicit spies; real OS frame/DOM and package evidence is kept separate.
+private final class EffectWebView: STMiniWebView {
+  var syntheticURL = URL(string: "https://fixture.invalid/current")!
+  var scripts: [String] = []
+  var reloads = 0
+  var cleanupCalls = 0
+  override func cleanup() { cleanupCalls += 1; super.cleanup() }
+  var holdJavaScriptCompletions = false
+  var pendingJavaScriptCompletions: [() -> Void] = []
+  override var url: URL? { XCTAssertTrue(Thread.isMainThread); return syntheticURL }
+  override var allowsHostSensitiveBridge: Bool { true }
+  override var allowsLocalMiniBridge: Bool { true }
+  override func evaluateJavaScript(_ javaScriptString: String, completionHandler: (@MainActor @Sendable (Any?, (any Error)?) -> Void)? = nil) {
+    XCTAssertTrue(Thread.isMainThread)
+    scripts.append(javaScriptString)
+    if holdJavaScriptCompletions { pendingJavaScriptCompletions.append { completionHandler?(true, nil) } }
+    else { completionHandler?(true, nil) }
+  }
+  override func reload() -> WKNavigation? { XCTAssertTrue(Thread.isMainThread); reloads += 1; return nil }
+}
+
+private final class EffectMiniRoot: STWebMiniprogramCrl {
+  var presentations = 0
+  var recordedPresentation: UIViewController?
+  override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+    presentations += 1; recordedPresentation = viewControllerToPresent; completion?()
+  }
+}
+
+private final class EffectNavigation: STWebNavigationController {
+  var pushes = 0, pops = 0
+  var syntheticDismissal = false
+  override var isBeingDismissed: Bool { syntheticDismissal || super.isBeingDismissed }
+  override func pushViewController(_ viewController: UIViewController, animated: Bool) { pushes += 1 }
+  override func popViewController(animated: Bool) -> UIViewController? { pops += 1; return super.popViewController(animated: false) }
+}
+
+
+private final class UnloadedLifecycleRootProbe: STWebMiniprogramCrl {
+  var didLoad: (() -> Void)?
+  override func viewDidLoad() { didLoad?(); super.viewDidLoad() }
+}
+
+final class FullRuntimeRootTeardownTests: XCTestCase {
+  func testRealRootCanReleaseBeforeItsViewLoads() {
+    weak var released: STWebMiniprogramCrl?
+    autoreleasepool {
+      let controller = STWebMiniprogramCrl(name: "lifecycle_fixture", config: STWebConfig(webMode: .online), isChild: false)
+      released = controller
+      XCTAssertFalse(controller.isViewLoaded)
+      XCTAssertNil(controller.webView)
+    }
+    XCTAssertNil(released, "A real unpresented root must deallocate without unwrapping its absent WebView")
+    var loads = 0
+    weak var probeReleased: UnloadedLifecycleRootProbe?
+    autoreleasepool {
+      let controller = UnloadedLifecycleRootProbe(name: "lifecycle_fixture", config: STWebConfig(webMode: .online), isChild: false)
+      controller.didLoad = { loads += 1 }
+      probeReleased = controller
+      XCTAssertFalse(controller.isViewLoaded)
+    }
+    XCTAssertNil(probeReleased)
+    XCTAssertEqual(loads, 0, "Teardown must not repair nil by forcing view loading")
+  }
+
+  func testCanceledUnpresentedNavigationRootReleasesWithoutLoading() {
+    var loads = 0
+    weak var released: UnloadedLifecycleRootProbe?
+    weak var navigationReleased: STWebNavigationController?
+    autoreleasepool {
+      let controller = UnloadedLifecycleRootProbe(name: "lifecycle_fixture", config: STWebConfig(webMode: .online), isChild: false)
+      controller.didLoad = { loads += 1 }
+      let navigation = STWebNavigationController(rootViewController: controller)
+      released = controller; navigationReleased = navigation
+      XCTAssertFalse(controller.isViewLoaded)
+      // Cancel ownership before any UIKit presentation; no asynchronous retain,
+      // synthetic load, or network request is used to hide the nil lifecycle.
+    }
+    XCTAssertNil(navigationReleased)
+    XCTAssertNil(released)
+    XCTAssertEqual(loads, 0)
+  }
+
+  func testLoadedRootRepeatedCleanupAndNormalReleaseRemainSafe() throws {
+    weak var released: STWebMiniprogramCrl?
+    var retainedWebView: STMiniWebView?
+    var originalGeneration: UInt64 = 0
+    autoreleasepool {
+      let controller = STWebMiniprogramCrl(name: "lifecycle_fixture", config: STWebConfig(webMode: .online), isChild: false)
+      controller.loadViewIfNeeded()
+      XCTAssertTrue(controller.isViewLoaded)
+      retainedWebView = controller.webView
+      released = controller
+      if let webView = retainedWebView {
+        originalGeneration = webView.bridgeDocumentGeneration
+        webView.cleanup(); webView.cleanup()
+        XCTAssertEqual(webView.bridgeDocumentGeneration, originalGeneration + 2)
+      } else { XCTFail("Loaded root must own its real native WebView") }
+    }
+    XCTAssertNil(released)
+    let webView = try XCTUnwrap(retainedWebView)
+    XCTAssertGreaterThan(webView.bridgeDocumentGeneration, originalGeneration + 2, "Root release invalidates the document; UIKit may perform additional idempotent cleanup")
+    XCTAssertNil(webView.navigationDelegate)
+    XCTAssertNil(webView.uiDelegate)
+    retainedWebView = nil
+    print("STMINI_ROOT_TEARDOWN_RESULT {\"completed\":true,\"officialXCTestRequired\":true}")
+  }
+}
+
+final class FullRuntimeQueuedEffectTests: XCTestCase {
+  private let miniId = "async_effect_fixture"
+  private var directory: URL!
+  private var ownsFixture = false
+  override func setUpWithError() throws {
+    ownsFixture = false
+    directory = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini/\(miniId)", isDirectory: true)
+    if FileManager.default.fileExists(atPath: directory.path) {
+      // Recover only this exact synthetic task fixture after an unexpected
+      // test-process exit. Never silently delete an unrecognized package.
+      let manifestURL = directory.appendingPathComponent("mini-manifest.json")
+      let recordURL = directory.appendingPathComponent(".st-mini-package.json")
+      let manifest = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any])
+      let record = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: recordURL)) as? [String: Any])
+      XCTAssertEqual(manifest["miniId"] as? String, miniId)
+      XCTAssertEqual(record["miniId"] as? String, miniId)
+      XCTAssertEqual(manifest["channel"] as? String, "synthetic")
+      XCTAssertEqual(record["channel"] as? String, "synthetic")
+      guard manifest["miniId"] as? String == miniId, record["miniId"] as? String == miniId,
+            manifest["channel"] as? String == "synthetic", record["channel"] as? String == "synthetic",
+            try Data(contentsOf: directory.appendingPathComponent("index.html")) == Data("<html>synthetic async effect</html>".utf8) else {
+        throw NSError(domain: "DeynuSyntheticFixture", code: 1, userInfo: [NSLocalizedDescriptionKey: "Refuse unrecognized fixture recovery"])
+      }
+      try FileManager.default.removeItem(at: directory)
+      print("STMINI_ASYNC_FIXTURE_RECOVERY {\"syntheticOwnedFixtureRemoved\":true}")
+    }
+    XCTAssertFalse(FileManager.default.fileExists(atPath: directory.path))
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    ownsFixture = true
+    try Data("<html>synthetic async effect</html>".utf8).write(to: directory.appendingPathComponent("index.html"))
+    try Data([1]).write(to: directory.appendingPathComponent("icon.png"))
+    try JSONSerialization.data(withJSONObject: ["miniId": miniId, "version": "1.0", "entry": "index.html", "icon": "icon.png", "channel": "synthetic", "updateself": "1", "ishome": "0"])
+      .write(to: directory.appendingPathComponent("mini-manifest.json"))
+    try JSONSerialization.data(withJSONObject: ["miniId": miniId, "version": "1.0", "entry": "index.html", "channel": "synthetic"])
+      .write(to: directory.appendingPathComponent(".st-mini-package.json"))
+    XCTAssertTrue(STWebResourceManager.isInstalledMiniPackageUsable(name: miniId))
+  }
+  override func tearDownWithError() throws {
+    guard ownsFixture else { return }
+    try? FileManager.default.removeItem(at: directory)
+    ownsFixture = false
+    let root = directory.deletingLastPathComponent()
+    if (try? FileManager.default.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? FileManager.default.removeItem(at: root) }
+  }
+  private func drainMain(_ turns: Int = 4) {
+    for _ in 0..<turns {
+      let drained = expectation(description: "native main queue turn")
+      DispatchQueue.main.async { drained.fulfill() }
+      wait(for: [drained], timeout: 2)
+    }
+  }
+  private func context(child: Bool = false) -> (EffectMiniRoot, EffectNavigation, EffectWebView, EffectWebView?) {
+    let root = EffectMiniRoot(name: miniId, config: STWebConfig(webMode: .online), isChild: false)
+    let rootWeb = EffectWebView(frame: .zero, configuration: WKWebViewConfiguration())
+    rootWeb.bindCrl = root
+    rootWeb.syntheticURL = URL(string: "stmini://\(miniId).stmini.local/index.html")!
+    root.webView = rootWeb
+    let navigation = EffectNavigation(rootViewController: root)
+    navigation.setViewControllers([root], animated: false)
+    var childWeb: EffectWebView?
+    if child {
+      let controller = STWebH5Crl(url: "https://fixture.invalid/current", config: STWebConfig(webMode: .h5), isChild: true)
+      controller.isMiniInternalPage = true
+      let web = EffectWebView(frame: .zero, configuration: WKWebViewConfiguration())
+      web.bindCrl = controller
+      controller.webView = web
+      navigation.setViewControllers([root, controller], animated: false)
+      controller.webView = web
+      childWeb = web
+    }
+    root.webView = rootWeb
+    navigation.pushes = 0; navigation.pops = 0
+    XCTAssertTrue(root.webView === rootWeb)
+    if let childWeb { XCTAssertTrue((childWeb.bindCrl as? STWebH5Crl)?.webView === childWeb) }
+    return (root, navigation, rootWeb, childWeb)
+  }
+  private func model(_ method: String, _ params: [String: Any], _ web: EffectWebView) -> STWebApiModel {
+    var value = STWebApiModel(dict: ["method": method, "params": params.merging(["methodId": "synthetic-effect"], uniquingKeysWith: { first, _ in first })])
+    value.webview = web
+    return value
+  }
+  private func invalidate(_ kind: String, web: EffectWebView, navigation: EffectNavigation) {
+    switch kind {
+    case "epoch": web.invalidateBridgeDocumentSession()
+    case "url": web.syntheticURL = URL(string: "https://fixture.invalid/replacement")!
+    case "close": web.cleanup()
+    case "navclose":
+      navigation.syntheticDismissal = true
+      navigation.viewWillDisappear(false)
+      navigation.syntheticDismissal = false
+    case "stack": navigation.setViewControllers([UIViewController()], animated: false)
+    default: break
+    }
+  }
+
+  func testAllFourQueuedRoutesRejectObsoleteAuthorityAndKeepCurrentPositive() {
+    for route in 0..<4 {
+      for mutation in ["epoch", "url", "close", "navclose", "stack", "current"] {
+        let (root, navigation, rootWeb, childWeb) = context(child: route == 3)
+        let web = childWeb ?? rootWeb
+        defer { rootWeb.cleanup(); childWeb?.cleanup() }
+        let router = STWebRouterApi()
+        let result: [String: Any]?
+        switch route {
+        case 0: result = router.navigateTo(model: model("mini_navigateTo", ["path": "index.html"], web))
+        case 1: result = router.openInternalWebIfNeeded(model: model("open", ["router": "/web", "link": "https://fixture.invalid/next"], web))
+        case 2: result = router.openInternalMiniIfNeeded(model: model("open", ["router": "/mini", "link": "mini://synthetic_other"], web))
+        default: result = router.forwardMiniRouteOpenIfNeeded(model: model("open", ["router": "/login"], web))
+        }
+        XCTAssertEqual(result?["code"] as? String, "1", "The request must be valid before invalidation, route\(route)/\(mutation)")
+        invalidate(mutation, web: web, navigation: navigation)
+        drainMain()
+        let effects = navigation.pushes + root.presentations
+        XCTAssertEqual(effects, mutation == "current" ? 1 : 0, "route\(route)/\(mutation)")
+      }
+    }
+    print("STMINI_QUEUED_ROUTES_RESULT {\"passed\":true,\"fourFamilies\":true,\"epochURLCloseStackReject\":true,\"currentPositive\":true,\"endpointSpies\":true}")
+  }
+
+  func testQueuedSessionAndFrameworkFallbackCloseHaveNoStaleSideEffects() throws {
+    let personal = STWebPersonalHandle.sharedInstance()
+    let saved = personal.apiHandle; personal.apiHandle = nil
+    defer { personal.apiHandle = saved }
+    for mutation in ["epoch", "url", "close", "navclose", "stack", "current"] {
+      let (_, navigation, rootWeb, maybeTarget) = context(child: true)
+      let target = try XCTUnwrap(maybeTarget)
+      XCTAssertTrue((target.bindCrl as? STWebH5Crl)?.webView === target, "session/\(mutation): current controller must own the exact target spy")
+      STWebApiManager.dealWithApiMessage(["method": "mini_notifySessionChanged", "params": ["methodId": "synthetic-session", "reason": "synthetic"]], webView: rootWeb)
+      invalidate(mutation, web: rootWeb, navigation: navigation)
+      // navclose deliberately invalidates epochs; stack detach may legitimately
+      // clean up controllers. Measure queued-request deltas after that action.
+      let baselineGeneration = target.bridgeDocumentGeneration
+      let baselineCleanups = target.cleanupCalls
+      let baselineSession = target.scripts.filter { $0.contains("miniSessionChanged") }.count
+      let baselineMirror = target.scripts.filter { $0.contains("localStorage") }.count
+      let baselinePop = navigation.pops
+      let targetBound = (target.bindCrl as? STWebH5Crl)?.webView === target
+      drainMain()
+      let cleanupDelta = target.cleanupCalls - baselineCleanups
+      let expectedSessionDelta = mutation == "current" ? 1 : 0
+      XCTAssertEqual(target.bridgeDocumentGeneration, baselineGeneration + UInt64(cleanupDelta + expectedSessionDelta), "session/\(mutation): distinguish owned cleanup from stale session invalidation")
+      XCTAssertEqual(target.scripts.filter { $0.contains("miniSessionChanged") }.count, baselineSession + expectedSessionDelta, "session/\(mutation): notification delta")
+      XCTAssertEqual(target.scripts.filter { $0.contains("localStorage") }.count, baselineMirror, "session/\(mutation): Deynu has no legacy mirror provider")
+      XCTAssertEqual(navigation.pops, baselinePop, "session/\(mutation): no queued route mutation")
+      if mutation == "current" { XCTAssertEqual(cleanupDelta, 0, "current session target remains live") }
+      print("STMINI_ASYNC_MUTATION " + String(data: try JSONSerialization.data(withJSONObject: ["kind": "session", "mutation": mutation, "baselineGeneration": baselineGeneration, "generationAfterDrain": target.bridgeDocumentGeneration, "cleanupDelta": cleanupDelta, "sessionDelta": expectedSessionDelta, "targetBoundAfterInvalidation": targetBound]), encoding: .utf8)!)
+      rootWeb.cleanup(); target.cleanup()
+    }
+    for mutation in ["epoch", "url", "close", "navclose", "stack", "current"] {
+      let (_, navigation, rootWeb, maybeChild) = context(child: true)
+      let child = try XCTUnwrap(maybeChild)
+      (child.bindCrl as? STWebH5Crl)?.isMiniRouteChild = true
+      STWebApiManager.dealWithApiMessage(["method": "close", "params": ["methodId": "synthetic-close"]], webView: child)
+      invalidate(mutation, web: child, navigation: navigation)
+      let baselinePop = navigation.pops
+      let baselineGeneration = child.bridgeDocumentGeneration
+      let baselineCleanups = child.cleanupCalls
+      let baselineSession = child.scripts.filter { $0.contains("miniSessionChanged") }.count
+      let baselineMirror = child.scripts.filter { $0.contains("localStorage") }.count
+      drainMain()
+      let expectedPopDelta = mutation == "current" ? 1 : 0
+      XCTAssertEqual(navigation.pops, baselinePop + expectedPopDelta, "fallback/\(mutation): queued pop delta")
+      let cleanupDelta = child.cleanupCalls - baselineCleanups
+      XCTAssertEqual(child.bridgeDocumentGeneration, baselineGeneration + UInt64(cleanupDelta), "fallback/\(mutation): only native cleanup may invalidate the child")
+      XCTAssertEqual(child.scripts.filter { $0.contains("miniSessionChanged") }.count, baselineSession, "fallback/\(mutation): no session signal")
+      XCTAssertEqual(child.scripts.filter { $0.contains("localStorage") }.count, baselineMirror, "fallback/\(mutation): no mirror")
+      rootWeb.cleanup(); child.cleanup()
+    }
+  }
+
+  func testActualMirrorEndpointChecksSourceTargetMembershipAndLateReloadLease() throws {
+    let (_, navigation, rootWeb, maybeTarget) = context(child: true)
+    let target = try XCTUnwrap(maybeTarget)
+    defer { rootWeb.cleanup(); target.cleanup() }
+    let defaults = try XCTUnwrap(STMiniScopedStorage.defaults(for: "host-configured-auth"))
+    defaults.set("{\"synthetic_session\":\"fixture\"}", forKey: "async-effect-auth")
+    defer { defaults.removeObject(forKey: "async-effect-auth") }
+    let config: [String: Any] = ["legacyWebStorageMirror": ["origins": ["https://fixture.invalid"], "keys": ["synthetic_session"], "storageKey": "async-effect-auth", "reloadOnChange": true]]
+    let stale = try XCTUnwrap(STWebBridgeEffectLease(webView: rootWeb, generation: rootWeb.bridgeDocumentGeneration, requiresMiniRoot: true))
+    rootWeb.invalidateBridgeDocumentSession()
+    STWebApiManager.mirrorSessionToLegacyWebStorage(targets: [target], sourceLease: stale, bridgeContext: config)
+    XCTAssertTrue(target.scripts.isEmpty)
+    let current = try XCTUnwrap(STWebBridgeEffectLease(webView: rootWeb, generation: rootWeb.bridgeDocumentGeneration, requiresMiniRoot: true))
+    STWebApiManager.mirrorSessionToLegacyWebStorage(targets: [target], sourceLease: current, bridgeContext: config)
+    XCTAssertEqual(target.scripts.filter { $0.contains("localStorage") }.count, 1); XCTAssertEqual(target.reloads, 1)
+    target.holdJavaScriptCompletions = true
+    STWebApiManager.mirrorSessionToLegacyWebStorage(targets: [target], sourceLease: current, bridgeContext: config)
+    target.syntheticURL = URL(string: "https://fixture.invalid/new-document")!
+    target.pendingJavaScriptCompletions.forEach { $0() }; target.pendingJavaScriptCompletions.removeAll()
+    XCTAssertEqual(target.reloads, 1, "An old mirror callback must not reload the replacement document")
+    navigation.setViewControllers([navigation.viewControllers[0]], animated: false)
+    let before = target.scripts.count
+    STWebApiManager.mirrorSessionToLegacyWebStorage(targets: [target], sourceLease: current, bridgeContext: config)
+    XCTAssertEqual(target.scripts.count, before, "Detached sibling is no longer a session target")
+  }
+
+  func testPhotoDelayedGrantRejectsEpochURLDetachAndCurrentWritesOnce() throws {
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let registrar = registry.registrar(forPlugin: "DeynuPhotoEffect-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+    for mutation in ["epoch", "url", "detach", "current", "denied"] {
+      let (root, navigation, web, _) = context()
+      _ = root; _ = navigation // retain native owner during the delayed grant
+      let plugin = StminiFlutterPlugin()
+      var grant: ((PHAuthorizationStatus) -> Void)?
+      var writes = 0
+      plugin.photoLibraryAccess = STMiniPhotoLibraryAccess(authorizationStatus: { .notDetermined },
+        requestAuthorization: { grant = $0 }, writeImage: { _, completed in writes += 1; completed(true); completed(true) })
+      plugin.saveImageToPhotoLibrary(UIImage(), params: ["methodId": "synthetic-photo"], webView: web)
+      XCTAssertNotNil(grant, "The controlled permission request must actually be pending")
+      if mutation == "epoch" { web.invalidateBridgeDocumentSession() }
+      if mutation == "url" { web.syntheticURL = URL(string: "https://fixture.invalid/other")! }
+      if mutation == "detach" { plugin.detachFromEngine(for: registrar) }
+      let granted = try XCTUnwrap(grant)
+      let delivered = expectation(description: "background permission callback")
+      DispatchQueue.global().async { granted(mutation == "denied" ? .denied : .authorized); granted(mutation == "denied" ? .denied : .authorized); delivered.fulfill() }
+      wait(for: [delivered], timeout: 2)
+      drainMain(6)
+      XCTAssertEqual(writes, mutation == "current" ? 1 : 0, mutation)
+      let callbacks = web.scripts.filter { $0.contains("saveImageToPhotosAlbum") }
+      XCTAssertEqual(callbacks.count, (mutation == "current" || mutation == "denied") ? 1 : 0, mutation)
+      if mutation == "denied" { XCTAssertTrue(callbacks.first?.contains("\"code\":\"0\"") == true) }
+      web.cleanup()
+      withExtendedLifetime((root, navigation, plugin)) {}
+    }
+    print("STMINI_PHOTO_EFFECT_RESULT {\"passed\":true,\"delayedGrantEpochURLDetachReject\":true,\"currentOnceAndDenied\":true,\"OSWriteSeamOnly\":true}")
+  }
+}
+
+private enum FullInstallArchive {
+  static let bytes: [String: String] = [
+    "v3": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc135BvREfgAAAKoAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uPY1BCgMhDEWvUlwXmdJdb9BNNz1AEY1jQDOisTiU3r1Rhq7C/++F/1EJCe9O3ZRvMb6QKhu5Hju3Auo8+cMkEOO5EwdgtKdDE/yGUnEjoVe9SAbisktCctB14DQktNPI2CHqTKtUNhgiiGP3P9WyMwwVopf6Mv5q2Obyor4/UEsBAhQDFAAAAAgAOlNzXT5pxaQ5AAAAQgAAAAoAAAAAAAAAAAAAAIABAAAAAGluZGV4Lmh0bWxQSwECFAMUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAAAAAAAAAAAAgAFhAAAAZGlyL2luZGV4Lmh0bWxQSwECFAMUAAAACAA6U3Nd06T0Aj8AAABEAAAACQAAAAAAAAAAAAAAgAHGAAAAcGl4ZWwucG5nUEsBAhQDFAAAAAgAOlNzXfkG9ER+AAAAqgAAABIAAAAAAAAAAAAAAIABLAEAAG1pbmktbWFuaWZlc3QuanNvblBLBQYAAAAABAAEAOsAAADaAQAAAAA=",
+    "rollback4": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc132LVRbggAAAK8AAAASAAAAbWluaS1tYW5pZmVzdC5qc29uPY3BCkIhEEV/JVyH7wWt+oM2bfqAEB1zQOeJjuEj+vdGiVbDvecM960SEl6duijfYnwgVTZyPXZuBdRx8ptJIMZ9Jw7AaA8/TfALSsWNhJ71KhmIyy7JYVkWJAddB07DRDu1jB2izvSUygZDBHGM//dadoahQvRSn8ZfDducX9XnC1BLAQIUAxQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAAAAAAAAAAACAAQAAAABpbmRleC5odG1sUEsBAhQDFAAAAAgAOlNzXVFCg645AAAAQgAAAA4AAAAAAAAAAAAAAIABYQAAAGRpci9pbmRleC5odG1sUEsBAhQDFAAAAAgAOlNzXdOk9AI/AAAARAAAAAkAAAAAAAAAAAAAAIABxgAAAHBpeGVsLnBuZ1BLAQIUAxQAAAAIADpTc132LVRbggAAAK8AAAASAAAAAAAAAAAAAACAASwBAABtaW5pLW1hbmlmZXN0Lmpzb25QSwUGAAAAAAQABADrAAAA3gEAAAAA",
+    "other": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc125e3qFfgAAAKsAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uRY3BCgMhDER/pXgusr32D3rppR+wiGZrIEbRbHEp/fdGKfQ4M29m3iYh4y2Yq8kSoa7ITRzRumGXvYI5T+DuEijyOFghQX/6YRq/oDbMrOnFLqqBpR6qkAN0GyUNCP0kCnYgW/iplo+OGUjd/9VeghNoQNuYG70W83xezOcLUEsBAhQDFAAAAAgAOlNzXT5pxaQ5AAAAQgAAAAoAAAAAAAAAAAAAAIABAAAAAGluZGV4Lmh0bWxQSwECFAMUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAAAAAAAAAAAAgAFhAAAAZGlyL2luZGV4Lmh0bWxQSwECFAMUAAAACAA6U3Nd06T0Aj8AAABEAAAACQAAAAAAAAAAAAAAgAHGAAAAcGl4ZWwucG5nUEsBAhQDFAAAAAgAOlNzXbl7eoV+AAAAqwAAABIAAAAAAAAAAAAAAIABLAEAAG1pbmktbWFuaWZlc3QuanNvblBLBQYAAAAABAAEAOsAAADaAQAAAAA=",
+    "v1": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc12A2gL2gQAAALkAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uRY5BDgIhDEWvQlgbMm69gRs3HsAQKNIEOgSKYTLx7lrGxFXT3/f7/64zEl69vigdekoPpMb2OwMO7hX0SU3iZjMIc9+IIzA69QMFeEFtuJLcz2YRBYjrJjuSh2Ei5wmiO6iCA5Ip9BTRRUsEaTb4h/biLUODFObb6W5xPVos+v0BUEsBAhQDFAAAAAgAOlNzXT5pxaQ5AAAAQgAAAAoAAAAAAAAAAAAAAIABAAAAAGluZGV4Lmh0bWxQSwECFAMUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAAAAAAAAAAAAgAFhAAAAZGlyL2luZGV4Lmh0bWxQSwECFAMUAAAACAA6U3Nd06T0Aj8AAABEAAAACQAAAAAAAAAAAAAAgAHGAAAAcGl4ZWwucG5nUEsBAhQDFAAAAAgAOlNzXYDaAvaBAAAAuQAAABIAAAAAAAAAAAAAAIABLAEAAG1pbmktbWFuaWZlc3QuanNvblBLBQYAAAAABAAEAOsAAADdAQAAAAA=",
+    "v2": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc13OvKpOgQAAALkAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uRY5BDkIhDESvQlgb8nXpDdy48QCGQJEm0E+gGH6Md9fyTVxNOvOamZfOSHjx+qx06CndkRrbrwYc3Cvog5rE1WYQ5rYRR2B06gcK8ITacCXJT2YRB4jrJjeSh2Ei5wmi26mCA5Ip9BDTRUsEaS74l/biLUODFCQ4zu8W133Fot8fUEsBAhQDFAAAAAgAOlNzXT5pxaQ5AAAAQgAAAAoAAAAAAAAAAAAAAIABAAAAAGluZGV4Lmh0bWxQSwECFAMUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAAAAAAAAAAAAgAFhAAAAZGlyL2luZGV4Lmh0bWxQSwECFAMUAAAACAA6U3Nd06T0Aj8AAABEAAAACQAAAAAAAAAAAAAAgAHGAAAAcGl4ZWwucG5nUEsBAhQDFAAAAAgAOlNzXc68qk6BAAAAuQAAABIAAAAAAAAAAAAAAIABLAEAAG1pbmktbWFuaWZlc3QuanNvblBLBQYAAAAABAAEAOsAAADdAQAAAAA=",
+    "wrongID": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc10egACofgAAALIAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uTY4xDsMgDAC/gpgrlKpbf5ClSx9QIXCCJTAInIoo6t9bk6Wj786yD52QcPb6rnTmAPW1YOetgr6ooR42gcjnTj/N6BRSYxujBG+oDTOJv5lJCBDXXWYkD90ETiNEd1YFO0RTaBXogiWCKPzv6Fa8ZWgQFxHXsd1CPr+Y9OcLUEsBAhQDFAAAAAgAOlNzXT5pxaQ5AAAAQgAAAAoAAAAAAAAAAAAAAIABAAAAAGluZGV4Lmh0bWxQSwECFAMUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAAAAAAAAAAAAgAFhAAAAZGlyL2luZGV4Lmh0bWxQSwECFAMUAAAACAA6U3Nd06T0Aj8AAABEAAAACQAAAAAAAAAAAAAAgAHGAAAAcGl4ZWwucG5nUEsBAhQDFAAAAAgAOlNzXR6AAKh+AAAAsgAAABIAAAAAAAAAAAAAAIABLAEAAG1pbmktbWFuaWZlc3QuanNvblBLBQYAAAAABAAEAOsAAADaAQAAAAA=",
+    "rollback": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc10+UkzRhgAAAL4AAAASAAAAbWluaS1tYW5pZmVzdC5qc29uRY7BCgIxDER/ZelZuive/AMvXvwAKW1qA222tKl0Ef9d0xU8DZl5YealEhJenDpPyrcY70iVzVc9dm4F1GEaxNUkEOa2EQdgtNMPFOAJpeJKkp/0Ig4Ql01uh2WekRx0HTgNGu2OZuwQdaaHmDYYIohjxr+5ZWcYKkQvwXF817DuUxb1/gBQSwECFAMUAAAACAA6U3NdPmnFpDkAAABCAAAACgAAAAAAAAAAAAAAgAEAAAAAaW5kZXguaHRtbFBLAQIUAxQAAAAIADpTc11RQoOuOQAAAEIAAAAOAAAAAAAAAAAAAACAAWEAAABkaXIvaW5kZXguaHRtbFBLAQIUAxQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAAAAAAAAAAACAAcYAAABwaXhlbC5wbmdQSwECFAMUAAAACAA6U3NdPlJM0YYAAAC+AAAAEgAAAAAAAAAAAAAAgAEsAQAAbWluaS1tYW5pZmVzdC5qc29uUEsFBgAAAAAEAAQA6wAAAOIBAAAAAA==",
+    "traversal": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc13LnB2QggAAALkAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uRY5BCkIxDESvUrqW8sWdN3DjxgNIaVMbaPNLm0o/4t01/YKrITMvzLx0RsKL12elQ0/pjtTYfjXg4F5BH9QkrjaDMLeNOAKjUz9QgCfUhitJfjKLOEBcN7mRPAwTOU8Q3U4VHJBMoYeYLloiSHPBv7QXbxkapCDBcX63uO4rFv3+AFBLAwQUAAAACAA6U3NdVwLEQQsAAAAJAAAAEwAAAC4uL3N5bnRoZXRpYy1lc2NhcGUrrswryUgtyUwGAFBLAQIUAxQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAAAAAAAAAAACAAQAAAABpbmRleC5odG1sUEsBAhQDFAAAAAgAOlNzXVFCg645AAAAQgAAAA4AAAAAAAAAAAAAAIABYQAAAGRpci9pbmRleC5odG1sUEsBAhQDFAAAAAgAOlNzXdOk9AI/AAAARAAAAAkAAAAAAAAAAAAAAIABxgAAAHBpeGVsLnBuZ1BLAQIUAxQAAAAIADpTc13LnB2QggAAALkAAAASAAAAAAAAAAAAAACAASwBAABtaW5pLW1hbmlmZXN0Lmpzb25QSwECFAMUAAAACAA6U3NdVwLEQQsAAAAJAAAAEwAAAAAAAAAAAAAAgAHeAQAALi4vc3ludGhldGljLWVzY2FwZVBLBQYAAAAABQAFACwBAAAaAgAAAAA=",
+    "symlink": "UEsDBBQAAAAIADpTc10+acWkOQAAAEIAAAAKAAAAaW5kZXguaHRtbLNRTMlPLqksSFXIKMnNsbOBkEn5KZV2xZV5JRmpJZnJCpl5xSWJOTkKaZkVJaVFqTb6YHkbfbBiAFBLAwQUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAGRpci9pbmRleC5odG1ss1FMyU8uqSxIVcgoyc2xs4GQSfkplXbFlXklGaklmckKiTklqUV5iSWpCql5JUWVNvpgeRt9sGIAUEsDBBQAAAAIADpTc13TpPQCPwAAAEQAAAAJAAAAcGl4ZWwucG5n6wzwc+flkuJiYGDg9fRwCQLSjCDMwQIkt8rwMAEpbk8Xx5CKW8l//sszMDMzMbxfvD4aKMzg6ernss4poQkAUEsDBBQAAAAIADpTc13LnB2QggAAALkAAAASAAAAbWluaS1tYW5pZmVzdC5qc29uRY5BCkIxDESvUrqW8sWdN3DjxgNIaVMbaPNLm0o/4t01/YKrITMvzLx0RsKL12elQ0/pjtTYfjXg4F5BH9QkrjaDMLeNOAKjUz9QgCfUhitJfjKLOEBcN7mRPAwTOU8Q3U4VHJBMoYeYLloiSHPBv7QXbxkapCDBcX63uO4rFv3+AFBLAwQUAAAAAAAAACEAyelLdwoAAAAKAAAACgAAAGFsaWFzLmh0bWxpbmRleC5odG1sUEsBAhQDFAAAAAgAOlNzXT5pxaQ5AAAAQgAAAAoAAAAAAAAAAAAAAIABAAAAAGluZGV4Lmh0bWxQSwECFAMUAAAACAA6U3NdUUKDrjkAAABCAAAADgAAAAAAAAAAAAAAgAFhAAAAZGlyL2luZGV4Lmh0bWxQSwECFAMUAAAACAA6U3Nd06T0Aj8AAABEAAAACQAAAAAAAAAAAAAAgAHGAAAAcGl4ZWwucG5nUEsBAhQDFAAAAAgAOlNzXcucHZCCAAAAuQAAABIAAAAAAAAAAAAAAIABLAEAAG1pbmktbWFuaWZlc3QuanNvblBLAQIUAxQAAAAAAAAAIQDJ6Ut3CgAAAAoAAAAKAAAAAAAAAAAAAAD/od4BAABhbGlhcy5odG1sUEsFBgAAAAAFAAUAIwEAABACAAAAAA==",
+  ]
 }

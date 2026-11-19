@@ -107,24 +107,26 @@ class StminiStartup {
   }
 
   void _consume(StminiEvent event) {
-    if (_disposed || event.name != 'foundation_initialized') return;
+    if (_disposed || event.name != 'runtime_initialized') return;
     final state = event.payload;
-    if (state['stage'] != 'foundation' ||
+    if (state['stage'] != 'mini' ||
+        state['runtimeMode'] != 'mini' ||
         state['initialized'] != true ||
         state['packageName'] != 'com.almanac.lite' ||
-        state['miniLoadingAvailable'] != false ||
-        state['webLoadingAvailable'] != false) {
+        state['miniLoadingAvailable'] != true ||
+        state['webLoadingAvailable'] != true) {
       _lastIssue = 'invalid_foundation_event';
       return;
     }
     // Keep only foundation fields, never arbitrary future event/bridge data.
     final capabilities = state['capabilities'];
     _foundationState = Map<String, dynamic>.unmodifiable({
-      'stage': 'foundation',
+      'stage': 'mini',
+      'runtimeMode': 'mini',
       'initialized': true,
       'packageName': 'com.almanac.lite',
-      'miniLoadingAvailable': false,
-      'webLoadingAvailable': false,
+      'miniLoadingAvailable': true,
+      'webLoadingAvailable': true,
       if (state['language'] is String) 'language': state['language'],
       if (state['localizedClose'] is String)
         'localizedClose': state['localizedClose'],
@@ -136,6 +138,11 @@ class StminiStartup {
               'language_resolution',
               'runtime_events',
               'local_inventory',
+              'local_renderer',
+              'mini_runtime',
+              'online_web',
+              'framework_bridge',
+              'isolated_storage',
             }.contains,
           ),
         ),
