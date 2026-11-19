@@ -36,7 +36,7 @@ localizations:
       • Save a trip summary image to your photo library
       • Use English or Simplified Chinese
 
-      No account is required. Trips, expenses, settings, and receipt images stay on your device by default. Receipt recognition runs on device. On Apple platforms, optional iCloud sync stores supported structured data in your private CloudKit database; original receipt images are excluded. Android does not offer iCloud sync. Reference-rate lookups use the Frankfurter public API.
+      No account is required. Trips, expenses, settings, and receipt images stay on your device by default. Receipt recognition runs on device. On Apple platforms, optional iCloud sync stores supported structured data in your private CloudKit database; original receipt images are excluded. Reference-rate lookups use the Frankfurter public API.
 
       Exchange rates and cost estimates are for reference only and are not financial or investment advice. Final charges depend on the merchant, card network, issuer, payment provider, and posting date.
   en-US:
@@ -60,7 +60,7 @@ localizations:
       • Save a trip summary image to your photo library
       • Use English or Simplified Chinese
 
-      No account is required. Trips, expenses, settings, and receipt images stay on your device by default. Receipt recognition runs on device. On Apple platforms, optional iCloud sync stores supported structured data in your private CloudKit database; original receipt images are excluded. Android does not offer iCloud sync. Reference-rate lookups use the Frankfurter public API.
+      No account is required. Trips, expenses, settings, and receipt images stay on your device by default. Receipt recognition runs on device. On Apple platforms, optional iCloud sync stores supported structured data in your private CloudKit database; original receipt images are excluded. Reference-rate lookups use the Frankfurter public API.
 
       Exchange rates and cost estimates are for reference only and are not financial or investment advice. Final charges depend on the merchant, card network, issuer, payment provider, and posting date.
   zh-Hans:
@@ -84,7 +84,7 @@ localizations:
       • Save a trip summary image to your photo library
       • Use English or Simplified Chinese
 
-      No account is required. Trips, expenses, settings, and receipt images stay on your device by default. Receipt recognition runs on device. On Apple platforms, optional iCloud sync stores supported structured data in your private CloudKit database; original receipt images are excluded. Android does not offer iCloud sync. Reference-rate lookups use the Frankfurter public API.
+      No account is required. Trips, expenses, settings, and receipt images stay on your device by default. Receipt recognition runs on device. On Apple platforms, optional iCloud sync stores supported structured data in your private CloudKit database; original receipt images are excluded. Reference-rate lookups use the Frankfurter public API.
 
       Exchange rates and cost estimates are for reference only and are not financial or investment advice. Final charges depend on the merchant, card network, issuer, payment provider, and posting date.
 
