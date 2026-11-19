@@ -6,7 +6,7 @@ require_relative "lib/asc_review_cancellation"
 class CancellationClient
   C = MajiaCI::ASCReviewCancellation
   attr_reader :calls
-  attr_accessor :app, :version_id, :version_number, :platform, :items, :app_link, :patch_error, :read_error, :build_id, :relationship_data
+  attr_accessor :app, :version_id, :version_number, :platform, :items, :submissions, :patch_error, :read_error, :build_id, :relationship_data
 
   def initialize(states: [["WAITING_FOR_REVIEW", "WAITING_FOR_REVIEW"], ["COMPLETE", "DEVELOPER_REJECTED"]])
     @calls = []
@@ -16,7 +16,7 @@ class CancellationClient
     @version_id, @version_number, @platform = C::VERSION_ID, C::MARKETING_VERSION, "IOS"
     @build_id = "build-1"
     @relationship_data = nil
-    @app_link = { "type" => "apps", "id" => C::APP_ID }
+    @submissions = [{ "type" => "reviewSubmissions", "id" => C::SUBMISSION_ID, "attributes" => { "platform" => "IOS" } }]
     @items = [{ "type" => "reviewSubmissionItems", "id" => "item-1", "relationships" =>
       C::ITEM_RELATIONSHIPS.to_h { |key| [key, { "data" => key == "appStoreVersion" ? { "type" => "appStoreVersions", "id" => C::VERSION_ID } : nil }] } }]
   end
@@ -31,6 +31,7 @@ class CancellationClient
     @calls << [:paginate, path, query]
     return [app] if path == "/v1/apps"
     return [version] if path == "/v1/apps/#{C::APP_ID}/appStoreVersions"
+    return submissions if path == "/v1/apps/#{C::APP_ID}/reviewSubmissions"
     return items if path == "/v1/reviewSubmissions/#{C::SUBMISSION_ID}/items"
 
     raise "unexpected GET list #{path}"
@@ -39,7 +40,6 @@ class CancellationClient
   def get(path, query = nil)
     @calls << [:get, path, query]
     case path
-    when "/v1/reviewSubmissions/#{C::SUBMISSION_ID}/relationships/app" then { "data" => app_link }
     when "/v1/appStoreVersions/#{C::VERSION_ID}"
       raise read_error if read_error
       @poll = [@poll + 1, @states.length - 1].min
@@ -121,7 +121,7 @@ class ASCReviewCancellationTest < Minitest::Test
   def test_wrong_app_bundle_version_id_version_number_and_platform_never_write
     changes = [->(c) { c.app["id"] = "other" }, ->(c) { c.app["attributes"]["bundleId"] = "other.bundle" },
                ->(c) { c.version_id = "wrong" }, ->(c) { c.version_number = "1.0.9" },
-               ->(c) { c.platform = "MAC_OS" }, ->(c) { c.app_link["id"] = "wrong" }]
+               ->(c) { c.platform = "MAC_OS" }, ->(c) { c.submissions.first["id"] = "wrong" }]
     changes.each do |change|
       client = CancellationClient.new
       change.call(client)
@@ -244,6 +244,28 @@ class ASCReviewCancellationTest < Minitest::Test
     refute_includes workflow, "IOS_DISTRIBUTION_P12"
     assert_includes cli, "com.tripdelta.lite.app"
     assert_includes cli, "MajiaCI::ASCReviewCancellation.cancel(client: client)"
+  end
+
+  def test_submission_must_belong_uniquely_to_target_app_with_correct_type_and_platform
+    [[], [{ "id" => C::SUBMISSION_ID, "type" => "apps", "attributes" => { "platform" => "IOS" } }],
+     [{ "id" => C::SUBMISSION_ID, "type" => "reviewSubmissions", "attributes" => { "platform" => "MAC_OS" } }]].each do |resources|
+      client = CancellationClient.new
+      client.submissions = resources
+      assert_blocked(client)
+    end
+    client = CancellationClient.new
+    client.submissions *= 2
+    assert_blocked(client)
+  end
+
+  def test_ownership_uses_scoped_app_list_without_unsupported_relationship_operation
+    client = CancellationClient.new
+    assert cancel(client)["completed"]
+    lookup = client.calls.find { |method, path, _| method == :paginate && path == "/v1/apps/#{C::APP_ID}/reviewSubmissions" }
+    assert_equal({ "filter[platform]" => "IOS", "limit" => "200" }, lookup.last)
+    refute client.calls.any? { |_, path, _| path == "/v1/reviewSubmissions/#{C::SUBMISSION_ID}/relationships/app" }
+    assert_raises(RuntimeError) { CancellationClient.new.get("/v1/reviewSubmissions/#{C::SUBMISSION_ID}/relationships/app") }
+    assert_raises(RuntimeError) { CancellationClient.new.paginate("/v1/apps/other/reviewSubmissions") }
   end
 
 end
