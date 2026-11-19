@@ -43,6 +43,7 @@ webHost.dispose();
 ```
 
 生产入口仅在 iOS 将服务实例交给 `TripDeltaApp`，由应用负责首帧初始化和销毁。
+Web Bridge 的 `getPackageName` 返回实际 iOS 宿主身份 `com.tripdelta.lite.app`。
 Android 本批不接入：依赖不注册 Android 插件、不包含 Android 原生源码，
 宿主在 Android 不初始化或调用 STMini channel；显式打开会报告平台不支持。
 Android 原有旅程业务和工程配置保持原样。
@@ -74,4 +75,4 @@ flutter build ios --release --no-codesign
 # Android 本批不接入 STMini，不以 Android 构建作为本批 Web 验收项。
 ```
 
-当前 iOS Bundle ID 与 Android 包名均为 `com.tripdelta.lite`。隐私政策已公开并接入应用；支持 URL、品牌权利核验、iOS 签名和真机验证等上架事项仍待处理。历史预检报告针对旧工件，需对最终签名构建重跑。详见 [`docs/release/APP_STORE_PREFLIGHT.md`](docs/release/APP_STORE_PREFLIGHT.md)。
+当前 iOS Bundle ID 为 `com.tripdelta.lite.app`，Android 包名为 `com.tripdelta.lite`。隐私政策已公开并接入应用；支持 URL、品牌权利核验、iOS 签名和真机验证等上架事项仍待处理。历史预检报告针对旧工件，需对最终签名构建重跑。详见 [`docs/release/APP_STORE_PREFLIGHT.md`](docs/release/APP_STORE_PREFLIGHT.md)。

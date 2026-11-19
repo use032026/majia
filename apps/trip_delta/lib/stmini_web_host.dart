@@ -100,7 +100,7 @@ class TripDeltaWebHost {
     try {
       _runtime.setBridgeHandler(handleBridge);
       await _runtime.initialize(const {
-        'packageName': 'com.tripdelta.lite',
+        'packageName': 'com.tripdelta.lite.app',
         'webSecurity': {'allowInsecureHTTP': false},
       });
       if (_disposed) throw StateError('Web host is disposed');

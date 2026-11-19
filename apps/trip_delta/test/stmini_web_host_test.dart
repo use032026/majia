@@ -38,7 +38,7 @@ void main() {
     expect(identical(first, second), isTrue);
     expect(runtime.initializeCount, 1);
     expect(runtime.context, {
-      'packageName': 'com.tripdelta.lite',
+      'packageName': 'com.tripdelta.lite.app',
       'webSecurity': {'allowInsecureHTTP': false},
     });
     runtime.initialization!.complete();
@@ -226,6 +226,12 @@ void main() {
       });
       await actual.initialize();
       expect(calls.map((call) => call.method), ['initialize']);
+      expect(calls.single.arguments, {
+        'bridgeContext': {
+          'packageName': 'com.tripdelta.lite.app',
+          'webSecurity': {'allowInsecureHTTP': false},
+        },
+      });
       await actual.openHome(showNavigationBar: false);
       expect(calls.last.method, 'openWeb');
       expect(calls.last.arguments, {
