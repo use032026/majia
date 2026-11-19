@@ -161,11 +161,13 @@ module MajiaCI
         }
       )
       matches = []
+      observed = []
       empty_drafts = 0
       unverified_empty_drafts = 0
       submissions.each do |submission|
         state = state_code(submission.dig("attributes", "state"))
         id = resource_id(submission)
+        observed << { "id" => id, "state" => state }
         relationship = submission.dig("relationships", "appStoreVersionForReview")
         direct_link = relationship&.fetch("data", nil)
         direct_target = direct_link && resource_id(direct_link) == version_id
@@ -191,6 +193,7 @@ module MajiaCI
         next unless direct_target || !target_items.empty?
 
         matches << {
+          "id" => id,
           "state" => state,
           "version_linked_directly" => !!direct_target,
           "item_states" => target_items.map { |item| state_code(item.dig("attributes", "state")) }
@@ -198,6 +201,7 @@ module MajiaCI
       end
       {
         "target_submissions" => matches,
+        "observed_submissions" => observed,
         "empty_ready_drafts" => empty_drafts,
         "ready_drafts_with_unknown_version_link" => unverified_empty_drafts
       }

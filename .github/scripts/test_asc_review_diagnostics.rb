@@ -63,10 +63,11 @@ class ASCReviewDiagnosticsTest < Minitest::Test
     assert_equal({
       "status" => "observed",
       "target_submissions" => [
-        { "state" => "READY_FOR_REVIEW", "version_linked_directly" => true, "item_states" => [] },
-        { "state" => "READY_FOR_REVIEW", "version_linked_directly" => false, "item_states" => ["READY_FOR_REVIEW"] },
-        { "state" => "READY_FOR_REVIEW", "version_linked_directly" => true, "item_states" => ["READY_FOR_REVIEW"] }
+        { "id" => "direct-1", "state" => "READY_FOR_REVIEW", "version_linked_directly" => true, "item_states" => [] },
+        { "id" => "target-1", "state" => "READY_FOR_REVIEW", "version_linked_directly" => false, "item_states" => ["READY_FOR_REVIEW"] },
+        { "id" => "both-1", "state" => "READY_FOR_REVIEW", "version_linked_directly" => true, "item_states" => ["READY_FOR_REVIEW"] }
       ],
+      "observed_submissions" => %w[empty-1 direct-1 other-1 unknown-1 target-1 both-1].map { |id| { "id" => id, "state" => "READY_FOR_REVIEW" } },
       "empty_ready_drafts" => 1,
       "ready_drafts_with_unknown_version_link" => 1
     }, sections.fetch("review_drafts"))

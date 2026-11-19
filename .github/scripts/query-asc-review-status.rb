@@ -5,6 +5,7 @@ require "json"
 require "optparse"
 require_relative "lib/asc_review_status"
 require_relative "lib/asc_review_diagnostics"
+require_relative "lib/asc_readonly_summary"
 
 options = { marketing_version: "" }
 OptionParser.new do |parser|
@@ -51,10 +52,7 @@ begin
       file.puts(JSON.pretty_generate(diagnostic))
     end
     File.open(options.fetch(:github_summary), "a", 0o600) do |file|
-      file.puts("## ASC review diagnostics", "")
-      diagnostic.fetch("sections").each do |name, section|
-        file.puts("- #{name}: #{section.fetch('status')}")
-      end
+      file.write(MajiaCI::ASCReadonlySummary.markdown(:diagnostics, diagnostic))
     end
     puts "ASC review diagnostics queried"
     exit(diagnostic.fetch("complete") ? 0 : 1)
@@ -70,16 +68,7 @@ begin
       file.puts(JSON.pretty_generate(inventory))
     end
     File.open(options.fetch(:github_summary), "a", 0o600) do |file|
-      file.puts(
-        "## ASC build inventory",
-        "",
-        "- Marketing version: #{inventory.fetch('marketing_version')}",
-        "- Build uploads: #{inventory.fetch('build_uploads').length}",
-        "- Prerelease builds: #{inventory.fetch('prerelease_builds').length}",
-        "- Checked at: #{inventory.fetch('checked_at')}",
-        "",
-        "> #{inventory.fetch('evidence_boundary')}"
-      )
+      file.write(MajiaCI::ASCReadonlySummary.markdown(:inventory, inventory))
     end
     puts "ASC build inventory queried"
     exit 0
@@ -96,7 +85,7 @@ begin
     file.write("\n")
   end
   File.open(options.fetch(:github_summary), "a", 0o600) do |file|
-    file.write(MajiaCI::ASCReviewStatus.markdown(summary))
+    file.write(MajiaCI::ASCReadonlySummary.markdown(:status, summary))
   end
   puts [
     "ASC review status queried",

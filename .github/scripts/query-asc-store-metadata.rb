@@ -6,6 +6,7 @@ require "json"
 require "optparse"
 require "yaml"
 require_relative "lib/asc_review_status"
+require_relative "lib/asc_readonly_summary"
 
 module MajiaCI
   # Read-only evidence and a submission gate after an interrupted metadata update.
@@ -163,7 +164,7 @@ module MajiaCI
     def main(argv)
       options = { verify_text: "false", verify_media: "false" }
       OptionParser.new do |parser|
-        %w[bundle-id marketing-version output verify-manifest verify-text verify-media expected-build-number].each do |key|
+        %w[bundle-id marketing-version output verify-manifest verify-text verify-media expected-build-number github-summary].each do |key|
           parser.on("--#{key} VALUE") { |value| options[key.tr('-', '_').to_sym] = value }
         end
       end.parse!(argv)
@@ -182,6 +183,14 @@ module MajiaCI
         verify(result, manifest: manifest, workspace: ENV.fetch("GITHUB_WORKSPACE", Dir.pwd), expected_build_number: options[:expected_build_number], text: options[:verify_text] == "true", media: options[:verify_media] == "true")
       end
       File.open(options[:output], "w", 0o600) { |file| file.write(JSON.pretty_generate(result) + "\n") }
+      if options[:github_summary]
+        begin
+          File.open(options[:github_summary], "a", 0o600) { |file| file.write(ASCReadonlySummary.markdown(:metadata, result)) }
+        rescue IOError, SystemCallError
+          # Optional presentation must not change the query artifact or result.
+          warn "ASC metadata summary could not be written"
+        end
+      end
       ok = result.fetch("errors").empty? && result.dig("verification", "passed") != false
       puts "Read-only ASC metadata snapshot: #{ok ? 'PASS' : 'FAIL'}; output=#{options[:output]}"
       warn result.dig("verification", "failures").join("\n") if result.dig("verification", "passed") == false

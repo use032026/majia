@@ -90,7 +90,8 @@ jobs:
           ruby .github/scripts/query-asc-store-metadata.rb \
             --bundle-id "$IOS_BUNDLE_ID" \
             --marketing-version "$MARKETING_VERSION" \
-            --output asc-store-metadata.json
+            --output asc-store-metadata.json \
+            --github-summary "$GITHUB_STEP_SUMMARY"
 
       - name: Query read-only ASC build inventory
         if: ${{ inputs.build_inventory_version != '' && !inputs.include_review_diagnostics }}
