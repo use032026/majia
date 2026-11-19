@@ -46,9 +46,13 @@ module MajiaCI
       end
       version = ASCReviewStatus.resolve_version(client, APP_ID, MARKETING_VERSION)
       verify_version!(version)
-      relationship = client.get("/v1/reviewSubmissions/#{SUBMISSION_ID}/relationships/app").fetch("data")
-      unless relationship == { "type" => "apps", "id" => APP_ID }
-        raise ASCCancellationError, "review submission belongs to a different app"
+      submissions = client.paginate("/v1/apps/#{APP_ID}/reviewSubmissions", {
+        "filter[platform]" => "IOS", "limit" => "200"
+      })
+      matches = submissions.select { |submission| submission["id"] == SUBMISSION_ID }
+      unless matches.length == 1 && matches.first["type"] == "reviewSubmissions" &&
+             matches.first.dig("attributes", "platform") == "IOS"
+        raise ASCCancellationError, "authorized review submission was not uniquely identified within the target app"
       end
       before = snapshot(client, version: version)
       evidence["before"] = before
