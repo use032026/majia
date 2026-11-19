@@ -39,6 +39,8 @@ dependencies:
   path_provider: ^2.1.5
   share_plus: 11.1.0
   webview_flutter: ^4.13.1
+  stmini_flutter:
+    path: packages/stmini_flutter
   flutter_localizations:
     sdk: flutter
 

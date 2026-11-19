@@ -386,6 +386,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.1"
+  stmini_flutter:
+    dependency: "direct main"
+    description:
+      path: "packages/stmini_flutter"
+      relative: true
+    source: path
+    version: "0.1.1"
   stream_channel:
     dependency: transitive
     description:

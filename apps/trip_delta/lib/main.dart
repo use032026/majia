@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -5,16 +6,30 @@ import 'backup.dart';
 import 'onboarding.dart';
 import 'screens.dart';
 import 'store.dart';
+import 'stmini_web_host.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(TripDeltaApp(store: FileTripStore()));
+  runApp(
+    TripDeltaApp(
+      store: FileTripStore(),
+      webHost: !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
+          ? TripDeltaWebHost()
+          : null,
+    ),
+  );
 }
 
 class TripDeltaApp extends StatefulWidget {
-  const TripDeltaApp({super.key, required this.store, this.backupGateway});
+  const TripDeltaApp({
+    super.key,
+    required this.store,
+    this.backupGateway,
+    this.webHost,
+  });
   final TripStore store;
   final BackupGateway? backupGateway;
+  final TripDeltaWebHost? webHost;
 
   @override
   State<TripDeltaApp> createState() => _TripDeltaAppState();
@@ -28,10 +43,21 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
     super.initState();
     controller = AppController(widget.store);
     controller.load();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      try {
+        // Prepare only. The trip home stays visible and no Web page opens.
+        await widget.webHost?.initialize();
+      } catch (_) {
+        // Web availability must never prevent offline trip access. A later
+        // explicit programmatic open can retry initialization and report errors.
+      }
+    });
   }
 
   @override
   void dispose() {
+    widget.webHost?.dispose();
     controller.dispose();
     super.dispose();
   }
