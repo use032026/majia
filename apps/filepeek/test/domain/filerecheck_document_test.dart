@@ -106,6 +106,33 @@ void main() {
       );
     });
 
+    test('line limits preserve mixed newlines and failed edit history', () {
+      final separators = ['\r', '\n', '\r\n'];
+      final content = StringBuffer();
+      for (var i = 0; i < FileRecheckDocument.maxLines; i++) {
+        content.write('x${separators[i % separators.length]}');
+      }
+      final document = inspect('mixed.txt', content.toString());
+      expect(document.lines, hasLength(FileRecheckDocument.maxLines));
+      document.replaceWorkingText('first edit');
+      expect(
+        () => document.replaceWorkingText('${content}extra'),
+        throwsA(
+          isA<FileRecheckException>().having(
+            (error) => error.code,
+            'code',
+            FileRecheckErrorCode.tooManyLines,
+          ),
+        ),
+      );
+      expect(document.workingText, 'first edit');
+      document.undo();
+      expect(document.workingText, content.toString());
+      expect(document.lines, hasLength(FileRecheckDocument.maxLines));
+      expect(inspect('empty.txt', '').lines, hasLength(1));
+      expect(inspect('blank.txt', '\r\n\r\n').lines, hasLength(2));
+    });
+
     test('rejects more than 10,000 physical lines', () {
       expect(
         () => inspect('a.txt', List.filled(10001, 'x').join('\n')),
