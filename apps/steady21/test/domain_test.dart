@@ -17,6 +17,45 @@ Experiment _experiment({
 );
 
 void main() {
+  test('recovery uses the closest earlier entry regardless of input order', () {
+    final entries = [
+      const DailyEntry(date: '2026-09-23', kind: EntryKind.skipped),
+      const DailyEntry(date: '2026-09-19', kind: EntryKind.skipped),
+      const DailyEntry(date: '2026-09-21', kind: EntryKind.minimum),
+      const DailyEntry(date: '2026-09-20', kind: EntryKind.full),
+    ];
+    final original = [...entries];
+    expect(
+      _experiment(entries: entries).needsRecoveryBefore(DateTime(2026, 9, 22)),
+      isFalse,
+    );
+    expect(
+      _experiment(entries: entries).needsRecoveryBefore(DateTime(2026, 9, 23)),
+      isTrue,
+    );
+    expect(
+      _experiment(entries: entries).needsRecoveryBefore(DateTime(2026, 9, 24)),
+      isTrue,
+    );
+    expect(entries, original);
+  });
+
+  test('recovery handles no earlier entry and adjacent civil dates', () {
+    expect(_experiment().needsRecoveryBefore(DateTime(2026, 9, 1)), isFalse);
+    final experiment = _experiment(
+      entries: const [
+        DailyEntry(date: '2026-03-01', kind: EntryKind.skipped),
+        DailyEntry(date: '2026-02-28', kind: EntryKind.full),
+      ],
+    );
+    expect(experiment.needsRecoveryBefore(DateTime(2026, 2, 28)), isFalse);
+    expect(
+      experiment.needsRecoveryBefore(DateTime(2026, 3, 1, 23, 59)),
+      isFalse,
+    );
+    expect(experiment.needsRecoveryBefore(DateTime(2026, 3, 2)), isTrue);
+  });
+
   test('archived history keeps newest first without mutating the snapshot', () {
     final first = _experiment().copyWith(archivedAt: DateTime(2026, 9, 2));
     final active = _experiment();

@@ -170,11 +170,14 @@ class Experiment {
 
   bool needsRecoveryBefore(DateTime date) {
     final key = localDateKey(date);
-    final earlier =
-        entries.where((entry) => entry.date.compareTo(key) < 0).toList()
-          ..sort((a, b) => a.date.compareTo(b.date));
-    if (earlier.isEmpty) return false;
-    final latest = earlier.last;
+    DailyEntry? latest;
+    for (final entry in entries) {
+      if (entry.date.compareTo(key) < 0 &&
+          (latest == null || entry.date.compareTo(latest.date) > 0)) {
+        latest = entry;
+      }
+    }
+    if (latest == null) return false;
     if (latest.kind == EntryKind.skipped) return true;
     return (civilDayNumber(key) - civilDayNumber(latest.date)).abs() > 1;
   }
