@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cleantrail/data/csv_gateway.dart';
 import 'package:cleantrail/data/import_decoder.dart';
 import 'package:cleantrail/domain/quality_engine.dart';
@@ -7,6 +9,36 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const decoder = TabularImportDecoder();
+
+  test('format detection samples only the first eight nonempty lines', () {
+    for (final separator in ['\r', '\n', '\r\n']) {
+      final sample = [
+        '\ufeff',
+        '   ',
+        for (var i = 0; i < 8; i++) ...['  ', 'row$i\t"quoted,commas,stay"'],
+        ...List.filled(10000, 'later,comma,rows,do,not,vote'),
+      ].join(separator);
+      final draft = decoder.inspect(
+        PickedDataFile(fileName: 'mixed.txt', bytes: utf8.encode(sample)),
+      );
+      expect(draft.detectedFormat, ImportFormat.tsv);
+    }
+  });
+
+  test('separator ties keep the original filename fallback', () {
+    for (final extension in ['txt', 'csv', 'tsv']) {
+      final draft = decoder.inspect(
+        PickedDataFile(
+          fileName: 'tie.$extension',
+          bytes: utf8.encode('  \r\n"a,b"\t"c\td",x\r\n'),
+        ),
+      );
+      expect(
+        draft.detectedFormat,
+        extension == 'tsv' ? ImportFormat.tsv : ImportFormat.csv,
+      );
+    }
+  });
 
   test('detects UTF-8 comma-separated text', () {
     final draft = decoder.inspect(
