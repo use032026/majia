@@ -46,6 +46,90 @@ CareItem _item({
 );
 
 void main() {
+  test('equal instants keep ID tie order across UTC and local civil dates', () {
+    final instant = DateTime.utc(2026, 2, 28, 18);
+    final records = [
+      MaintenanceRecord(
+        id: 'z',
+        planId: 'filter',
+        completedAt: instant.toLocal(),
+        cost: 0,
+        note: '',
+      ),
+      MaintenanceRecord(
+        id: 'a',
+        planId: 'filter',
+        completedAt: instant,
+        cost: 0,
+        note: '',
+      ),
+    ];
+    final plan = _plan(id: 'filter', title: 'Filter', intervalDays: 10);
+    for (final order in [records, records.reversed.toList()]) {
+      final result = recalculateMaintenancePlanFromRecords(
+        _item(plans: [plan], records: order),
+        'filter',
+      );
+      expect(result.plans.single.lastCompletedAt, DateTime(2026, 2, 28));
+      expect(result.plans.single.dueDate, DateTime(2026, 3, 10));
+    }
+  });
+
+  test('plan recalculation scans unsorted history without changing it', () {
+    final plan = _plan(id: 'filter', title: 'Filter', intervalDays: 10);
+    final records = [
+      MaintenanceRecord(
+        id: 'old',
+        planId: 'filter',
+        completedAt: DateTime(2026, 2, 1),
+        cost: 0,
+        note: '',
+      ),
+      MaintenanceRecord(
+        id: 'other',
+        planId: 'other',
+        completedAt: DateTime(2027, 1, 1),
+        cost: 0,
+        note: '',
+      ),
+      MaintenanceRecord(
+        id: 'z',
+        planId: 'filter',
+        completedAt: DateTime(2026, 2, 28, 23),
+        cost: 0,
+        note: '',
+      ),
+      MaintenanceRecord(
+        id: 'a',
+        planId: 'filter',
+        completedAt: DateTime(2026, 2, 28, 23),
+        cost: 0,
+        note: '',
+      ),
+      MaintenanceRecord(
+        id: 'middle',
+        planId: 'filter',
+        completedAt: DateTime(2026, 2, 20),
+        cost: 0,
+        note: '',
+      ),
+    ];
+    final item = _item(plans: [plan], records: records);
+    final original = [...records];
+    final result = recalculateMaintenancePlanFromRecords(item, 'filter');
+    expect(result.plans.single.lastCompletedAt, DateTime(2026, 2, 28));
+    expect(result.plans.single.dueDate, DateTime(2026, 3, 10));
+    expect(item.records, original);
+    expect(
+      identical(recalculateMaintenancePlanFromRecords(item, null), item),
+      isTrue,
+    );
+    expect(
+      identical(recalculateMaintenancePlanFromRecords(item, 'missing'), item),
+      isTrue,
+    );
+  });
+
   test('lifecycle summary uses only traceable dates, records and plans', () {
     final item = _item(
       purchaseDate: DateTime(2025, 8, 19),

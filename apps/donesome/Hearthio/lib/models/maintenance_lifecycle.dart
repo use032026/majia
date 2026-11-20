@@ -100,16 +100,19 @@ CareItem recalculateMaintenancePlanFromRecords(
   final planIndex = item.plans.indexWhere((plan) => plan.id == planId);
   if (planIndex == -1) return item;
 
-  final linkedRecords =
-      item.records.where((record) => record.planId == planId).toList()
-        ..sort((a, b) {
-          final dateOrder = b.completedAt.compareTo(a.completedAt);
-          if (dateOrder != 0) return dateOrder;
-          return a.id.compareTo(b.id);
-        });
+  MaintenanceRecord? latestRecord;
+  for (final record in item.records) {
+    if (record.planId != planId) continue;
+    if (latestRecord == null ||
+        record.completedAt.isAfter(latestRecord.completedAt) ||
+        (record.completedAt.isAtSameMomentAs(latestRecord.completedAt) &&
+            record.id.compareTo(latestRecord.id) < 0)) {
+      latestRecord = record;
+    }
+  }
   final plan = item.plans[planIndex];
   final plans = [...item.plans];
-  if (linkedRecords.isEmpty) {
+  if (latestRecord == null) {
     final normalizedFallback = fallbackDueDate == null
         ? null
         : maintenanceDateOnly(fallbackDueDate);
@@ -126,7 +129,7 @@ CareItem recalculateMaintenancePlanFromRecords(
     return item.copyWith(plans: plans);
   }
 
-  final lastCompletedAt = maintenanceDateOnly(linkedRecords.first.completedAt);
+  final lastCompletedAt = maintenanceDateOnly(latestRecord.completedAt);
   final dueDate = addMaintenanceDays(lastCompletedAt, plan.intervalDays);
   final scheduleChanged =
       plan.lastCompletedAt == null ||
