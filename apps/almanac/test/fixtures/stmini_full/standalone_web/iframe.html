@@ -1,0 +1,6 @@
+<!doctype html><html><body><script>
+const transport={rawObjectPresent:!!(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.CMSScriptMessageChannel),rawPostReturned:false,threw:false};
+try{if(transport.rawObjectPresent){window.webkit.messageHandlers.CMSScriptMessageChannel.postMessage({method:'setStorage',params:{key:'web_iframe_probe',data:'"forbidden"',methodId:'iframe-hidden'}});transport.rawPostReturned=true}}catch(_){transport.threw=true}
+function report(){parent.postMessage({webIframeTransport:transport},location.origin)}
+report();setTimeout(report,100);setTimeout(report,300);
+</script></body></html>

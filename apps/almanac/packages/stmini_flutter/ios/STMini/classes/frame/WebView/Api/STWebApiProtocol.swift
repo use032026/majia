@@ -65,7 +65,7 @@ struct STWebBridgeEffectLease {
 
     init?(webView: STMiniWebView?, generation: UInt64?, requiresMiniRoot: Bool = false) {
         guard Thread.isMainThread, let webView, let generation,
-              webView.bridgeDocumentGeneration == generation,
+              webView.hasNativeEffectAuthority, webView.bridgeDocumentGeneration == generation,
               let documentURL = webView.url, webView.allowsHostSensitiveBridge,
               let controller = webView.bindCrl else { return nil }
         let navigation = controller.navigationController
@@ -84,7 +84,7 @@ struct STWebBridgeEffectLease {
 
     func isCurrent() -> Bool {
         guard Thread.isMainThread, let webView, let controller,
-              webView.bindCrl === controller, webView.bridgeDocumentGeneration == generation,
+              webView.hasNativeEffectAuthority, webView.bindCrl === controller, webView.bridgeDocumentGeneration == generation,
               webView.url == documentURL, webView.allowsHostSensitiveBridge,
               !controller.isBeingDismissed, !controller.isMovingFromParent else { return false }
         if hadWindow && (window == nil || controller.viewIfLoaded?.window !== window) { return false }

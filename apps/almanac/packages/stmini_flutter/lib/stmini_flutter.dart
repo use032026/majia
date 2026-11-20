@@ -37,10 +37,18 @@ class StminiFlutter {
   static Future<void> initialize({
     String? loadingImage,
     Map<String, dynamic>? bridgeContext,
-  }) => _methods.invokeMethod<void>('initialize', {
-    if (loadingImage != null) 'loadingImage': loadingImage,
-    if (bridgeContext != null) 'bridgeContext': bridgeContext,
-  });
+  }) {
+    // iOS ordinary Web may forward a request as soon as native initialization
+    // completes. Install the failure-capable receiver before crossing that
+    // boundary, even when the host has never configured a business provider.
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _installWebBridgeMethodHandler();
+    }
+    return _methods.invokeMethod<void>('initialize', {
+      if (loadingImage != null) 'loadingImage': loadingImage,
+      if (bridgeContext != null) 'bridgeContext': bridgeContext,
+    });
+  }
 
   /// Opens only an existing verified local Mini in the native container.
   /// Package URLs/force updates, missing packages and unmet version floors fail;
@@ -49,7 +57,11 @@ class StminiFlutter {
   static Future<void> openMini(String link) =>
       _methods.invokeMethod<void>('openMini', {'link': link});
 
-  /// Recognized for compatibility; standalone Web presentation is unsupported.
+  /// Presents an ordinary HTTPS Web page on iOS, without Mini privileges.
+  /// Rapid host opens replace pending pages; superseded or cancelled opens fail.
+  /// Display options preserve the supplied URL. A covering modal makes host
+  /// open/close fail with web_covered until the owned page is revealed.
+  /// Android foundation reports unsupported_capability.
   static Future<void> openWeb(
     String url, {
     String? title,
@@ -65,6 +77,7 @@ class StminiFlutter {
   static Future<bool> get isAvailable async =>
       (await _methods.invokeMethod<bool>('isAvailable')) == true;
 
+  /// Renews only a stable visible iOS Web document; covered pages return zero.
   static Future<int> notifyWebSessionChanged(String reason) async {
     final count = await _methods.invokeMethod<int>('notifyWebSessionChanged', {
       'reason': reason,
@@ -79,6 +92,10 @@ class StminiFlutter {
   /// No handler means a defined failure, never an invented business success.
   static void setWebBridgeHandler(WebBridgeHandler? handler) {
     _webBridgeHandler = handler;
+    _installWebBridgeMethodHandler();
+  }
+
+  static void _installWebBridgeMethodHandler() {
     _methods.setMethodCallHandler((call) async {
       if (call.method != 'webBridgeRequest') {
         throw MissingPluginException('Unsupported native request.');

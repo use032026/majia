@@ -269,3 +269,27 @@ iOS 另真删独立 Flutter Web 呈现、关闭后 cache/reuse、无配置宿主
 本节点为负责人实现与本地验证证据，独立 QA/跨端允许差异结论及最终提交另行登记。未执行签名、上传、商店准备或送审，不将旧 C1/C2 发行证据套到当前源码；商店内容与实际签名包由授权发行流程另核。第五批仍仅本地整体验证与补缺。角色长期规则未由本节点改动。
 
 最后按机械格式窗口仅删除 STOnlineWebCore.swift 与 STWebInstanceManager.swift 各一个多余结尾 LF；原文导出证明 after=before.rstrip(LF)+LF、body 字节完全不变，git diff --check 清零。原 native/SDK 运行证据保留其旧 SHA，仅复用无语义变化的执行证据；当前普通 iOS Release 再构建通过，实际包扫描再通过，原生插件二进制 SHA 不变。当前来源资格与正式 provenance 绑定新源 SHA，并显式登记机械复用边界，没有将旧运行记录改写为新 SHA。
+
+
+## 2026-11-20｜第五批：iOS cache、native transition 与独立 HTTPS Web
+
+本条覆盖历史“第五仅本地、不恢复独立Web/cache、下载安装永久排除”的后续安排；历史节点保留。用户当前要求只加iOS，第五如前批完成验证后提交审核，第六才是最终本地批并加入真实下载安装更新，只有相机/扫码排除。固定来源仍为 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`，第五前基线 `0af8928ec1c2a7c8a10e11a6e2a954c50e4c756c`。
+
+第五实现普通FIFO2和显式空默认白名单continuous缓存、严格完整bytes/id/version/entry/session身份复核、hidden根+全H5栈撤权及visible fresh epoch；当前owner截图、自定义/interactive转场和取消恢复，无Scanner fallback。显式SDK ordinary HTTPS Web具有独立replacement/cancel/close/session生命周期，Mini子H5等URL FIFO不混用；主frame/currentdoc/origin/native-owner lease与scopedstorage保留。宿主展示参数不改原URL，覆盖期间open/close明确web_covered、session0；engine detach只撤权/清理自己的Mini或Web，foreign自退后才退原惰性navigation。捕获后排队close消费时再核foreign owner，旧操作不能清新UI。
+
+iOS initialize先安装默认反向receiver但不装业务provider，未设置handler仍返回标准code0，重复初始化保已显式provider。Android initialize不新增默认receiver、foundation/cap/error合同不变，host与插件34tracked源相对基线逐字同。本条无新Android构建或设备验证。
+
+本轮实测曾发现并修正转场context缺省视图/宿主重父、released H5晚生命周期崩溃、covered Web/ Mini owner及默认reverse listener缺口；原失败保留，不以编译代OS行为。当前Dart127项全过、analyze/formatcheck通过。任务私有iPhone16/iOS18.2完整native59/0，随后仅Dart修复时65native/test输入及三锁逐SHA同，保留原native报告身份；当前SDKtarget另重建运行。两个已有本地Mini各18项检查、两个真实受控HTTPS Web文档各12项检查全过，含JS/CSS/pixel、iframe transport正控与native拒绝、storage/缺provider失败、session及不同documentNonce关闭重开、前后台appHide/show。nonce probe/ack/final采集通过，普通main恢复、私有sim/TLSserver/临时合成CA及keys均清理；没有ATS/生产信任降级。
+
+普通lib/main.dart device Release无签名构建通过。实际10个Mach-O逐件扫描、native插件15类符号保留，含cache/runtime host/Trans；framework为1,918,440字节，SHA256 `40b0baea19abfc600f55629df8f21e7ea7f36153404c940a873395c16621ffe6`。无Camera/Scanner、ZIPFoundation/Tiercel或测试fixture残留；Photos原保存用途和本地化保留，无新增启动权限请求。它是本地unsigned App/framework，不能替代实际签名IPA、物理机手势/系统Photos写入/分享发送或商店结果。
+
+最终source资格按当前普通Release/native/SDK精确输入求交27核心paths：累计6,973；第五批准候选实际838（Web163/cache457/transition218），相对C3已知集合新846/未再逐字留存55。安全改写、Dart、测试、资源、supportingUI、no-caller代码不获来源信用，未逐字保留不等于功能损失。第六同固定source候选再扣当前交集1行为download988、可选safe镜像至多92；它们未实施/合格，838对988..1080仅预测45.89/54.11至43.69/56.31，不能称最终qualified50/50。真实最终比例须第六安全适配/Release/consumer完成后核。`SOURCE_MAP.json`/`UPSTREAM.json`保存完整ranges、交并、当前输入资格及历史C3，旧EOF执行复用没有套用本批真实改动。
+
+普通首页、日笺schema/数据、主题、中英界面、原隐私路径不变，启动仍只initialize/state/inventory；无生产Mini/Web URL、隐藏/远程激活、账户或交易provider。第五仍无下载/ZIP安装/更新能力与依赖，第六才实现；未消费Tiercel/旧非原子helper不为行数恢复。当前为开发整合证据，独立QA/cross及实际signedIPA/发行内容/ASC仍分别门禁；本节点未签名、上传、改商店文案或送审，源码提交及CI实际head另追溯。
+
+
+### 2026-11-20 第五批接续验证与 P205 收口
+
+接续已保存的 P205 修复，发现 WarmActivationTicket 的通用 UINavigationController 类型无法访问 Mini navigation 的 foreign-owner 保护；已在 ticket 消费边界明确验证 STWebNavigationController，保留全部 owner/document/session/stack/window 检查。完整原生61项重新运行零失败（含真实WK warm事件顺序、duration一次消费与close/document/session失效负控），真实两个Mini各18项、两个受控HTTPS文档各12项检查全部通过，普通入口恢复、私有sim/TLS清理通过。当前执行身份 takeover1120v2；首轮编译失败保留，未复用旧59项冒新执行。
+
+普通 device Release 重建通过，逐包扫描通过；插件1,938,088字节，SHA256 cdd7e1dd125d377f89a0f114d3a8206c668f694d7b6c8bc417985148a49894e6。当前27核心path来源资格重新绑定本次native/SDK/Release输入；累计6964、第五逐字候选833（Web158/cache457/transition218）、相对C3已知新增841/不再逐字保留59。上述是严格来源量，不代表功能比例；旧上段数字为修复前历史。Android与相机/下载安装边界不变，第六未实施。本轮尚未签名IPA或送审，后续发行更新记录按用户指定精确 fix bug，不新增审核备注。

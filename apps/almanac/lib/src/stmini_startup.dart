@@ -131,11 +131,11 @@ class StminiStartup {
         state['miniPackageDownloadAvailable'] != false ||
         state['miniPackageInstallAvailable'] != false ||
         state['miniPackageUpdateAvailable'] != false ||
-        state['closedMiniCacheAvailable'] != false ||
+        state['closedMiniCacheAvailable'] != mini ||
         state['localRendererAvailable'] != true ||
         state['initialized'] != true ||
         state['packageName'] != 'com.almanac.lite' ||
-        state['webLoadingAvailable'] != false) {
+        state['webLoadingAvailable'] != mini) {
       _lastIssue = 'invalid_foundation_event';
       return;
     }
@@ -151,9 +151,9 @@ class StminiStartup {
       'initialized': true,
       'packageName': 'com.almanac.lite',
       'miniLoadingAvailable': mini,
-      'webLoadingAvailable': false,
+      'webLoadingAvailable': mini,
       'miniChildWebAvailable': mini,
-      'closedMiniCacheAvailable': false,
+      'closedMiniCacheAvailable': mini,
       'localRendererAvailable': true,
       if (state['language'] is String) 'language': state['language'],
       if (state['localizedClose'] is String)

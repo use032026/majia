@@ -63,6 +63,9 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
   final lifecycle = <String, Set<String>>{};
   Completer<Map<String, dynamic>>? waiting;
   String? expectedMiniId;
+  Completer<Map<String, dynamic>>? waitingWeb;
+  Completer<Map<String, dynamic>>? waitingWebSession;
+  final webReports = <Map<String, dynamic>>[];
   final subscription = StminiFlutter.events.listen((event) {
     if (const {
       'mini_download_started',
@@ -75,6 +78,19 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
     }
     final text = event.payload['message'];
     if (event.name != 'native_log' || text is! String) return;
+    for (final entry in <String, Completer<Map<String, dynamic>>?>{
+      'FULL_WEB_FIXTURE_RESULT ': waitingWeb,
+      'FULL_WEB_SESSION_RESULT ': waitingWebSession,
+    }.entries) {
+      if (text.startsWith(entry.key)) {
+        final value = jsonDecode(text.substring(entry.key.length));
+        if (value is Map<String, dynamic> &&
+            entry.value?.isCompleted == false) {
+          entry.value!.complete(value);
+        }
+        return;
+      }
+    }
     if (text.startsWith('FULL_RUNTIME_LIFECYCLE ')) {
       final value = jsonDecode(
         text.substring('FULL_RUNTIME_LIFECYCLE '.length),
@@ -115,9 +131,9 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
         state['miniPackageInstallAvailable'] == false &&
         state['miniPackageUpdateAvailable'] == false &&
         state['miniLoadingAvailable'] == true &&
-        state['webLoadingAvailable'] == false &&
+        state['webLoadingAvailable'] == true &&
         state['miniChildWebAvailable'] == true &&
-        state['closedMiniCacheAvailable'] == false;
+        state['closedMiniCacheAvailable'] == true;
     final rejected = <String, bool>{};
     for (final entry in <String, String>{
       'mini://runtime_fixture?downloadUrl=https://127.0.0.1:1/forbidden.zip':
@@ -155,6 +171,50 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
       await StminiFlutter.closeMini();
       await Future<void>.delayed(const Duration(milliseconds: 600));
     }
+    if (Platform.isIOS) {
+      const rawWebURL = String.fromEnvironment('STMINI_TEST_WEB_URL');
+      final webURL = Uri.tryParse(rawWebURL);
+      if (webURL == null ||
+          webURL.scheme != 'https' ||
+          webURL.host != '127.0.0.1' ||
+          webURL.port <= 1024 ||
+          webURL.userInfo.isNotEmpty ||
+          webURL.path != '/standalone_web/index.html' ||
+          webURL.hasQuery ||
+          webURL.hasFragment) {
+        throw StateError('Private test HTTPS endpoint is required.');
+      }
+      waitingWeb = Completer<Map<String, dynamic>>();
+      await StminiFlutter.openWeb(
+        webURL.toString(),
+        title: 'Controlled HTTPS Web',
+      );
+      webReports.add(
+        await waitingWeb.future.timeout(const Duration(seconds: 20)),
+      );
+      waitingWebSession = Completer<Map<String, dynamic>>();
+      final notified = await StminiFlutter.notifyWebSessionChanged('synthetic');
+      final session = await waitingWebSession.future.timeout(
+        const Duration(seconds: 8),
+      );
+      result['standaloneWebSession'] =
+          notified == 1 &&
+          session['method'] == 'miniSessionChanged' &&
+          session['documentNonce'] == webReports.first['documentNonce'];
+      await StminiFlutter.closeWeb();
+      waitingWeb = Completer<Map<String, dynamic>>();
+      await StminiFlutter.openWeb(
+        webURL.toString(),
+        title: 'Controlled HTTPS reopen',
+      );
+      webReports.add(
+        await waitingWeb.future.timeout(const Duration(seconds: 20)),
+      );
+      await StminiFlutter.closeWeb();
+      result['standaloneWebClosedAndReopened'] =
+          webReports[0]['documentNonce'] != webReports[1]['documentNonce'];
+      result['standaloneWebReports'] = webReports;
+    }
     result['reports'] = reports;
     result['closedBoth'] = true;
     result['packageMutationEvents'] = packageMutationEvents;
@@ -166,7 +226,12 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
         reports.length == 2 &&
         reports.every((item) => item['passed'] == true) &&
         reports[0]['miniId'] == 'runtime_fixture' &&
-        reports[1]['miniId'] == 'runtime_fixture_b';
+        reports[1]['miniId'] == 'runtime_fixture_b' &&
+        (!Platform.isIOS ||
+            (result['standaloneWebSession'] == true &&
+                result['standaloneWebClosedAndReopened'] == true &&
+                webReports.length == 2 &&
+                webReports.every((item) => item['passed'] == true)));
   } catch (error) {
     result['errorType'] = error.runtimeType.toString();
     result['reports'] = reports;

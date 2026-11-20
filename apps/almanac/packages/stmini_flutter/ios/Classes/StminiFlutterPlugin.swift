@@ -39,6 +39,36 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   /// API is exposed through this path.
   private var methodChannel: FlutterMethodChannel?
   private weak var presentingViewController: UIViewController?
+  private let ownedMiniNavigations = NSHashTable<STWebNavigationController>.weakObjects()
+  private var miniOperationGeneration: UInt64 = 0
+  private final class MiniCloseRequest {
+    let result: FlutterResult
+    private(set) var completed = false
+    init(_ result: @escaping FlutterResult) { self.result = result }
+    func complete(_ value: Any?) { guard !completed else { return }; completed = true; result(value) }
+  }
+  private var miniCloseRequests: [MiniCloseRequest] = []
+  private final class OnlineWebPresentationRequest {
+    let generation: UInt64
+    private(set) var completed = false
+    let webURL: URL
+    let params: [String: String]
+    let showNavigationBar: Bool
+    let result: FlutterResult
+    init(webURL: URL, params: [String: String], showNavigationBar: Bool, result: @escaping FlutterResult, generation: UInt64) {
+      self.webURL = webURL; self.params = params; self.showNavigationBar = showNavigationBar
+      self.result = result; self.generation = generation
+    }
+    func complete(_ value: Any?) { guard !completed else { return }; completed = true; result(value) }
+  }
+  /// Serializes rapid `openWeb` calls so presentation/dismissal transitions
+  /// cannot overlap or use an H5 controller that UIKit is removing.
+  private let onlineWebPresentationQueue = STOnlineWebPresentationQueue<OnlineWebPresentationRequest>()
+  private var onlineWebPresentationGeneration: UInt64 = 0
+  private var onlineWebRequests: [OnlineWebPresentationRequest] = []
+  private weak var standaloneOnlineNavigation: UINavigationController?
+  private var onlineWebCloseInProgress = false
+  private var onlineWebCloseResults: [FlutterResult] = []
   private var initialized = false
   /// Optional, JSON-compatible context supplied by the embedding Flutter app.
   /// STMini stays reusable: it never imports a host's account/login module.
@@ -76,7 +106,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     case "initialize":
       guard let arguments = call.arguments as? [String: Any],
             Set(arguments.keys).isSubset(of: ["bridgeContext", "loadingImage"]),
-            let context = arguments["bridgeContext"] as? [String: Any], Set(context.keys) == ["packageName"],
+            let context = arguments["bridgeContext"] as? [String: Any], Set(context.keys).isSubset(of: ["packageName", "miniSecurity"]), Self.validMiniSecurity(context["miniSecurity"]),
             context["packageName"] as? String == "com.almanac.lite", Bundle.main.bundleIdentifier == "com.almanac.lite",
             arguments["loadingImage"] == nil || arguments["loadingImage"] is String, !detached else {
         result(FlutterError(code: "unsupported_host_configuration", message: "Only the Deynu host identity is configured.", details: nil)); return
@@ -85,8 +115,37 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       emit("runtime_initialized", state())
       result(nil)
     case "foundationState": result(state())
-    case "closeWeb", "notifyWebSessionChanged":
-      result(FlutterError(code: "unsupported", message: "Standalone Web presentation is unavailable.", details: nil))
+    case "closeWeb":
+      guard !detached else { result(FlutterError(code: "cancelled", message: "Web runtime detached.", details: nil)); return }
+      cancelOnlineWebRequests()
+      guard let navigation = standaloneOnlineNavigation else { result(nil); return }
+      guard !isCoveredStandaloneWebNavigation(navigation) else {
+        revokeOnlineWebAuthority(navigation)
+        result(FlutterError(code: "web_covered", message: "The owned Web page is covered by another presentation.", details: nil)); return
+      }
+      onlineWebCloseResults.append(result)
+      guard !onlineWebCloseInProgress else { return }
+      onlineWebCloseInProgress = true
+      revokeOnlineWebAuthority(navigation)
+      dismissStandaloneOnlineNavigation(navigation)
+    case "notifyWebSessionChanged":
+      guard !detached else { result(FlutterError(code: "cancelled", message: "Web runtime detached.", details: nil)); return }
+      let original = standaloneOnlineNavigation
+      let wasVisible = original.map(isVisibleStandaloneWebNavigation) ?? false
+      cancelOnlineWebRequests()
+      STWebMiniProgramKeepAliveStore.shared.invalidateSession()
+      if let original { revokeOnlineWebAuthority(original) }
+      guard wasVisible, let navigation = original, navigation === standaloneOnlineNavigation,
+            isVisibleStandaloneWebNavigation(navigation) else { result(0); return }
+      var count = 0
+      navigation.viewControllers.compactMap { $0 as? STWebH5Crl }.forEach { page in
+        guard page === navigation.visibleViewController, let view = page.webView,
+              !view.isLoading, view.url.flatMap(STOnlineWebCore.normalizedHTTPSOrigin) != nil else { return }
+        view.nativeEffectsSuspended = false
+        STWebApiManager.sendScriptMessageWithMethod("miniSessionChanged", params: ["reason": "hostSessionChanged"], webview: view)
+        count += 1
+      }
+      result(count)
     case "openMini":
       guard initialized, !detached else { result(FlutterError(code: "not_initialized", message: "Initialize the Mini runtime first.", details: nil)); return }
       guard let arguments = call.arguments as? [String: Any],
@@ -115,27 +174,90 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
         result(FlutterError(code: "no_presenting_controller", message: "No active Flutter view controller", details: nil))
         return
       }
+      miniOperationGeneration &+= 1
+      let openingGeneration = miniOperationGeneration
       presentingViewController = controller
       let operationLink = linkWithOperationID(link, operationID: operationId)
       // Keep the original event for hosts already observing it. New consumers
       // can use the operation-scoped lifecycle events below.
       emit("open_requested", ["link": redactedMiniLink(link)])
       emit("mini_opening", ["operationId": operationId, "link": redactedMiniLink(operationLink)])
-      DispatchQueue.main.async {
+      let openingSession = STWebMiniProgramKeepAliveStore.shared.sessionGeneration
+      DispatchQueue.main.async { [weak self] in
+        guard let self, !self.detached, self.initialized, openingGeneration == self.miniOperationGeneration,
+              openingSession == STWebMiniProgramKeepAliveStore.shared.sessionGeneration,
+              !controller.isBeingDismissed, controller.navigationController?.isBeingDismissed != true else {
+          Self.emitMiniRuntimeEvent("mini_open_failed", payload: ["operationId": operationId, "code": "cancelled", "message": "Mini opening context expired.", "retryable": true])
+          result(FlutterError(code: "cancelled", message: "Mini opening context expired.", details: nil)); return
+        }
         STWebOpenHandler.openWeb(url: operationLink, params: nil, crl: controller, navi: nil)
+        if let navigation = controller.presentedViewController as? STWebNavigationController,
+           navigation.viewControllers.first is STWebMiniprogramCrl {
+          self.ownedMiniNavigations.add(navigation)
+        }
         result(nil)
       }
     case "openWeb":
-      result(FlutterError(code: "unsupported", message: "Standalone Web presentation is unavailable; Mini child pages remain supported.", details: nil))
-    case "closeMini":
+      guard initialized, !detached else { result(FlutterError(code: "not_initialized", message: "Initialize the Web runtime first.", details: nil)); return }
+      guard let arguments = call.arguments as? [String: Any],
+            let url = arguments["url"] as? String,
+            let webURL = URL(string: url.trimmingCharacters(in: .whitespacesAndNewlines)),
+            let scheme = webURL.scheme?.lowercased(),
+            (scheme == "https" || (scheme == "http" && Self.allowsInsecureHttpNavigation())),
+            webURL.host?.isEmpty == false, webURL.user == nil, webURL.password == nil else {
+        result(FlutterError(code: "invalid_web_url", message: "url must be an absolute HTTPS URL", details: nil))
+        return
+      }
+      configureIfNeeded(loadingImage: nil, bridgeContext: nil)
+      let showNavigationBar = arguments["showNavigationBar"] as? Bool ?? true
+      let title = arguments["title"] as? String
+      var params = ["isNeedNavigationBar": showNavigationBar ? "true" : "false"]
+      if let title, !title.isEmpty {
+        params["title"] = title
+      }
+      emit("web_open_requested", ["url": redactedWebURL(webURL)])
+      let generation = onlineWebPresentationGeneration
       DispatchQueue.main.async { [weak self] in
-        guard let controller = self?.currentPresentingViewController() else {
-          result(nil)
-          return
+        guard let self, !self.detached, generation == self.onlineWebPresentationGeneration else { result(FlutterError(code: "cancelled", message: "Web runtime detached or request cancelled.", details: nil)); return }
+        self.presentOnlineWeb(
+          webURL: webURL,
+          params: params,
+          showNavigationBar: showNavigationBar,
+          result: result)
+      }
+    case "closeMini":
+      guard !detached else { result(FlutterError(code: "cancelled", message: "Mini runtime detached.", details: nil)); return }
+      miniOperationGeneration &+= 1 // also cancels an open not yet dispatched
+      let closingGeneration = miniOperationGeneration
+      let closingSession = STWebMiniProgramKeepAliveStore.shared.sessionGeneration
+      guard let controller = currentPresentingViewController(),
+            let navigation = (controller as? STWebNavigationController) ?? (controller.navigationController as? STWebNavigationController),
+            ownedMiniNavigations.allObjects.contains(where: { $0 === navigation }),
+            let root = navigation.viewControllers.first as? STWebMiniprogramCrl,
+            navigation.presentingViewController != nil else { result(nil); return }
+      root.prepareForNativeDismissal()
+      let request = MiniCloseRequest(result)
+      miniCloseRequests.removeAll { $0.completed }; miniCloseRequests.append(request)
+      DispatchQueue.main.async { [weak self, weak navigation, weak root] in
+        guard let self, !self.detached, self.miniOperationGeneration == closingGeneration,
+              STWebMiniProgramKeepAliveStore.shared.sessionGeneration == closingSession,
+              let navigation, let root, navigation.viewControllers.first === root,
+              navigation.presentingViewController != nil, !navigation.isBeingDismissed,
+              !navigation.hasForeignPresentedOwner,
+              self.ownedMiniNavigations.allObjects.contains(where: { $0 === navigation }) else {
+          // A superseding operation may leave the same original root visible.
+          // Restore it only through the strict fresh-grant path, never old leases.
+          if let self, !self.detached, let navigation, let root,
+             navigation.viewControllers.first === root, navigation.presentingViewController != nil,
+             !navigation.isBeingDismissed, !navigation.hasForeignPresentedOwner { root.setKeepAliveRuntimeHidden(false) }
+          request.complete(FlutterError(code: "cancelled", message: "Mini closing context expired.", details: nil)); return
         }
-        controller.dismiss(animated: true) {
-          self?.emit("closed", [:])
-          result(nil)
+        root.close {
+          guard !self.detached, self.miniOperationGeneration == closingGeneration,
+                STWebMiniProgramKeepAliveStore.shared.sessionGeneration == closingSession else {
+            request.complete(FlutterError(code: "cancelled", message: "Mini closing context expired.", details: nil)); return
+          }
+          self.emit("closed", [:]); request.complete(nil)
         }
       }
     case "isAvailable":
@@ -167,7 +289,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
      "packageName": initialized ? ("com.almanac.lite" as Any) : NSNull(),
      "localizedClose": STMiniLocalized("mini.close", "Close"),
      "capabilities": ["host_configuration", "language_resolution", "runtime_events", "local_inventory", "local_renderer", "local_mini_runtime", "framework_bridge", "isolated_storage"],
-     "localRendererAvailable": true, "miniLoadingAvailable": true, "webLoadingAvailable": false, "miniChildWebAvailable": true, "closedMiniCacheAvailable": false]
+     "localRendererAvailable": true, "miniLoadingAvailable": true, "webLoadingAvailable": true, "miniChildWebAvailable": true, "closedMiniCacheAvailable": true]
   }
 
   private func readInventory(_ arguments: Any?, result: @escaping FlutterResult) {
@@ -206,6 +328,29 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
   public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
     detached = true
+    miniOperationGeneration &+= 1
+    let cancelledMiniCloses = miniCloseRequests; miniCloseRequests.removeAll()
+    cancelledMiniCloses.forEach { $0.complete(FlutterError(code: "cancelled", message: "Mini runtime detached.", details: nil)) }
+    cancelOnlineWebRequests()
+    let cancelledCloses = onlineWebCloseResults; onlineWebCloseResults.removeAll()
+    onlineWebCloseInProgress = false
+    cancelledCloses.forEach { $0(FlutterError(code: "cancelled", message: "Web runtime detached.", details: nil)) }
+    if let navigation = standaloneOnlineNavigation {
+      revokeOnlineWebAuthority(navigation)
+      navigation.viewControllers.compactMap { $0 as? STWebH5Crl }.forEach { $0.releaseAfterMiniCache() }
+      if let owned = navigation as? STStandaloneWebNavigationController { owned.retireWhenUncovered() }
+      else if !isCoveredStandaloneWebNavigation(navigation) { navigation.dismiss(animated: false) }
+    }
+    standaloneOnlineNavigation = nil
+    // Only navigations created/taken by this plugin's own openMini calls are
+    // eligible. Never discover and dismiss unrelated application UI.
+    let ownedMini = ownedMiniNavigations.allObjects; ownedMiniNavigations.removeAllObjects()
+    ownedMini.forEach { navigation in
+      guard let root = navigation.viewControllers.first as? STWebMiniprogramCrl else { return }
+      root.prepareForNativeDismissal(); root.releaseClosedRuntime()
+      navigation.retireWhenUncovered(root: root)
+    }
+    STWebMiniProgramKeepAliveStore.shared.invalidateSession()
     eventLease = UUID(); eventSink = nil; methodChannel = nil
     NotificationCenter.default.removeObserver(self)
     if Self.registeredInstance === self { Self.registeredInstance = nil; Self.bridgeContextSnapshot = [:] }
@@ -221,8 +366,220 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     eventSink = nil
   }
 
+  /// `openWeb` can be called while a prior host-opened H5 is still the top
+  /// controller. Presenting from that dying H5 causes UIKit's "not in the
+  /// window hierarchy" warning and intermittently loses the second page.
+  /// Dismiss first, then resolve the current Flutter presenter in completion.
+  private func presentOnlineWeb(
+    webURL: URL,
+    params: [String: String],
+    showNavigationBar: Bool,
+    result: @escaping FlutterResult
+  ) {
+    let request = OnlineWebPresentationRequest(
+      webURL: webURL,
+      params: params,
+      showNavigationBar: showNavigationBar,
+      result: result, generation: onlineWebPresentationGeneration
+    )
+    onlineWebRequests.removeAll { $0.completed }
+    onlineWebRequests.append(request)
+    // The recorded owner remains an owner while covered. Looking only at
+    // the top controller would lose A and overwrite it with a new Web C.
+    let existing = standaloneOnlineNavigation.flatMap { $0.presentingViewController != nil ? $0 : nil }
+    if let existing, isCoveredStandaloneWebNavigation(existing) {
+      revokeOnlineWebAuthority(existing)
+      request.complete(FlutterError(code: "web_covered", message: "Reveal the owned Web page before replacing it.", details: nil))
+      return
+    }
+    let action = onlineWebPresentationQueue.enqueue(
+      request,
+      hasExistingPresentation: existing != nil
+    )
+    // A newer open replaces a request that had not reached UIKit yet. Resolve
+    // the older MethodChannel invocation rather than leaving it pending; the
+    // newest page is the visible result of this serialized transition.
+    action.superseded?.complete(FlutterError(code: "superseded", message: "A newer Web open replaced this request.", details: nil))
+    performOnlineWebPresentationStep(action.step, existing: existing)
+  }
+
+  private func performOnlineWebPresentationStep(
+    _ step: STOnlineWebPresentationQueue<OnlineWebPresentationRequest>.Step,
+    existing: UIViewController? = nil
+  ) {
+    switch step {
+    case .waiting:
+      return
+    case .dismissCurrent:
+      if onlineWebCloseInProgress { return }
+      let container = existing ?? standaloneOnlineNavigation
+      guard let container else {
+        if let next = onlineWebPresentationQueue.didDismiss() {
+          performOnlineWebPresentationStep(next)
+        }
+        return
+      }
+      if let navigation = container as? UINavigationController, isCoveredStandaloneWebNavigation(navigation) {
+        revokeOnlineWebAuthority(navigation)
+        rejectCoveredWebRequests()
+        return
+      }
+      let generation = onlineWebPresentationGeneration
+      if let navigation = container as? UINavigationController { revokeOnlineWebAuthority(navigation) }
+      container.dismiss(animated: true) { [weak self] in
+        guard let self, !self.detached, self.onlineWebPresentationGeneration == generation else { return }
+        // Completion is the only place that advances the queue. The next
+        // `present` resolves its presenter anew, after UIKit removed this H5.
+        if let next = self.onlineWebPresentationQueue.didDismiss() {
+          self.performOnlineWebPresentationStep(next)
+        }
+      }
+    case .present(let request):
+      guard !detached, request.generation == onlineWebPresentationGeneration else {
+        request.complete(FlutterError(code: "cancelled", message: "Web presentation expired.", details: nil)); return
+      }
+      guard let presenter = currentPresentingViewController() else {
+        request.complete(FlutterError(code: "no_presenting_controller", message: "No active Flutter view controller", details: nil))
+        if let next = onlineWebPresentationQueue.didFailToPresent() {
+          performOnlineWebPresentationStep(next)
+        }
+        return
+      }
+      let navigationController = STStandaloneWebNavigationController()
+      navigationController.onWillCover = { [weak self, weak navigationController] in
+        if let navigationController { self?.revokeOnlineWebAuthority(navigationController) }
+      }
+      navigationController.modalPresentationStyle = .fullScreen
+      let config = STWebConfig(webMode: .h5, params: request.params)
+      config.bridgePolicy = Self.externalWebBridgePolicy(for: request.webURL)
+      config.allowsInsecureHttpNavigation = Self.allowsInsecureHttpNavigation()
+      STWebOpenHandler.openH5(url: request.webURL.absoluteString, config: config, navi: navigationController, appendParameters: false)
+      navigationController.viewControllers.compactMap { $0 as? STWebH5Crl }.forEach { page in
+        page.onNativeCoverage = { [weak self, weak navigationController] in
+          if let navigationController { self?.revokeOnlineWebAuthority(navigationController) }
+        }
+        page.revokeStandaloneAuthority()
+      }
+      navigationController.isNavigationBarHidden = !request.showNavigationBar
+      standaloneOnlineNavigation = navigationController
+      presenter.present(navigationController, animated: true) { [weak self] in
+        guard let self, !self.detached, request.generation == self.onlineWebPresentationGeneration else {
+          request.complete(FlutterError(code: "cancelled", message: "Web presentation expired.", details: nil))
+          if self?.onlineWebCloseInProgress != true {
+            if self?.isCoveredStandaloneWebNavigation(navigationController) == true {
+              navigationController.viewControllers.compactMap { $0 as? STWebH5Crl }.forEach { $0.releaseAfterMiniCache() }
+              navigationController.retireWhenUncovered()
+            } else { navigationController.dismiss(animated: false) }
+          }
+          return
+        }
+        if self.grantVisibleStandaloneWebAuthority(navigationController) {
+          self.emit("web_opened", ["url": self.redactedWebURL(request.webURL)])
+          request.complete(nil)
+        } else {
+          request.complete(FlutterError(code: "web_covered", message: "Web presentation no longer has visible authority.", details: nil))
+        }
+        if let next = self.onlineWebPresentationQueue.didPresent() {
+          self.performOnlineWebPresentationStep(next)
+        }
+      }
+    }
+  }
+
+  private func isVisibleStandaloneWebNavigation(_ navigation: UINavigationController) -> Bool {
+    guard !onlineWebCloseInProgress, !navigation.isBeingPresented, !navigation.isBeingDismissed,
+          navigation.presentingViewController != nil,
+          let page = navigation.visibleViewController as? STWebH5Crl else { return false }
+    return page.isUnobscuredStandalonePage
+  }
+
+  private func isCoveredStandaloneWebNavigation(_ navigation: UINavigationController) -> Bool {
+    if navigation.presentedViewController != nil || navigation.visibleViewController?.presentedViewController != nil { return true }
+    if navigation.presentingViewController != nil, !navigation.isBeingPresented, !navigation.isBeingDismissed,
+       let window = navigation.viewIfLoaded?.window {
+      return STWebH5Crl.topVisibleController(in: window) !== navigation.visibleViewController
+    }
+    return false
+  }
+
+  private func grantVisibleStandaloneWebAuthority(_ navigation: UINavigationController) -> Bool {
+    guard !detached, standaloneOnlineNavigation === navigation, isVisibleStandaloneWebNavigation(navigation),
+          let page = navigation.visibleViewController as? STWebH5Crl, let web = page.webView else { return false }
+    web.invalidateBridgeDocumentSession()
+    web.nativeEffectsSuspended = false
+    return true
+  }
+
+  private func rejectCoveredWebRequests() {
+    onlineWebPresentationQueue.reset()
+    onlineWebRequests.forEach { request in
+      request.complete(FlutterError(code: "web_covered", message: "The owned Web page is covered.", details: nil))
+    }
+    onlineWebRequests.removeAll { $0.completed }
+  }
+
+  private func dismissStandaloneOnlineNavigation(_ navigation: UINavigationController) {
+    if isCoveredStandaloneWebNavigation(navigation) {
+      revokeOnlineWebAuthority(navigation)
+      onlineWebCloseInProgress = false
+      let rejected = onlineWebCloseResults; onlineWebCloseResults.removeAll()
+      rejected.forEach { $0(FlutterError(code: "web_covered", message: "The owned Web page is covered.", details: nil)) }
+      rejectCoveredWebRequests()
+      return
+    }
+    let finished = { [weak self] in
+      guard let self else { return }
+      if self.standaloneOnlineNavigation === navigation { self.standaloneOnlineNavigation = nil }
+      self.onlineWebCloseInProgress = false
+      let completed = self.onlineWebCloseResults; self.onlineWebCloseResults.removeAll()
+      completed.forEach { $0(nil) }
+      if !self.detached, let next = self.onlineWebPresentationQueue.didDismiss() { self.performOnlineWebPresentationStep(next) }
+    }
+    if navigation.presentingViewController == nil, !navigation.isBeingPresented, !navigation.isBeingDismissed { finished(); return }
+    if navigation.isBeingDismissed, let coordinator = navigation.transitionCoordinator {
+      coordinator.animate(alongsideTransition: nil) { _ in finished() }
+    } else if navigation.isBeingPresented, let coordinator = navigation.transitionCoordinator {
+      coordinator.animate(alongsideTransition: nil) { [weak self] _ in self?.dismissStandaloneOnlineNavigation(navigation) }
+    } else {
+      navigation.dismiss(animated: true, completion: finished)
+    }
+  }
+
+  private func cancelOnlineWebRequests() {
+    onlineWebPresentationGeneration &+= 1
+    onlineWebPresentationQueue.reset()
+    onlineWebRequests.forEach { $0.complete(FlutterError(code: "cancelled", message: "Web presentation cancelled.", details: nil)) }
+    onlineWebRequests.removeAll()
+  }
+
+  private func revokeOnlineWebAuthority(_ navigation: UINavigationController) {
+    navigation.viewControllers.compactMap { $0 as? STWebH5Crl }.forEach { page in
+      page.webView?.nativeEffectsSuspended = true
+      page.webView?.invalidateBridgeDocumentSession()
+    }
+  }
+
+  private static func validMiniSecurity(_ raw: Any?) -> Bool {
+    guard let raw else { return true }
+    guard let security = raw as? [String: Any], Set(security.keys) == ["continuousKeepAliveMiniIds"],
+          let ids = security["continuousKeepAliveMiniIds"] as? [String], ids.count <= 32 else { return false }
+    return ids.allSatisfy { $0.range(of: "^[a-z0-9][a-z0-9_-]{0,63}$", options: .regularExpression) != nil }
+  }
+
+  static func continuousKeepAliveMiniIds() -> Set<String> {
+    guard let security = bridgeContextSnapshot["miniSecurity"] as? [String: Any],
+          let values = security["continuousKeepAliveMiniIds"] as? [String] else {
+      return []
+    }
+    return Set(values.compactMap { value in
+      let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+      return normalized.isEmpty ? nil : normalized
+    })
+  }
+
   private func configureIfNeeded(loadingImage: String?, bridgeContext: [String: Any]?) {
     if let bridgeContext {
+      if initialized { STWebMiniProgramKeepAliveStore.shared.invalidateSession() }
       self.bridgeContext = bridgeContext
       Self.bridgeContextSnapshot = bridgeContext
       applyOneTimeStorageResetIfRequested()
@@ -946,6 +1303,9 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
 
   private func topController(from controller: UIViewController?) -> UIViewController? {
+    if let presented = controller?.presentedViewController, !presented.isBeingDismissed {
+      return topController(from: presented)
+    }
     if let navigation = controller as? UINavigationController {
       return topController(from: navigation.visibleViewController)
     }
@@ -969,6 +1329,12 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       log["url"] = components.string ?? ""
     }
     return log
+  }
+
+  private func redactedWebURL(_ url: URL) -> String {
+    var parts = URLComponents(url: url, resolvingAgainstBaseURL: false)
+    parts?.query = nil; parts?.fragment = nil; parts?.user = nil; parts?.password = nil
+    return parts?.string ?? "<invalid>"
   }
 
   private func redactedMiniLink(_ link: String) -> String {
@@ -1073,4 +1439,42 @@ struct STMiniPhotoLibraryAccess {
     writeImage: { image, completion in
       PHPhotoLibrary.shared().performChanges({ PHAssetChangeRequest.creationRequestForAsset(from: image) }) { saved, _ in completion(saved) }
     })
+}
+
+
+/// Lifecycle hooks belong only to this plugin-owned Web container. Foreign
+/// modal presentations remain untouched. If an engine detaches while covered,
+/// retire our own inert container only after that foreign owner has left.
+private final class STStandaloneWebNavigationController: UINavigationController {
+  var onWillCover: (() -> Void)?
+  private var retirementTimer: Timer?
+
+  override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+    onWillCover?()
+    super.present(viewControllerToPresent, animated: flag, completion: completion)
+  }
+
+  func retireWhenUncovered() {
+    guard retirementTimer == nil else { return }
+    if finishRetirementIfUncovered() { return }
+    retirementTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
+      _ = self?.finishRetirementIfUncovered()
+    }
+  }
+
+  @discardableResult private func finishRetirementIfUncovered() -> Bool {
+    guard presentingViewController != nil else {
+      retirementTimer?.invalidate(); retirementTimer = nil
+      return true
+    }
+    guard !isBeingPresented, !isBeingDismissed, presentedViewController == nil,
+          visibleViewController?.presentedViewController == nil,
+          let window = viewIfLoaded?.window,
+          STWebH5Crl.topVisibleController(in: window) === visibleViewController else { return false }
+    retirementTimer?.invalidate(); retirementTimer = nil
+    dismiss(animated: false)
+    return true
+  }
+
+  deinit { retirementTimer?.invalidate() }
 }

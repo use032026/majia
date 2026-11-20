@@ -33,7 +33,7 @@ final class RunnerTests: XCTestCase {
     XCTAssertEqual(state["packageName"] as? String, Bundle.main.bundleIdentifier)
     XCTAssertFalse((state["localizedClose"] as? String ?? "").isEmpty)
     XCTAssertEqual(state["miniLoadingAvailable"] as? Bool, true)
-    XCTAssertEqual(state["webLoadingAvailable"] as? Bool, false)
+    XCTAssertEqual(state["webLoadingAvailable"] as? Bool, true)
     XCTAssertNil(invoke(plugin, "initialize", configuration))
     let repeated = invoke(plugin, "foundationState") as! NSDictionary
     XCTAssertEqual(repeated, state as NSDictionary)
@@ -104,10 +104,10 @@ final class RunnerTests: XCTestCase {
     let plugin = StminiFlutterPlugin()
     for method in ["openMini", "openWeb"] {
       let error = invoke(plugin, method, ["link": "mini://not-opened"]) as? FlutterError
-      XCTAssertEqual(error?.code, method == "openMini" ? "not_initialized" : "unsupported", method)
+      XCTAssertEqual(error?.code, "not_initialized", method)
     }
     XCTAssertEqual(invoke(plugin, "isAvailable") as? Bool, true)
-    XCTAssertEqual((invoke(plugin, "notifyWebSessionChanged", [:]) as? FlutterError)?.code, "unsupported")
+    XCTAssertEqual(invoke(plugin, "notifyWebSessionChanged", [:]) as? Int, 0)
     XCTAssertTrue((invoke(plugin, "unknownCapability") as AnyObject?) === FlutterMethodNotImplemented)
     let state = invoke(plugin, "foundationState") as! [String: Any]
     XCTAssertEqual(state["initialized"] as? Bool, false)
@@ -863,6 +863,10 @@ final class FullRuntimeBridgeSafetyTests: XCTestCase {
 /// Existing packages are prepared out-of-band by the test, never installed by
 /// the product. The real full WK container retains its local document gates.
 final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
+  private var createdPackageRoot = false
+  override func setUpWithError() throws {
+    createdPackageRoot = !FileManager.default.fileExists(atPath: folder.deletingLastPathComponent().path)
+  }
   private let id = "full_local_fixture"
   private var folder: URL { URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini/\(id)") }
   private func prepare(_ version: String = "1.0") throws {
@@ -872,7 +876,12 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     try JSONSerialization.data(withJSONObject: ["miniId": id, "version": version, "entry": "index.html", "icon": "pixel.png", "channel": "fixture", "updateself": "1", "ishome": "0"]).write(to: folder.appendingPathComponent("mini-manifest.json"))
     try JSONSerialization.data(withJSONObject: ["miniId": id, "version": version, "entry": "index.html", "channel": "fixture", "launchLink": "mini://\(id)?downloadUrl=https://fixture.invalid/old.zip"]).write(to: folder.appendingPathComponent(".st-mini-package.json"))
   }
-  override func tearDownWithError() throws { try? FileManager.default.removeItem(at: folder) }
+  override func tearDownWithError() throws {
+    STWebMiniProgramKeepAliveStore.shared.removeAll()
+    try? FileManager.default.removeItem(at: folder)
+    let root = folder.deletingLastPathComponent()
+    if createdPackageRoot, (try? FileManager.default.contentsOfDirectory(atPath: root.path).isEmpty) == true { try? FileManager.default.removeItem(at: root) }
+  }
   private func invoke(_ plugin: StminiFlutterPlugin, _ name: String, _ arguments: Any? = nil) -> Any? {
     var called = false; var value: Any?
     plugin.handle(FlutterMethodCall(methodName: name, arguments: arguments)) { value = $0; called = true }
@@ -915,9 +924,9 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     observedEvents.removeAll()
     let state = try XCTUnwrap(invoke(plugin, "foundationState") as? [String: Any])
     XCTAssertEqual(state["miniPackageMode"] as? String, "local_only")
-    XCTAssertEqual(state["webLoadingAvailable"] as? Bool, false)
+    XCTAssertEqual(state["webLoadingAvailable"] as? Bool, true)
     XCTAssertEqual(state["miniChildWebAvailable"] as? Bool, true)
-    XCTAssertEqual(state["closedMiniCacheAvailable"] as? Bool, false)
+    XCTAssertEqual(state["closedMiniCacheAvailable"] as? Bool, true)
     for flag in ["miniPackageDownloadAvailable", "miniPackageInstallAvailable", "miniPackageUpdateAvailable"] { XCTAssertEqual(state[flag] as? Bool, false) }
     func reject(_ link: String, code: String) throws {
       let error = invoke(plugin, "openMini", ["link": link]) as? FlutterError
@@ -1000,7 +1009,7 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     XCTAssertEqual(STMiniPackageRegistry.installedPackages().first { $0.miniId == id }?.launchLink, "mini://\(id)?currentVersion=1.0")
     print("STMINI_LOCAL_ONLY_TRANSPORT_RESULT {\"completed\":true,\"officialXCTestRequired\":true,\"positiveConnections\":1,\"rejectedConnections\":\(listener.count),\"observerScope\":\"specified_loopback_port\"}")
   }
-  func testActualCloseThenOpenCreatesFreshMiniDocument() throws {
+  func testActualCloseThenOpenReusesVerifiedMiniWithFreshAuthority() throws {
     try prepare()
     let previousKey = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
     let window = UIWindow(frame: UIScreen.main.bounds)
@@ -1012,7 +1021,10 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
       while Date() < deadline {
         if let navigation = host.presentedViewController as? STWebNavigationController,
            let root = navigation.viewControllers.first as? STWebMiniprogramCrl,
-           root.isKeepAliveRuntimeUsable { return root }
+           root.isKeepAliveRuntimeUsable,
+           !navigation.isBeingPresented, !navigation.isBeingDismissed,
+           navigation.presentingViewController != nil, navigation.viewIfLoaded?.window != nil,
+           root.webView?.hasNativeEffectAuthority == true { return root }
         RunLoop.current.run(until: Date().addingTimeInterval(0.02))
       }
       throw NSError(domain: "FullRuntimeLocalOnlyPackageTests", code: 1)
@@ -1025,14 +1037,22 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     }
     let first = try openedRoot()
     XCTAssertEqual(evaluate(first, "window.__closedDocumentSentinel=true;true") as? Bool, true)
+    let oldGeneration = first.webView.bridgeDocumentGeneration
+    let oldLease = try XCTUnwrap(STWebBridgeEffectLease(webView: first.webView, generation: oldGeneration))
     first.close()
+    XCTAssertFalse(first.webView.hasNativeEffectAuthority)
+    XCTAssertNil(STWebBridgeEffectLease(webView: first.webView, generation: first.webView.bridgeDocumentGeneration))
     let deadline = Date().addingTimeInterval(5)
     while host.presentedViewController != nil && Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.02)) }
     XCTAssertNil(host.presentedViewController)
     let second = try openedRoot()
-    XCTAssertFalse(first === second, "Closed roots are never reused")
-    XCTAssertFalse(first.webView === second.webView)
-    XCTAssertEqual(evaluate(second, "typeof window.__closedDocumentSentinel==='undefined' && window.localOnlyProbe===true") as? Bool, true)
+    XCTAssertTrue(first === second, "Only the exact verified local runtime may warm resume")
+    XCTAssertTrue(first.webView === second.webView)
+    XCTAssertGreaterThan(second.webView.bridgeDocumentGeneration, oldGeneration)
+    XCTAssertTrue(second.webView.hasNativeEffectAuthority)
+    XCTAssertFalse(oldLease.isCurrent(), "Waiting for a new grant must never revive the pre-close request")
+    XCTAssertNotNil(STWebBridgeEffectLease(webView: second.webView, generation: second.webView.bridgeDocumentGeneration))
+    XCTAssertEqual(evaluate(second, "window.__closedDocumentSentinel===true && window.localOnlyProbe===true") as? Bool, true)
     second.close()
   }
 
@@ -1367,7 +1387,7 @@ final class FullRuntimeQueuedEffectTests: XCTestCase {
   func testPhotoDelayedGrantRejectsEpochURLDetachAndCurrentWritesOnce() throws {
     guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
           let registrar = registry.registrar(forPlugin: "DeynuPhotoEffect-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
-    for mutation in ["epoch", "url", "detach", "current", "denied"] {
+    for mutation in ["epoch", "url", "detach", "hidden", "current", "denied"] {
       let (root, navigation, web, _) = context()
       _ = root; _ = navigation // retain native owner during the delayed grant
       let plugin = StminiFlutterPlugin()
@@ -1380,6 +1400,15 @@ final class FullRuntimeQueuedEffectTests: XCTestCase {
       if mutation == "epoch" { web.invalidateBridgeDocumentSession() }
       if mutation == "url" { web.syntheticURL = URL(string: "https://fixture.invalid/other")! }
       if mutation == "detach" { plugin.detachFromEngine(for: registrar) }
+      if mutation == "hidden" {
+        root.prepareForNativeDismissal()
+        XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+        var newHiddenGrantRequested = false
+        let hiddenPlugin = StminiFlutterPlugin()
+        hiddenPlugin.photoLibraryAccess = STMiniPhotoLibraryAccess(authorizationStatus: { .notDetermined }, requestAuthorization: { _ in newHiddenGrantRequested = true }, writeImage: { _, _ in XCTFail("Hidden new request must never write") })
+        hiddenPlugin.saveImageToPhotoLibrary(UIImage(), params: ["methodId": "hidden-new"], webView: web)
+        XCTAssertFalse(newHiddenGrantRequested)
+      }
       let granted = try XCTUnwrap(grant)
       let delivered = expectation(description: "background permission callback")
       DispatchQueue.global().async { granted(mutation == "denied" ? .denied : .authorized); granted(mutation == "denied" ? .denied : .authorized); delivered.fulfill() }
@@ -1393,5 +1422,844 @@ final class FullRuntimeQueuedEffectTests: XCTestCase {
       withExtendedLifetime((root, navigation, plugin)) {}
     }
     print("STMINI_PHOTO_EFFECT_RESULT {\"passed\":true,\"delayedGrantEpochURLDetachReject\":true,\"currentOnceAndDenied\":true,\"OSWriteSeamOnly\":true}")
+  }
+}
+
+
+/// Test-only observation after the real UIKit presentation completion calls
+/// the production warm grant. The hook never changes production scheduling.
+private final class WarmActivationCompletionHost: UIViewController {
+  var afterMiniCompletion: ((STWebMiniprogramCrl) -> Void)?
+  override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+    super.present(viewControllerToPresent, animated: flag) { [weak self] in
+      completion?()
+      if let root = (viewControllerToPresent as? STWebNavigationController)?.viewControllers.first as? STWebMiniprogramCrl,
+         let hook = self?.afterMiniCompletion {
+        self?.afterMiniCompletion = nil
+        hook(root)
+      }
+    }
+  }
+}
+
+/// Real UIKit/WK consumers of the fifth-batch cache. Every package is a
+/// synthetic test-owned directory; no product entry or remote Mini is added.
+final class FifthBatchWarmRuntimeTests: XCTestCase {
+  private var owned: [URL] = []
+  private var createdPackageRoot = false
+  private var packageRoot: URL { URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini", isDirectory: true) }
+  private var window: UIWindow!
+  private var host: UIViewController!
+  private weak var previousKey: UIWindow?
+  private let store = STWebMiniProgramKeepAliveStore.shared
+
+  override func setUpWithError() throws {
+    store.removeAll()
+    createdPackageRoot = !FileManager.default.fileExists(atPath: packageRoot.path)
+    previousKey = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
+    window = UIWindow(frame: UIScreen.main.bounds)
+    host = UIViewController(); window.rootViewController = host; window.makeKeyAndVisible()
+  }
+  override func tearDownWithError() throws {
+    host.dismiss(animated: false)
+    store.removeAll()
+    owned.forEach { try? FileManager.default.removeItem(at: $0) }
+    if createdPackageRoot, (try? FileManager.default.contentsOfDirectory(atPath: packageRoot.path).isEmpty) == true { try? FileManager.default.removeItem(at: packageRoot) }
+    window.isHidden = true; previousKey?.makeKeyAndVisible()
+    StminiFlutterPlugin.bridgeContextSnapshot = ["packageName": "com.almanac.lite"]
+  }
+  private func until(_ timeout: TimeInterval = 10, _ condition: () -> Bool) {
+    let end = Date().addingTimeInterval(timeout)
+    while !condition() && Date() < end { RunLoop.current.run(until: Date().addingTimeInterval(0.01)) }
+    XCTAssertTrue(condition())
+  }
+  private func makePackage(_ suffix: String) throws -> String {
+    let id = "fifth_fixture_" + suffix
+    let folder = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini/" + id)
+    XCTAssertFalse(FileManager.default.fileExists(atPath: folder.path))
+    try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+    owned.append(folder)
+    try Data("<html><body>fifth fixture<script>window.warmCounter=41</script></body></html>".utf8).write(to: folder.appendingPathComponent("index.html"))
+    try Data("<html><body>fifth child</body></html>".utf8).write(to: folder.appendingPathComponent("second.html"))
+    for file in ["mini-manifest.json", ".st-mini-package.json"] {
+      try JSONSerialization.data(withJSONObject: ["miniId": id, "version": "1.0", "entry": "index.html", "channel": "synthetic-fifth", "icon": "", "updateself": "0", "ishome": "0"])
+        .write(to: folder.appendingPathComponent(file))
+    }
+    return id
+  }
+  private func open(_ id: String) throws -> STWebMiniprogramCrl {
+    STWebOpenHandler.openMiniprogram(name: id, config: STWebConfig(webMode: .online), crl: host)
+    until { (self.host.presentedViewController as? UINavigationController)?.viewControllers.first.flatMap { ($0 as? STWebMiniprogramCrl)?.isKeepAliveRuntimeUsable } == true && self.host.presentedViewController?.isBeingPresented == false }
+    // UIKit's presentation completion grants warm authority after the animation.
+    until { (self.host.presentedViewController as? UINavigationController)?.viewControllers.first.flatMap { ($0 as? STWebMiniprogramCrl)?.allowsNativeRuntimeEffects } == true }
+    return try XCTUnwrap((host.presentedViewController as? UINavigationController)?.viewControllers.first as? STWebMiniprogramCrl)
+  }
+  private func close(_ root: STWebMiniprogramCrl) {
+    root.close()
+    until { self.host.presentedViewController == nil }
+    // Drain the explicit completion and the navigation lifecycle callbacks.
+    let done = expectation(description: "completed cache insertion")
+    DispatchQueue.main.async { done.fulfill() }; wait(for: [done], timeout: 2)
+    XCTAssertTrue(host.view.window === window, "A custom dismissal must preserve its presenting owner's original window")
+  }
+  private func js(_ web: WKWebView, _ script: String) -> Any? {
+    let done = expectation(description: "real warm WK state")
+    var result: Any?
+    web.evaluateJavaScript(script) { value, error in XCTAssertNil(error); result = value; done.fulfill() }
+    wait(for: [done], timeout: 5)
+    return result
+  }
+
+  func testWarmStackReusesJSButRevokesNewAndOldNativeAuthorityWhileHidden() throws {
+    let id = try makePackage("stack")
+    let root = try open(id)
+    let navigation = try XCTUnwrap(root.navigationController)
+    let config = STWebConfig(webMode: .local); config.bridgePolicy = .localMini
+    let child = STWebH5Crl(url: "stmini://\(id).stmini.local/second.html", config: config, isChild: true)
+    child.isMiniInternalPage = true
+    navigation.pushViewController(child, animated: false)
+    until { child.webView?.url?.path == "/second.html" && child.webView?.isLoading == false }
+    let rootWeb = try XCTUnwrap(root.webView), childWeb = try XCTUnwrap(child.webView)
+    let old = try XCTUnwrap(STWebBridgeEffectLease(webView: childWeb, generation: childWeb.bridgeDocumentGeneration, requiresMiniRoot: true))
+    let generation = childWeb.bridgeDocumentGeneration
+    XCTAssertEqual(js(rootWeb, "window.warmCounter += 1; window.warmCounter") as? Int, 42)
+    close(root)
+    XCTAssertTrue(root.isRuntimeRetainedHidden)
+    XCTAssertFalse(old.isCurrent())
+    for web in [rootWeb, childWeb] {
+      XCTAssertFalse(web.hasNativeEffectAuthority)
+      XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+      let before = web.bridgeDocumentGeneration
+      STWebApiManager.dealWithApiMessage(["method": "mini_notifySessionChanged", "params": ["methodId": "hidden-new"]], webView: web)
+      XCTAssertEqual(web.bridgeDocumentGeneration, before)
+    }
+    XCTAssertNotNil(navigation.view.window, "A hidden transparent host must not be mistaken for visible authority")
+    let warm = try open(id)
+    XCTAssertTrue(warm === root)
+    XCTAssertTrue(warm.navigationController?.viewControllers.last === child)
+    XCTAssertTrue(childWeb.hasNativeEffectAuthority)
+    XCTAssertGreaterThan(childWeb.bridgeDocumentGeneration, generation)
+    XCTAssertFalse(old.isCurrent(), "Fresh grant cannot revive an old asynchronous request")
+    XCTAssertEqual(js(rootWeb, "window.warmCounter") as? Int, 42)
+    close(warm)
+  }
+
+  func testFIFOEvictionMemoryWarningAndSessionChangeDestroyCachedAuthority() throws {
+    let a = try open(try makePackage("a")); close(a)
+    let b = try open(try makePackage("b")); close(b)
+    let c = try open(try makePackage("c")); close(c)
+    XCTAssertFalse(a.isKeepAliveRuntimeUsable)
+    XCTAssertNil(a.webView.navigationDelegate)
+    XCTAssertTrue(b.isKeepAliveRuntimeUsable); XCTAssertTrue(c.isKeepAliveRuntimeUsable)
+    NotificationCenter.default.post(name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
+    XCTAssertFalse(b.isKeepAliveRuntimeUsable); XCTAssertFalse(c.isKeepAliveRuntimeUsable)
+    XCTAssertNil(store.take(miniId: b.miniProgramId, config: STWebConfig(webMode: .online)))
+    let fresh = try open(b.miniProgramId); close(fresh)
+    NotificationCenter.default.post(name: Notification.Name("kSTLogoutSuccessNotification"), object: nil)
+    XCTAssertFalse(fresh.isKeepAliveRuntimeUsable)
+    XCTAssertNil(store.take(miniId: fresh.miniProgramId, config: STWebConfig(webMode: .online)))
+  }
+
+  func testSameVersionByteReplacementEntryChangeAndTerminationRejectWarmReuse() throws {
+    let id = try makePackage("identity")
+    let original = try open(id); close(original)
+    let folder = try XCTUnwrap(owned.first)
+    let before = try XCTUnwrap(STWebMiniPackageIdentity.read(miniId: id))
+    try Data("<html>different same-version bytes</html>".utf8).write(to: folder.appendingPathComponent("second.html"))
+    XCTAssertNotEqual(STWebMiniPackageIdentity.read(miniId: id), before)
+    XCTAssertNil(store.take(miniId: id, config: STWebConfig(webMode: .online)))
+    XCTAssertFalse(original.isKeepAliveRuntimeUsable)
+    let second = try open(id); close(second)
+    second.webviewContentProcessDidTerminate()
+    XCTAssertFalse(second.isKeepAliveRuntimeUsable)
+    XCTAssertNil(store.take(miniId: id, config: STWebConfig(webMode: .online)))
+    let third = try open(id); close(third)
+    for file in ["mini-manifest.json", ".st-mini-package.json"] {
+      let path = folder.appendingPathComponent(file)
+      var json = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: path)) as? [String: Any])
+      json["entry"] = "second.html"
+      try JSONSerialization.data(withJSONObject: json).write(to: path)
+    }
+    XCTAssertNil(store.take(miniId: id, config: STWebConfig(webMode: .online)))
+    XCTAssertFalse(third.isKeepAliveRuntimeUsable)
+  }
+
+  func testContinuousPolicyIsExplicitAndStillReleasesOnMemoryOrDetach() throws {
+    let id = try makePackage("continuous")
+    XCTAssertFalse(store.supportsContinuousKeepAlive(miniId: id))
+    let plugin = StminiFlutterPlugin()
+    let initialized = expectation(description: "controlled SDK whitelist")
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite", "miniSecurity": ["continuousKeepAliveMiniIds": [id]]]])) { value in XCTAssertNil(value); initialized.fulfill() }
+    wait(for: [initialized], timeout: 2)
+    store.setContinuousKeepAlive(true, for: id)
+    XCTAssertTrue(store.supportsContinuousKeepAlive(miniId: id))
+    let root = try open(id); close(root)
+    XCTAssertTrue(root.isKeepAliveRuntimeUsable)
+    NotificationCenter.default.post(name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
+    XCTAssertFalse(root.isKeepAliveRuntimeUsable)
+    XCTAssertTrue(host.view.window === window, "Memory eviction must not detach the presenting host")
+    let second = try open(id); close(second)
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let registrar = registry.registrar(forPlugin: "DeynuFifthDetach-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+    plugin.detachFromEngine(for: registrar)
+    XCTAssertFalse(second.isKeepAliveRuntimeUsable)
+    store.setContinuousKeepAlive(false, for: id)
+  }
+
+  func testStandaloneWebRapidReplacementAndCloseUseActualUIKitAndRejectMiniIdentity() throws {
+    let plugin = StminiFlutterPlugin()
+    let initialized = expectation(description: "Web SDK initialize")
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { value in XCTAssertNil(value); initialized.fulfill() }
+    wait(for: [initialized], timeout: 2)
+    var results: [String: Any] = [:]
+    let finished = expectation(description: "three Web results exactly once"); finished.expectedFulfillmentCount = 3; finished.assertForOverFulfill = true
+    for marker in ["a", "b", "c"] {
+      plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/\(marker)", "title": marker])) { result in
+        results[marker] = result ?? NSNull(); finished.fulfill()
+      }
+    }
+    wait(for: [finished], timeout: 10)
+    XCTAssertTrue(results["a"] is NSNull)
+    XCTAssertEqual((results["b"] as? FlutterError)?.code, "superseded")
+    XCTAssertTrue(results["c"] is NSNull)
+    let navigation = try XCTUnwrap(host.presentedViewController as? UINavigationController)
+    let page = try XCTUnwrap(navigation.viewControllers.first as? STWebH5Crl)
+    XCTAssertEqual(page.url, "https://127.0.0.1:1/c")
+    XCTAssertFalse(page.isMiniInternalPage)
+    XCTAssertFalse(page.webView.allowsLocalMiniBridge)
+    let closed = expectation(description: "Web SDK close")
+    plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { value in XCTAssertNil(value); closed.fulfill() }
+    wait(for: [closed], timeout: 5)
+    XCTAssertNil(host.presentedViewController)
+    XCTAssertFalse(page.webView?.hasNativeEffectAuthority ?? false)
+    print("STMINI_FIFTH_WEB_RESULT {\"actualUIKit\":true,\"rapidReplacement\":true,\"miniPrivilegeDenied\":true}")
+  }
+
+  func testExplicitSessionNotificationWithoutStandaloneWebDestroysCachedRuntime() throws {
+    let root = try open(try makePackage("session_api")); close(root)
+    let generation = store.sessionGeneration
+    let plugin = StminiFlutterPlugin()
+    let done = expectation(description: "no-Web session notification")
+    plugin.handle(FlutterMethodCall(methodName: "notifyWebSessionChanged", arguments: ["reason": "synthetic-logout"])) { result in
+      XCTAssertEqual(result as? Int, 0); done.fulfill()
+    }
+    wait(for: [done], timeout: 2)
+    XCTAssertGreaterThan(store.sessionGeneration, generation)
+    XCTAssertFalse(root.isKeepAliveRuntimeUsable)
+    XCTAssertNil(store.take(miniId: root.miniProgramId, config: STWebConfig(webMode: .online)))
+  }
+
+  func testCancelledDismissalNeedsFreshGrantAndCannotRestoreOldLease() throws {
+    let root = try open(try makePackage("cancel"))
+    let web = try XCTUnwrap(root.webView)
+    let old = try XCTUnwrap(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    root.prepareForNativeDismissal()
+    XCTAssertFalse(web.hasNativeEffectAuthority); XCTAssertFalse(old.isCurrent())
+    // The real presentation remains attached, as it does after UIKit cancels
+    // an interactive dismissal; only the explicit completion may grant anew.
+    root.setKeepAliveRuntimeHidden(false)
+    XCTAssertTrue(web.hasNativeEffectAuthority)
+    XCTAssertFalse(old.isCurrent())
+    XCTAssertNotNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    close(root)
+  }
+
+  func testCloseBeforeQueuedWebPresentationCancelsOriginalExactlyOnce() {
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let done = expectation(description: "queued Web cancellation exactly once")
+    done.expectedFulfillmentCount = 2; done.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/cancelled-before-dispatch"])) { value in
+      XCTAssertEqual((value as? FlutterError)?.code, "cancelled"); done.fulfill()
+    }
+    plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { value in XCTAssertNil(value); done.fulfill() }
+    wait(for: [done], timeout: 3)
+    XCTAssertNil(host.presentedViewController)
+  }
+
+
+  func testDetachDuringWebCloseFinishesEveryPendingInvocationOnce() {
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let registrar = registry.registrar(forPlugin: "FifthWebDetach-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let done = expectation(description: "open and in-flight close finish exactly once")
+    done.expectedFulfillmentCount = 2; done.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/detach"])) { result in
+      XCTAssertTrue(result == nil || (result as? FlutterError)?.code == "cancelled")
+      done.fulfill()
+    }
+    DispatchQueue.main.async {
+      plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in
+        XCTAssertTrue(result == nil || (result as? FlutterError)?.code == "cancelled")
+        done.fulfill()
+      }
+      plugin.detachFromEngine(for: registrar)
+    }
+    wait(for: [done], timeout: 5)
+    until { self.host.presentedViewController == nil }
+  }
+
+
+  func testDetachReleasesActuallyOwnedVisibleMiniAndH5Stack() throws {
+    let id = try makePackage("active_detach")
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let requested = expectation(description: "actual SDK Mini open")
+    plugin.handle(FlutterMethodCall(methodName: "openMini", arguments: ["link": "mini://\(id)"])) { value in XCTAssertNil(value); requested.fulfill() }
+    wait(for: [requested], timeout: 3)
+    until { (self.host.presentedViewController as? UINavigationController)?.viewControllers.first.flatMap { ($0 as? STWebMiniprogramCrl)?.isKeepAliveRuntimeUsable } == true && self.host.presentedViewController?.isBeingPresented == false }
+    let navigation = try XCTUnwrap(host.presentedViewController as? STWebNavigationController)
+    let root = try XCTUnwrap(navigation.viewControllers.first as? STWebMiniprogramCrl)
+    let config = STWebConfig(webMode: .local); config.bridgePolicy = .localMini
+    let child = STWebH5Crl(url: "stmini://\(id).stmini.local/second.html", config: config, isChild: true)
+    child.isMiniInternalPage = true
+    navigation.pushViewController(child, animated: false)
+    until { child.webView?.url?.path == "/second.html" && child.webView?.isLoading == false }
+    let rootWeb = try XCTUnwrap(root.webView), childWeb = try XCTUnwrap(child.webView)
+    let lease = try XCTUnwrap(STWebBridgeEffectLease(webView: childWeb, generation: childWeb.bridgeDocumentGeneration))
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let registrar = registry.registrar(forPlugin: "FifthActiveDetach-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+    plugin.detachFromEngine(for: registrar)
+    XCTAssertFalse(root.isKeepAliveRuntimeUsable)
+    XCTAssertFalse(lease.isCurrent())
+    for web in [rootWeb, childWeb] {
+      XCTAssertFalse(web.hasNativeEffectAuthority)
+      XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+      XCTAssertNil(web.navigationDelegate); XCTAssertNil(web.uiDelegate)
+    }
+    until { self.host.presentedViewController == nil }
+    XCTAssertNil(child.webView)
+  }
+
+
+  func testCloseMiniCancelsQueuedOpenAndNeverDismissesStandaloneWeb() throws {
+    let id = try makePackage("queued_close")
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let cancelled = expectation(description: "queued Mini open cancelled by close")
+    cancelled.expectedFulfillmentCount = 2; cancelled.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "openMini", arguments: ["link": "mini://\(id)"])) { result in
+      XCTAssertEqual((result as? FlutterError)?.code, "cancelled"); cancelled.fulfill()
+    }
+    plugin.handle(FlutterMethodCall(methodName: "closeMini", arguments: nil)) { result in XCTAssertNil(result); cancelled.fulfill() }
+    wait(for: [cancelled], timeout: 3)
+    XCTAssertNil(host.presentedViewController)
+    let opened = expectation(description: "standalone Web shown")
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/not-mini"])) { result in XCTAssertNil(result); opened.fulfill() }
+    wait(for: [opened], timeout: 5)
+    let original = try XCTUnwrap(host.presentedViewController)
+    plugin.handle(FlutterMethodCall(methodName: "closeMini", arguments: nil)) { XCTAssertNil($0) }
+    XCTAssertTrue(host.presentedViewController === original)
+    let closed = expectation(description: "explicit Web close")
+    plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in XCTAssertNil(result); closed.fulfill() }
+    wait(for: [closed], timeout: 5)
+  }
+
+  func testQueuedMiniCloseCannotTouchForeignUIAfterEngineDetach() throws {
+    let id = try makePackage("stale_close")
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let requested = expectation(description: "owned Mini open")
+    plugin.handle(FlutterMethodCall(methodName: "openMini", arguments: ["link": "mini://\(id)"])) { result in XCTAssertNil(result); requested.fulfill() }
+    wait(for: [requested], timeout: 3)
+    until { (self.host.presentedViewController as? UINavigationController)?.viewControllers.first.flatMap { ($0 as? STWebMiniprogramCrl)?.isKeepAliveRuntimeUsable } == true && self.host.presentedViewController?.isBeingPresented == false }
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let registrar = registry.registrar(forPlugin: "FifthQueuedClose-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+    let originalNavigation = try XCTUnwrap(host.presentedViewController as? STWebNavigationController)
+    let originalRoot = try XCTUnwrap(originalNavigation.viewControllers.first as? STWebMiniprogramCrl)
+    let originalWeb = try XCTUnwrap(originalRoot.webView)
+    let originalLease = try XCTUnwrap(STWebBridgeEffectLease(webView: originalWeb, generation: originalWeb.bridgeDocumentGeneration))
+    let closed = expectation(description: "stale close terminal exactly once"); closed.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "closeMini", arguments: nil)) { result in
+      XCTAssertEqual((result as? FlutterError)?.code, "cancelled"); closed.fulfill()
+    }
+    plugin.detachFromEngine(for: registrar)
+    XCTAssertFalse(originalWeb.hasNativeEffectAuthority)
+    XCTAssertFalse(originalLease.isCurrent())
+    XCTAssertNil(STWebBridgeEffectLease(webView: originalWeb, generation: originalWeb.bridgeDocumentGeneration))
+    XCTAssertNil(originalWeb.navigationDelegate); XCTAssertNil(originalWeb.uiDelegate)
+    // Security revocation is synchronous. UIKit presentation lifetime ends
+    // at its actual transition completion, observed with a bounded predicate.
+    until { self.host.presentedViewController == nil }
+    XCTAssertNil(host.presentedViewController)
+    let foreign = UIViewController()
+    host.present(foreign, animated: false)
+    wait(for: [closed], timeout: 3)
+    let drained = expectation(description: "old queued close consumed")
+    DispatchQueue.main.async { drained.fulfill() }; wait(for: [drained], timeout: 2)
+    XCTAssertTrue(host.presentedViewController === foreign, "An old engine must never resample and dismiss a new owner")
+    foreign.dismiss(animated: false)
+  }
+
+  func testWebSessionDuringPresentationAndCloseCannotGrantAuthority() throws {
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let cancelled = expectation(description: "in-flight Web and session terminal")
+    cancelled.expectedFulfillmentCount = 2; cancelled.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/in-flight"])) { result in
+      XCTAssertEqual((result as? FlutterError)?.code, "cancelled"); cancelled.fulfill()
+    }
+    DispatchQueue.main.async {
+      let page = (self.host.presentedViewController as? UINavigationController)?.viewControllers.first as? STWebH5Crl
+      plugin.handle(FlutterMethodCall(methodName: "notifyWebSessionChanged", arguments: ["reason": "synthetic"])) { result in
+        XCTAssertEqual(result as? Int, 0); cancelled.fulfill()
+      }
+      XCTAssertFalse(page?.webView?.hasNativeEffectAuthority ?? false)
+    }
+    wait(for: [cancelled], timeout: 5)
+    until { self.host.presentedViewController == nil }
+    let opened = expectation(description: "second Web presentation")
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/closing"])) { result in XCTAssertNil(result); opened.fulfill() }
+    wait(for: [opened], timeout: 5)
+    let page = try XCTUnwrap((host.presentedViewController as? UINavigationController)?.viewControllers.first as? STWebH5Crl)
+    let closed = expectation(description: "Web close remains terminal once"); closed.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in XCTAssertNil(result); closed.fulfill() }
+    plugin.handle(FlutterMethodCall(methodName: "notifyWebSessionChanged", arguments: ["reason": "during-close"])) { result in XCTAssertEqual(result as? Int, 0) }
+    XCTAssertFalse(page.webView?.hasNativeEffectAuthority ?? false)
+    wait(for: [closed], timeout: 5)
+    XCTAssertNil(host.presentedViewController)
+  }
+
+
+  private func makeStandalone(_ plugin: StminiFlutterPlugin, path: String = "owner") throws -> (UINavigationController, STWebH5Crl, EffectWebView) {
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let shown = expectation(description: "actual standalone owner presentation")
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/" + path])) { result in XCTAssertNil(result); shown.fulfill() }
+    wait(for: [shown], timeout: 5)
+    let navigation = try XCTUnwrap(host.presentedViewController as? UINavigationController)
+    let page = try XCTUnwrap(navigation.visibleViewController as? STWebH5Crl)
+    // Actual UIKit topology, controlled document/effect endpoint. Successful
+    // HTTPS DOM transport is independently verified by the OS SDK fixture.
+    page.webView?.cleanup(); page.webView?.removeFromSuperview()
+    let spy = EffectWebView(frame: .zero, configuration: WKWebViewConfiguration())
+    spy.bindCrl = page; page.webView = spy; page.view.addSubview(spy)
+    return (navigation, page, spy)
+  }
+
+  private func notifyWeb(_ plugin: StminiFlutterPlugin) -> Int? {
+    var count: Int?
+    plugin.handle(FlutterMethodCall(methodName: "notifyWebSessionChanged", arguments: ["reason": "synthetic-owner"])) { count = $0 as? Int }
+    return count
+  }
+
+  func testCoveredStandaloneRejectsEffectsAndReplacementUntilExplicitRevealGrant() throws {
+    for style in [UIModalPresentationStyle.fullScreen, .overCurrentContext] {
+      let plugin = StminiFlutterPlugin()
+      let (navigation, page, web) = try makeStandalone(plugin, path: style == .fullScreen ? "full-cover" : "over-cover")
+      let old = try XCTUnwrap(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+      let overlay = UIViewController(); overlay.modalPresentationStyle = style
+      let shown = expectation(description: "foreign UIKit cover")
+      page.present(overlay, animated: false) { shown.fulfill() }
+      wait(for: [shown], timeout: 3)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === overlay)
+      if style == .overCurrentContext { XCTAssertNotNil(navigation.view.window) }
+      // Do not sample old.isCurrent while covered: the epoch must have been
+      // revoked at coverage start, independent of later lease observation.
+      XCTAssertFalse(web.hasNativeEffectAuthority)
+      XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+      let before = web.scripts.count
+      STWebApiManager.dealWithApiMessage(["method": "showToast", "params": ["methodId": "covered-new"]], webView: web)
+      XCTAssertEqual(web.scripts.count, before)
+      XCTAssertEqual(notifyWeb(plugin), 0)
+      let rejected = expectation(description: "covered replacement is explicit once")
+      rejected.assertForOverFulfill = true
+      plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/c"])) { result in
+        XCTAssertEqual((result as? FlutterError)?.code, "web_covered"); rejected.fulfill()
+      }
+      wait(for: [rejected], timeout: 3)
+      plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in XCTAssertEqual((result as? FlutterError)?.code, "web_covered") }
+      XCTAssertTrue(host.presentedViewController === navigation)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === overlay)
+      let revealed = expectation(description: "foreign owner leaves itself")
+      overlay.dismiss(animated: false) { revealed.fulfill() }
+      wait(for: [revealed], timeout: 3)
+      XCTAssertFalse(old.isCurrent(), "An unobserved pre-cover lease must remain dead after reveal")
+      XCTAssertFalse(web.hasNativeEffectAuthority, "Reveal alone cannot grant native authority")
+      XCTAssertEqual(notifyWeb(plugin), 1)
+      XCTAssertTrue(web.hasNativeEffectAuthority)
+      XCTAssertFalse(old.isCurrent())
+      XCTAssertNotNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+      let closed = expectation(description: "original owner closes once")
+      plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in XCTAssertNil(result); closed.fulfill() }
+      wait(for: [closed], timeout: 5)
+      XCTAssertNil(host.presentedViewController)
+    }
+  }
+
+  func testActualCustomMiniCoverPreservesStandaloneOwnerAndOriginalLeasesStayDead() throws {
+    let miniId = try makePackage("web_cover")
+    let plugin = StminiFlutterPlugin()
+    let (navigation, page, web) = try makeStandalone(plugin)
+    let old = try XCTUnwrap(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    let opened = expectation(description: "actual custom Mini overlay")
+    plugin.handle(FlutterMethodCall(methodName: "openMini", arguments: ["link": "mini://\(miniId)"])) { result in XCTAssertNil(result); opened.fulfill() }
+    wait(for: [opened], timeout: 3)
+    until { (STWebH5Crl.topVisibleController(in: self.window) as? STWebMiniprogramCrl)?.isKeepAliveRuntimeUsable == true }
+    let mini = try XCTUnwrap(STWebH5Crl.topVisibleController(in: window) as? STWebMiniprogramCrl)
+    XCTAssertNotNil(navigation.view.window)
+    XCTAssertEqual(notifyWeb(plugin), 0)
+    XCTAssertFalse(web.hasNativeEffectAuthority)
+    let rejected = expectation(description: "custom-covered Web replacement rejected")
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": "https://127.0.0.1:1/no-orphan"])) { result in XCTAssertEqual((result as? FlutterError)?.code, "web_covered"); rejected.fulfill() }
+    wait(for: [rejected], timeout: 3)
+    XCTAssertTrue(host.presentedViewController === navigation)
+    XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === mini)
+    mini.close()
+    until { STWebH5Crl.topVisibleController(in: self.window) === page }
+    XCTAssertFalse(old.isCurrent())
+    XCTAssertEqual(notifyWeb(plugin), 1)
+    XCTAssertTrue(web.hasNativeEffectAuthority)
+    let closed = expectation(description: "recovered standalone closes")
+    plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in XCTAssertNil(result); closed.fulfill() }
+    wait(for: [closed], timeout: 5)
+  }
+
+  func testCoveredDetachReleasesWebWithoutDismissingForeignOwner() throws {
+    let plugin = StminiFlutterPlugin()
+    let (navigation, _, web) = try makeStandalone(plugin)
+    let overlay = UIViewController(); overlay.modalPresentationStyle = .overCurrentContext
+    let shown = expectation(description: "nav-owned foreign overlay")
+    navigation.present(overlay, animated: false) { shown.fulfill() }
+    wait(for: [shown], timeout: 3)
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let registrar = registry.registrar(forPlugin: "FifthCoveredDetach-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+    plugin.detachFromEngine(for: registrar)
+    XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === overlay)
+    XCTAssertTrue(host.presentedViewController === navigation)
+    XCTAssertFalse(web.hasNativeEffectAuthority)
+    XCTAssertNil(web.navigationDelegate); XCTAssertNil(web.uiDelegate)
+    let left = expectation(description: "foreign overlay explicitly dismisses")
+    overlay.dismiss(animated: false) { left.fulfill() }
+    wait(for: [left], timeout: 3)
+    until { self.host.presentedViewController == nil }
+  }
+
+  func testStandaloneDisplayOptionsDoNotRewriteSignedCallerURL() throws {
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let url = "https://127.0.0.1:1/signed?sig=a%2Fb&x=1&x=2#anchor"
+    let shown = expectation(description: "signed URL is passed unchanged")
+    plugin.handle(FlutterMethodCall(methodName: "openWeb", arguments: ["url": url, "title": "Native title", "showNavigationBar": false])) { result in XCTAssertNil(result); shown.fulfill() }
+    wait(for: [shown], timeout: 5)
+    let page = try XCTUnwrap((host.presentedViewController as? UINavigationController)?.visibleViewController as? STWebH5Crl)
+    XCTAssertEqual(page.url, url)
+    XCTAssertEqual(page.config.params?["title"], "Native title")
+    XCTAssertEqual(page.config.params?["isNeedNavigationBar"], "false")
+    let closed = expectation(description: "signed URL owner closes")
+    plugin.handle(FlutterMethodCall(methodName: "closeWeb", arguments: nil)) { result in XCTAssertNil(result); closed.fulfill() }
+    wait(for: [closed], timeout: 5)
+  }
+
+  func testReleasedH5LateLifecycleIsIdempotentAndNeverRecreatesAuthority() {
+    let config = STWebConfig(webMode: .h5)
+    let page = STWebH5Crl(url: "https://127.0.0.1:1/released", config: config)
+    page.loadViewIfNeeded()
+    let web = page.webView
+    page.releaseAfterMiniCache()
+    page.viewWillAppear(false); page.viewWillDisappear(false); page.viewDidDisappear(false)
+    page.traitCollectionDidChange(UITraitCollection(userInterfaceStyle: .dark))
+    page.webviewDidFinish()
+    page.webviewDidFailNavigation(NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet))
+    page.webviewContentProcessDidTerminate()
+    page.close(); page.back(); page.more(); page.releaseAfterMiniCache()
+    XCTAssertNil(page.webView)
+    XCTAssertFalse(web?.hasNativeEffectAuthority ?? true)
+    XCTAssertNil(web?.navigationDelegate); XCTAssertNil(web?.uiDelegate)
+  }
+
+
+  func testCoveredMiniDetachPreservesForeignOwnerAndRetiresOnlyItsOriginalStack() throws {
+    for style in [UIModalPresentationStyle.fullScreen, .overCurrentContext] {
+      until { self.host.presentedViewController == nil && self.host.view.window === self.window && STWebH5Crl.topVisibleController(in: self.window) === self.host }
+      XCTAssertNil(host.presentedViewController)
+      XCTAssertTrue(host.view.window === window)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === host)
+      let id = try makePackage(style == .fullScreen ? "mini_foreign_full" : "mini_foreign_over")
+      let plugin = StminiFlutterPlugin()
+      plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+      let opened = expectation(description: "owned SDK Mini before foreign overlay")
+      plugin.handle(FlutterMethodCall(methodName: "openMini", arguments: ["link": "mini://\(id)"])) { result in XCTAssertNil(result); opened.fulfill() }
+      wait(for: [opened], timeout: 3)
+      until { (self.host.presentedViewController as? UINavigationController)?.viewControllers.first.flatMap { ($0 as? STWebMiniprogramCrl)?.isKeepAliveRuntimeUsable } == true && self.host.presentedViewController?.isBeingPresented == false }
+      let navigation = try XCTUnwrap(host.presentedViewController as? STWebNavigationController)
+      let root = try XCTUnwrap(navigation.viewControllers.first as? STWebMiniprogramCrl)
+      let config = STWebConfig(webMode: .local); config.bridgePolicy = .localMini
+      let child = STWebH5Crl(url: "stmini://\(id).stmini.local/second.html", config: config, isChild: true)
+      child.isMiniInternalPage = true; navigation.pushViewController(child, animated: false)
+      until { child.webView?.url?.path == "/second.html" && child.webView?.isLoading == false }
+      let rootWeb = try XCTUnwrap(root.webView), childWeb = try XCTUnwrap(child.webView)
+      let old = try XCTUnwrap(STWebBridgeEffectLease(webView: childWeb, generation: childWeb.bridgeDocumentGeneration))
+      let foreign = UIViewController(); foreign.modalPresentationStyle = style
+      let covered = expectation(description: "foreign owner covers actual Mini")
+      navigation.present(foreign, animated: false) { covered.fulfill() }
+      wait(for: [covered], timeout: 3)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === foreign)
+      guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+            let registrar = registry.registrar(forPlugin: "FifthMiniCoveredDetach-" + UUID().uuidString) else { XCTFail("Runner registrar required"); return }
+      plugin.detachFromEngine(for: registrar)
+      XCTAssertTrue(host.presentedViewController === navigation)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === foreign, "Detach cannot dismiss a foreign descendant")
+      XCTAssertFalse(root.isKeepAliveRuntimeUsable); XCTAssertFalse(old.isCurrent())
+      for web in [rootWeb, childWeb] {
+        XCTAssertFalse(web.hasNativeEffectAuthority)
+        XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+        XCTAssertNil(web.navigationDelegate); XCTAssertNil(web.uiDelegate)
+      }
+      let detachedClose = expectation(description: "old engine close is terminal without touching foreign UI")
+      detachedClose.assertForOverFulfill = true
+      plugin.handle(FlutterMethodCall(methodName: "closeMini", arguments: nil)) { result in
+        XCTAssertEqual((result as? FlutterError)?.code, "cancelled"); detachedClose.fulfill()
+      }
+      wait(for: [detachedClose], timeout: 2)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === foreign)
+      let revealed = expectation(description: "foreign explicitly dismisses itself")
+      foreign.dismiss(animated: false) { revealed.fulfill() }
+      wait(for: [revealed], timeout: 3)
+      until { self.host.presentedViewController == nil }
+      XCTAssertNil(host.presentedViewController)
+      XCTAssertFalse(old.isCurrent())
+      // An expired retirement belongs to its captured nav/root, not whatever
+      // foreground UI is presented after that original container is gone.
+      let later = UIViewController(); host.present(later, animated: false)
+      let drained = expectation(description: "retired owner callbacks drained")
+      DispatchQueue.main.async { drained.fulfill() }; wait(for: [drained], timeout: 2)
+      XCTAssertTrue(host.presentedViewController === later)
+      let laterDismissed = expectation(description: "later foreign dismissal completes before next presentation style")
+      later.dismiss(animated: false) { laterDismissed.fulfill() }
+      wait(for: [laterDismissed], timeout: 3)
+      until { self.host.presentedViewController == nil && self.host.view.window === self.window && STWebH5Crl.topVisibleController(in: self.window) === self.host }
+      XCTAssertNil(host.presentedViewController)
+      XCTAssertTrue(host.view.window === window)
+      XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === host)
+    }
+  }
+
+
+  func testQueuedMiniCloseRejectsForeignCoverageAddedBeforeConsumption() throws {
+    let id = try makePackage("close_then_cover")
+    let plugin = StminiFlutterPlugin()
+    plugin.handle(FlutterMethodCall(methodName: "initialize", arguments: ["bridgeContext": ["packageName": "com.almanac.lite"]])) { XCTAssertNil($0) }
+    let opened = expectation(description: "Mini is owned before queued close")
+    plugin.handle(FlutterMethodCall(methodName: "openMini", arguments: ["link": "mini://\(id)"])) { result in XCTAssertNil(result); opened.fulfill() }
+    wait(for: [opened], timeout: 3)
+    until { (self.host.presentedViewController as? UINavigationController)?.viewControllers.first.flatMap { ($0 as? STWebMiniprogramCrl)?.isKeepAliveRuntimeUsable } == true && self.host.presentedViewController?.isBeingPresented == false }
+    let navigation = try XCTUnwrap(host.presentedViewController as? STWebNavigationController)
+    let root = try XCTUnwrap(navigation.viewControllers.first as? STWebMiniprogramCrl)
+    let web = try XCTUnwrap(root.webView)
+    let old = try XCTUnwrap(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    let rejected = expectation(description: "queued close expires once under newly added foreign owner")
+    rejected.assertForOverFulfill = true
+    plugin.handle(FlutterMethodCall(methodName: "closeMini", arguments: nil)) { result in
+      XCTAssertEqual((result as? FlutterError)?.code, "cancelled"); rejected.fulfill()
+    }
+    XCTAssertFalse(web.hasNativeEffectAuthority)
+    let foreign = UIViewController(); foreign.modalPresentationStyle = .overCurrentContext
+    let covered = expectation(description: "foreign presentation added in original receipt turn")
+    navigation.present(foreign, animated: false) { covered.fulfill() }
+    wait(for: [covered, rejected], timeout: 3)
+    XCTAssertTrue(host.presentedViewController === navigation)
+    XCTAssertTrue(STWebH5Crl.topVisibleController(in: window) === foreign)
+    XCTAssertFalse(old.isCurrent()); XCTAssertFalse(web.hasNativeEffectAuthority)
+    XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    let left = expectation(description: "new foreign owner leaves itself")
+    foreign.dismiss(animated: false) { left.fulfill() }
+    wait(for: [left], timeout: 3)
+    XCTAssertTrue(host.presentedViewController === navigation)
+    XCTAssertFalse(old.isCurrent()); XCTAssertFalse(web.hasNativeEffectAuthority, "Cancelled close cannot silently fresh-grant the root")
+    let explicitClose = expectation(description: "new explicit close may retire its now-uncovered original Mini")
+    plugin.handle(FlutterMethodCall(methodName: "closeMini", arguments: nil)) { result in XCTAssertNil(result); explicitClose.fulfill() }
+    wait(for: [explicitClose], timeout: 5)
+    until { self.host.presentedViewController == nil }
+  }
+
+
+  private func installWarmEventRecorder(_ web: WKWebView) {
+    XCTAssertEqual(js(web, "window.__warmEvents=[];window.CMSCallJsMessage=function(m){window.__warmEvents.push({method:m.method,params:m.params||{}})};true") as? Bool, true)
+  }
+
+  private func warmActivationEvents(_ web: WKWebView) throws -> [[String: Any]] {
+    try XCTUnwrap(js(web, "window.__warmEvents.filter(m=>(m.method==='hostMiniRuntimeVisibilityChanged'&&m.params.hidden===false)||(m.method==='appShow'&&m.params.recoveryMode==='warm_reopen'))") as? [[String: Any]])
+  }
+
+  private func assertWarmPair(_ web: WKWebView, positiveDuration: Bool) throws {
+    until { (self.js(web, "window.__warmEvents.filter(m=>(m.method==='hostMiniRuntimeVisibilityChanged'&&m.params.hidden===false)||(m.method==='appShow'&&m.params.recoveryMode==='warm_reopen')).length") as? Int) == 2 }
+    let events = try warmActivationEvents(web)
+    XCTAssertEqual(events.count, 2)
+    XCTAssertEqual(events[0]["method"] as? String, "hostMiniRuntimeVisibilityChanged")
+    XCTAssertEqual((events[0]["params"] as? [String: Any])?["hidden"] as? Bool, false)
+    XCTAssertEqual(events[1]["method"] as? String, "appShow")
+    let duration = try XCTUnwrap((events[1]["params"] as? [String: Any])?["backgroundDurationMs"] as? Int)
+    if positiveDuration { XCTAssertGreaterThan(duration, 0, "Capture the hidden background interval before consuming it") }
+    else { XCTAssertEqual(duration, 0, "An old visible-resume interval must never repeat on a foreground-only warm open") }
+  }
+
+  private func realFrameBoundary(_ web: WKWebView) {
+    XCTAssertEqual(js(web, "window.__lifecycleFrame=false;requestAnimationFrame(function(){window.__lifecycleFrame=true});true") as? Bool, true)
+    until { self.js(web, "window.__lifecycleFrame===true") as? Bool == true }
+  }
+
+  func testActualWarmLifecycleOrdersVisibilityBeforeResumeAndConsumesDurationOnce() throws {
+    let id = try makePackage("warm_order")
+    let first = try open(id)
+    let web = try XCTUnwrap(first.webView)
+    installWarmEventRecorder(web)
+    let originalLease = try XCTUnwrap(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    NotificationCenter.default.post(name: UIApplication.willResignActiveNotification, object: nil)
+    // This native->WK query is submitted before another main-queue turn. It
+    // proves appHide kept its immediate last-runnable-window submission.
+    XCTAssertEqual(js(web, "window.__warmEvents.filter(m=>m.method==='appHide').length") as? Int, 1)
+    NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+    realFrameBoundary(web)
+    NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+    until { (self.js(web, "window.__warmEvents.filter(m=>m.method==='appShow'&&m.params.recoveryMode==='visible_resume').length") as? Int) == 1 }
+    let visibleDuration = try XCTUnwrap(js(web, "window.__warmEvents.find(m=>m.method==='appShow'&&m.params.recoveryMode==='visible_resume').params.backgroundDurationMs") as? Int)
+    XCTAssertGreaterThan(visibleDuration, 0)
+    XCTAssertEqual(js(web, "window.__warmEvents=[];true") as? Bool, true)
+    close(first)
+    XCTAssertFalse(web.hasNativeEffectAuthority); XCTAssertFalse(originalLease.isCurrent())
+    let second = try open(id)
+    XCTAssertTrue(second === first); XCTAssertTrue(second.webView === web)
+    try assertWarmPair(web, positiveDuration: false)
+    XCTAssertTrue(web.hasNativeEffectAuthority)
+    XCTAssertNotNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+    XCTAssertFalse(originalLease.isCurrent())
+
+    // While A is cached, use B's actual visible WK animation frame as the
+    // event-completion boundary for a real measured hidden background stay.
+    XCTAssertEqual(js(web, "window.__warmEvents=[];true") as? Bool, true)
+    close(second)
+    let other = try open(try makePackage("warm_clock"))
+    let clockWeb = try XCTUnwrap(other.webView)
+    NotificationCenter.default.post(name: UIApplication.willResignActiveNotification, object: nil)
+    NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+    realFrameBoundary(clockWeb)
+    NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+    close(other)
+    let third = try open(id)
+    XCTAssertTrue(third === first); XCTAssertTrue(third.webView === web)
+    try assertWarmPair(web, positiveDuration: true)
+    XCTAssertEqual(js(web, "window.__warmEvents=[];true") as? Bool, true)
+    close(third)
+    let fourth = try open(id)
+    XCTAssertTrue(fourth === first)
+    try assertWarmPair(web, positiveDuration: false)
+    XCTAssertFalse(originalLease.isCurrent())
+    close(fourth)
+  }
+
+  func testActualQueuedWarmTicketRejectsCloseDocumentAndSessionExpiry() throws {
+    let completionHost = WarmActivationCompletionHost()
+    host = completionHost; window.rootViewController = completionHost; window.makeKeyAndVisible()
+    for mutation in ["close", "document", "session"] {
+      let id = try makePackage("warm_ticket_" + mutation)
+      let first = try open(id)
+      let web = try XCTUnwrap(first.webView)
+      installWarmEventRecorder(web)
+      let original = try XCTUnwrap(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+      close(first)
+      let intercepted = expectation(description: "real warm presentation completion before queued lifecycle delivery")
+      completionHost.afterMiniCompletion = { root in
+        XCTAssertTrue(root === first)
+        XCTAssertTrue(root.webView === web)
+        XCTAssertTrue(web.hasNativeEffectAuthority, "Positive native grant occurs only at the real completed presentation")
+        let current = STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration)
+        XCTAssertNotNil(current)
+        if mutation == "close" { root.close() }
+        if mutation == "document" { web.invalidateBridgeDocumentSession() }
+        if mutation == "session" { NotificationCenter.default.post(name: Notification.Name("kSTLogoutSuccessNotification"), object: nil) }
+        XCTAssertFalse(current?.isCurrent() ?? true)
+        intercepted.fulfill()
+      }
+      STWebOpenHandler.openMiniprogram(name: id, config: STWebConfig(webMode: .online), crl: completionHost)
+      wait(for: [intercepted], timeout: 5)
+      let consumed = expectation(description: "original warm ticket consumed after invalidation")
+      DispatchQueue.main.async { consumed.fulfill() }; wait(for: [consumed], timeout: 2)
+      XCTAssertTrue(try warmActivationEvents(web).isEmpty, "Expired original context must not deliver either half of warm activation: \(mutation)")
+      XCTAssertFalse(original.isCurrent())
+      if mutation == "close" {
+        XCTAssertFalse(web.hasNativeEffectAuthority)
+        XCTAssertNil(STWebBridgeEffectLease(webView: web, generation: web.bridgeDocumentGeneration))
+        until { self.host.presentedViewController == nil }
+      } else {
+        close(first)
+      }
+      store.removeAll()
+      until { self.host.presentedViewController == nil }
+    }
+  }
+
+}
+
+
+private final class FifthTransitionContext: NSObject, UIViewControllerContextTransitioning {
+  let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
+  let from = UIViewController(), to = UIViewController()
+  var cancelled = true
+  var suppliesContextViews = false
+  var didComplete: ((Bool) -> Void)?
+  var isAnimated: Bool { true }
+  var isInteractive: Bool { true }
+  var transitionWasCancelled: Bool { cancelled }
+  var presentationStyle: UIModalPresentationStyle { .custom }
+  var targetTransform: CGAffineTransform { .identity }
+  func updateInteractiveTransition(_ percentComplete: CGFloat) {}
+  func finishInteractiveTransition() {}
+  func cancelInteractiveTransition() { cancelled = true }
+  func pauseInteractiveTransition() {}
+  func completeTransition(_ didComplete: Bool) { self.didComplete?(didComplete) }
+  func viewController(forKey key: UITransitionContextViewControllerKey) -> UIViewController? { key == .from ? from : to }
+  func view(forKey key: UITransitionContextViewKey) -> UIView? { suppliesContextViews ? (key == .from ? from.view : to.view) : nil }
+  func initialFrame(for vc: UIViewController) -> CGRect { containerView.bounds }
+  func finalFrame(for vc: UIViewController) -> CGRect { containerView.bounds }
+}
+
+final class FifthBatchTransitionTests: XCTestCase {
+  func testCustomPresentationUsesItsControllersWhenContextViewsAreAbsent() {
+    let context = FifthTransitionContext()
+    context.cancelled = false; context.suppliesContextViews = false
+    let previousKey = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
+    let window = UIWindow(frame: UIScreen.main.bounds)
+    let host = UIViewController(); window.rootViewController = host; window.makeKeyAndVisible()
+    host.view.addSubview(context.containerView)
+    context.from.view.frame = context.containerView.bounds
+    context.to.view.frame = context.containerView.bounds
+    context.containerView.addSubview(context.from.view)
+    defer { window.isHidden = true; previousKey?.makeKeyAndVisible() }
+    XCTAssertTrue(context.containerView.window === window)
+    XCTAssertTrue(context.from.view.window === window)
+    let animator = STWebTransAnimation(transType: .present)
+    let done = expectation(description: "valid custom presentation without context views")
+    context.didComplete = { succeeded in XCTAssertTrue(succeeded) }
+    animator.completion = { type, succeeded in
+      XCTAssertEqual(type, .present); XCTAssertTrue(succeeded)
+      XCTAssertEqual(context.to.view.frame, context.containerView.bounds)
+      done.fulfill()
+    }
+    animator.animateTransition(using: context)
+    wait(for: [done], timeout: 3)
+    animator.clearSnapshot()
+    XCTAssertNil(animator.transitionBack); XCTAssertNil(animator.transitionShadow)
+  }
+
+  func testCancelledAnimationRestoresOwnerGeometryAndReportsCancellation() {
+    let context = FifthTransitionContext()
+    context.from.view.frame = context.containerView.bounds
+    context.to.view.frame = context.containerView.bounds
+    context.containerView.addSubview(context.to.view); context.containerView.addSubview(context.from.view)
+    let originalFrame = context.from.view.frame
+    let animator = STWebTransAnimation(transType: .dismiss)
+    let done = expectation(description: "cancelled native animation")
+    context.didComplete = { succeeded in XCTAssertFalse(succeeded) }
+    animator.completion = { type, succeeded in
+      XCTAssertEqual(type, .dismiss); XCTAssertFalse(succeeded)
+      XCTAssertEqual(context.from.view.frame, originalFrame)
+      XCTAssertEqual(context.from.view.transform, .identity)
+      done.fulfill()
+    }
+    animator.animateTransition(using: context)
+    wait(for: [done], timeout: 3)
+    animator.clearSnapshot()
+    XCTAssertNil(animator.transitionBack); XCTAssertNil(animator.transitionShadow)
   }
 }

@@ -257,14 +257,14 @@ import UIKit
     
     
     
-    public class func openH5(url: String, config: STWebConfig, navi: UINavigationController) {
+    public class func openH5(url: String, config: STWebConfig, navi: UINavigationController, appendParameters: Bool = true) {
         
         config.params?.removeValue(forKey: "link")
         config.params?.removeValue(forKey: "permission")
 
         var finalUrl = url
         
-        if let params = config.params, !params.isEmpty {
+        if appendParameters, let params = config.params, !params.isEmpty {
             finalUrl = appendParamsToUrl(url, params: params)
         }
 
@@ -296,12 +296,37 @@ import UIKit
         config.params?.removeValue(forKey: "link")
         config.params?.removeValue(forKey: "permission")
 
+        if let cachedNavigationController = STWebMiniProgramKeepAliveStore.shared.take(miniId: name, config: config) {
+            // A cached Mini was hosted in a 1×1 invisible view. UIKit normally
+            // lays it out again during `present`, but a custom transition can
+            // begin before that layout pass and retain the old scale/frame as
+            // a shrunken card. Reset its visible geometry before presentation.
+            cachedNavigationController.loadViewIfNeeded()
+            cachedNavigationController.view.transform = .identity
+            cachedNavigationController.view.frame = crl.view.bounds
+            cachedNavigationController.view.alpha = 1
+            cachedNavigationController.view.backgroundColor = .white
+            cachedNavigationController.modalPresentationStyle = .custom
+            cachedNavigationController.hidesBottomBarWhenPushed = true
+            let miniCrl = cachedNavigationController.viewControllers.first as? STWebMiniprogramCrl
+            if let miniCrl {
+                cachedNavigationController.transitioningDelegate = miniCrl
+            }
+            // A retained runtime is hosted at 1×1 while cached.  Notify its
+            // H5 only after UIKit has restored its real presentation bounds;
+            // otherwise a resumed page can retain the cache host viewport.
+            crl.present(cachedNavigationController, animated: true) {
+                miniCrl?.setKeepAliveRuntimeHidden(false)
+            }
+            return
+        }
         let miniCrl = STWebMiniprogramCrl(name: name, config: config, isChild: false)
         let naviCrl = STWebNavigationController(rootViewController: miniCrl)
         naviCrl.view.backgroundColor = .white
         // STMini's first-page edge dismissal uses its transitioning delegate;
         // UIKit invokes that delegate only for a custom presentation.
-        naviCrl.modalPresentationStyle = .fullScreen
+        naviCrl.modalPresentationStyle = .custom
+        naviCrl.transitioningDelegate = miniCrl
         naviCrl.hidesBottomBarWhenPushed = true
         crl.present(naviCrl, animated: true)
     }
@@ -326,7 +351,8 @@ import UIKit
         if shouldPresentAsMiniProgram(config: config) {
             let miniNaviCrl = STWebNavigationController(rootViewController: miniCrl)
             miniNaviCrl.view.backgroundColor = .white
-            miniNaviCrl.modalPresentationStyle = .fullScreen
+            miniNaviCrl.modalPresentationStyle = .custom
+            miniNaviCrl.transitioningDelegate = miniCrl
             miniNaviCrl.hidesBottomBarWhenPushed = true
             navi.present(miniNaviCrl, animated: true)
             return
@@ -356,7 +382,8 @@ import UIKit
         let miniCrl = STWebMiniprogramCrl(name: miniInfo.name, config: miniInfo.config, isChild: false)
         let naviCrl = STWebNavigationController(rootViewController: miniCrl)
         naviCrl.view.backgroundColor = .white
-        naviCrl.modalPresentationStyle = .fullScreen
+        naviCrl.modalPresentationStyle = .custom
+        naviCrl.transitioningDelegate = miniCrl
         naviCrl.hidesBottomBarWhenPushed = true
         STTool.currentViewController()!.present(naviCrl, animated: animated)
     }

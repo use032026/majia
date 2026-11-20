@@ -21,9 +21,9 @@ StminiEvent _ready({
     'initialized': initialized,
     'packageName': 'com.almanac.lite',
     'miniLoadingAvailable': true,
-    'webLoadingAvailable': false,
+    'webLoadingAvailable': true,
     'miniChildWebAvailable': true,
-    'closedMiniCacheAvailable': false,
+    'closedMiniCacheAvailable': true,
     'localRendererAvailable': true,
   },
 });
@@ -69,6 +69,8 @@ void main() {
       final state = startup.diagnostics['foundationState'] as Map;
       expect(state['stage'], 'foundation');
       expect(state['miniLoadingAvailable'], false);
+      expect(state['webLoadingAvailable'], false);
+      expect(state['closedMiniCacheAvailable'], false);
       expect(state['capabilities'], ['local_renderer']);
       expect(startup.diagnostics['eventCount'], 1);
     },
@@ -94,6 +96,14 @@ void main() {
       final snapshot = startup.diagnostics;
       expect(snapshot['eventCount'], 1);
       expect((snapshot['foundationState'] as Map)['initialized'], isTrue);
+      expect(
+        (snapshot['foundationState'] as Map)['webLoadingAvailable'],
+        isTrue,
+      );
+      expect(
+        (snapshot['foundationState'] as Map)['closedMiniCacheAvailable'],
+        isTrue,
+      );
       expect(() => snapshot['eventCount'] = 20, throwsUnsupportedError);
       expect(
         () => (snapshot['foundationState'] as Map)['initialized'] = false,
@@ -104,6 +114,31 @@ void main() {
       expect(snapshot['eventCount'], 1);
     },
   );
+
+  for (final capability in [
+    'webLoadingAvailable',
+    'closedMiniCacheAvailable',
+  ]) {
+    test('iOS runtime rejects a stale false $capability declaration', () async {
+      final events = StreamController<StminiEvent>.broadcast(sync: true);
+      final startup = StminiStartup(
+        initialize: (_) async {},
+        events: events.stream,
+        loadInstalledPackages: () async => const <StminiPackage>[],
+      );
+      addTearDown(events.close);
+      addTearDown(startup.dispose);
+      await startup.initializeOnce();
+      events.add(
+        StminiEvent.fromMap({
+          'name': 'runtime_initialized',
+          'payload': {..._ready().payload, capability: false},
+        }),
+      );
+      expect(startup.diagnostics['foundationState'], isNull);
+      expect(startup.diagnostics['lastIssue'], 'invalid_foundation_event');
+    });
+  }
 
   test(
     'stream errors and done preserve the initialization terminal result and last real snapshot',

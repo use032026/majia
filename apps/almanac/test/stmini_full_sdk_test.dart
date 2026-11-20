@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
@@ -7,10 +10,100 @@ void main() {
   const channel = MethodChannel('stmini_flutter/methods');
   final messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+  const codec = StandardMethodCodec();
+  Future<Object?> reverseRequest() async {
+    final reply = Completer<Object?>();
+    var replies = 0;
+    await messenger.handlePlatformMessage(
+      channel.name,
+      codec.encodeMethodCall(
+        const MethodCall('webBridgeRequest', {
+          'method': 'fixture_business_provider_not_installed',
+          'params': {'methodId': 'synthetic-default-provider'},
+          'origin': 'https://example.invalid',
+        }),
+      ),
+      (data) {
+        replies += 1;
+        expect(replies, 1);
+        reply.complete(data == null ? null : codec.decodeEnvelope(data));
+      },
+    );
+    return reply.future;
+  }
+
   tearDown(() async {
+    debugDefaultTargetPlatformOverride = null;
     StminiFlutter.setWebBridgeHandler(null);
     messenger.setMockMethodCallHandler(channel, null);
   });
+
+  test(
+    'iOS initialize installs default reverse reply before native dispatch',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      // Reproduce a fresh Engine with no explicit setWebBridgeHandler call.
+      channel.setMethodCallHandler(null);
+      Object? duringInitialize;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        expect(call.method, 'initialize');
+        duringInitialize = await reverseRequest();
+        return null;
+      });
+      await StminiFlutter.initialize(
+        bridgeContext: const {'packageName': 'com.almanac.lite'},
+      );
+      expect(duringInitialize, {
+        'code': '0',
+        'data': {'msg': 'Host did not handle the web request.'},
+      });
+      expect(await reverseRequest(), duringInitialize);
+    },
+  );
+
+  test(
+    'iOS repeated initialization preserves an explicit reverse provider',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      var providerCalls = 0;
+      StminiFlutter.setWebBridgeHandler((request) {
+        providerCalls += 1;
+        expect(request.origin, 'https://example.invalid');
+        expect(request.params['methodId'], 'synthetic-default-provider');
+        return {
+          'code': '1',
+          'data': {'synthetic': true},
+        };
+      });
+      messenger.setMockMethodCallHandler(channel, (_) async => null);
+      await StminiFlutter.initialize();
+      await StminiFlutter.initialize();
+      expect(await reverseRequest(), {
+        'code': '1',
+        'data': {'synthetic': true},
+      });
+      expect(providerCalls, 1);
+      StminiFlutter.setWebBridgeHandler(null);
+      await StminiFlutter.initialize();
+      expect((await reverseRequest() as Map)['code'], '0');
+      expect(providerCalls, 1);
+    },
+  );
+
+  test(
+    'Android initialize leaves an unconfigured reverse channel unchanged',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      channel.setMethodCallHandler(null);
+      messenger.setMockMethodCallHandler(channel, (_) async => null);
+      await StminiFlutter.initialize();
+      // The test messenger returns no envelope for an absent receiver.
+      // An unintended iOS-style default on Android would instead return code0.
+      expect(await reverseRequest(), isNull);
+      expect(StminiFlutter.runtimeStage, 'foundation');
+      expect(StminiFlutter.miniPackageDownloadAvailable, isFalse);
+    },
+  );
 
   test(
     'complete SDK entry methods preserve native dispatch and parameters',

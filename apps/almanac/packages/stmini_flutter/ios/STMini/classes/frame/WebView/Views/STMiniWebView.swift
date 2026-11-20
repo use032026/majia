@@ -20,6 +20,12 @@ import Foundation
     /// non-interactive WebView instead of a real warm start.
     @objc public var preserveRuntimeWhenDetached: Bool = false
     private var hasCleanedUp: Bool = false
+    var nativeEffectsSuspended = false
+    var hasNativeEffectAuthority: Bool {
+        guard !hasCleanedUp, !nativeEffectsSuspended,
+              owningMiniRootController()?.allowsNativeRuntimeEffects ?? true else { return false }
+        return (bindCrl as? STWebH5Crl)?.allowsNativePageEffects ?? true
+    }
     public private(set) var bridgeDocumentGeneration: UInt64 = 0
     private let installedIdentityLock = NSLock()
     private var installedIdentity: (miniId: String, version: String, entry: String)?
@@ -250,7 +256,7 @@ import Foundation
     /// Whether this *current* main document may reach the ordinary
     /// host-supplied Web bridge. Mini-only APIs are checked separately.
     @objc public var allowsHostSensitiveBridge: Bool {
-        guard let currentURL = url else { return false }
+        guard hasNativeEffectAuthority, let currentURL = url else { return false }
         switch bridgePolicy {
         case .miniExternal, .externalUntrusted:
             return STOnlineWebCore.allowsBridgeMessage(
@@ -278,7 +284,7 @@ import Foundation
     /// a regular host `/web` page. A Mini-pushed HTTPS page inherits the
     /// already-verified root Mini identity, matching native STMini.
     @objc public var allowsLocalMiniBridge: Bool {
-        guard let currentURL = url else { return false }
+        guard hasNativeEffectAuthority, let currentURL = url else { return false }
         switch bridgePolicy {
         case .localMini:
             return isVerifiedLocalMiniDocument(currentURL)
@@ -363,7 +369,7 @@ extension STMiniWebView: WKScriptMessageHandler {
     
     public func userContentController(_ userContentController: WKUserContentController,
                                       didReceive message: WKScriptMessage) {
-        guard message.name == "CMSScriptMessageChannel" else { return }
+        guard message.name == "CMSScriptMessageChannel", hasNativeEffectAuthority else { return }
         // Remote host H5 and Mini `/web` share OnlineWebViewController. Keep
         // STMini's local-package path below untouched: it has a distinct
         // verified-resource authorization boundary.
@@ -435,6 +441,9 @@ extension STMiniWebView: WKNavigationDelegate {
         // top-level request for scheme policy rather than becoming an HTTP
         // bypass through `target=_blank` / `window.open`.
         let isTopLevelRequest = navigationAction.targetFrame?.isMainFrame ?? true
+        if isTopLevelRequest, nativeEffectsSuspended || owningMiniRootController()?.isRuntimeRetainedHidden == true {
+            decisionHandler(.cancel); return
+        }
         if isTopLevelRequest, let target = navigationAction.request.url,
            target.scheme == STWebResourceManager.installedMiniResourceScheme,
            !bindInstalledDocumentIdentity(target) { decisionHandler(.cancel); return }

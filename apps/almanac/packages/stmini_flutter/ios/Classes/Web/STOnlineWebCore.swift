@@ -286,3 +286,72 @@ public final class STOnlineWebDisplayLifecycle {
 /// When callers rapidly request A → B → C, A may finish its presentation, but
 /// only C is then presented after A has completely dismissed. This keeps the
 /// next presenter lookup outside the dying controller hierarchy.
+
+public final class STOnlineWebPresentationQueue<Request> {
+  public enum Step {
+    case present(Request)
+    case dismissCurrent
+    case waiting
+  }
+
+  private var hasActivePresentation = false
+  private var isTransitioning = false
+  private var pendingRequest: Request?
+
+  public init() {}
+
+  /// Returns any queued request superseded by a newer one, so the owner can
+  /// resolve its callback rather than leaving a MethodChannel call pending.
+  public func enqueue(_ request: Request, hasExistingPresentation: Bool) -> (step: Step, superseded: Request?) {
+    if isTransitioning {
+      let superseded = pendingRequest
+      pendingRequest = request
+      return (.waiting, superseded)
+    }
+    // UIKit may have dismissed an Online Web page through its own back UI.
+    // Reconcile that external close before deciding whether to dismiss again.
+    if hasActivePresentation && !hasExistingPresentation {
+      hasActivePresentation = false
+    }
+    if hasActivePresentation || hasExistingPresentation {
+      hasActivePresentation = true
+      isTransitioning = true
+      pendingRequest = request
+      return (.dismissCurrent, nil)
+    }
+    isTransitioning = true
+    return (.present(request), nil)
+  }
+
+  public func didPresent() -> Step? {
+    hasActivePresentation = true
+    isTransitioning = false
+    guard pendingRequest != nil else { return nil }
+    isTransitioning = true
+    return .dismissCurrent
+  }
+
+  public func didDismiss() -> Step? {
+    hasActivePresentation = false
+    isTransitioning = false
+    guard let request = pendingRequest else { return nil }
+    pendingRequest = nil
+    isTransitioning = true
+    return .present(request)
+  }
+
+  public func didFailToPresent() -> Step? {
+    hasActivePresentation = false
+    isTransitioning = false
+    guard let request = pendingRequest else { return nil }
+    pendingRequest = nil
+    isTransitioning = true
+    return .present(request)
+  }
+
+  public func reset() {
+    hasActivePresentation = false
+    isTransitioning = false
+    pendingRequest = nil
+  }
+}

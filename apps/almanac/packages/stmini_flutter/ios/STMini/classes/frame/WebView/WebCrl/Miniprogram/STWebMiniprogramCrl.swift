@@ -28,6 +28,17 @@ import UIKit
     /// child page keeps its root selected so its underlying Mini runtime still
     /// receives the host event while the child is on top.
     private static weak var currentHostMiniRoot: STWebMiniprogramCrl?
+
+
+    fileprivate var interactive: STWebTransInteractive!
+
+    fileprivate lazy var transAnimation: STWebTransAnimation = {
+        let trans = STWebTransAnimation(transType: .present)
+        trans.completion = { [weak self] transType, succeeded in
+            self?.handleTransitionCompletion(type: transType, succeeded: succeeded)
+        }
+        return trans
+    }()
     
     fileprivate var loadAnimationView: STWebMiniLoadAnimate?
     /// An online Mini must let its native loading layer reach the first frame
@@ -69,6 +80,11 @@ import UIKit
     /// alive pool compares it with disk before reusing the runtime so a newly
     /// installed package is always picked up on the next cold launch.
     private(set) var loadedMiniPackageVersion: String?
+    private(set) var loadedMiniPackageIdentity: STWebMiniPackageIdentity?
+    private(set) var loadedRuntimeSessionGeneration: UInt64 = 0
+    private(set) var isRuntimeRetainedHidden = false
+    private var hasReleasedRuntime = false
+    var skipsKeepAliveOnNextDismiss = false
     /// An active Mini runtime is usable only after its first document
     /// has completed and while WKWebView's content process is still alive.
     /// iOS may terminate a background Web Content process; presenting that
@@ -87,6 +103,18 @@ import UIKit
     /// cold recovery and shows the termination notice.
     private var backgroundEnteredAt: Date?
     private var lastBackgroundDurationMs = 0
+    private var warmActivationGeneration: UInt64 = 0
+    private var needsWarmVisibilityActivation = false
+    private struct WarmActivationTicket {
+        weak var webView: STMiniWebView?
+        weak var navigation: UINavigationController?
+        weak var window: UIWindow?
+        let documentGeneration: UInt64
+        let documentURL: URL
+        let sessionGeneration: UInt64
+        let activationGeneration: UInt64
+        let stack: [ObjectIdentifier]
+    }
     private var foregroundProcessProbeID: UUID?
     private static let foregroundProcessProbeInitialDelay: TimeInterval = 1.5
     private static let foregroundProcessProbeTimeout: TimeInterval = 1.2
@@ -351,8 +379,8 @@ import UIKit
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         hasEmittedCloseEvent = false
-        isShow = true
-        if !isChild {
+        isShow = !isRuntimeRetainedHidden
+        if !isChild && !isRuntimeRetainedHidden {
             Self.currentHostMiniRoot = self
         }
         STWebApiManager.sendScriptMessageWithMethod("pageWillAppear", params: [:], webview: webView)
@@ -360,7 +388,9 @@ import UIKit
     
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        guard !isRuntimeRetainedHidden, !hasReleasedRuntime else { return }
         startInitialOnlinePackageLoadIfNeeded()
+        installRootInteractiveDismissalIfNeeded()
         // STMini's original full-screen interactive dismissal is owned by
         // the first page. Nested mini pages remain normal navigation pushes.
 
@@ -391,7 +421,7 @@ import UIKit
         STWebApiManager.sendScriptMessageWithMethod("pageWillDisAppear", params: [:], webview: webView)
         if !isChild,
            (isBeingDismissed || navigationController?.isBeingDismissed == true) {
-            webView.invalidateBridgeDocumentSession()
+            prepareForNativeDismissal()
 
         }
         if !isChild,
@@ -407,8 +437,10 @@ import UIKit
 
         // A detached root no longer receives application lifecycle events.
         clearCurrentHostMiniRootIfNeeded()
-
-
+        guard !isChild, !skipsKeepAliveOnNextDismiss,
+              let navigation = navigationController as? STWebNavigationController,
+              navigation.presentingViewController == nil, navigation.view.window == nil else { return }
+        STWebMiniProgramKeepAliveStore.shared.cache(self, navigationController: navigation)
     }
     
     deinit {
@@ -502,6 +534,8 @@ import UIKit
             return
         }
         if isHomeMiniProgram() {
+            interactive?.invalidate()
+            interactive = nil
             capsuleBar?.removeFromSuperview()
             STProjectHelper.Log("小程序<\(miniProgramId)>启用 ishome，隐藏根页胶囊并禁用侧滑关闭")
         } else {
@@ -510,6 +544,17 @@ import UIKit
     }
 
 
+
+    private func installRootInteractiveDismissalIfNeeded() {
+        guard !isChild,
+              navigationController?.viewControllers.first === self,
+              interactive == nil,
+              (config.webMode != .online || STWebResourceManager.isInstalledMiniPackageUsable(name: name)),
+              !isHomeMiniProgram() else {
+            return
+        }
+        interactive = STWebTransInteractive(target: self)
+    }
 
     private func loadOnlineMiniPackage() {
         guard let miniId = STWebResourceManager.miniNameHandle(name: name).0 else {
@@ -820,7 +865,13 @@ import UIKit
             finishOnlineLoading(message: STMiniLocalized("mini.local_entry_invalid", "小程序本地入口无效"))
             return
         }
-        loadedMiniPackageVersion = STWebResourceManager.installedMiniPackageVersion(name: name)
+        guard let identity = STWebMiniPackageIdentity.read(miniId: miniProgramId) else {
+            finishOnlineLoading(message: STMiniLocalized("mini.local_package_invalid", "小程序本地包未通过完整性校验"))
+            return
+        }
+        loadedMiniPackageIdentity = identity
+        loadedRuntimeSessionGeneration = STWebMiniProgramKeepAliveStore.shared.sessionGeneration
+        loadedMiniPackageVersion = identity.version
         refreshRootMiniChrome()
 
         loadVerifiedRootMiniDocument(url)
@@ -873,28 +924,129 @@ import UIKit
 
 extension STWebMiniprogramCrl {
 
-    /// A retained Mini remains alive in a transparent host view so its
-    /// strategies can continue. Tell H5 that it is not visible, allowing it
-    /// to keep workers but stop expensive full-page rendering until reuse.
+    /// A retained hierarchy is a JavaScript runtime, never a source of native
+    /// authority. Revoke every sibling before UIKit can reattach it offscreen.
+    var allowsNativeRuntimeEffects: Bool { !isRuntimeRetainedHidden && !hasReleasedRuntime }
 
+    func runtimeWebViews(in navigation: UINavigationController? = nil) -> [STMiniWebView] {
+        let controllers = (navigation ?? navigationController)?.viewControllers ?? [self]
+        return controllers.compactMap { controller in
+            if let mini = controller as? STWebMiniprogramCrl { return mini.webView }
+            return (controller as? STWebH5Crl)?.webView
+        }
+    }
 
-    /// Called by STMini's keep-alive store for roots that are not the current
-    /// visible Mini. This preserves the existing one-visible-root rule while
-    /// still providing the system-background persistence boundary.
+    func prepareForNativeDismissal() {
+        guard !isChild else { return }
+        isRuntimeRetainedHidden = true
+        isShow = false
+        warmActivationGeneration &+= 1
+        needsWarmVisibilityActivation = false
+        // A new hidden boundary must not replay the last visible resume.
+        lastBackgroundDurationMs = 0
+        foregroundProcessProbeID = nil
+        let preserve = isKeepAliveRuntimeUsable && !skipsKeepAliveOnNextDismiss && config.webMode == .online
+        runtimeWebViews().forEach {
+            $0.nativeEffectsSuspended = true
+            $0.invalidateBridgeDocumentSession()
+            $0.preserveRuntimeWhenDetached = preserve
+        }
+        if Self.currentHostMiniRoot === self { Self.currentHostMiniRoot = nil }
+    }
 
+    func setKeepAliveRuntimeHidden(_ hidden: Bool) {
+        if hidden {
+            prepareForNativeDismissal()
+            sendHostMessage("hostMiniRuntimeVisibilityChanged", params: ["hidden": true])
+            return
+        }
+        guard !hasReleasedRuntime,
+              loadedRuntimeSessionGeneration == STWebMiniProgramKeepAliveStore.shared.sessionGeneration,
+              loadedMiniPackageIdentity == STWebMiniPackageIdentity.read(miniId: miniProgramId),
+              let navigation = navigationController, navigation.presentingViewController != nil,
+              !navigation.isBeingDismissed, navigation.view.window != nil else {
+            releaseClosedRuntime()
+            navigationController?.dismiss(animated: false)
+            return
+        }
+        isRuntimeRetainedHidden = false
+        isShow = navigation.visibleViewController === self
+        Self.currentHostMiniRoot = self
+        hasEmittedCloseEvent = false
+        runtimeWebViews().forEach {
+            $0.invalidateBridgeDocumentSession()
+            $0.nativeEffectsSuspended = false
+            $0.preserveRuntimeWhenDetached = false
+        }
+        (navigation.visibleViewController as? STWebH5Crl)?.resumeAfterMiniCache()
+        let backgroundDurationMs = lastBackgroundDurationMs
+        lastBackgroundDurationMs = 0
+        enqueueWarmActivation(backgroundDurationMs: backgroundDurationMs)
+    }
 
-    /// Re-entry from STMini's keep-alive cache.  The existing document is not
-    /// reloaded, so strategy workers and the current tab keep running.  The
-    /// newest link metadata is still remembered and its default update check
-    /// runs silently in the background.
+    private func enqueueWarmActivation(backgroundDurationMs: Int) {
+        guard let webView, let navigation = navigationController, let documentURL = webView.url,
+              let window = navigation.viewIfLoaded?.window else { return }
+        warmActivationGeneration &+= 1
+        needsWarmVisibilityActivation = true
+        let ticket = WarmActivationTicket(webView: webView, navigation: navigation, window: window,
+            documentGeneration: webView.bridgeDocumentGeneration, documentURL: documentURL,
+            sessionGeneration: STWebMiniProgramKeepAliveStore.shared.sessionGeneration,
+            activationGeneration: warmActivationGeneration,
+            stack: navigation.viewControllers.map(ObjectIdentifier.init))
+        // One original-context transaction. Both calls enter the same WK
+        // execution queue in visibility-before-resume order; no later layer
+        // resamples a new document/session or reads the consumed duration.
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.isCurrentWarmActivation(ticket), let webView = ticket.webView else { return }
+            self.needsWarmVisibilityActivation = false
+            STWebApiManager.sendScriptMessageWithMethod("hostMiniRuntimeVisibilityChanged", params: ["hidden": false], webview: webView)
+            guard self.isCurrentWarmActivation(ticket) else { return }
+            STWebApiManager.sendScriptMessageWithMethod("appShow", params: ["backgroundDurationMs": backgroundDurationMs, "recoveryMode": "warm_reopen"], webview: webView)
+        }
+    }
 
+    private func isCurrentWarmActivation(_ ticket: WarmActivationTicket) -> Bool {
+        guard !hasReleasedRuntime, !isRuntimeRetainedHidden, Self.currentHostMiniRoot === self,
+              warmActivationGeneration == ticket.activationGeneration,
+              STWebMiniProgramKeepAliveStore.shared.sessionGeneration == ticket.sessionGeneration,
+              loadedRuntimeSessionGeneration == ticket.sessionGeneration,
+              let webView = ticket.webView, self.webView === webView,
+              webView.bridgeDocumentGeneration == ticket.documentGeneration,
+              webView.url == ticket.documentURL, webView.hasNativeEffectAuthority,
+              let navigation = ticket.navigation as? STWebNavigationController, navigationController === navigation,
+              navigation.viewControllers.first === self,
+              navigation.viewControllers.map(ObjectIdentifier.init) == ticket.stack,
+              let window = ticket.window, navigation.viewIfLoaded?.window === window,
+              window.isKeyWindow, !window.isHidden, navigation.presentingViewController != nil,
+              !navigation.isBeingDismissed, !navigation.hasForeignPresentedOwner else { return false }
+        return true
+    }
 
-    /// STWebNavigationController invokes this after a successful dismissal so
-    /// a pushed STMini child page can be retained with the Mini root. The
-    /// explicit capsule re-enter action marks this runtime as non-reusable.
+    func notifyHostApplicationHiddenWhileRetained() {
+        guard isKeepAliveRuntimeUsable else { return }
+        sendHostLifecycleMessage("appHide")
+        STProjectHelper.Log("[STMini][Lifecycle] appHide delivered retained miniId=\(miniProgramId)")
+    }
 
+    func prepareForKeepAliveReuse(config: STWebConfig) {
+        self.config = config
+        // A warm open never downloads, installs or mutates package metadata.
+        foregroundProcessProbeID = nil
+    }
 
-
+    func releaseClosedRuntime() {
+        guard !hasReleasedRuntime else { return }
+        prepareForNativeDismissal()
+        hasReleasedRuntime = true
+        isKeepAliveRuntimeUsable = false
+        invalidateRootMiniDocumentLoad()
+        interactive?.invalidate(); interactive = nil
+        transAnimation.clearSnapshot()
+        NotificationCenter.default.removeObserver(self)
+        runtimeWebViews().forEach { $0.preserveRuntimeWhenDetached = false; $0.cleanup() }
+        navigationController?.viewControllers.compactMap { $0 as? STWebH5Crl }.forEach { $0.releaseAfterMiniCache() }
+    }
 
     @objc private func updateUserInfo(_: Notification) {
         sendHostMessage("updateUserInfo", params: [:])
@@ -905,6 +1057,7 @@ extension STWebMiniprogramCrl {
     }
 
     @objc private func quantSessionDidChange(_: Notification) {
+        runtimeWebViews().forEach { $0.invalidateBridgeDocumentSession() }
         sendHostMessage("hostQuantSessionChanged", params: [:])
     }
 
@@ -925,6 +1078,10 @@ extension STWebMiniprogramCrl {
     /// belongs to another, currently visible Mini.
     @objc private func applicationWillResignActive(_ notification: Notification) {
         guard Self.currentHostMiniRoot === self else { return }
+        // A queued foreground activation cannot outlive a real appHide.
+        // Keep its visibility need so the next actual resume may create a
+        // fresh ordered activation, while appHide still sends immediately.
+        warmActivationGeneration &+= 1
         sendHostLifecycleMessage("appHide")
         STProjectHelper.Log("[STMini][Lifecycle] appHide delivered miniId=\(miniProgramId)")
     }
@@ -934,10 +1091,16 @@ extension STWebMiniprogramCrl {
         lastBackgroundDurationMs = max(0, Int(backgroundDuration * 1000))
         backgroundEnteredAt = nil
         if Self.currentHostMiniRoot === self {
-            sendHostLifecycleMessage("appShow", params: [
-                "backgroundDurationMs": lastBackgroundDurationMs,
-                "recoveryMode": "visible_resume",
-            ])
+            let resumedDurationMs = lastBackgroundDurationMs
+            lastBackgroundDurationMs = 0
+            if needsWarmVisibilityActivation {
+                enqueueWarmActivation(backgroundDurationMs: resumedDurationMs)
+            } else {
+                sendHostLifecycleMessage("appShow", params: [
+                    "backgroundDurationMs": resumedDurationMs,
+                    "recoveryMode": "visible_resume",
+                ])
+            }
             STProjectHelper.Log("[STMini][Lifecycle] appShow delivered miniId=\(miniProgramId)")
         }
         let miniId = miniProgramId
@@ -1054,6 +1217,7 @@ extension STWebMiniprogramCrl {
         loadAnimationView?.finished()
         emitHostEvent("mini_first_content_ready", ["version": loadedMiniPackageVersion ?? ""])
         showTerminatedProcessRecoveryToastIfNeeded()
+        showMemoryWarningRecoveryToastIfNeeded()
     }
 
     /// A package can pass archive validation while its first root navigation
@@ -1085,6 +1249,7 @@ extension STWebMiniprogramCrl {
         isRecoveringTerminatedWebContentProcess = true
         isKeepAliveRuntimeUsable = false
         let miniId = miniProgramId
+        if STWebMiniProgramKeepAliveStore.shared.discardTerminated(self) { return }
         UserDefaults.standard.set(true, forKey: Self.terminatedProcessToastKeyPrefix + miniId)
         STProjectHelper.Log("小程序<\(miniId)>Web 内容进程已终止，已移出保活缓存并冷启动恢复")
 
@@ -1182,12 +1347,31 @@ extension STWebMiniprogramCrl {
 
     
     
-    public func close() {
+    private func showMemoryWarningRecoveryToastIfNeeded() {
+        guard STWebMiniProgramKeepAliveStore.shared.consumeMemoryWarningRecoveryNotice(miniId: miniProgramId) else { return }
+        let message = STMiniLocalized("mini.memory_released", "小程序后台运行实例已因内存压力释放，已重新加载")
+        if let apiHandle = STWebPersonalHandle.sharedInstance().apiHandle,
+           let webView = webView {
+            _ = apiHandle(["method": "showToast", "params": ["title": message, "duration": 2]], webView)
+        } else {
+            STProjectHelper.Log("小程序<\(miniProgramId)>内存压力恢复提示未显示：宿主未提供 Toast handler")
+        }
+    }
+
+    public func close() { close(completion: {}) }
+
+    func close(completion: @escaping () -> Void) {
+        prepareForNativeDismissal()
+        let retainedNavigationController = navigationController as? STWebNavigationController
         invalidateRootMiniDocumentLoad()
-        dismiss(animated: true) { [weak self] in
-            guard let self, !self.isChild, !self.hasEmittedCloseEvent else { return }
-            self.hasEmittedCloseEvent = true
-            self.emitHostEvent("mini_closed", ["reason": "dismissed"])
+        dismiss(animated: true) { [weak self, retainedNavigationController] in
+            guard let self, !self.isChild, !self.hasReleasedRuntime else { completion(); return }
+            if !self.hasEmittedCloseEvent {
+                self.hasEmittedCloseEvent = true
+                self.emitHostEvent("mini_closed", ["reason": "dismissed"])
+            }
+            STWebMiniProgramKeepAliveStore.shared.cache(self, navigationController: retainedNavigationController)
+            completion()
         }
     }
 
@@ -1209,6 +1393,23 @@ extension STWebMiniprogramCrl: STWebMiniprogramCapsuleBarDelegate {
 
     
     
+    func changeCapsuleBar(isShowStandIn: Bool) {
+        // Transition-finished is a process-wide notification. Controllers
+        // created for child/loading Mini routes do not own a capsule bar, so
+        // touching the implicitly-unwrapped outlet here used to terminate the
+        // host with a Swift fatal error after a scanned Mini package opened.
+        guard !isHomeMiniProgram(), let capsuleBar = capsuleBar else {
+            return
+        }
+        capsuleBar.removeFromSuperview()
+        if isShowStandIn {
+            view.addSubview(capsuleBar)
+        }
+        else {
+            (view.window ?? navigationController?.view.window)?.addSubview(capsuleBar)
+        }
+    }
+
     func more() {
         let toolView = STWebToolView.init(frame: CGRectMake(0, 0, view.ST_width, 200), items: [["title": STMiniLocalized("mini.reenter", "重新进入小程序"), "imgStr": "tool_shuaxin", "key": "reEnter"]])
         let popConfig = HLPopConfig()
@@ -1225,6 +1426,8 @@ extension STWebMiniprogramCrl: STWebMiniprogramCapsuleBarDelegate {
                         // Explicit "re-enter" is a refresh action, not a
                         // warm resume.  Drop this runtime before presenting
                         // the new root Mini program.
+                        self?.skipsKeepAliveOnNextDismiss = true
+                        self?.prepareForNativeDismissal()
                         let infoStorage = STWebInfoStorage.sharedInstance()
                         infoStorage.config = self?.config
                         infoStorage.name = self?.name
@@ -1250,4 +1453,54 @@ extension STWebMiniprogramCrl: STWebMiniprogramCapsuleBarDelegate {
         navigationController?.popViewController(animated: true)
     }
     
+}
+
+extension STWebMiniprogramCrl: UIViewControllerTransitioningDelegate {
+
+
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        transAnimation.transType = .present
+        return transAnimation
+    }
+
+
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        changeCapsuleBar(isShowStandIn: true)
+        transAnimation.transType = .dismiss
+        transAnimation.interactive = interactive
+        return transAnimation
+    }
+
+
+    public func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return nil
+    }
+
+
+    public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactive?.isInteractive == true ? interactive : nil
+    }
+
+}
+
+
+extension STWebMiniprogramCrl {
+
+    /// The capsule belongs to a visible Mini only. After a successful close
+    /// it must not remain attached to the host window; a cancelled gesture
+    /// restores it because the Mini is still on screen.
+    fileprivate func handleTransitionCompletion(type: STWebTransType, succeeded: Bool) {
+        switch type {
+        case .present:
+            if succeeded { changeCapsuleBar(isShowStandIn: false) }
+            else { capsuleBar?.removeFromSuperview(); releaseClosedRuntime() }
+        case .dismiss:
+            if succeeded {
+                capsuleBar?.removeFromSuperview()
+            } else {
+                changeCapsuleBar(isShowStandIn: false)
+                setKeepAliveRuntimeHidden(false)
+            }
+        }
+    }
 }

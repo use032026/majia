@@ -120,6 +120,7 @@ import UIKit
     
     
     static func dealWithApiMessage(_ message: Any, webView: STMiniWebView) {
+        guard Thread.isMainThread, webView.hasNativeEffectAuthority else { return }
         
         guard let messageDic = message as? [String: Any] else {
             STProjectHelper.Log("js调用原生api方法：消息不是map")
@@ -256,8 +257,24 @@ import UIKit
         
         result.removeValue(forKey: "params")
         result.removeValue(forKey: "handled")
-        if model.method == "mini_getMiniProgramContinuousKeepAlive" || model.method == "mini_setMiniProgramContinuousKeepAlive" {
-            result = ["code": "0", "data": ["msg": "Closed Mini runtime caching is unsupported", "enabled": false, "supported": false]]
+        if model.method == "mini_getMiniProgramContinuousKeepAlive" {
+            result = STWebApiManager.continuousKeepAliveState(model: model, enabled: nil)
+        }
+        else if model.method == "mini_setMiniProgramContinuousKeepAlive" {
+            let rawEnabled = model.params["enabled"]
+            let enabled: Bool
+            if let boolValue = rawEnabled as? Bool {
+                enabled = boolValue
+            } else if let numberValue = rawEnabled as? NSNumber {
+                enabled = numberValue.boolValue
+            } else if let textValue = rawEnabled as? String {
+                enabled = ["1", "true", "yes", "on"].contains(textValue.lowercased())
+            } else {
+                result = ["code": "0", "data": ["msg": "缺少 enabled"]]
+                STWebApiManager.callBack(result, model: model)
+                return
+            }
+            result = STWebApiManager.continuousKeepAliveState(model: model, enabled: enabled)
         }
         else if model.method == "mini_getMiniPackageInfo" {
             result = STWebApiManager.miniPackageInfo(model: model)
@@ -371,6 +388,22 @@ import UIKit
     /// this resolver and keeps only its existing H5 API surface.
 
 
+    private static func continuousKeepAliveState<T>(model: T, enabled: Bool?) -> [String: Any] where T: STWebApiForm {
+        guard let miniCrl = onlineMiniRootController(for: model.webview),
+              let miniId = miniCrl.name,
+              !miniId.isEmpty else {
+            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_keep_alive_only", "仅小程序页面可设置持续保活")]]
+        }
+        let supported = STWebMiniProgramKeepAliveStore.shared.supportsContinuousKeepAlive(miniId: miniId)
+        if let enabled = enabled, supported {
+            STWebMiniProgramKeepAliveStore.shared.setContinuousKeepAlive(enabled, for: miniId)
+        }
+        return ["code": "1", "data": [
+            "enabled": supported && STWebMiniProgramKeepAliveStore.shared.isContinuousKeepAliveEnabled(miniId: miniId),
+            "supported": supported,
+        ]]
+    }
+
     /// Returns the identity of the package that STMini has already verified
     /// and is currently running.  H5 must never infer this from a route or a
     /// download link: those values can be stale, while the installed record
@@ -457,6 +490,7 @@ import UIKit
         }
         DispatchQueue.main.async {
             guard sourceLease.isCurrent() else { return }
+            STWebMiniProgramKeepAliveStore.shared.invalidateSession()
             let currentTargets = targetLeases.compactMap { target, lease in
                 lease.isCurrent() && sourceLease.ownsTarget(target) ? target : nil
             }

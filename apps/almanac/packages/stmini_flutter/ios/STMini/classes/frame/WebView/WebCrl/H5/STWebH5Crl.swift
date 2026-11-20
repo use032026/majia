@@ -30,6 +30,7 @@ import Network
     /// page requests an in-package route such as `/login`.
     @objc public var isMiniRouteChild: Bool = false
     var onlineWebOwner: OnlineWebViewController?
+    var onNativeCoverage: (() -> Void)?
     fileprivate var progressView : UIProgressView?
     fileprivate var observation: NSKeyValueObservation?
     /// Ordinary H5 pages are never eligible for Mini keep-alive.  Release the
@@ -95,6 +96,7 @@ import Network
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
+        guard !hasReleasedWebRuntime, let webView else { return }
         if #available(iOS 13.0, *) {
             if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
                 STWebApiManager.sendScriptMessageWithMethod("darkModeChanged", params: [:], webview: webView)
@@ -124,6 +126,7 @@ import Network
     
     open override func viewDidLoad() {
         super.viewDidLoad()
+        guard !hasReleasedWebRuntime else { return }
         
         
         webView = STMiniWebView(frame: .zero, bindCrl: self)
@@ -241,7 +244,9 @@ import Network
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        guard !hasReleasedWebRuntime, let webView else { return }
         shouldReleaseWebRuntimeAfterDisappear = false
+        guard webView.owningMiniRootController()?.isRuntimeRetainedHidden != true else { return }
         onlineWebLifecycle.didAppear()
         onlineWebOwner?.didAppear()
         retryH5NavigationWhenVisibleIfNeeded()
@@ -250,6 +255,8 @@ import Network
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        guard !hasReleasedWebRuntime, let webView else { return }
+        if !isMiniInternalPage { revokeStandaloneAuthority(); onNativeCoverage?() }
         onlineWebLifecycle.didDisappear()
         onlineWebOwner?.didDisappear()
         // Do not reload a page that is currently covered or being popped.
@@ -264,6 +271,7 @@ import Network
 
     open override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        guard !hasReleasedWebRuntime else { return }
 
         // Do not clean up merely because another controller was pushed above
         // this one: that page may still be returned to.  Cleanup is only for
@@ -274,6 +282,50 @@ import Network
         }
     }
     
+    open override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        guard !hasReleasedWebRuntime else { completion?(); return }
+        if !isMiniInternalPage { revokeStandaloneAuthority(); onNativeCoverage?() }
+        super.present(viewControllerToPresent, animated: flag, completion: completion)
+    }
+
+    func revokeStandaloneAuthority() {
+        webView?.nativeEffectsSuspended = true
+        webView?.invalidateBridgeDocumentSession()
+    }
+
+    /// This proves actual ownership, including overCurrentContext/custom
+    /// covers which deliberately leave the underlying page in its window.
+    static func topVisibleController(in window: UIWindow) -> UIViewController? {
+        func top(_ controller: UIViewController?) -> UIViewController? {
+            if let presented = controller?.presentedViewController { return top(presented) }
+            if let navigation = controller as? UINavigationController { return top(navigation.visibleViewController) }
+            if let tab = controller as? UITabBarController { return top(tab.selectedViewController) }
+            return controller
+        }
+        return top(window.rootViewController)
+    }
+
+    var isUnobscuredStandalonePage: Bool {
+        guard !hasReleasedWebRuntime, !isMiniInternalPage, isViewLoaded,
+              let window = viewIfLoaded?.window, !window.isHidden,
+              !isBeingPresented, !isBeingDismissed,
+              let navigation = navigationController, !navigation.isBeingPresented, !navigation.isBeingDismissed,
+              navigation.presentingViewController != nil, navigation.visibleViewController === self,
+              navigation.presentedViewController == nil, presentedViewController == nil else { return false }
+        return Self.topVisibleController(in: window) === self
+    }
+
+    var allowsNativePageEffects: Bool {
+        if isMiniInternalPage { return !hasReleasedWebRuntime }
+        guard isUnobscuredStandalonePage else {
+            // Retire old native work even if the first observer of an
+            // unexpected cover is a new Bridge request or a delayed lease.
+            if webView?.nativeEffectsSuspended == false { revokeStandaloneAuthority() }
+            return false
+        }
+        return true
+    }
+
     func listView() -> UIView {
         return self.view
     }
@@ -282,6 +334,14 @@ import Network
         releaseWebRuntimeIfNeeded(reason: "controller_deinit")
         STProjectHelper.Log("crl释放")
     }
+
+    func resumeAfterMiniCache() {
+        guard !hasReleasedWebRuntime, webView != nil else { return }
+        onlineWebLifecycle.didAppear(); onlineWebOwner?.didAppear()
+        retryH5NavigationWhenVisibleIfNeeded()
+    }
+
+    func releaseAfterMiniCache() { releaseWebRuntimeIfNeeded(reason: "mini_cache_discarded") }
 
     private func releaseWebRuntimeIfNeeded(reason: String) {
         guard !hasReleasedWebRuntime else { return }
@@ -365,6 +425,7 @@ import Network
     }
 
     private var isVisibleOnlineWebPage: Bool {
+        guard webView?.owningMiniRootController()?.isRuntimeRetainedHidden != true else { return false }
         guard isViewLoaded, view.window != nil, !isBeingDismissed else { return false }
         guard let navigationController else { return true }
         return navigationController.visibleViewController === self && !navigationController.isBeingDismissed
@@ -376,6 +437,7 @@ import Network
 extension STWebH5Crl {
     
     @objc private func updateUserInfo(_ notification: Notification) {
+        guard !hasReleasedWebRuntime, let webView else { return }
         if isShow {
             STWebApiManager.sendScriptMessageWithMethod("updateUserInfo", params: [:], webview: webView)
         }
@@ -387,6 +449,7 @@ extension STWebH5Crl {
     
     
     public func webviewDidFinish() {
+        guard !hasReleasedWebRuntime, webView != nil else { return }
         isRecoveringTerminatedWebContentProcess = false
         terminatedWebContentProcessRecoveryToken = nil
         stopNetworkRecovery()
@@ -501,6 +564,10 @@ extension STWebH5Crl {
     /// white.  Two terminations in a short window are treated as a bad page or
     /// an unrecoverable renderer loop and safely leave the affected page.
     public func webviewContentProcessDidTerminate() {
+        if let root = webView?.owningMiniRootController(), root.isRuntimeRetainedHidden {
+            _ = STWebMiniProgramKeepAliveStore.shared.discardTerminated(root)
+            return
+        }
         guard !hasReleasedWebRuntime,
               webView != nil else { return }
 
@@ -566,6 +633,7 @@ extension STWebH5Crl {
     }
     
     public func close() {
+        guard !hasReleasedWebRuntime else { return }
         self.back()
     }
     
@@ -575,6 +643,7 @@ extension STWebH5Crl {
 extension STWebH5Crl {
     
     @objc func back(){
+        guard !hasReleasedWebRuntime else { return }
         let isRoot = navigationController?.children.first == self
         switch STOnlineWebCore.closeAction(isRootOfNavigationStack: isRoot) {
         case .dismissPresentation:
@@ -585,13 +654,14 @@ extension STWebH5Crl {
     }
     
     @objc func more(){
+        guard !hasReleasedWebRuntime, webView != nil else { return }
         let toolView = STWebToolView.init(frame: CGRectMake(0, 0, view.ST_width, 200), items: [["title": "刷新", "imgStr": "tool_shuaxin", "key": "refresh"], ["title": "复制链接", "imgStr": "tool_lianjie", "key": "copy"]])
         let popConfig = HLPopConfig()
         popConfig.popBackColor = .ST_hex("#E8E8E8")
         popConfig.cornerRadius = 10
         popConfig.corner = [UIRectCorner.topLeft,UIRectCorner.topRight]
         HLPopViewController().showBottomPopView(toolView, config: popConfig) { [weak self] info, isCancel in
-            if isCancel != true {
+            if isCancel != true, self?.hasReleasedWebRuntime == false, self?.webView != nil {
                 if info["key"] != nil {
                     
                     let key = info["key"] as! String
