@@ -229,7 +229,7 @@ class FileRecheckDocument {
   }
 
   static void _checkLines(String text) {
-    final count = const LineSplitter().convert(text).length;
+    final count = LineSplitter.split(text).take(maxLines + 1).length;
     if (count > maxLines) {
       throw const FileRecheckException(
         FileRecheckErrorCode.tooManyLines,
