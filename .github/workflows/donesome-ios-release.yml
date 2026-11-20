@@ -6,7 +6,7 @@ on:
       marketing_version:
         description: Three-component version to build, for example 1.0.2
         required: true
-        default: 1.0.0
+        default: 1.0.12
         type: string
       build_number:
         description: Optional positive integer; ASC increments it when left empty during upload
