@@ -4,6 +4,93 @@ import 'package:photo_report/report/report_service.dart';
 import 'package:photo_report/ui/create_flow_logic.dart';
 
 void main() {
+  testWidgets(
+    'report dates remain consistent across records and repeated exports',
+    (tester) async {
+      final payloads = <Map<Object?, Object?>>[];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(ReportService.channel, (call) async {
+            expect(call.method, 'generateReport');
+            payloads.add(call.arguments as Map<Object?, Object?>);
+            return '/tmp/report.pdf';
+          });
+      addTearDown(
+        () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(ReportService.channel, null),
+      );
+      final leapDay = DateTime(2024, 2, 29, 23, 59);
+      final project = ProjectRecord(
+        id: 'dates',
+        name: 'Dates',
+        address: '',
+        companyName: '',
+        inspectorName: '',
+        clientName: '',
+        codePrefix: 'A',
+        inspectionDate: leapDay,
+        notes: '',
+        createdAt: leapDay,
+        updatedAt: leapDay,
+      );
+      final dates = [
+        null,
+        DateTime(2026, 1, 1),
+        leapDay,
+        DateTime(2026, 12, 31, 23, 59),
+      ];
+      final issues = List.generate(
+        80,
+        (index) => IssueRecord(
+          id: 'i$index',
+          projectId: project.id,
+          sequence: index + 1,
+          code: 'A-$index',
+          room: '',
+          location: '',
+          category: '',
+          severity: IssueSeverity.unspecified,
+          description: 'Record $index',
+          status: IssueStatus.unspecified,
+          assignee: '',
+          dueDate: dates[index % dates.length],
+          createdAt: leapDay,
+          updatedAt: leapDay,
+        ),
+      );
+      final options = const ReportOptions(includeDueDate: true);
+      await const ReportService().generateReport(
+        project,
+        issues,
+        options,
+        languageCode: 'en',
+      );
+      await const ReportService().generateReport(
+        project,
+        [],
+        options,
+        languageCode: 'zh',
+      );
+      expect(
+        (payloads.first['project'] as Map)['inspectionDate'],
+        '2024-02-29',
+      );
+      final sentIssues = payloads.first['issues'] as List;
+      expect(sentIssues, hasLength(80));
+      for (var index = 0; index < sentIssues.length; index++) {
+        final issue = sentIssues[index] as Map;
+        expect(issue['code'], 'A-$index');
+        expect(
+          issue['dueDate'],
+          ['', '2026-01-01', '2024-02-29', '2026-12-31'][index % 4],
+        );
+      }
+      expect(payloads.first['languageCode'], 'en');
+      expect(payloads.last['languageCode'], 'zh');
+      expect((payloads.last['project'] as Map)['inspectionDate'], '2024-02-29');
+      expect(payloads.last['issues'], isEmpty);
+    },
+  );
+
   group('现场照片记录模型', () {
     test('照片标注可完整写入并恢复', () {
       final photo = PhotoRecord(
