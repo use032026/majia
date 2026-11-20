@@ -189,10 +189,9 @@ class TabularImportDecoder {
 
   ImportFormat _detectTextFormat(String source, String extension) {
     final normalized = _normalizeLines(source);
-    final lines = const LineSplitter()
-        .convert(normalized)
-        .where((line) => line.trim().isNotEmpty)
-        .take(8);
+    final lines = LineSplitter.split(
+      normalized,
+    ).where((line) => line.trim().isNotEmpty).take(8);
     var commas = 0;
     var tabs = 0;
     for (final line in lines) {
