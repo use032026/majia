@@ -88,11 +88,13 @@ jobs:
           APP_ENVIRONMENT: ${{ inputs.app_environment }}
           MARKETING_VERSION: ${{ inputs.marketing_version }}
           RELEASE_NOTES_JSON: ${{ inputs.release_notes_json }}
+          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
         run: |
           ruby .github/scripts/prepare-existing-asc-release.rb \
             --app-environment "$APP_ENVIRONMENT" \
             --marketing-version "$MARKETING_VERSION" \
             --release-notes-json "$RELEASE_NOTES_JSON" \
+            --update-asc-text-metadata "$UPDATE_ASC_TEXT_METADATA" \
             --config-output existing-build-config.yml \
             --metadata-output .github/runtime-existing-build-metadata.yml \
             --key-output AuthKey_existing_build.p8 \
@@ -155,13 +157,13 @@ jobs:
 
       - name: Prepare and verify declared ASC metadata
         id: store_metadata
-        if: ${{ inputs.update_asc_text_metadata || inputs.replace_asc_media }}
+        if: ${{ steps.prepare.outputs.external_update_text_metadata == 'true' || inputs.replace_asc_media }}
         shell: bash
         env:
           ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
           MARKETING_VERSION: ${{ inputs.marketing_version }}
-          UPDATE_ASC_TEXT_METADATA: ${{ inputs.update_asc_text_metadata }}
+          UPDATE_ASC_TEXT_METADATA: ${{ steps.prepare.outputs.external_update_text_metadata }}
           REPLACE_ASC_MEDIA: ${{ inputs.replace_asc_media }}
         run: |
           ruby -r ./.github/runtime-ios-release-system/scripts/lib/asc_client.rb -e '

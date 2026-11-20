@@ -14,6 +14,7 @@ OptionParser.new do |parser|
   parser.on("--app-environment NAME") { |value| options[:app_environment] = value }
   parser.on("--marketing-version VERSION") { |value| options[:marketing_version] = value }
   parser.on("--release-notes-json JSON") { |value| options[:release_notes_json] = value }
+  parser.on("--update-asc-text-metadata BOOLEAN") { |value| options[:update_asc_text_metadata] = value }
   parser.on("--config-output PATH") { |value| options[:config_output] = value }
   parser.on("--metadata-output PATH") { |value| options[:metadata_output] = value }
   parser.on("--key-output PATH") { |value| options[:key_output] = value }
@@ -59,6 +60,10 @@ begin
   raise MajiaCI::ReleaseInputError, "missing options: #{missing.join(', ')}" unless missing.empty?
 
   release = MajiaCI::EnvironmentIOSRelease
+  update_text_metadata = release.boolean(
+    options.fetch(:update_asc_text_metadata, "false"),
+    "update_asc_text_metadata"
+  )
   app = MajiaCI::IOSReleaseApps.fetch(
     options.fetch(:app_environment),
     error_class: MajiaCI::ReleaseInputError
@@ -113,6 +118,11 @@ begin
   )
   sync_whats_new = release.whats_new_changes?(metadata_with_notes)
   metadata = release.without_whats_new(metadata_with_notes)
+  external_update_text_metadata = update_text_metadata && release.text_metadata_changes?(metadata)
+  if update_text_metadata && !sync_whats_new && !external_update_text_metadata
+    raise MajiaCI::ReleaseInputError,
+          "update_asc_text_metadata=true requires release notes or a declared text metadata change"
+  end
 
   targets = release.parse_targets(MajiaCI::IOSReleaseApps.targets_json(app))
   config = release.build_config(
@@ -141,6 +151,7 @@ begin
     output.puts "app_key=#{app.fetch('app_key')}"
     output.puts "app_name=#{app.fetch('app_name')}"
     output.puts "sync_whats_new=#{sync_whats_new}"
+    output.puts "external_update_text_metadata=#{external_update_text_metadata}"
   end
   puts [
     "Prepared existing-build ASC release",
@@ -148,6 +159,7 @@ begin
     "bundle_id=#{bundle_id}",
     "version=#{options.fetch(:marketing_version)}",
     "sync_whats_new=#{sync_whats_new}",
+    "external_update_text_metadata=#{external_update_text_metadata}",
     "automatic_release=#{config.dig('app_store', 'automatic_release')}"
   ].join(" ")
 rescue MajiaCI::ReleaseInputError, ArgumentError, KeyError, Errno::ENOENT, Errno::EACCES => e
