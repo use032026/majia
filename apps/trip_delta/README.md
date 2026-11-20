@@ -26,30 +26,41 @@
 
 应用默认按当前语言加载已发布的[中文隐私政策](https://gotripdelta.com/privacy.html?lang=zh)或[英文隐私政策](https://gotripdelta.com/privacy.html?lang=en)。构建时仍可用 `--dart-define=TRIP_DELTA_PRIVACY_URL=<HTTPS 地址>` 覆盖共同网址，或用 `TRIP_DELTA_PRIVACY_URL_ZH`、`TRIP_DELTA_PRIVACY_URL_EN` 分别覆盖；只接受 HTTPS。在线加载失败会显示本地数据摘要，并提供重试；回到应用时也会再试一次。
 
-## iOS STMini 在线 Web 底层接入
+## iOS 在线 Web 首页开关
 
-iOS 使用 `stmini_flutter/mini_web` 的 Web-only 容器，在 Flutter 首帧后仅初始化。
-旅程首页、引导和原有导航保持原样，不自动打开网页，也不增加按钮或隐藏触发入口。
-需要由后续已确认的业务流程显式调用 `TripDeltaWebHost.openHome()`；当前没有用户可见的打开入口。
+iOS 使用 `stmini_flutter/mini_web` 的 Web-only 容器。本机独立偏好默认关闭，
+旧安装无偏好、文件损坏或读取失败时均按关闭处理，保留原有旅程、引导和数据恢复流程。
+在当前页“当前 / Current”标题连续按住满 **5 秒**，可打开同主题的设置开关；
+未满时间松开、移出或取消不会开启设置。没有新增普通首页按钮。
+
+开启时先保存本机偏好，成功后移除旅程根界面，切换到 Web 准备页并打开网页。
+后续冷启动先读取该偏好，开启时直接进入 Web 根，不创建或闪现旅程界面。
+偏好独立于旅程数据和 JSON 备份，不改变旅程、语言或引导数据。
+Web 模式没有关闭开关入口，也不提供返回旅程的原生按钮或其他恢复手势。
 默认在线地址与参考工程 Verdant Frame 相同：`https://h5.globalsmartchoose.com/polymer/h5app/#/`。
 
 ```dart
 final webHost = TripDeltaWebHost();
-// 初始化不打开页面；同一实例可在已确认的业务触发点显式打开。
+// Web 根在 Flutter 首帧后初始化，并明确隐藏首页的原生导航栏。
 await webHost.initialize();
-await webHost.openHome();
+await webHost.openHome(showNavigationBar: false);
 // 宿主销毁时释放 Bridge handler。
 webHost.dispose();
 ```
 
-生产入口仅在 iOS 将服务实例交给 `TripDeltaApp`，由应用负责首帧初始化和销毁。
+Web 根负责服务实例和原生事件订阅的生命周期，旅程根不会提前释放 Web 根的服务。
 Web Bridge 的 `getPackageName` 返回实际 iOS 宿主身份 `com.tripdelta.lite.app`。
 Android 本批不接入：依赖不注册 Android 插件、不包含 Android 原生源码，
 宿主在 Android 不初始化或调用 STMini channel；显式打开会报告平台不支持。
 Android 原有旅程业务和工程配置保持原样。
-Web 打开默认保留原生导航栏与返回路径；H5 的 `/web` 请求按其导航参数处理，
-内部路由沿用参考工程的子页协议，仅允许同首页 origin 请求。每次显式打开均独立导航，
-不按 URL 去重。初始化失败不阻断离线旅程，后续显式调用可重试。
+与参考相同，原生承载为全屏 Web 导航栈，首页隐藏导航栏；这不是替换 UIWindow 根控制器。
+子页继续按现有 H5 `/web` 参数和内部路由协议导航、返回及侧滑，不猜测 Dart 栈深。
+普通 Bridge 的 `close` 在子页 pop、在根页可 dismiss 原生栈；根关闭后仍只显示 Web 重试页，
+不返回旅程或设置，也不循环自动重开。Web 准备失败可在该页显式重试。
+该页覆盖初始化、原生呈现、事件流错误和根关闭状态；`openHome` 完成只证明原生呈现完成，
+不等于 H5 文档加载成功。现有组件未向 Dart 提供 WKWebView 加载失败事件，
+真实网页网络错误沿用容器本身的行为，不能据 mock 声称已验证断网或线上 H5 业务。
+内部路由仍仅允许同首页 origin 请求，每次显式 H5 导航独立，不按 URL 去重。
 仅接受 HTTPS，不放开 ATS/Android cleartext，不复制参考工程的包名、账号或认证快照。
 普通 Bridge 支持打开、关闭、无凭据会话变化通知及诊断应答，未知方法返回失败。
 主 frame、当前页面来源及生命周期由原生 Web Core 处理；未接入 Mini 下载、离线包或 `openMini`。

@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'backup.dart';
 import 'domain.dart';
 import 'ios_overlays.dart';
+import 'five_second_hold.dart';
+import 'web_mode_settings.dart';
 import 'privacy_web_page.dart';
 import 'review_share.dart';
 import 'store.dart';
@@ -247,9 +250,11 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.controller,
     required this.backupGateway,
+    this.webModeActions,
   });
   final AppController controller;
   final BackupGateway backupGateway;
+  final WebModeActions? webModeActions;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -452,6 +457,29 @@ class _HomeScreenState extends State<HomeScreen> {
     ],
   );
 
+  Widget _currentTitle(L l) {
+    final title = Text(
+      l('currentTrips'),
+      style: Theme.of(
+        context,
+      ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
+    );
+    final actions = widget.webModeActions;
+    if (kIsWeb ||
+        defaultTargetPlatform != TargetPlatform.iOS ||
+        actions == null) {
+      return title;
+    }
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: FiveSecondHold(
+        key: const Key('current_title_web_hold'),
+        onHold: () => showWebModeSettings(context, l, actions),
+        child: title,
+      ),
+    );
+  }
+
   Widget _currentPage(L l) {
     final current = controller.trips
         .where((trip) => trip.stage != TripStage.completed)
@@ -479,13 +507,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      Expanded(
-                        child: Text(
-                          l('currentTrips'),
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                      ),
+                      Expanded(child: _currentTitle(l)),
                       const SizedBox(width: 12),
                       OutlinedButton.icon(
                         key: const Key('new_trip'),

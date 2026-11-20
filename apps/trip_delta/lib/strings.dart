@@ -38,6 +38,17 @@ class L {
     'newTrip': ('新建旅程', 'New trip'),
     'otherTrips': ('其他旅程', 'Other trips'),
     'currentTrips': ('当前', 'Current'),
+    'webHomeSettings': ('网页首页', 'Web home'),
+    'webHomeEnable': ('使用网页作为首页', 'Use Web as home'),
+    'webHomeExplanation': (
+      '开启后立即切换为网页首页，之后启动也使用网页。网页模式中不提供关闭此开关的入口。',
+      'Enabling switches to Web home now and on future launches. Web mode has no setting to turn this off.',
+    ),
+    'webHomePreparing': ('正在准备网页首页…', 'Preparing Web home…'),
+    'webHomeUnavailable': (
+      '网页首页暂时不可用，请重试。',
+      'Web home is unavailable. Please retry.',
+    ),
     'historyTrips': ('历史', 'History'),
     'historyIntro': ('回看每段旅程的计划与花费', 'Revisit each trip’s plan and spending'),
     'recordingTrips': ('其他记录中旅程', 'Other recording trips'),

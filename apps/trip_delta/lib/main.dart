@@ -7,17 +7,25 @@ import 'onboarding.dart';
 import 'screens.dart';
 import 'store.dart';
 import 'stmini_web_host.dart';
+import 'trip_theme.dart';
+import 'web_startup.dart';
+import 'web_startup_preference.dart';
+import 'web_mode_settings.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    TripDeltaApp(
-      store: FileTripStore(),
-      webHost: !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
-          ? TripDeltaWebHost()
-          : null,
-    ),
-  );
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+    runApp(
+      TripDeltaStartup(
+        preference: FileWebStartupPreference(),
+        session: StminiWebRootSession(),
+        tripBuilder: (actions) =>
+            TripDeltaApp(store: FileTripStore(), webModeActions: actions),
+      ),
+    );
+  } else {
+    runApp(TripDeltaApp(store: FileTripStore()));
+  }
 }
 
 class TripDeltaApp extends StatefulWidget {
@@ -26,10 +34,12 @@ class TripDeltaApp extends StatefulWidget {
     required this.store,
     this.backupGateway,
     this.webHost,
+    this.webModeActions,
   });
   final TripStore store;
   final BackupGateway? backupGateway;
   final TripDeltaWebHost? webHost;
+  final WebModeActions? webModeActions;
 
   @override
   State<TripDeltaApp> createState() => _TripDeltaAppState();
@@ -62,44 +72,6 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
     super.dispose();
   }
 
-  ThemeData theme(Brightness brightness) {
-    final dark = brightness == Brightness.dark;
-    const teal = Color(0xFF006D68);
-    final scheme = ColorScheme.fromSeed(
-      seedColor: teal,
-      brightness: brightness,
-      surface: dark ? const Color(0xFF17201F) : const Color(0xFFF8F7F2),
-    );
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: scheme,
-      scaffoldBackgroundColor: scheme.surface,
-      appBarTheme: AppBarTheme(
-        backgroundColor: scheme.surface,
-        foregroundColor: scheme.onSurface,
-        centerTitle: false,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
-        ),
-      ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -107,8 +79,8 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
       builder: (context, _) => MaterialApp(
         title: 'Trip Delta',
         debugShowCheckedModeBanner: false,
-        theme: theme(Brightness.light),
-        darkTheme: theme(Brightness.dark),
+        theme: tripDeltaTheme(Brightness.light),
+        darkTheme: tripDeltaTheme(Brightness.dark),
         themeMode: ThemeMode.system,
         locale: switch (controller.data.language) {
           'zh' => const Locale('zh'),
@@ -125,6 +97,7 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
             : HomeScreen(
                 controller: controller,
                 backupGateway: widget.backupGateway ?? SystemBackupGateway(),
+                webModeActions: widget.webModeActions,
               ),
       ),
     );
