@@ -52,6 +52,7 @@ class ReportService {
   }) async {
     final reportLanguage =
         languageCode ?? AppLocalizations.activeLocale.languageCode;
+    final dateFormat = DateFormat('yyyy-MM-dd');
     final path = await channel.invokeMethod<String>('generateReport', {
       'languageCode': reportLanguage,
       'project': {
@@ -60,9 +61,7 @@ class ReportService {
         'companyName': project.companyName,
         'inspectorName': project.inspectorName,
         'clientName': project.clientName,
-        'inspectionDate': DateFormat(
-          'yyyy-MM-dd',
-        ).format(project.inspectionDate),
+        'inspectionDate': dateFormat.format(project.inspectionDate),
         'notes': project.notes,
       },
       'issues': issues
@@ -78,7 +77,7 @@ class ReportService {
               'assignee': issue.assignee,
               'dueDate': issue.dueDate == null
                   ? ''
-                  : DateFormat('yyyy-MM-dd').format(issue.dueDate!),
+                  : dateFormat.format(issue.dueDate!),
               'photos': issue.photos
                   .map(
                     (photo) => {
