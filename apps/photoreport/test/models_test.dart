@@ -284,6 +284,19 @@ void main() {
       expect(annotation['color'], 0xFFFFFFFF);
     });
 
+    test('长说明首行标题保留Unicode边界与换行规则', () {
+      final emojis = List.filled(24, '😀').join();
+      expect(quickRecordTitle(' \r\n\t$emojis\r\n其余说明'), emojis);
+      expect(quickRecordTitle('$emojis🐱\n后续说明'), '$emojis…');
+      expect(quickRecordTitle(' \n \r\n  A\tB\rC\r\n尾行'), 'A\tB\rC');
+      expect(quickRecordTitle('\u2003\r\n\t '), '图文记录');
+      expect(
+        quickRecordTitle('现场记录\n${List.filled(10000, '下一行说明').join('\n')}'),
+        '现场记录',
+      );
+      expect(quickRecordTitle('${'a' * 100000}\n尾行'), '${'a' * 24}…');
+    });
+
     test('快速记录从说明首行生成稳定标题', () {
       expect(quickRecordTitle('主卫天花板漏水\n需要检查管道'), '主卫天花板漏水');
       expect(quickRecordTitle('   '), '图文记录');

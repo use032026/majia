@@ -1,12 +1,12 @@
 import '../models.dart';
 
 String quickRecordTitle(String description) {
-  final firstLine = description
-      .trim()
-      .split(RegExp(r'\r?\n'))
-      .map((value) => value.trim())
-      .firstWhere((value) => value.isNotEmpty, orElse: () => '图文记录');
-  final runes = firstLine.runes.toList();
+  final trimmed = description.trim();
+  final lineEnd = trimmed.indexOf('\n');
+  final firstLine = (lineEnd < 0 ? trimmed : trimmed.substring(0, lineEnd))
+      .trim();
+  if (firstLine.isEmpty) return '图文记录';
+  final runes = firstLine.runes.take(25).toList(growable: false);
   if (runes.length <= 24) return firstLine;
   return '${String.fromCharCodes(runes.take(24))}…';
 }
