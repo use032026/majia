@@ -1,0 +1,65 @@
+name: Trip Delta Cancel Old 1.0.10 Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      replacement_build_id:
+        description: Exact new valid 1.0.10 ASC build UUID from the completed upload receipt
+        required: true
+        type: string
+      replacement_build_number:
+        description: Actual new 1.0.10 build number from the receipt; do not guess
+        required: true
+        type: string
+      execute_cancel:
+        description: Cancel only the fixed old review batch after replacement checks; false is read-only
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-tripdelta-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  cancel_review:
+    if: ${{ github.repository == 'use032026/majia' && github.ref == 'refs/heads/main' }}
+    environment: tripdelta-production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check replacement then withdraw only the fixed old Trip Delta 1.0.10 review
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          REPLACEMENT_BUILD_ID: ${{ inputs.replacement_build_id }}
+          REPLACEMENT_BUILD_NUMBER: ${{ inputs.replacement_build_number }}
+          EXECUTE_CANCEL: ${{ inputs.execute_cancel }}
+        run: |
+          ruby .github/scripts/cancel-tripdelta-110-review.rb \
+            --replacement-build-id "$REPLACEMENT_BUILD_ID" \
+            --replacement-build-number "$REPLACEMENT_BUILD_NUMBER" \
+            --execute-cancel "$EXECUTE_CANCEL" \
+            --output asc-review-cancellation.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain cancellation receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-review-cancellation-tripdelta-110-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-review-cancellation.json
+          if-no-files-found: warn
+          retention-days: 30
