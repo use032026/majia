@@ -1,19 +1,20 @@
 {
   "repository": "https://github.com/fsst-ios/stmini_flutter",
   "branch": "mini_web",
-  "commit": "78b5a71561babfdf070488a08941eb94d2072e40",
+  "commit": "0ee3118f1998ba0cec8f12c377ce01d079b86914",
   "purpose": "iOS-only distribution subset of the Web-only runtime for Trip Delta; Android is intentionally not integrated.",
   "licenseNote": "Upstream LICENSE is retained verbatim; it currently contains a TODO and does not declare an open-source license.",
   "update": "Select a reviewed exact mini_web commit; copy only the listed iOS/Dart/LICENSE distribution files; adapt pubspec plugin registration to iOS only, regenerate SHA-256 values and validate the iOS host. Android/Mini runtime and local artifacts remain excluded.",
   "files": {
     "LICENSE": "422e0de8e3275febf5c41a5ccf891f68f16bc40e1b5dca26e50913b307ef794e",
-    "ios/Classes/StminiFlutterPlugin.swift": "dc464070f095aa0c91086a39e58887b05f9f3a62be017af64ed98d46a5c2270b",
-    "ios/Classes/Web/OnlineWebViewController.swift": "baeced260093a220c4dd27d14bcdb076a410b157a6c955cc1b25124eaa8a41fa",
+    "ios/Classes/StminiFlutterPlugin.swift": "03e6b30b00ee92c58b57e270282dbedf1c273c61e3045d730948b6ea108fb872",
+    "ios/Classes/Web/OnlineWebViewController.swift": "1f24c9a9b128b0708e730cdc1771a666dad324a3e8ad4b5140080233fc8ba4cc",
     "ios/Classes/Web/STOnlineWebCore.swift": "0a9b47da58dcf2fbf1cbb6918c37d00e642750762ca66cc89ab3cfde9fdf147a",
     "ios/stmini_flutter.podspec": "739f18d5bcf3628f39064208b098e50fa159e41d875c2ded9292bdfe65a802dc",
     "lib/src/runtime_mode.dart": "5f6ad4576503f02b1bd3f4769ac2e6a93e066a27aeacaa094c1b41154e85be23",
-    "lib/stmini_flutter.dart": "b153893feef51d7a6cf9252739740c557a110daafb4e2add7d308e301f94b638",
-    "pubspec.yaml": "f22bd54298e3b2c5c73312c59d029bccdfe751e192c7bd25c33b858c398e71fd"
+    "lib/stmini_flutter.dart": "46427931ef2240b18d5c22b72fef29357f1c3b73abdb7eb67a29a04bd248a74c",
+    "pubspec.yaml": "f22bd54298e3b2c5c73312c59d029bccdfe751e192c7bd25c33b858c398e71fd",
+    "ios/Classes/Web/STOnlineWebLoading.swift": "56206eba073ebb7682b31e0d40afec357496111d70e155192b3de5d8b93106b1"
   },
   "adaptations": {
     "pubspec.yaml": {

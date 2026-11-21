@@ -115,6 +115,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private lazy var messageHandlerProxy = OnlineWebWeakScriptMessageHandler(target: self)
   private var webView: WKWebView!
   private var owner: OnlineWebViewController!
+  private let loading: STOnlineWebLoadingController
+  private var loadingNavigation: WKNavigation?
   private var releasedWebResources = false
   private var didNotifyClose = false
   private let createdAt = ProcessInfo.processInfo.systemUptime
@@ -127,6 +129,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     title: String?,
     showNavigationBar: Bool,
     allowInsecureHttpNavigation: Bool,
+    loadingConfiguration: [String: Any]? = nil,
     bridgeRequest: @escaping BridgeRequest,
     didClose: @escaping () -> Void
   ) {
@@ -135,6 +138,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     self.showNavigationBar = showNavigationBar
     self.bridgeRequest = bridgeRequest
     self.didClose = didClose
+    loading = STOnlineWebLoadingController(configuration: loadingConfiguration,
+      readyOrigin: STOnlineWebCore.normalizedBridgeOrigin(url, allowInsecureHTTP: allowInsecureHttpNavigation))
     super.init(nibName: nil, bundle: nil)
     if showNavigationBar { navigationItem.title = title }
   }
@@ -144,6 +149,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   override func loadView() {
     let config = WKWebViewConfiguration()
     config.userContentController = userContentController
+    userContentController.addUserScript(loading.script)
     #if DEBUG
     // Local online-H5 debugging has no trusted HTTP bridge. Inject a
     // one-way, debug-only timing sink instead of relaxing bridge authority.
@@ -175,17 +181,34 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     owner.onTitleChanged = { [weak self] title in
       self?.navigationItem.title = title
     }
-    view = webView
+    let container = UIView()
+    webView.translatesAutoresizingMaskIntoConstraints = false
+    container.addSubview(webView)
+    NSLayoutConstraint.activate([
+      webView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+      webView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+      webView.topAnchor.constraint(equalTo: container.topAnchor),
+      webView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+    ])
+    loading.attach(to: container, webView: webView, parent: self)
+    loading.retry = { [weak self] in self?.loadInitialPage() }
+    view = container
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
     userContentController.add(messageHandlerProxy, name: Self.bridgeHandlerName)
+    userContentController.add(messageHandlerProxy, name: STOnlineWebLoadingController.handlerName)
     #if DEBUG
     userContentController.add(messageHandlerProxy, name: Self.debugLogHandlerName)
     #endif
+    loadInitialPage()
+  }
+
+  private func loadInitialPage() {
+    loading.begin()
     reportTiming("navigation.load_requested", url: initialURL)
-    webView.load(URLRequest(url: initialURL))
+    loadingNavigation = webView.load(URLRequest(url: initialURL))
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -246,6 +269,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     guard !releasedWebResources else { return }
     releasedWebResources = true
     userContentController.removeScriptMessageHandler(forName: Self.bridgeHandlerName)
+    userContentController.removeScriptMessageHandler(forName: STOnlineWebLoadingController.handlerName)
+    loading.release()
     #if DEBUG
     userContentController.removeScriptMessageHandler(forName: Self.debugLogHandlerName)
     #endif
@@ -294,27 +319,46 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
 
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     reportTiming("navigation.finished", url: webView.url)
+    if navigation === loadingNavigation { loading.documentFinished() }
     if owner.didCommitPage() { sendPageWillAppear() }
   }
 
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    loadingNavigation = navigation
+    loading.begin()
     navigationStartedAt = ProcessInfo.processInfo.systemUptime
     reportTiming("navigation.started", url: webView.url)
   }
 
   func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
     reportTiming("navigation.committed", url: webView.url)
+    if navigation === loadingNavigation { loading.documentCommitted() }
   }
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
     reportTiming("navigation.provisional_failed", url: webView.url, error: error)
+    if navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
   }
 
   func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     reportTiming("navigation.failed", url: webView.url, error: error)
+    if navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
+  }
+
+  func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    loading.begin()
+    loading.navigationFailed()
   }
 
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    if message.name == STOnlineWebLoadingController.handlerName {
+      guard STOnlineWebCore.allowsBridgeMessage(documentURL: message.frameInfo.request.url,
+              isMainFrame: message.frameInfo.isMainFrame, allowInsecureHTTP: allowInsecureHttpNavigation),
+            STOnlineWebCore.matchesCurrentDocumentOrigin(messageDocumentURL: message.frameInfo.request.url,
+              currentDocumentURL: webView.url, allowInsecureHTTP: allowInsecureHttpNavigation) else { return }
+      loading.receive(message.body)
+      return
+    }
     #if DEBUG
     if message.name == Self.debugLogHandlerName {
       guard message.frameInfo.isMainFrame, let text = message.body as? String else { return }

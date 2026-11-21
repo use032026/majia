@@ -8,12 +8,15 @@ import 'package:stmini_flutter/stmini_flutter.dart';
 import 'stmini_web_host.dart';
 import 'strings.dart';
 import 'trip_theme.dart';
-import 'web_mode_settings.dart';
+import 'web_mode_actions.dart';
 import 'web_startup_preference.dart';
+import 'onboarding.dart';
+import 'web_launch_splash.dart';
 
 abstract interface class WebRootSession {
   Stream<StminiEvent> get events;
   Future<void> open();
+  Future<String?> readLaunchLanguage();
   void dispose();
 }
 
@@ -25,6 +28,9 @@ class StminiWebRootSession implements WebRootSession {
   @override
   Future<void> open() =>
       (_host ??= TripDeltaWebHost()).openHome(showNavigationBar: false);
+  @override
+  Future<String?> readLaunchLanguage() =>
+      StminiFlutter.getWebLaunchLanguage(TripDeltaWebHost.defaultHomeUrl);
   @override
   void dispose() => _host?.dispose();
 }
@@ -77,9 +83,12 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
       // Read failures cannot opt a device into online startup.
     }
     if (!mounted) return;
+    final locale = enabled ? await _readWebLocale() : null;
+    if (!mounted) return;
     setState(() {
       _loading = false;
       _enabled = enabled;
+      _locale = locale;
     });
     if (enabled) _scheduleOpen();
   }
@@ -98,8 +107,21 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
     }
   }
 
-  void _activate(Locale locale) {
+  Future<Locale> _readWebLocale() async {
+    String? language;
+    try {
+      language = await widget.session.readLaunchLanguage();
+    } catch (_) {
+      // 没有 H5 手动选择或读取失败时使用当前系统语言。
+    }
+    language ??= WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    return Locale(language.toLowerCase().startsWith('zh') ? 'zh' : 'en');
+  }
+
+  Future<void> _activate(Locale _) async {
     if (!mounted || !_supported || !_saved || _enabled) return;
+    final locale = await _readWebLocale();
+    if (!mounted || _enabled) return;
     setState(() {
       _enabled = true;
       _trip = null;
@@ -194,7 +216,7 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
             key: const Key('web_only_home'),
             backgroundColor: _loading || _opening || _failed
                 ? Theme.of(context).colorScheme.surface
-                : Colors.white,
+                : const Color(0xFFF8F7F2),
             body: _failed
                 ? Center(
                     child: Padding(
@@ -218,18 +240,9 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
                       ),
                     ),
                   )
-                : _loading || _opening
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 16),
-                        Text(l('webHomePreparing')),
-                      ],
-                    ),
-                  )
-                : const SizedBox.expand(),
+                : _enabled
+                ? WebLaunchSplash(languageCode: _locale?.languageCode ?? 'en')
+                : const BrandSplash(),
           );
         },
       ),

@@ -9,9 +9,10 @@ import 'package:trip_delta/main.dart';
 import 'package:trip_delta/onboarding.dart';
 import 'package:trip_delta/screens.dart';
 import 'package:trip_delta/store.dart';
-import 'package:trip_delta/web_mode_settings.dart';
+import 'package:trip_delta/web_mode_actions.dart';
 import 'package:trip_delta/web_startup.dart';
 import 'package:trip_delta/web_startup_preference.dart';
+import 'package:trip_delta/web_launch_splash.dart';
 
 void iosTestWidgets(String description, WidgetTesterCallback callback) =>
     testWidgets(
@@ -47,13 +48,13 @@ void main() {
     },
   );
 
-  Future<void> openSettings(WidgetTester tester) async {
+  Future<void> holdCurrentTitle(WidgetTester tester) async {
     final title = find.byKey(const Key('current_title_web_hold'));
     final gesture = await tester.startGesture(tester.getCenter(title));
     await tester.pump(const Duration(seconds: 5));
     await gesture.up();
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('web_home_switch')), findsOneWidget);
+    expect(find.byType(CupertinoPopupSurface), findsNothing);
   }
 
   setUp(() {
@@ -78,6 +79,7 @@ void main() {
       expect(session.opens, 1);
       expect(find.byType(TripDeltaApp), findsNothing);
       expect(find.byKey(const Key('web_only_home')), findsOneWidget);
+      expect(find.byType(WebLaunchSplash), findsOneWidget);
       expect(find.byKey(const Key('current_title_web_hold')), findsNothing);
     },
   );
@@ -97,23 +99,58 @@ void main() {
     },
   );
 
+  iosTestWidgets('H5 manual English overrides a Chinese system at cold start', (
+    tester,
+  ) async {
+    preference.enabled = true;
+    session.launchLanguage = 'en-US';
+    tester.binding.platformDispatcher.localeTestValue = const Locale(
+      'zh',
+      'CN',
+    );
+    addTearDown(tester.binding.platformDispatcher.clearLocaleTestValue);
+    await tester.pumpWidget(app());
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<WebLaunchSplash>(find.byType(WebLaunchSplash)).languageCode,
+      'en',
+    );
+    expect(session.opens, 1);
+  });
+
+  iosTestWidgets('without H5 choice the splash follows system Chinese', (
+    tester,
+  ) async {
+    preference.enabled = true;
+    tester.binding.platformDispatcher.localeTestValue = const Locale(
+      'zh',
+      'TW',
+    );
+    addTearDown(tester.binding.platformDispatcher.clearLocaleTestValue);
+    await tester.pumpWidget(app());
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<WebLaunchSplash>(find.byType(WebLaunchSplash)).languageCode,
+      'zh',
+    );
+  });
+
   iosTestWidgets(
-    'five-second Current title switch saves before replacing trip root',
+    'five-second hold saves then switches directly without a popup',
     (tester) async {
       preference.saveGate = Completer<void>();
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
       expect(find.byType(HomeScreen), findsOneWidget);
-      await openSettings(tester);
-      expect(
-        tester.widget<CupertinoSwitch>(find.byType(CupertinoSwitch)).value,
-        isFalse,
-      );
-      await tester.tap(find.byKey(const Key('web_home_switch')));
+      await holdCurrentTitle(tester);
+      expect(find.byType(CupertinoSwitch), findsNothing);
       await tester.pump();
       expect(preference.writes, 1);
       expect(session.opens, 0);
       expect(find.byType(HomeScreen), findsOneWidget);
+      await holdCurrentTitle(tester);
+      expect(preference.writes, 1);
+      expect(session.opens, 0);
       preference.saveGate!.complete();
       await tester.pumpAndSettle();
       expect(preference.enabled, isTrue);
@@ -125,23 +162,26 @@ void main() {
     },
   );
 
-  iosTestWidgets('failed save keeps switch off and journey data/UI available', (
+  iosTestWidgets('failed direct enable retains journey UI and allows retry', (
     tester,
   ) async {
     preference.saveFails = true;
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
-    await openSettings(tester);
-    await tester.tap(find.byKey(const Key('web_home_switch')));
+    await holdCurrentTitle(tester);
     await tester.pumpAndSettle();
     expect(preference.enabled, isFalse);
-    expect(find.byKey(const Key('web_home_save_error')), findsOneWidget);
-    expect(
-      tester.widget<CupertinoSwitch>(find.byType(CupertinoSwitch)).value,
-      isFalse,
-    );
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.byType(CupertinoAlertDialog), findsNothing);
+    expect(find.byType(CupertinoSwitch), findsNothing);
     expect(find.byType(HomeScreen), findsOneWidget);
     expect(session.opens, 0);
+    preference.saveFails = false;
+    await holdCurrentTitle(tester);
+    expect(preference.writes, 2);
+    expect(preference.enabled, isTrue);
+    expect(session.opens, 1);
+    expect(find.byType(TripDeltaApp), findsNothing);
   });
 
   iosTestWidgets(
@@ -240,7 +280,7 @@ void main() {
   );
 
   iosTestWidgets(
-    'dark preparation and error text contrast with themed surfaces',
+    'branded preparation stays visible and dark error text remains readable',
     (tester) async {
       preference.enabled = true;
       session.openGate = Completer<void>();
@@ -270,7 +310,7 @@ void main() {
         expect(contrast, greaterThan(4.5));
       }
 
-      checkReadable(find.text('Preparing Web home…'));
+      expect(find.byType(WebLaunchSplash), findsOneWidget);
       session.controller.add(
         const StminiEvent(name: 'web_closed', payload: {}),
       );
@@ -319,7 +359,9 @@ void main() {
           store: store,
           webModeActions: WebModeActions(
             save: () async {},
-            activate: (_) => activated = true,
+            activate: (_) async {
+              activated = true;
+            },
           ),
         ),
       );
@@ -336,10 +378,10 @@ void main() {
       await tester.pumpAndSettle();
       final actions = lastActions!;
       await actions.save();
-      actions.activate(const Locale('en'));
+      await actions.activate(const Locale('en'));
       await tester.pumpAndSettle();
       await actions.save();
-      actions.activate(const Locale('en'));
+      await actions.activate(const Locale('en'));
       await tester.pumpAndSettle();
       expect(preference.writes, 1);
       expect(session.opens, 1);
@@ -365,9 +407,7 @@ void main() {
     },
   );
 
-  iosTestWidgets('AppBar title does not expose the hidden settings', (
-    tester,
-  ) async {
+  iosTestWidgets('AppBar title never activates Web mode', (tester) async {
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
     final title = find.descendant(
@@ -382,27 +422,25 @@ void main() {
     expect(session.opens, 0);
   });
 
-  iosTestWidgets('Chinese switch and Web error reuse locale and dark theme', (
-    tester,
-  ) async {
-    language = 'zh';
-    tester.binding.platformDispatcher.platformBrightnessTestValue =
-        Brightness.dark;
-    addTearDown(
-      tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
-    );
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
-    await openSettings(tester);
-    expect(find.text('网页首页'), findsOneWidget);
-    final switchContext = tester.element(find.byType(CupertinoSwitch));
-    expect(CupertinoTheme.of(switchContext).brightness, Brightness.dark);
-    session.openFails = true;
-    await tester.tap(find.byKey(const Key('web_home_switch')));
-    await tester.pumpAndSettle();
-    expect(find.text('网页首页暂时不可用，请重试。'), findsOneWidget);
-    expect(find.byType(TripDeltaApp), findsNothing);
-  });
+  iosTestWidgets(
+    'Chinese direct activation preserves Web error locale and dark theme',
+    (tester) async {
+      language = 'zh';
+      session.launchLanguage = 'zh-CN';
+      tester.binding.platformDispatcher.platformBrightnessTestValue =
+          Brightness.dark;
+      addTearDown(
+        tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+      );
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+      session.openFails = true;
+      await holdCurrentTitle(tester);
+      await tester.pumpAndSettle();
+      expect(find.text('网页首页暂时不可用，请重试。'), findsOneWidget);
+      expect(find.byType(TripDeltaApp), findsNothing);
+    },
+  );
 }
 
 class FakePreference implements WebStartupPreference {
@@ -437,6 +475,9 @@ class FakeSession implements WebRootSession {
   bool openFails = false;
   Stream<StminiEvent>? eventSource;
   Completer<void>? openGate;
+  String? launchLanguage;
+  @override
+  Future<String?> readLaunchLanguage() async => launchLanguage;
   @override
   Stream<StminiEvent> get events {
     listeners++;

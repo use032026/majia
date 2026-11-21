@@ -92,6 +92,10 @@ class StminiFlutter {
   /// Closes the active ordinary Web presentation, if any.
   static Future<void> closeWeb() => _methods.invokeMethod<void>('closeWeb');
 
+  /// iOS 在线网页曾手动选择的启动语言；未选择时返回 null，由宿主跟随系统。
+  static Future<String?> getWebLaunchLanguage(String url) =>
+      _methods.invokeMethod<String>('getWebLaunchLanguage', {'url': url});
+
   /// Delivers a credential-free session-change signal to sibling online Web
   /// pages after the host has persisted their shared auth snapshot.
   static Future<int> notifyWebSessionChanged(String reason) async =>

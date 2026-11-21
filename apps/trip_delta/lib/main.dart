@@ -10,7 +10,7 @@ import 'stmini_web_host.dart';
 import 'trip_theme.dart';
 import 'web_startup.dart';
 import 'web_startup_preference.dart';
-import 'web_mode_settings.dart';
+import 'web_mode_actions.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

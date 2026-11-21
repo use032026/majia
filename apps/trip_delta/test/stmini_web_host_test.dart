@@ -11,6 +11,7 @@ import 'package:trip_delta/main.dart';
 import 'package:trip_delta/screens.dart';
 import 'package:trip_delta/stmini_web_host.dart';
 import 'package:trip_delta/store.dart';
+import 'package:trip_delta/web_launch_splash.dart';
 
 WebBridgeRequest request(
   String method, [
@@ -40,6 +41,15 @@ void main() {
     expect(runtime.context, {
       'packageName': 'com.tripdelta.lite.app',
       'webSecurity': {'allowInsecureHTTP': false},
+      'webLoading': {
+        'readyEvent': 'futrenapp:startup-complete',
+        'failureEvent': 'futrenapp:startup-failed',
+        'launchImages': webLaunchImages,
+        'languageStorage': {
+          'valueKey': 'language',
+          'manualKey': 'language_user_set',
+        },
+      },
     });
     runtime.initialization!.complete();
     await first;
@@ -230,6 +240,15 @@ void main() {
         'bridgeContext': {
           'packageName': 'com.tripdelta.lite.app',
           'webSecurity': {'allowInsecureHTTP': false},
+          'webLoading': {
+            'readyEvent': 'futrenapp:startup-complete',
+            'failureEvent': 'futrenapp:startup-failed',
+            'launchImages': webLaunchImages,
+            'languageStorage': {
+              'valueKey': 'language',
+              'manualKey': 'language_user_set',
+            },
+          },
         },
       });
       await actual.openHome(showNavigationBar: false);

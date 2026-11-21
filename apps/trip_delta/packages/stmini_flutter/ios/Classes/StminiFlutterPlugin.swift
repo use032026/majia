@@ -64,6 +64,14 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       result(nil)
     case "openWeb":
       openWeb(call.arguments as? [String: Any] ?? [:], result: result)
+    case "getWebLaunchLanguage":
+      guard let arguments = call.arguments as? [String: Any],
+            let rawURL = arguments["url"] as? String, let url = URL(string: rawURL),
+            let origin = STOnlineWebCore.normalizedBridgeOrigin(url) else {
+        result(FlutterError(code: "invalid_web_url", message: "Requires an HTTPS URL", details: nil))
+        return
+      }
+      result(STOnlineWebLaunchLanguage.cached(origin: origin))
     case "closeWeb":
       closeWeb(result: result)
     case "notifyWebSessionChanged":
@@ -160,7 +168,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       request.result(FlutterError(code: "no_presenting_controller", message: "No active Flutter view controller", details: nil))
       return
     }
-    let page = makeWebPage(request)
+    let page = makeWebPage(request, isRoot: true)
     let navigation = OnlineWebNavigationController(rootViewController: page)
     navigation.modalPresentationStyle = .fullScreen
     navigation.isNavigationBarHidden = !request.showNavigationBar
@@ -195,12 +203,15 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     request.result(nil)
   }
 
-  private func makeWebPage(_ request: OnlineWebRequest) -> OnlineWebPageViewController {
-    OnlineWebPageViewController(
+  private func makeWebPage(_ request: OnlineWebRequest, isRoot: Bool = false) -> OnlineWebPageViewController {
+    let configuration = bridgeContext["webLoading"] as? [String: Any]
+    let rootOnly = configuration?["initialPageOnly"] as? Bool ?? true
+    return OnlineWebPageViewController(
       url: request.url,
       title: request.title,
       showNavigationBar: request.showNavigationBar,
       allowInsecureHttpNavigation: request.allowInsecureHttpNavigation,
+      loadingConfiguration: isRoot || !rootOnly ? configuration : nil,
       bridgeRequest: { [weak self] method, params, origin, reply in
         self?.forwardBridgeRequest(method: method, params: params, origin: origin, reply: reply)
       },

@@ -6,7 +6,7 @@ import 'backup.dart';
 import 'domain.dart';
 import 'ios_overlays.dart';
 import 'five_second_hold.dart';
-import 'web_mode_settings.dart';
+import 'web_mode_actions.dart';
 import 'privacy_web_page.dart';
 import 'review_share.dart';
 import 'store.dart';
@@ -262,6 +262,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0;
+  bool _enablingWeb = false;
   final TextEditingController _historySearch = TextEditingController();
 
   AppController get controller => widget.controller;
@@ -457,6 +458,20 @@ class _HomeScreenState extends State<HomeScreen> {
     ],
   );
 
+  Future<void> _enableWebMode(WebModeActions actions) async {
+    if (_enablingWeb) return;
+    _enablingWeb = true;
+    final locale = Localizations.localeOf(context);
+    try {
+      await actions.save();
+      if (mounted) await actions.activate(locale);
+    } catch (_) {
+      if (mounted) showSaveError(context, loc(context));
+    } finally {
+      _enablingWeb = false;
+    }
+  }
+
   Widget _currentTitle(L l) {
     final title = Text(
       l('currentTrips'),
@@ -474,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> {
       alignment: Alignment.centerLeft,
       child: FiveSecondHold(
         key: const Key('current_title_web_hold'),
-        onHold: () => showWebModeSettings(context, l, actions),
+        onHold: () => _enableWebMode(actions),
         child: title,
       ),
     );

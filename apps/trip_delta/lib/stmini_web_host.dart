@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
+import 'web_launch_splash.dart';
 
 /// The host adapter keeps the Web-only plugin boundary replaceable in tests.
 abstract interface class TripWebRuntime {
@@ -102,6 +103,15 @@ class TripDeltaWebHost {
       await _runtime.initialize(const {
         'packageName': 'com.tripdelta.lite.app',
         'webSecurity': {'allowInsecureHTTP': false},
+        'webLoading': {
+          'readyEvent': 'futrenapp:startup-complete',
+          'failureEvent': 'futrenapp:startup-failed',
+          'launchImages': webLaunchImages,
+          'languageStorage': {
+            'valueKey': 'language',
+            'manualKey': 'language_user_set',
+          },
+        },
       });
       if (_disposed) throw StateError('Web host is disposed');
       _ready = true;
