@@ -298,6 +298,52 @@ void main() {
       },
     );
 
+    test('CSV refresh stays current across invalid edits, undo and reset', () {
+      const original = 'a,a,\r\n"base\r\nrow",2,3\r\n';
+      final document = inspect('copy.csv', '\ufeff$original');
+      final originalBytes = document.byteSize;
+      document.replaceWorkingText('left,right\n"one\ntwo",3\n');
+      expect(document.csvTable!.headers, ['left', 'right']);
+      expect(document.csvTable!.rows.single.cells, ['one\ntwo', '3']);
+      expect(document.csvTable!.rows.single.sourceLine, 2);
+      expect(document.lines, hasLength(3));
+      expect(document.diagnostics, isEmpty);
+
+      document.replaceWorkingText('left,right\n"not closed');
+      expect(document.isValid, isFalse);
+      expect(document.csvTable, isNull);
+      expect(document.diagnostics.single.code, DiagnosticCode.csvUnclosedQuote);
+      expect(document.diagnostics.single.line, 2);
+      expect(document.lines, hasLength(2));
+      expect(document.exportBytes(), [
+        0xef,
+        0xbb,
+        0xbf,
+        ...utf8.encode(document.workingText),
+      ]);
+
+      expect(document.undo(), isTrue);
+      expect(document.isValid, isTrue);
+      expect(document.csvTable!.headers, ['left', 'right']);
+      expect(document.csvTable!.rows.single.cells, ['one\ntwo', '3']);
+      expect(document.diagnostics, isEmpty);
+      expect(document.lines, hasLength(3));
+      document.reset();
+      expect(document.workingText, original);
+      expect(document.csvTable!.headers, ['a', 'a', '']);
+      expect(document.csvTable!.rows.single.cells, ['base\nrow', '2', '3']);
+      expect(document.csvTable!.rows.single.sourceLine, 2);
+      expect(document.diagnostics.map((item) => item.code), [
+        DiagnosticCode.csvEmptyHeader,
+        DiagnosticCode.csvDuplicateHeader,
+      ]);
+      expect(document.hasUtf8Bom, isTrue);
+      expect(document.byteSize, originalBytes);
+      expect(document.fileName, 'copy.csv');
+      expect(document.canUndo, isFalse);
+      expect(document.isModified, isFalse);
+    });
+
     test('filtered row index targets its original data row for editing', () {
       final document = inspect('a.csv', 'name,value\nAda,one\nBob,two');
       final filtered = document.filterCsv('Bob');

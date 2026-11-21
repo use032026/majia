@@ -238,7 +238,7 @@ class FileRecheckDocument {
     }
   }
 
-  void _refresh() {
+  void _refresh({_CsvParseResult? parsedCsv}) {
     final physicalLines = const LineSplitter().convert(_workingText);
     // LineSplitter omits the final empty line after a newline. The displayed
     // line number count should match the imported physical line limit.
@@ -257,7 +257,7 @@ class FileRecheckDocument {
     if (kind == FileKind.json) {
       _diagnostics = _jsonDiagnostics(_workingText);
     } else if (kind == FileKind.csv) {
-      final parsed = _parseCsv(_workingText);
+      final parsed = parsedCsv ?? _parseCsv(_workingText);
       _diagnostics = parsed.diagnostics;
       _csvTable = parsed.table;
     } else {
@@ -409,12 +409,12 @@ class FileRecheckDocument {
         'The edited text contains unsupported control characters.',
       );
     }
-    if (kind == FileKind.csv) _parseCsv(updated);
+    final parsedCsv = kind == FileKind.csv ? _parseCsv(updated) : null;
     if (updated == _workingText) return;
     _undo.add(_workingText);
     if (_undo.length > maxUndoDepth) _undo.removeAt(0);
     _workingText = updated;
-    _refresh();
+    _refresh(parsedCsv: parsedCsv);
   }
 
   bool undo() {
