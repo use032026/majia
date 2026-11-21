@@ -116,6 +116,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private var webView: WKWebView!
   private var owner: OnlineWebViewController!
   private let loading: STOnlineWebLoadingController
+  private let showsLaunchScreen: Bool
+  private var initialPageNavigation: WKNavigation?
   private var loadingNavigation: WKNavigation?
   private var releasedWebResources = false
   private var didNotifyClose = false
@@ -129,6 +131,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     title: String?,
     showNavigationBar: Bool,
     allowInsecureHttpNavigation: Bool,
+    showsLaunchScreen: Bool,
     loadingConfiguration: [String: Any]? = nil,
     bridgeRequest: @escaping BridgeRequest,
     didClose: @escaping () -> Void
@@ -136,6 +139,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     initialURL = url
     self.allowInsecureHttpNavigation = allowInsecureHttpNavigation
     self.showNavigationBar = showNavigationBar
+    self.showsLaunchScreen = showsLaunchScreen
     self.bridgeRequest = bridgeRequest
     self.didClose = didClose
     loading = STOnlineWebLoadingController(configuration: loadingConfiguration,
@@ -190,7 +194,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       webView.topAnchor.constraint(equalTo: container.topAnchor),
       webView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
     ])
-    loading.attach(to: container, webView: webView, parent: self)
+    loading.attach(to: container, webView: webView, parent: self, showsLaunchScreen: showsLaunchScreen)
     loading.retry = { [weak self] in self?.loadInitialPage() }
     view = container
   }
@@ -208,7 +212,9 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private func loadInitialPage() {
     loading.begin()
     reportTiming("navigation.load_requested", url: initialURL)
-    loadingNavigation = webView.load(URLRequest(url: initialURL))
+    let navigation = webView.load(URLRequest(url: initialURL))
+    initialPageNavigation = navigation
+    loadingNavigation = navigation
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -325,7 +331,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
 
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
     loadingNavigation = navigation
-    loading.begin()
+    loading.begin(showsLaunchScreen: navigation != nil && navigation === initialPageNavigation)
     navigationStartedAt = ProcessInfo.processInfo.systemUptime
     reportTiming("navigation.started", url: webView.url)
   }

@@ -218,7 +218,7 @@ final class STOnlineWebLoadingController {
       """, injectionTime: .atDocumentStart, forMainFrameOnly: true)
   }
 
-  func attach(to container: UIView, webView: WKWebView, parent: UIViewController? = nil) {
+  func attach(to container: UIView, webView: WKWebView, parent: UIViewController? = nil, showsLaunchScreen: Bool) {
     self.webView = webView
     container.backgroundColor = .systemBackground
     cover.backgroundColor = .systemBackground
@@ -231,20 +231,10 @@ final class STOnlineWebLoadingController {
       cover.topAnchor.constraint(equalTo: container.topAnchor),
       cover.bottomAnchor.constraint(equalTo: container.bottomAnchor),
     ])
-    let imageView = UIImageView()
-    imageView.contentMode = .scaleAspectFill
-    imageView.clipsToBounds = true
-    imageView.isUserInteractionEnabled = false
-    let localizedLaunch = refreshImage(imageView) ? UIViewController() : nil
-    if let localizedLaunch {
-      localizedLaunch.view = imageView
-      localizedImage = imageView
-    }
-    if let launch = localizedLaunch ?? STOnlineWebHostLaunchScreen.make() {
+    if showsLaunchScreen, let launch = makeLaunchScreen() {
       launchScreen = launch
       parent?.addChild(launch)
       let launchView = launch.view!
-      if localizedLaunch == nil { launchView.accessibilityIdentifier = "stmini_host_launch_screen" }
       launchView.isUserInteractionEnabled = false
       launchView.translatesAutoresizingMaskIntoConstraints = false
       cover.addSubview(launchView)
@@ -291,12 +281,12 @@ final class STOnlineWebLoadingController {
     showLoading()
   }
 
-  func begin() {
+  func begin(showsLaunchScreen: Bool = true) {
     guard !released else { return }
     deadline?.cancel()
     let generation = state.begin()
     hasCommittedDocument = false
-    showLoading()
+    showLoading(showsLaunchScreen: showsLaunchScreen)
     let timeout = min(120, max(5, (configuration["timeoutSeconds"] as? NSNumber)?.doubleValue ?? 25))
     let task = DispatchWorkItem { [weak self] in self?.fail(generation) }
     deadline = task
@@ -359,7 +349,8 @@ final class STOnlineWebLoadingController {
     localizedImage = nil
   }
 
-  private func showLoading() {
+  private func showLoading(showsLaunchScreen: Bool = true) {
+    launchScreen?.view.isHidden = !showsLaunchScreen
     cover.isHidden = false
     errorView.isHidden = true
     message.isHidden = true
@@ -382,6 +373,21 @@ final class STOnlineWebLoadingController {
   @objc private func retryTapped() { retry?() }
 
   private var isChinese: Bool { Locale.preferredLanguages.first?.hasPrefix("zh") == true }
+
+  private func makeLaunchScreen() -> UIViewController? {
+    let imageView = UIImageView()
+    if refreshImage(imageView) {
+      imageView.contentMode = .scaleAspectFill
+      imageView.clipsToBounds = true
+      localizedImage = imageView
+      let controller = UIViewController()
+      controller.view = imageView
+      return controller
+    }
+    let controller = STOnlineWebHostLaunchScreen.make()
+    controller?.view.accessibilityIdentifier = "stmini_host_launch_screen"
+    return controller
+  }
 
   @discardableResult private func refreshImage(_ view: UIImageView) -> Bool {
     guard let images = configuration["launchImages"] as? [String: String] else { return false }

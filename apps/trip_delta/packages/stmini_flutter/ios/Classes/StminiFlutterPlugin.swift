@@ -211,6 +211,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       title: request.title,
       showNavigationBar: request.showNavigationBar,
       allowInsecureHttpNavigation: request.allowInsecureHttpNavigation,
+      showsLaunchScreen: isRoot,
       loadingConfiguration: isRoot || !rootOnly ? configuration : nil,
       bridgeRequest: { [weak self] method, params, origin, reply in
         self?.forwardBridgeRequest(method: method, params: params, origin: origin, reply: reply)
