@@ -60,14 +60,14 @@ class ASCReviewHistoryCLITest < Minitest::Test
     assert_equal "${{ inputs.app_environment }}", job.fetch("environment")
     steps = job.fetch("steps")
     history = steps.find { |row| row["name"] == "Query read-only ASC review history" }
-    assert_equal "${{ inputs.include_review_history }}", history.fetch("if")
+    assert_equal "${{ inputs.include_review_history && !inputs.include_review_notes }}", history.fetch("if")
     assert_includes history.fetch("run"), "--review-history"
     assert_includes history.fetch("run"), "Review history cannot be combined with other query modes"
     %w[MARKETING_VERSION INVENTORY_VERSION INCLUDE_STORE_METADATA INCLUDE_REVIEW_DIAGNOSTICS].each do |key|
       assert history.fetch("env").key?(key)
       assert_includes history.fetch("run"), key
     end
-    steps.select { |row| row["name"].start_with?("Query read-only ASC") && row != history }.each do |row|
+    steps.select { |row| row["name"].start_with?("Query read-only ASC") && row != history && row["name"] != "Query read-only ASC review notes" }.each do |row|
       assert_includes row.fetch("if"), "!inputs.include_review_history"
     end
     retain = steps.find { |row| row["name"] == "Retain ASC status snapshot" }

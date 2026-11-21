@@ -6,6 +6,7 @@ require "optparse"
 require_relative "lib/asc_review_status"
 require_relative "lib/asc_review_diagnostics"
 require_relative "lib/asc_review_history"
+require_relative "lib/asc_review_notes"
 require_relative "lib/asc_readonly_summary"
 
 options = { marketing_version: "" }
@@ -15,6 +16,7 @@ OptionParser.new do |parser|
   parser.on("--build-inventory") { options[:build_inventory] = true }
   parser.on("--review-diagnostics") { options[:review_diagnostics] = true }
   parser.on("--review-history") { options[:review_history] = true }
+  parser.on("--review-notes") { options[:review_notes] = true }
   parser.on("--output PATH") { |value| options[:output] = value }
   parser.on("--github-summary PATH") { |value| options[:github_summary] = value }
 end.parse!
@@ -30,11 +32,15 @@ begin
   required = %i[bundle_id output github_summary]
   missing = required.reject { |key| options[key] && !options[key].empty? }
   raise MajiaCI::ASCStatusError, "missing options: #{missing.join(', ')}" unless missing.empty?
-  if %i[review_diagnostics build_inventory review_history].count { |mode| options[mode] } > 1
+  if %i[review_diagnostics build_inventory review_history review_notes].count { |mode| options[mode] } > 1
     raise MajiaCI::ASCStatusError, "select one ASC query mode"
   end
   if options[:review_history] && !options.fetch(:marketing_version).empty?
     raise MajiaCI::ASCStatusError, "review history cannot be combined with a marketing version"
+  end
+
+  if options[:review_notes] && options.fetch(:marketing_version).empty?
+    raise MajiaCI::ASCStatusError, "review notes require an exact marketing version"
   end
 
   key_id = required_environment("ASC_KEY_ID")
@@ -47,6 +53,20 @@ begin
   )
   key = MajiaCI::ASCReviewStatus.normalize_private_key(required_environment("ASC_API_KEY_P8"))
   client = MajiaCI::ASCReadClient.new(key: key, key_id: key_id, issuer_id: issuer_id)
+  if options[:review_notes]
+    notes = MajiaCI::ASCReviewNotes.read(
+      client: client, bundle_id: options.fetch(:bundle_id), marketing_version: options.fetch(:marketing_version)
+    )
+    File.open(options.fetch(:output), File::WRONLY | File::CREAT | File::TRUNC, 0o600) do |file|
+      file.chmod(0o600)
+      file.puts(JSON.pretty_generate(notes))
+    end
+    File.open(options.fetch(:github_summary), "a", 0o600) do |file|
+      file.write(MajiaCI::ASCReadonlySummary.markdown(:review_notes, notes))
+    end
+    puts "ASC review notes queried; content retained only in protected artifact"
+    exit(notes.fetch("complete") ? 0 : 1)
+  end
   if options[:review_history]
     history = MajiaCI::ASCReviewHistory.read(client: client, bundle_id: options.fetch(:bundle_id))
     File.open(options.fetch(:output), "w", 0o600) { |file| file.puts(JSON.pretty_generate(history)) }
@@ -109,7 +129,9 @@ begin
     "review_submission_state=#{summary.dig('review_submission', 'state') || 'not-found'}"
   ].join(" ")
 rescue MajiaCI::ASCStatusError, KeyError, Errno::ENOENT, Errno::EACCES => e
-  if options[:review_history]
+  if options[:review_notes]
+    warn "ASC review notes could not be completed"
+  elsif options[:review_history]
     warn "ASC review history could not be completed"
   else
     warn(options[:review_diagnostics] ? "ASC review diagnostics could not be completed" : e.message)

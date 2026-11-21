@@ -15,6 +15,27 @@ class ASCReadonlySummaryTest < Minitest::Test
   SubmissionID = "a27aa713-b7a4-4c08-8c56-72a331ecdf20"
   Secret = "SECRET_CANARY_DO_NOT_SHOW"
 
+  def test_review_notes_summary_only_contains_fingerprint_and_not_content_or_contacts
+    canary = "PRIVATE_NOTES_CANARY<script>secret</script>"
+    payload = {
+      "checked_at" => "2026-11-21T09:00:00Z", "complete" => true,
+      "app" => { "id" => "6822704143", "bundle_id" => "com.tripdelta.lite.app", "contact" => canary },
+      "version" => { "id" => "f991521a-405e-4422-be57-6f1dec949af2", "version_string" => "1.0.10" },
+      "review_notes" => { "observation" => "present", "notes" => canary, "sha256" => "a" * 64, "length" => 45, "byte_length" => 45 },
+      "errors" => [{ "raw" => canary }], "demoAccountPassword" => canary
+    }
+    result = Summary.markdown(:review_notes, payload)
+    assert_includes result, "a" * 64
+    assert_includes result, "present"
+    refute_includes result, canary
+    refute_includes result, "PRIVATE_NOTES_CANARY"
+    refute_includes result, "demoAccountPassword"
+    refute_includes result, "contact"
+    %i[status inventory metadata history diagnostics].each do |mode|
+      refute_includes Summary.markdown(mode, payload), "PRIVATE_NOTES_CANARY"
+    end
+  end
+
   def test_history_keeps_lower_bound_and_lifetime_uncertainty_separate
     value = {
       "app" => inventory["app"], "confirmed_distinct_submitted_lower_bound" => 8,

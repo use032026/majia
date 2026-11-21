@@ -34,11 +34,12 @@ module MajiaCI
              when :metadata then metadata(value)
              when :diagnostics then diagnostics(value)
              when :history then history(value)
+             when :review_notes then review_notes(value)
              when :status then status(value)
              else raise ArgumentError, "unsupported ASC summary mode"
              end
       safe = { "checked_at" => utc_timestamp(value["checked_at"]) }.merge(safe)
-      title = { inventory: "build inventory", metadata: "store metadata", diagnostics: "review diagnostics", history: "review history lower bound", status: "review status" }.fetch(mode)
+      title = { inventory: "build inventory", metadata: "store metadata", diagnostics: "review diagnostics", history: "review history lower bound", review_notes: "review notes fingerprint", status: "review status" }.fetch(mode)
       "## ASC #{title}\n\nRead-only observed fields; unavailable or truncated data is not complete evidence.\n\n<pre>#{CGI.escapeHTML(JSON.pretty_generate(safe))}</pre>\n"
     end
 
@@ -95,6 +96,24 @@ module MajiaCI
         "review_drafts_observation" => member(section["status"], %w[observed absent unavailable permission_denied]),
         "target_submissions" => rows(section["target_submissions"]) { |row| submission(row) },
         "observed_submissions" => rows(section["observed_submissions"]) { |row| submission(row) }
+      }
+    end
+
+    def review_notes(value)
+      notes = hash(value["review_notes"])
+      version = hash(value["version"])
+      {
+        "app" => app(value["app"]),
+        "version" => { "id" => field(version["id"], ID), "number" => field(version["version_string"], VERSION) },
+        "complete" => boolean(value["complete"]),
+        "review_notes" => {
+          "observation" => member(notes["observation"], %w[present null absent unavailable]),
+          "sha256" => field(notes["sha256"], /\A[0-9a-f]{64}\z/),
+          "length" => nonnegative_integer(notes["length"]),
+          "byte_length" => nonnegative_integer(notes["byte_length"])
+        },
+        "query_errors_present" => value["errors"].is_a?(Array) ? !value["errors"].empty? : UNAVAILABLE,
+        "content_boundary" => "Review notes content is omitted from logs and summaries; inspect only the protected raw artifact."
       }
     end
 
