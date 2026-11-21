@@ -57,7 +57,44 @@ class ASCReviewHistoryTest < Minitest::Test
     assert_equal 8, result.fetch("confirmed_distinct_submitted_lower_bound")
     assert result.fetch("api_scan_complete")
     refute result.fetch("history_complete")
+    assert_equal({ "label" => "不可使用", "stop_auto_submission" => false }, result.fetch("decision"))
+    assert_equal "CURRENT_OBSERVABLE_RECORDS", result.fetch("count_scope")
+  end
+
+  def test_unproven_item_retains_verified_current_records_decision
+    result, = read(versions: nine_versions.take(3), extra: {
+      SubmissionsPath => document([submission("batch-1", "COMPLETE")]),
+      "/v1/reviewSubmissions/batch-1/items" => document([item("item-1", "version-1", "READY_FOR_REVIEW")])
+    })
+    assert_equal 3, result.fetch("confirmed_distinct_submitted_lower_bound")
+    refute result.fetch("api_scan_complete")
+    assert_equal ["unproven_item_submission"], result.fetch("unknowns").map { |gap| gap.fetch("code") }
+    assert_equal({ "label" => "不可使用", "stop_auto_submission" => false }, result.fetch("decision"))
+    refute result.fetch("history_complete")
+  end
+
+  def test_permission_error_does_not_turn_a_partial_lower_bound_into_a_current_total
+    result, = read(versions: nine_versions.take(3), extra: {
+      SubmissionsPath => MajiaCI::ASCPermissionError.new("denied")
+    })
+    assert_equal 3, result.fetch("confirmed_distinct_submitted_lower_bound")
     assert_equal({ "label" => "待核实", "stop_auto_submission" => nil }, result.fetch("decision"))
+  end
+
+  def test_unverified_version_scope_is_unknown_not_zero_observed_submissions
+    foreign = version("foreign-version", "1.0.0")
+    foreign["relationships"] = { "app" => { "data" => { "type" => "apps", "id" => "9999999999" } } }
+    result, = read(versions: [foreign])
+    assert_equal 0, result.fetch("confirmed_distinct_submitted_lower_bound")
+    assert_equal({ "label" => "待核实", "stop_auto_submission" => nil }, result.fetch("decision"))
+  end
+
+  def test_verified_draft_only_current_records_do_not_count_as_submitted
+    result, = read(versions: [version("draft", "1.0.0", "PREPARE_FOR_SUBMISSION")])
+    assert result.fetch("api_scan_complete")
+    assert_equal 0, result.fetch("confirmed_distinct_submitted_lower_bound")
+    assert_equal({ "label" => "不可使用", "stop_auto_submission" => false }, result.fetch("decision"))
+    refute result.fetch("history_complete")
   end
 
   def test_version_and_submission_and_item_pages_are_all_followed

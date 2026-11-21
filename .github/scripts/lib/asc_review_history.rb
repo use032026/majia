@@ -298,14 +298,24 @@ module MajiaCI
       def result(app_id)
         versions = @confirmed.values.sort_by { |entry| entry.fetch("marketing_version").split(".").map(&:to_i) }
         count = versions.length
+        observed_scope_verified = app_id && @errors.empty? &&
+          (@unknowns.empty? || (count.positive? && @unknowns.all? { |gap| gap["code"] == "unproven_item_submission" }))
+        label, stop = if count >= 9
+                        ["可使用", true]
+                      elsif observed_scope_verified
+                        ["不可使用", false]
+                      else
+                        ["待核实", nil]
+                      end
         {
           "schema_version" => 1, "checked_at" => @checked_at.utc.iso8601,
           "app" => { "id" => app_id, "bundle_id" => @bundle_id }, "platform" => "IOS",
+          "count_scope" => "CURRENT_OBSERVABLE_RECORDS",
           "confirmed_distinct_submitted_lower_bound" => count, "distinct_versions" => versions,
           "api_scan_complete" => @complete, "history_complete" => false,
-          "decision" => { "label" => count >= 9 ? "可使用" : "待核实", "stop_auto_submission" => count >= 9 ? true : nil },
+          "decision" => { "label" => label, "stop_auto_submission" => stop },
           "errors" => @errors, "unknowns" => @unknowns,
-          "evidence_boundary" => "Read-only lower bound. Apple exposes recent and current review submissions; exhausted API pages do not prove complete lifetime history. Drafts, uploads, repeated builds and retries are not distinct submitted marketing versions."
+          "evidence_boundary" => "Read-only current-observable-record decision per user policy, not a lifetime total. Apple exposes recent and current review submissions; exhausted API pages do not prove complete lifetime history. Drafts, uploads, repeated builds and retries are not distinct submitted marketing versions."
         }
       end
     end

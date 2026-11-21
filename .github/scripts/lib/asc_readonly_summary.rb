@@ -102,6 +102,7 @@ module MajiaCI
       decision = hash(value["decision"])
       {
         "app" => app(value["app"]),
+        "count_scope" => member(value["count_scope"], ["CURRENT_OBSERVABLE_RECORDS"]),
         "confirmed_distinct_submitted_lower_bound" => nonnegative_integer(value["confirmed_distinct_submitted_lower_bound"]),
         "api_scan_complete" => boolean(value["api_scan_complete"]),
         "history_complete" => boolean(value["history_complete"]),
