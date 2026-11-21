@@ -38,6 +38,11 @@ on:
         required: false
         default: false
         type: boolean
+      include_review_history:
+        description: Read-only accepted-version history lower bound; cannot combine with other query modes
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -58,7 +63,7 @@ jobs:
           persist-credentials: false
 
       - name: Query read-only ASC review status
-        if: ${{ inputs.build_inventory_version == '' && !inputs.include_review_diagnostics }}
+        if: ${{ inputs.build_inventory_version == '' && !inputs.include_review_diagnostics && !inputs.include_review_history }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -74,7 +79,7 @@ jobs:
             --github-summary "$GITHUB_STEP_SUMMARY"
 
       - name: Query read-only ASC store metadata and media
-        if: ${{ inputs.build_inventory_version == '' && !inputs.include_review_diagnostics && inputs.include_store_metadata }}
+        if: ${{ inputs.build_inventory_version == '' && !inputs.include_review_diagnostics && !inputs.include_review_history && inputs.include_store_metadata }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -94,7 +99,7 @@ jobs:
             --github-summary "$GITHUB_STEP_SUMMARY"
 
       - name: Query read-only ASC build inventory
-        if: ${{ inputs.build_inventory_version != '' && !inputs.include_review_diagnostics }}
+        if: ${{ inputs.build_inventory_version != '' && !inputs.include_review_diagnostics && !inputs.include_review_history }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -117,7 +122,7 @@ jobs:
             --github-summary "$GITHUB_STEP_SUMMARY"
 
       - name: Query read-only ASC review diagnostics
-        if: ${{ inputs.include_review_diagnostics }}
+        if: ${{ inputs.include_review_diagnostics && !inputs.include_review_history }}
         shell: bash
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
@@ -139,8 +144,31 @@ jobs:
             --output asc-review-diagnostics.json \
             --github-summary "$GITHUB_STEP_SUMMARY"
 
+      - name: Query read-only ASC review history
+        if: ${{ inputs.include_review_history }}
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          MARKETING_VERSION: ${{ inputs.marketing_version }}
+          INVENTORY_VERSION: ${{ inputs.build_inventory_version }}
+          INCLUDE_STORE_METADATA: ${{ inputs.include_store_metadata }}
+          INCLUDE_REVIEW_DIAGNOSTICS: ${{ inputs.include_review_diagnostics }}
+        run: |
+          if [[ -n "$MARKETING_VERSION" || -n "$INVENTORY_VERSION" || "$INCLUDE_STORE_METADATA" == "true" || "$INCLUDE_REVIEW_DIAGNOSTICS" == "true" ]]; then
+            echo "::error::Review history cannot be combined with other query modes"
+            exit 1
+          fi
+          ruby .github/scripts/query-asc-review-status.rb \
+            --bundle-id "$IOS_BUNDLE_ID" \
+            --review-history \
+            --output asc-review-history.json \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
       - name: Retain ASC status snapshot
-        if: ${{ always() && (inputs.include_review_diagnostics || inputs.build_inventory_version == '' || success()) }}
+        if: ${{ always() && (inputs.include_review_history || inputs.include_review_diagnostics || inputs.build_inventory_version == '' || success()) }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: asc-review-status-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -149,5 +177,6 @@ jobs:
             asc-store-metadata.json
             asc-build-inventory.json
             asc-review-diagnostics.json
+            asc-review-history.json
           if-no-files-found: error
           retention-days: 30

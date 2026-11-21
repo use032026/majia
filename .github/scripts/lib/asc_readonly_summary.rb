@@ -33,11 +33,12 @@ module MajiaCI
              when :inventory then inventory(value)
              when :metadata then metadata(value)
              when :diagnostics then diagnostics(value)
+             when :history then history(value)
              when :status then status(value)
              else raise ArgumentError, "unsupported ASC summary mode"
              end
       safe = { "checked_at" => utc_timestamp(value["checked_at"]) }.merge(safe)
-      title = { inventory: "build inventory", metadata: "store metadata", diagnostics: "review diagnostics", status: "review status" }.fetch(mode)
+      title = { inventory: "build inventory", metadata: "store metadata", diagnostics: "review diagnostics", history: "review history lower bound", status: "review status" }.fetch(mode)
       "## ASC #{title}\n\nRead-only observed fields; unavailable or truncated data is not complete evidence.\n\n<pre>#{CGI.escapeHTML(JSON.pretty_generate(safe))}</pre>\n"
     end
 
@@ -95,6 +96,40 @@ module MajiaCI
         "target_submissions" => rows(section["target_submissions"]) { |row| submission(row) },
         "observed_submissions" => rows(section["observed_submissions"]) { |row| submission(row) }
       }
+    end
+
+    def history(value)
+      decision = hash(value["decision"])
+      {
+        "app" => app(value["app"]),
+        "confirmed_distinct_submitted_lower_bound" => nonnegative_integer(value["confirmed_distinct_submitted_lower_bound"]),
+        "api_scan_complete" => boolean(value["api_scan_complete"]),
+        "history_complete" => boolean(value["history_complete"]),
+        "decision" => {
+          "label" => member(decision["label"], ["可使用", "不可使用", "待核实"]),
+          "stop_auto_submission" => boolean(decision["stop_auto_submission"])
+        },
+        "distinct_versions" => rows(value["distinct_versions"]) do |row|
+          {
+            "marketing_version" => field(row["marketing_version"], VERSION),
+            "version_ids" => safe_members(row["version_ids"]) { |id| field(id, ID) },
+            "app_version_states" => safe_members(row["app_version_states"]) { |item| state(item) }
+          }
+        end,
+        "query_errors_present" => value["errors"].is_a?(Array) ? !value["errors"].empty? : UNAVAILABLE,
+        "unknowns_present" => value["unknowns"].is_a?(Array) ? !value["unknowns"].empty? : UNAVAILABLE,
+        "history_boundary" => "Only a proven lower bound. A complete current API scan does not establish complete lifetime submission history."
+      }
+    end
+
+    def nonnegative_integer(value)
+      value.is_a?(Integer) && value.between?(0, 1_000_000) ? value : UNAVAILABLE
+    end
+
+    def safe_members(value)
+      return UNAVAILABLE unless value.is_a?(Array)
+
+      value.first(MAX_ROWS).map { |item| yield(item) }
     end
 
     def status(value)

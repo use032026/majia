@@ -15,6 +15,45 @@ class ASCReadonlySummaryTest < Minitest::Test
   SubmissionID = "a27aa713-b7a4-4c08-8c56-72a331ecdf20"
   Secret = "SECRET_CANARY_DO_NOT_SHOW"
 
+  def test_history_keeps_lower_bound_and_lifetime_uncertainty_separate
+    value = {
+      "app" => inventory["app"], "confirmed_distinct_submitted_lower_bound" => 8,
+      "api_scan_complete" => true, "history_complete" => false,
+      "decision" => { "label" => "待核实", "stop_auto_submission" => nil },
+      "distinct_versions" => [{ "marketing_version" => "1.0", "version_ids" => [VersionID],
+        "app_version_states" => ["DEVELOPER_REJECTED"], "evidence" => [{ "notes" => Secret }] }],
+      "errors" => [], "unknowns" => [{ "detail" => Secret }], "private_key" => Secret
+    }
+    result = parsed(:history, value)
+    assert_equal 8, result["confirmed_distinct_submitted_lower_bound"]
+    assert_equal true, result["api_scan_complete"]
+    assert_equal false, result["history_complete"]
+    assert_equal "待核实", result.dig("decision", "label")
+    assert_equal Summary::UNAVAILABLE, result.dig("decision", "stop_auto_submission")
+    assert_equal "1.0", result.dig("distinct_versions", "items", 0, "marketing_version")
+    assert_equal true, result["unknowns_present"]
+    refute_includes Summary.markdown(:history, value), Secret
+  end
+
+  def test_history_summary_filters_remote_text_and_invalid_counters
+    attack = "</pre><script>#{Secret}</script>"
+    value = {
+      "app" => { "id" => attack, "bundle_id" => attack },
+      "confirmed_distinct_submitted_lower_bound" => attack,
+      "api_scan_complete" => attack, "history_complete" => nil,
+      "decision" => { "label" => attack, "stop_auto_submission" => attack },
+      "distinct_versions" => [{ "marketing_version" => attack, "version_ids" => [attack], "app_version_states" => [attack] }],
+      "errors" => [{ "message" => attack }], "unknowns" => []
+    }
+    result = parsed(:history, value)
+    assert_equal Summary::UNAVAILABLE, result["confirmed_distinct_submitted_lower_bound"]
+    assert_equal true, result["query_errors_present"]
+    html = Summary.markdown(:history, value)
+    refute_includes html, Secret
+    assert_equal 1, html.scan("<pre>").length
+    assert_equal 1, html.scan("</pre>").length
+  end
+
   def parsed(mode, value)
     text = Summary.markdown(mode, value)
     JSON.parse(CGI.unescapeHTML(text.split("<pre>", 2).last.split("</pre>", 2).first))
