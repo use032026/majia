@@ -67,7 +67,7 @@ Android 原有旅程业务和工程配置保持原样。
 
 为使干净 checkout 与 CI 可复现，依赖使用应用内 `packages/stmini_flutter` 的发行源码快照，
 不依赖本机相邻目录。来源固定为 `mini_web` 的
-`b607811ce2bd143fd87d809bc46b08f40045e7b5`，逐文件 SHA-256 和升级步骤见
+`5eae2a966a54b7ff3bf9fdd5f35268652873c52d`，逐文件 SHA-256 和升级步骤见
 [`UPSTREAM.json`](packages/stmini_flutter/UPSTREAM.json)。快照仅保留 Dart/iOS 所需文件，
 插件 pubspec 裁掉 Android 注册，其余上游文件原样保留；来源及适配差异在清单中明确。
 LICENSE 当前未声明开源许可，
@@ -86,7 +86,7 @@ iOS 最初的系统 LaunchScreen 仍为原生旅程品牌；读取到网页偏�
 首页复用 H5 现有的 `futrenapp:startup-complete` 事件，
 在事件后的两次动画帧回调后移除原生遮罩；不以原生呈现完成或 `didFinish` 替代 H5 就绪。
 H5 的 `futrenapp:startup-failed`、主文档网络失败或 25 秒超时会显示原生重试入口。
-重试重新加载首页，保持网页模式与原旅程数据。启动图只用于首页初次加载和重试，普通子页加载时显示系统背景色。
+首页重试重新加载首页并显示启动图，保持网页模式与原旅程数据。普通网页失败后重试原网页，加载时显示系统背景色。
 本次没有调整活动 iframe 的 Bridge 调用方式。
 
 图片来源固定为 `newsclient/dev/dev_s86@77aec95ba8471293688ed4d54f77a6343220e3ad`：

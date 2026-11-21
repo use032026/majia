@@ -119,6 +119,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private let showsLaunchScreen: Bool
   private var initialPageNavigation: WKNavigation?
   private var loadingNavigation: WKNavigation?
+  private var pendingTopLevelRequest: URLRequest?
+  private var lastTopLevelRequest: URLRequest?
   private var releasedWebResources = false
   private var didNotifyClose = false
   private let createdAt = ProcessInfo.processInfo.systemUptime
@@ -195,7 +197,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       webView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
     ])
     loading.attach(to: container, webView: webView, parent: self, showsLaunchScreen: showsLaunchScreen)
-    loading.retry = { [weak self] in self?.loadInitialPage() }
+    loading.retry = { [weak self] in self?.retryPage() }
     view = container
   }
 
@@ -210,11 +212,31 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   private func loadInitialPage() {
-    loading.begin()
-    reportTiming("navigation.load_requested", url: initialURL)
-    let navigation = webView.load(URLRequest(url: initialURL))
-    initialPageNavigation = navigation
+    loadPage(URLRequest(url: initialURL), isInitialPage: true)
+  }
+
+  private var isLoadingInitialPage: Bool {
+    loadingNavigation != nil && loadingNavigation === initialPageNavigation
+  }
+
+  private func loadPage(_ request: URLRequest, isInitialPage: Bool) {
+    lastTopLevelRequest = request
+    loading.begin(showsLaunchScreen: isInitialPage)
+    reportTiming("navigation.load_requested", url: request.url)
+    let navigation = webView.load(request)
+    initialPageNavigation = isInitialPage ? navigation : nil
     loadingNavigation = navigation
+  }
+
+  private func retryPage() {
+    if isLoadingInitialPage {
+      loadInitialPage()
+    } else if let request = lastTopLevelRequest, request.httpMethod?.uppercased() == "GET" {
+      loadPage(request, isInitialPage: false)
+    } else if let currentDocument = webView.url ?? lastTopLevelRequest?.url {
+      // 表单失败后重新打开页面，让用户确认是否再次提交。
+      loadPage(URLRequest(url: currentDocument), isInitialPage: false)
+    }
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -312,15 +334,15 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       decisionHandler(.cancel)
       return
     }
-    if url.scheme?.lowercased() == "https" {
-      decisionHandler(.allow)
+    let scheme = url.scheme?.lowercased()
+    guard scheme == "https" || (allowInsecureHttpNavigation && scheme == "http" && url.host != nil) else {
+      decisionHandler(.cancel)
       return
     }
-    if allowInsecureHttpNavigation, url.scheme?.lowercased() == "http", url.host != nil {
-      decisionHandler(.allow)
-      return
+    if navigationAction.targetFrame?.isMainFrame == true {
+      pendingTopLevelRequest = navigationAction.request
     }
-    decisionHandler(.cancel)
+    decisionHandler(.allow)
   }
 
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -330,10 +352,16 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    if let request = pendingTopLevelRequest { lastTopLevelRequest = request }
+    pendingTopLevelRequest = nil
     loadingNavigation = navigation
-    loading.begin(showsLaunchScreen: navigation != nil && navigation === initialPageNavigation)
+    loading.begin(showsLaunchScreen: isLoadingInitialPage)
     navigationStartedAt = ProcessInfo.processInfo.systemUptime
     reportTiming("navigation.started", url: webView.url)
+  }
+
+  func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+    if navigation === loadingNavigation { pendingTopLevelRequest = nil }
   }
 
   func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
@@ -352,7 +380,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-    loading.begin()
+    loading.begin(showsLaunchScreen: isLoadingInitialPage)
     loading.navigationFailed()
   }
 
