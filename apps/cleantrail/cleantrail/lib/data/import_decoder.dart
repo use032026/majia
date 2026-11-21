@@ -195,17 +195,19 @@ class TabularImportDecoder {
     var commas = 0;
     var tabs = 0;
     for (final line in lines) {
-      commas += _countOutsideQuotes(line, ',');
-      tabs += _countOutsideQuotes(line, '\t');
+      final counts = _countDelimitersOutsideQuotes(line);
+      commas += counts.$1;
+      tabs += counts.$2;
     }
     if (tabs > commas) return ImportFormat.tsv;
     if (commas > tabs) return ImportFormat.csv;
     return extension == 'tsv' ? ImportFormat.tsv : ImportFormat.csv;
   }
 
-  int _countOutsideQuotes(String line, String delimiter) {
+  (int, int) _countDelimitersOutsideQuotes(String line) {
     var quoted = false;
-    var count = 0;
+    var commas = 0;
+    var tabs = 0;
     for (var index = 0; index < line.length; index++) {
       final character = line[index];
       if (character == '"') {
@@ -214,11 +216,12 @@ class TabularImportDecoder {
         } else {
           quoted = !quoted;
         }
-      } else if (!quoted && character == delimiter) {
-        count++;
+      } else if (!quoted) {
+        if (character == ',') commas++;
+        if (character == '\t') tabs++;
       }
     }
-    return count;
+    return (commas, tabs);
   }
 
   String _normalizeLines(String source) => source

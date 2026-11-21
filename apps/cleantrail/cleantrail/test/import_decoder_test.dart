@@ -40,6 +40,35 @@ void main() {
     }
   });
 
+  test('format votes preserve escaped quotes and delimiter ties', () {
+    const cases = <(String, ImportFormat?)>[
+      ('left,"a,b,c"\tend\tmore', ImportFormat.tsv),
+      ('left\t"a\tb\tc",end,more', ImportFormat.csv),
+      ('"""a,b,c"""\t"""x,y,z"""\tvalue', ImportFormat.tsv),
+      ('"""a\tb\tc""","""x\ty\tz""",value', ImportFormat.csv),
+      ('left,"quoted,comma"\t"quoted\ttab"', null),
+      ('"unterminated,\t,', null),
+    ];
+    for (final separator in ['\r', '\n', '\r\n']) {
+      for (final extension in ['csv', 'TSV', 'txt']) {
+        for (final entry in cases) {
+          final source = '\ufeff  $separator${entry.$1}$separator';
+          final originalBytes = utf8.encode(source);
+          final draft = decoder.inspect(
+            PickedDataFile(fileName: 'quoted.$extension', bytes: originalBytes),
+          );
+          expect(
+            draft.detectedFormat,
+            entry.$2 ??
+                (extension == 'TSV' ? ImportFormat.tsv : ImportFormat.csv),
+            reason: '$extension ${entry.$1}',
+          );
+          expect(draft.file.bytes, originalBytes);
+        }
+      }
+    }
+  });
+
   test('detects UTF-8 comma-separated text', () {
     final draft = decoder.inspect(
       PickedDataFile(
