@@ -16,7 +16,7 @@ class CancellationClient
     @version_id, @version_number, @platform = target.fetch(:version_id), target.fetch(:version), "IOS"
     @expected_version_id = @version_id
     @submission_id = target.fetch(:submission_id)
-    @build_id = target.fetch(:build_id, "build-1")
+    @build_id, @build_number = target.fetch(:build_id, "build-1"), target.fetch(:build_number, "1")
     @relationship_data = nil
     @submissions = [{ "type" => "reviewSubmissions", "id" => @submission_id, "attributes" => { "platform" => "IOS" } }]
     @items = [{ "type" => "reviewSubmissionItems", "id" => "item-1", "relationships" =>
@@ -52,7 +52,7 @@ class CancellationClient
     when "/v1/appStoreVersions/#{@expected_version_id}/relationships/build"
       { "data" => { "id" => build_id } }
     when "/v1/builds/#{build_id}"
-      { "data" => { "id" => build_id, "attributes" => { "version" => "1" } } }
+      { "data" => { "id" => build_id, "attributes" => { "version" => @build_number } } }
     when %r{\A/v1/reviewSubmissionItems/item-1/relationships/} then { "data" => relationship_data }
     else raise "unexpected GET #{path}"
     end
