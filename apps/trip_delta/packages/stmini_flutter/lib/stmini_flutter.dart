@@ -38,10 +38,21 @@ class StminiFlutter {
 
   /// Configures ordinary Web navigation. Every allowed top-level document can
   /// use the native bridge; iframes and stale documents remain rejected.
+  /// Auth/profile storage follows the H5 snapshot convention by default.
+  /// Explicit [bridgeContext] entries override these defaults, including null
+  /// to disable a mapping. Hosts still configure their own bridge origins.
   static Future<void> initialize({Map<String, dynamic>? bridgeContext}) {
     _ensureReverseListener();
     return _methods.invokeMethod<void>('initialize', {
-      if (bridgeContext != null) 'bridgeContext': bridgeContext,
+      'bridgeContext': {
+        'authStorageKey': 'futrenapp:auth-storage:v1',
+        'bridgeUserInfoStorage': {
+          'storageKey': 'futrenapp:cache-storage:v1',
+          'valueKey': 'user',
+          'nestedKey': 'userInfo',
+        },
+        ...?bridgeContext,
+      },
     });
   }
 

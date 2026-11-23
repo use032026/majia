@@ -42,6 +42,8 @@ void main() {
       'allowInsecureHTTP': false,
       'bridgeOrigins': ['https://first.example'],
     });
+    expect(runtime.context!.containsKey('authStorageKey'), isFalse);
+    expect(runtime.context!.containsKey('bridgeUserInfoStorage'), isFalse);
     runtime.initialization!.complete();
     await first;
     await host.initialize();
