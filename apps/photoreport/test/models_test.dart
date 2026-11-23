@@ -4,6 +4,45 @@ import 'package:photo_report/report/report_service.dart';
 import 'package:photo_report/ui/create_flow_logic.dart';
 
 void main() {
+  test(
+    'reuse suggestions keep first-seen order, trimming and case distinctions',
+    () {
+      expect(reusableIssueSuggestions(const []), isEmpty);
+      expect(
+        reusableIssueSuggestions([
+          '',
+          '  ',
+          '  主卧 ',
+          '主卧',
+          '\u2003客厅\t',
+          'room',
+          'ROOM',
+          ' 😀 ',
+          '第六个区域',
+        ]),
+        ['主卧', '客厅', 'room', 'ROOM', '😀'],
+      );
+    },
+  );
+
+  test(
+    'reuse suggestions stop reading after the fifth distinct nonempty value',
+    () {
+      var visited = 0;
+      Iterable<String> source() sync* {
+        for (final value in [' ', 'A', ' A ', 'B', 'C', 'D', 'E']) {
+          visited++;
+          yield value;
+        }
+        throw StateError('unused historical records should not be scanned');
+      }
+
+      expect(reusableIssueSuggestions(source()), ['A', 'B', 'C', 'D', 'E']);
+      expect(visited, 7);
+      expect(reusableIssueSuggestions(['new', 'new', ' ']), ['new']);
+    },
+  );
+
   testWidgets(
     'report dates remain consistent across records and repeated exports',
     (tester) async {

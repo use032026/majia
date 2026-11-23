@@ -1,5 +1,16 @@
 import '../models.dart';
 
+List<String> reusableIssueSuggestions(Iterable<String> source) {
+  final suggestions = <String>{};
+  for (final value in source) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) continue;
+    suggestions.add(trimmed);
+    if (suggestions.length == 5) break;
+  }
+  return suggestions.toList();
+}
+
 String quickRecordTitle(String description) {
   final trimmed = description.trim();
   final lineEnd = trimmed.indexOf('\n');

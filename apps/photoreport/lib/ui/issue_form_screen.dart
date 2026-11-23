@@ -694,12 +694,7 @@ class _IssueFormScreenState extends State<IssueFormScreen> {
   }
 
   List<String> _uniqueSuggestions(Iterable<String> source) {
-    return source
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty)
-        .toSet()
-        .take(5)
-        .toList();
+    return reusableIssueSuggestions(source);
   }
 }
 
