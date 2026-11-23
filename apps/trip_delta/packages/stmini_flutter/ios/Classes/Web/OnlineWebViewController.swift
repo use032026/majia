@@ -44,6 +44,33 @@ public final class OnlineWebViewController {
   public var onMessage: MessageHandler?
   public var onTitleChanged: ((String) -> Void)?
   public let lifecycle = STOnlineWebDisplayLifecycle()
+  private var replyEpoch: UInt64 = 0
+  private var released = false
+  public func invalidateReplies() { replyEpoch &+= 1 }
+
+  /// Captures native ownership and a per-JavaScript-global document marker.
+  public func captureReply(isOwnerCurrent: @escaping () -> Bool, completed: @escaping (@escaping (String) -> Void) -> Void) {
+    guard let webView, !released else { return }
+    let epoch = replyEpoch
+    let url = webView.url
+    let candidate = UUID().uuidString
+    let key = "__stminiReplyDocument"
+    webView.evaluateJavaScript("window.\(key)||(window.\(key)='\(candidate)')") { [weak self, weak webView] value, error in
+      guard let self, let webView, error == nil, let token = value as? String,
+            self.replyEpoch == epoch, !self.released, self.webView === webView,
+            webView.url == url, isOwnerCurrent() else { return }
+      completed { [weak self, weak webView] payload in
+        DispatchQueue.main.async {
+          guard let self, let webView, self.replyEpoch == epoch, !self.released,
+                self.webView === webView, webView.url == url, isOwnerCurrent(),
+                let data = try? JSONSerialization.data(withJSONObject: [token]),
+                let array = String(data: data, encoding: .utf8) else { return }
+          webView.evaluateJavaScript("if(window.\(key)===(\(array))[0]){\(STOnlineWebCore.callbackJavaScript(jsonPayload: payload))}", completionHandler: nil)
+        }
+      }
+    }
+  }
+
   private let allowInsecureHttpBridge: Bool
 
   public init(
@@ -93,8 +120,8 @@ public final class OnlineWebViewController {
 
   public func didAppear() -> Bool { lifecycle.didAppear() }
   public func didDisappear() { lifecycle.didDisappear() }
-  public func willLoadReplacementDocument() { lifecycle.willLoadReplacementDocument() }
-  public func release() { lifecycle.release() }
+  public func willLoadReplacementDocument() { invalidateReplies(); lifecycle.willLoadReplacementDocument() }
+  public func release() { released = true; invalidateReplies(); lifecycle.release() }
 }
 
 /// UIKit presentation shell for [OnlineWebViewController]. It owns only the
@@ -110,6 +137,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private let allowInsecureHttpNavigation: Bool
   private let showNavigationBar: Bool
   private let bridgeRequest: BridgeRequest
+  private let captureBridgeOwnership: () -> (() -> Bool)
   private let didClose: () -> Void
   private let userContentController = WKUserContentController()
   private lazy var messageHandlerProxy = OnlineWebWeakScriptMessageHandler(target: self)
@@ -135,6 +163,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     allowInsecureHttpNavigation: Bool,
     showsLaunchScreen: Bool,
     loadingConfiguration: [String: Any]? = nil,
+    captureBridgeOwnership: @escaping () -> (() -> Bool) = { { true } },
     bridgeRequest: @escaping BridgeRequest,
     didClose: @escaping () -> Void
   ) {
@@ -143,6 +172,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     self.showNavigationBar = showNavigationBar
     self.showsLaunchScreen = showsLaunchScreen
     self.bridgeRequest = bridgeRequest
+    self.captureBridgeOwnership = captureBridgeOwnership
     self.didClose = didClose
     loading = STOnlineWebLoadingController(configuration: loadingConfiguration,
       readyOrigin: STOnlineWebCore.normalizedBridgeOrigin(url, allowInsecureHTTP: allowInsecureHttpNavigation))
@@ -266,6 +296,21 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     reportStack("appeared")
   }
 
+  override func willMove(toParent parent: UIViewController?) {
+    // UIKit's moving/dismissing flags are transient. Revoke requests when a
+    // removal starts, even if appearance callbacks are skipped or cancelled.
+    if parent == nil, self.parent is UINavigationController {
+      owner?.invalidateReplies()
+    }
+    super.willMove(toParent: parent)
+  }
+
+  override func didMove(toParent parent: UIViewController?) {
+    super.didMove(toParent: parent)
+    // Confirmed removal is terminal for this page's retained Web runtime.
+    if parent == nil { releaseWebResources() }
+  }
+
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if owner.didAppear() { sendPageWillAppear() }
@@ -352,6 +397,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    owner.invalidateReplies()
     if let request = pendingTopLevelRequest { lastTopLevelRequest = request }
     pendingTopLevelRequest = nil
     loadingNavigation = navigation
@@ -365,6 +411,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   }
 
   func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    owner.invalidateReplies()
     reportTiming("navigation.committed", url: webView.url)
     if navigation === loadingNavigation { loading.documentCommitted() }
   }
@@ -410,19 +457,36 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private func receivedBridgeMessage(_ body: Any) {
     guard let request = body as? [String: Any],
           let method = request["method"] as? String,
-          !method.isEmpty else { return }
+          !method.isEmpty, let origin = currentBridgeOrigin() else { return }
     let params = request["params"] as? [String: Any] ?? [:]
-    if method == "setNavigationBarTitle" {
-      navigationItem.title = params["title"] as? String
-      deliverBridgeResponse(
-        ["code": "1", "data": [:]],
-        method: method,
-        methodId: params["methodId"] as? String ?? "")
-      return
-    }
-    guard let origin = currentBridgeOrigin() else { return }
-    bridgeRequest(method, params, origin) { [weak self] response in
-      self?.deliverBridgeResponse(response, method: method, methodId: params["methodId"] as? String ?? "")
+    let isBridgeOwnerCurrent = captureBridgeOwnership()
+    let requestNavigation = navigationController
+    let hadRequestNavigation = requestNavigation != nil
+    owner.captureReply(isOwnerCurrent: { [weak self, weak requestNavigation] in
+      guard let self, !self.releasedWebResources, !self.isBeingDismissed,
+            !self.isMovingFromParent, self.navigationController?.isBeingDismissed != true else { return false }
+      if hadRequestNavigation {
+        guard let requestNavigation, self.navigationController === requestNavigation,
+              requestNavigation.viewControllers.contains(where: { $0 === self }) else { return false }
+      } else if self.navigationController != nil {
+        return false
+      }
+      return isBridgeOwnerCurrent()
+    }) { [weak self] deliver in
+      guard let self else { return }
+      let respond: ([String: Any]) -> Void = { response in
+        let payload = STOnlineWebCore.callbackPayload(response: response, method: method, methodId: params["methodId"] as? String ?? "")
+        guard JSONSerialization.isValidJSONObject(payload),
+              let data = try? JSONSerialization.data(withJSONObject: payload),
+              let json = String(data: data, encoding: .utf8) else { return }
+        deliver(json.replacingOccurrences(of: "</", with: "<\\/"))
+      }
+      if method == "setNavigationBarTitle" {
+        self.navigationItem.title = params["title"] as? String
+        respond(["code": "1", "data": [:]])
+      } else {
+        self.bridgeRequest(method, params, origin, respond)
+      }
     }
   }
 
@@ -480,14 +544,6 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     #endif
   }
 
-  private func deliverBridgeResponse(_ response: [String: Any], method: String, methodId: String) {
-    let payload = STOnlineWebCore.callbackPayload(response: response, method: method, methodId: methodId)
-    guard JSONSerialization.isValidJSONObject(payload),
-          let data = try? JSONSerialization.data(withJSONObject: payload),
-          let json = String(data: data, encoding: .utf8) else { return }
-    webView.evaluateJavaScript(STOnlineWebCore.callbackJavaScript(jsonPayload: json.replacingOccurrences(of: "</", with: "<\\/")))
-  }
-
   private func sendPageWillAppear() {
     deliverHostLifecycle(method: "pageWillAppear")
   }
@@ -511,6 +567,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   /// independent `/web` pages. Native storage is read through getUserInfo;
   /// the event itself contains only the reason and never session material.
   func deliverSessionChanged(reason: String) {
+    owner?.invalidateReplies()
     guard !releasedWebResources else { return }
     let messages: [[String: Any]] = [
       ["method": "miniSessionChanged", "params": ["reason": reason]],

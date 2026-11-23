@@ -5,6 +5,9 @@ import UIKit
 public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
   private var eventSink: FlutterEventSink?
   private var methodChannel: FlutterMethodChannel?
+  private static weak var registeredInstance: StminiFlutterPlugin?
+  private var onlineWebBindingEpoch: UInt64 = 0
+  private var bridgeContextEpoch: UInt64 = 0
   /// One ordinary-Web navigation stack is retained for the life of a Web
   /// session. The root is presented once; subsequent `/web` requests push
   /// inside this stack, matching the full STMini H5 navigation contract.
@@ -51,7 +54,8 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       name: "stmini_flutter/methods", binaryMessenger: registrar.messenger())
     let events = FlutterEventChannel(
       name: "stmini_flutter/events", binaryMessenger: registrar.messenger())
-    instance.methodChannel = methods
+    instance.bindOnlineWebBridgeChannel(methods)
+    registrar.publish(instance)
     registrar.addMethodCallDelegate(instance, channel: methods)
     events.setStreamHandler(instance)
   }
@@ -94,6 +98,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   }
 
   private func configureBridgeOrigins(_ context: [String: Any]?) {
+    bridgeContextEpoch &+= 1
     bridgeContext = context ?? [:]
     let security = bridgeContext["webSecurity"] as? [String: Any]
     allowInsecureHttpNavigation = security?["allowInsecureHTTP"] as? Bool ?? false
@@ -213,6 +218,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       allowInsecureHttpNavigation: request.allowInsecureHttpNavigation,
       showsLaunchScreen: isRoot,
       loadingConfiguration: isRoot || !rootOnly ? configuration : nil,
+      captureBridgeOwnership: { [weak self] in self?.captureOnlineWebBridgeOwnership() ?? { false } },
       bridgeRequest: { [weak self] method, params, origin, reply in
         self?.forwardBridgeRequest(method: method, params: params, origin: origin, reply: reply)
       },
@@ -252,6 +258,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
   /// earlier pages (including the originating `/web`) receive the update
   /// before the child pops back to them.
   private func notifyWebSessionChanged(_ arguments: [String: Any], result: @escaping FlutterResult) {
+    bridgeContextEpoch &+= 1
     let rawReason = arguments["reason"] as? String ?? "sessionChanged"
     let reason = String(rawReason.prefix(64))
     DispatchQueue.main.async { [weak self] in
@@ -296,7 +303,28 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     emit("web_closed", [:])
   }
 
-  private func forwardBridgeRequest(
+  func bindOnlineWebBridgeChannel(_ channel: FlutterMethodChannel) {
+    onlineWebBindingEpoch &+= 1
+    Self.registeredInstance = self
+    methodChannel = channel
+  }
+
+  public func detachFromEngine(for registrar: FlutterPluginRegistrar) {
+    onlineWebBindingEpoch &+= 1
+    methodChannel = nil
+    if Self.registeredInstance === self { Self.registeredInstance = nil }
+  }
+
+  func captureOnlineWebBridgeOwnership() -> () -> Bool {
+    let binding = onlineWebBindingEpoch
+    let session = bridgeContextEpoch
+    return { [weak self] in
+      guard let self else { return false }
+      return Self.registeredInstance === self && self.onlineWebBindingEpoch == binding && self.bridgeContextEpoch == session
+    }
+  }
+
+  func forwardBridgeRequest(
     method: String,
     params: [String: Any],
     origin: String,

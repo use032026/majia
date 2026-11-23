@@ -1,18 +1,18 @@
 {
   "repository": "https://github.com/fsst-ios/stmini_flutter",
   "branch": "mini_web",
-  "commit": "5eae2a966a54b7ff3bf9fdd5f35268652873c52d",
+  "commit": "6bba89324196fcb2b138e0115c8fd22ee4e7ff69",
   "purpose": "iOS-only distribution subset of the Web-only runtime for Trip Delta; Android is intentionally not integrated.",
   "licenseNote": "Upstream LICENSE is retained verbatim; it currently contains a TODO and does not declare an open-source license.",
   "update": "Select a reviewed exact mini_web commit; copy only the listed iOS/Dart/LICENSE distribution files; adapt pubspec plugin registration to iOS only, regenerate SHA-256 values and validate the iOS host. Android/Mini runtime and local artifacts remain excluded.",
   "files": {
     "LICENSE": "422e0de8e3275febf5c41a5ccf891f68f16bc40e1b5dca26e50913b307ef794e",
-    "ios/Classes/StminiFlutterPlugin.swift": "217f03574548a0c438450142505ddbceb8bb38b4b0a2bf3dbe0080e87acc1f2c",
-    "ios/Classes/Web/OnlineWebViewController.swift": "3de469838a158cc738d78484617104a113be8704ac0563cd0039b4c96ca8ee6b",
+    "ios/Classes/StminiFlutterPlugin.swift": "a09d5c5e12c14ed32e846350274779b0a9571989c5b5063ef9ff67ac6ef8dd76",
+    "ios/Classes/Web/OnlineWebViewController.swift": "f9bd4f49a035e5244b221d4d4ccb6421efdda40f14c2596d10c1f1032f34f123",
     "ios/Classes/Web/STOnlineWebCore.swift": "0a9b47da58dcf2fbf1cbb6918c37d00e642750762ca66cc89ab3cfde9fdf147a",
     "ios/stmini_flutter.podspec": "739f18d5bcf3628f39064208b098e50fa159e41d875c2ded9292bdfe65a802dc",
     "lib/src/runtime_mode.dart": "5f6ad4576503f02b1bd3f4769ac2e6a93e066a27aeacaa094c1b41154e85be23",
-    "lib/stmini_flutter.dart": "46427931ef2240b18d5c22b72fef29357f1c3b73abdb7eb67a29a04bd248a74c",
+    "lib/stmini_flutter.dart": "9b07e67f34c067d068c9f871c38f2246191dbbe69f6dbda64b56b737c95311ff",
     "pubspec.yaml": "f22bd54298e3b2c5c73312c59d029bccdfe751e192c7bd25c33b858c398e71fd",
     "ios/Classes/Web/STOnlineWebLoading.swift": "ae44e8f7e233a2f746ea97cafa8ffa84b096609ec59c943eb988cc7ff1a5e4d7"
   },

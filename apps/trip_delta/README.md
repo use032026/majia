@@ -67,7 +67,7 @@ Android 原有旅程业务和工程配置保持原样。
 
 为使干净 checkout 与 CI 可复现，依赖使用应用内 `packages/stmini_flutter` 的发行源码快照，
 不依赖本机相邻目录。来源固定为 `mini_web` 的
-`5eae2a966a54b7ff3bf9fdd5f35268652873c52d`，逐文件 SHA-256 和升级步骤见
+`6bba89324196fcb2b138e0115c8fd22ee4e7ff69`，逐文件 SHA-256 和升级步骤见
 [`UPSTREAM.json`](packages/stmini_flutter/UPSTREAM.json)。快照仅保留 Dart/iOS 所需文件，
 插件 pubspec 裁掉 Android 注册，其余上游文件原样保留；来源及适配差异在清单中明确。
 LICENSE 当前未声明开源许可，

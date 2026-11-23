@@ -19,6 +19,13 @@ class StminiFlutter {
   static const MethodChannel _methods = MethodChannel('stmini_flutter/methods');
   static const EventChannel _events = EventChannel('stmini_flutter/events');
   static WebBridgeHandler? _webBridgeHandler;
+  static bool _reverseListenerInstalled = false;
+
+  static void _ensureReverseListener() {
+    if (_reverseListenerInstalled) return;
+    _methods.setMethodCallHandler(_handleNativeWebBridgeCall);
+    _reverseListenerInstalled = true;
+  }
 
   /// Ordinary Web presentation events (`web_open_requested`, `web_opened`,
   /// and `web_closed`). No Mini lifecycle or package events are emitted.
@@ -32,6 +39,7 @@ class StminiFlutter {
   /// Configures ordinary Web navigation. Every allowed top-level document can
   /// use the native bridge; iframes and stale documents remain rejected.
   static Future<void> initialize({Map<String, dynamic>? bridgeContext}) {
+    _ensureReverseListener();
     return _methods.invokeMethod<void>('initialize', {
       if (bridgeContext != null) 'bridgeContext': bridgeContext,
     });
@@ -42,7 +50,7 @@ class StminiFlutter {
   /// document; it never accepts an origin sent by H5.
   static void setWebBridgeHandler(WebBridgeHandler? handler) {
     _webBridgeHandler = handler;
-    _methods.setMethodCallHandler(_handleNativeWebBridgeCall);
+    _ensureReverseListener();
   }
 
   static Future<dynamic> _handleNativeWebBridgeCall(MethodCall call) async {
