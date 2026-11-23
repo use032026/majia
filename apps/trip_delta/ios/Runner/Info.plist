@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>RsFX</string>
+	<string>Trip Delta</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
