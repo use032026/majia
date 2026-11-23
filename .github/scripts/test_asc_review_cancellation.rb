@@ -8,17 +8,19 @@ class CancellationClient
   attr_reader :calls
   attr_accessor :app, :version_id, :version_number, :platform, :items, :submissions, :patch_error, :read_error, :build_id, :relationship_data
 
-  def initialize(states: [["WAITING_FOR_REVIEW", "WAITING_FOR_REVIEW"], ["COMPLETE", "DEVELOPER_REJECTED"]])
+  def initialize(states: [["WAITING_FOR_REVIEW", "WAITING_FOR_REVIEW"], ["COMPLETE", "DEVELOPER_REJECTED"]], target: C::TRIPDELTA_108)
     @calls = []
     @states = states
     @poll = 0
     @app = { "id" => C::APP_ID, "attributes" => { "bundleId" => C::BUNDLE_ID } }
-    @version_id, @version_number, @platform = C::VERSION_ID, C::MARKETING_VERSION, "IOS"
-    @build_id = "build-1"
+    @version_id, @version_number, @platform = target.fetch(:version_id), target.fetch(:version), "IOS"
+    @expected_version_id = @version_id
+    @submission_id = target.fetch(:submission_id)
+    @build_id = target.fetch(:build_id, "build-1")
     @relationship_data = nil
-    @submissions = [{ "type" => "reviewSubmissions", "id" => C::SUBMISSION_ID, "attributes" => { "platform" => "IOS" } }]
+    @submissions = [{ "type" => "reviewSubmissions", "id" => @submission_id, "attributes" => { "platform" => "IOS" } }]
     @items = [{ "type" => "reviewSubmissionItems", "id" => "item-1", "relationships" =>
-      C::ITEM_RELATIONSHIPS.to_h { |key| [key, { "data" => key == "appStoreVersion" ? { "type" => "appStoreVersions", "id" => C::VERSION_ID } : nil }] } }]
+      C::ITEM_RELATIONSHIPS.to_h { |key| [key, { "data" => key == "appStoreVersion" ? { "type" => "appStoreVersions", "id" => @expected_version_id } : nil }] } }]
   end
 
   def version
@@ -32,7 +34,7 @@ class CancellationClient
     return [app] if path == "/v1/apps"
     return [version] if path == "/v1/apps/#{C::APP_ID}/appStoreVersions"
     return submissions if path == "/v1/apps/#{C::APP_ID}/reviewSubmissions"
-    return items if path == "/v1/reviewSubmissions/#{C::SUBMISSION_ID}/items"
+    return items if path == "/v1/reviewSubmissions/#{@submission_id}/items"
 
     raise "unexpected GET list #{path}"
   end
@@ -40,14 +42,14 @@ class CancellationClient
   def get(path, query = nil)
     @calls << [:get, path, query]
     case path
-    when "/v1/appStoreVersions/#{C::VERSION_ID}"
+    when "/v1/appStoreVersions/#{@expected_version_id}"
       raise read_error if read_error
       @poll = [@poll + 1, @states.length - 1].min
       { "data" => version }
-    when "/v1/reviewSubmissions/#{C::SUBMISSION_ID}"
-      { "data" => { "type" => "reviewSubmissions", "id" => C::SUBMISSION_ID,
+    when "/v1/reviewSubmissions/#{@submission_id}"
+      { "data" => { "type" => "reviewSubmissions", "id" => @submission_id,
                     "attributes" => { "platform" => "IOS", "state" => @states[@poll][0] } } }
-    when "/v1/appStoreVersions/#{C::VERSION_ID}/relationships/build"
+    when "/v1/appStoreVersions/#{@expected_version_id}/relationships/build"
       { "data" => { "id" => build_id } }
     when "/v1/builds/#{build_id}"
       { "data" => { "id" => build_id, "attributes" => { "version" => "1" } } }
@@ -94,6 +96,23 @@ class ASCReviewCancellationTest < Minitest::Test
       "data" => { "type" => "reviewSubmissions", "id" => C::SUBMISSION_ID, "attributes" => { "canceled" => true } }
     }]], patches(client)
     assert client.calls.all? { |method, *_| %i[get paginate patch].include?(method) }
+  end
+
+  def test_tripdelta_111_refuses_a_different_linked_build
+    client = CancellationClient.new(target: C::TRIPDELTA_111)
+    client.build_id = "wrong-build"
+    error = assert_raises(E) { cancel(client, target: C::TRIPDELTA_111) }
+    assert_match(/linked build does not match/, error.message)
+    assert_empty patches(client)
+  end
+
+  def test_tripdelta_111_cancels_only_its_submitted_batch
+    target = C::TRIPDELTA_111
+    client = CancellationClient.new(target: target)
+    result = cancel(client, target: target)
+    assert result["completed"]
+    assert_equal target.fetch(:build_id), result.dig("after", "build", "id")
+    assert_equal ["/v1/reviewSubmissions/#{target.fetch(:submission_id)}"], patches(client).map { |_, path, _| path }
   end
 
   def test_existing_canceling_submission_is_polled_without_second_patch
@@ -241,9 +260,14 @@ class ASCReviewCancellationTest < Minitest::Test
     assert_includes workflow, "contents: read"
     assert_includes workflow, "cancel-in-progress: false"
     assert_equal ["--output PATH", "--github-output PATH", "--github-summary PATH"], cli.scan(/parser.on\("([^"]+)"\)/).flatten
+    assert_includes cli, 'options = { version: "1.0.8" }'
     refute_includes workflow, "IOS_DISTRIBUTION_P12"
     assert_includes cli, "com.tripdelta.lite.app"
-    assert_includes cli, "MajiaCI::ASCReviewCancellation.cancel(client: client)"
+    assert_includes cli, "cancellation.cancel(client: client, target: target)"
+    new_workflow = File.read(File.join(__dir__, "../workflows/tripdelta-cancel-111-review.yml"))
+    assert_includes new_workflow, "--version 1.0.11"
+    assert_includes new_workflow, "environment: tripdelta-production"
+    refute_includes workflow, "--version"
   end
 
   def test_submission_must_belong_uniquely_to_target_app_with_correct_type_and_platform

@@ -1,0 +1,46 @@
+name: Trip Delta Cancel 1.0.11 Review
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-tripdelta-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  cancel_review:
+    if: ${{ github.repository == 'use032026/majia' && github.ref == 'refs/heads/main' }}
+    environment: tripdelta-production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Withdraw only the authorized Trip Delta 1.0.11 review
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+        run: |
+          ruby .github/scripts/cancel-tripdelta-108-review.rb \
+            --version 1.0.11 \
+            --output asc-review-cancellation.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain cancellation receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-review-cancellation-tripdelta-111-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-review-cancellation.json
+          if-no-files-found: warn
+          retention-days: 30
