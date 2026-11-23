@@ -49,7 +49,8 @@ webHost.dispose();
 ```
 
 Web 根负责服务实例和原生事件订阅的生命周期，旅程根不会提前释放 Web 根的服务。
-Web Bridge 的 `getPackageName` 返回实际 iOS 宿主身份 `com.tripdelta.lite.app`。
+Web Bridge 的 `getPackageName` 返回 Android S86 正式客户端标识 `com.globalsmartchoose.app`。
+Trip Delta 的 iOS Bundle ID 为 `com.tripdelta.lite.app`。
 Android 本批不接入：依赖不注册 Android 插件、不包含 Android 原生源码，
 宿主在 Android 不初始化或调用 STMini channel；显式打开会报告平台不支持。
 Android 原有旅程业务和工程配置保持原样。

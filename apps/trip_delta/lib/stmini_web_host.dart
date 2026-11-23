@@ -101,7 +101,7 @@ class TripDeltaWebHost {
     try {
       _runtime.setBridgeHandler(handleBridge);
       await _runtime.initialize({
-        'packageName': 'com.tripdelta.lite.app',
+        'packageName': 'com.globalsmartchoose.app',
         'authStorageKey': 'futrenapp:auth-storage:v1',
         'bridgeUserInfoStorage': const {
           'storageKey': 'futrenapp:cache-storage:v1',

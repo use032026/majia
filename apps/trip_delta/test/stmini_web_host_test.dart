@@ -229,7 +229,7 @@ void main() {
       expect(calls.map((call) => call.method), ['initialize']);
       expect(calls.single.arguments, {
         'bridgeContext': {
-          'packageName': 'com.tripdelta.lite.app',
+          'packageName': 'com.globalsmartchoose.app',
           'authStorageKey': 'futrenapp:auth-storage:v1',
           'bridgeUserInfoStorage': {
             'storageKey': 'futrenapp:cache-storage:v1',
