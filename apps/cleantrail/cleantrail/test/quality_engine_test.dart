@@ -154,6 +154,63 @@ void main() {
     },
   );
 
+  test(
+    'date inspection reuse preserves repeated invalid values and refreshes after repair',
+    () {
+      final project = engine.importCsv(
+        fileName: 'repeated-dates.csv',
+        source:
+            'date,id\n'
+            '2024-02-29,a\n'
+            ' 2024/2/29 ,b\n'
+            '2024/2/29,c\n'
+            '2023-02-29,d\n'
+            '2023-02-29,e\n'
+            '2024-03-01,f\n'
+            ' \t,g\n'
+            '2024/2/29,c\n',
+      );
+      expect(project.issues.map((issue) => issue.id), [
+        'duplicate-row-8',
+        'whitespace-row-2-0',
+        'date-row-2-0',
+        'date-row-3-0',
+        'date-row-4-0',
+        'date-row-5-0',
+        'whitespace-row-7-0',
+        'date-row-7-0',
+      ]);
+      expect(
+        project.issues
+            .where((issue) => issue.kind == IssueKind.inconsistentDate)
+            .map((issue) => issue.suggestion),
+        ['2024-02-29', '2024-02-29', null, null, null],
+      );
+      final repaired = engine.resolve(
+        project,
+        'date-row-4-0',
+        replacement: '2024-02-29',
+      );
+      expect(repaired.records[3].values.first, '2024-02-29');
+      expect(repaired.originalRecords[3].values.first, '2023-02-29');
+      expect(
+        repaired.openIssues.any((issue) => issue.id == 'date-row-4-0'),
+        isFalse,
+      );
+      expect(
+        repaired.openIssues.any((issue) => issue.id == 'date-row-5-0'),
+        isTrue,
+      );
+      expect(repaired.audit.single.fromValue, '2023-02-29');
+      expect(repaired.audit.single.toValue, '2024-02-29');
+      final nextImport = engine.importCsv(
+        fileName: 'not-a-date-column.csv',
+        source: 'date,id\n2023-02-29,a\n2023-02-29,b\n2024-02-29,c\n',
+      );
+      expect(nextImport.issues, isEmpty);
+    },
+  );
+
   test('empty replacement cannot falsely resolve a missing value', () {
     final project = engine.importCsv(
       fileName: 'missing.csv',

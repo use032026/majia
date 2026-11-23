@@ -149,10 +149,14 @@ class QualityEngine {
 
     final dateColumns = <int>{};
     final mixedDateColumns = <int>{};
+    // Reuse this inspection's date results, including invalid values, only for
+    // confirmed date columns. Every later repair/import starts a fresh cache.
+    final parsedDateColumns = <int, Map<String, (DateTime, String)?>>{};
     for (var column = 0; column < headers.length; column++) {
       final header = headers[column].toLowerCase();
       if (!_looksLikeDateHeader(header)) continue;
       final formats = <String>{};
+      final parsedValues = <String, (DateTime, String)?>{};
       var parsedCount = 0;
       var valueCount = 0;
       for (final row in records) {
@@ -160,7 +164,7 @@ class QualityEngine {
         final value = row.values[column].trim();
         if (value.isEmpty) continue;
         valueCount++;
-        final parsed = _parseDate(value);
+        final parsed = parsedValues.putIfAbsent(value, () => _parseDate(value));
         if (parsed != null) {
           parsedCount++;
           formats.add(parsed.$2);
@@ -169,6 +173,7 @@ class QualityEngine {
       if (valueCount >= 2 &&
           parsedCount >= math.max(2, (valueCount * 0.6).ceil())) {
         dateColumns.add(column);
+        parsedDateColumns[column] = parsedValues;
       }
       if (dateColumns.contains(column) && formats.length > 1) {
         mixedDateColumns.add(column);
@@ -207,7 +212,7 @@ class QualityEngine {
           );
         }
         if (dateColumns.contains(column)) {
-          final parsed = _parseDate(inspectedValue);
+          final parsed = parsedDateColumns[column]![inspectedValue];
           if (parsed == null ||
               (mixedDateColumns.contains(column) && parsed.$2 != 'iso')) {
             addIssue(
