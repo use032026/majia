@@ -26,7 +26,7 @@ struct STWebRouterApi {
         guard let root = STWebApiManager.miniRootController(for: model.webview) else {
             return failure(STMiniLocalized("mini.api_navigate_only", "mini_navigateTo 仅支持 STMini 小程序"))
         }
-        guard let localPage = STWebResourceManager.installedMiniPackageLocalPageURL(name: root.name, path: path) else {
+        guard let localPage = root.webView?.packageLocalPageURL(path: path) else {
             return failure(STMiniLocalized("mini.api_local_page_invalid", "小程序本地页面无效"))
         }
         guard let navigationController = model.webview?.bindCrl?.navigationController else {
@@ -194,8 +194,7 @@ struct STWebRouterApi {
         }
         guard JSONSerialization.isValidJSONObject(routeParams),
               let routeData = try? JSONSerialization.data(withJSONObject: routeParams),
-              let localPage = STWebResourceManager.installedMiniPackageLocalPageURL(
-                  name: miniRoot.name,
+              let localPage = miniRoot.webView?.packageLocalPageURL(
                   // `__mini_child` is also used by ordinary mini_navigateTo.
                   // Keep a distinct marker so H5 only closes the route child
                   // that was pushed from an online `/web` page.

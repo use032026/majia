@@ -63,10 +63,20 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
   final lifecycle = <String, Set<String>>{};
   Completer<Map<String, dynamic>>? waiting;
   String? expectedMiniId;
+  String? expectedVersion;
+  Completer<Map<String, dynamic>>? waitingSnapshot;
+  var snapshotAfter = 0;
   Completer<Map<String, dynamic>>? waitingWeb;
   Completer<Map<String, dynamic>>? waitingWebSession;
   final webReports = <Map<String, dynamic>>[];
+  final networkReports = <Map<String, dynamic>>[];
+  Completer<Map<String, dynamic>>? waitingPackageFailure;
   final subscription = StminiFlutter.events.listen((event) {
+    if (event.name == 'mini_open_failed' &&
+        event.payload['miniId'] == 'batch6_network_fixture' &&
+        waitingPackageFailure?.isCompleted == false) {
+      waitingPackageFailure!.complete(Map<String, dynamic>.from(event.payload));
+    }
     if (const {
       'mini_download_started',
       'mini_download_progress',
@@ -104,12 +114,27 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
       }
       return;
     }
+    if (text.startsWith('FULL_RUNTIME_SNAPSHOT_RESULT ')) {
+      final snapshot = jsonDecode(
+        text.substring('FULL_RUNTIME_SNAPSHOT_RESULT '.length),
+      );
+      if (snapshot is Map<String, dynamic> &&
+          snapshot['miniId'] == 'batch6_network_fixture' &&
+          snapshot['version'] == '1.0' &&
+          snapshot['time'] is int &&
+          (snapshot['time'] as int) >= snapshotAfter &&
+          waitingSnapshot?.isCompleted == false) {
+        waitingSnapshot!.complete(snapshot);
+      }
+      return;
+    }
     if (!text.startsWith('FULL_RUNTIME_FIXTURE_RESULT ')) return;
     final value = jsonDecode(
       text.substring('FULL_RUNTIME_FIXTURE_RESULT '.length),
     );
     if (value is Map<String, dynamic> &&
         value['miniId'] == expectedMiniId &&
+        (expectedVersion == null || value['version'] == expectedVersion) &&
         waiting?.isCompleted == false) {
       waiting!.complete(value);
     }
@@ -126,19 +151,19 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
     final state = await StminiFlutter.foundationState;
     result['fullState'] =
         state['runtimeMode'] == 'mini' &&
-        state['miniPackageMode'] == 'local_only' &&
-        state['miniPackageDownloadAvailable'] == false &&
-        state['miniPackageInstallAvailable'] == false &&
-        state['miniPackageUpdateAvailable'] == false &&
+        state['miniPackageMode'] == 'download_install_update' &&
+        state['miniPackageDownloadAvailable'] == true &&
+        state['miniPackageInstallAvailable'] == true &&
+        state['miniPackageUpdateAvailable'] == true &&
         state['miniLoadingAvailable'] == true &&
         state['webLoadingAvailable'] == true &&
         state['miniChildWebAvailable'] == true &&
         state['closedMiniCacheAvailable'] == true;
     final rejected = <String, bool>{};
     for (final entry in <String, String>{
-      'mini://runtime_fixture?downloadUrl=https://127.0.0.1:1/forbidden.zip':
-          'unsupported',
-      'mini://runtime_fixture?__st_force_self_update=1': 'unsupported',
+      'mini://runtime_fixture?downloadUrl=http://127.0.0.1:1/forbidden.zip':
+          'invalid_download_url',
+      'mini://runtime_fixture?__st_force_self_update=1': 'invalid_mini_link',
       'mini://missing_fixture': 'mini_package_unavailable',
       'mini://runtime_fixture?minSupportVersion=2.0':
           'mini_package_unavailable',
@@ -150,7 +175,9 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
         rejected[entry.key] = error.code == entry.value;
       }
     }
-    result['localOnlyRejections'] = rejected.values.every((value) => value);
+    result['insecurePackageRejections'] = rejected.values.every(
+      (value) => value,
+    );
     final packages = await StminiFlutter.installedPackages();
     result['fixturePresent'] = packages.any(
       (item) => item.miniId == 'runtime_fixture',
@@ -170,6 +197,96 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
       await Future<void>.delayed(const Duration(seconds: 12));
       await StminiFlutter.closeMini();
       await Future<void>.delayed(const Duration(milliseconds: 600));
+    }
+    result['localRegressionHasNoPackageMutation'] =
+        packageMutationEvents.isEmpty;
+    if (Platform.isIOS) {
+      const rawPackageURL = String.fromEnvironment('STMINI_BATCH6_PACKAGE_URL');
+      final packageURL = Uri.parse(rawPackageURL);
+      if (packageURL.scheme != 'https' ||
+          packageURL.host != '127.0.0.1' ||
+          packageURL.port <= 1024 ||
+          packageURL.userInfo.isNotEmpty ||
+          packageURL.path != '/batch6_packages/v1.zip') {
+        throw StateError('Private test package HTTPS endpoint is required.');
+      }
+      const networkId = 'batch6_network_fixture';
+      String link(String file, {String? current, String? floor}) => Uri(
+        scheme: 'mini',
+        host: networkId,
+        queryParameters: {
+          'downloadUrl': packageURL.resolve(file).toString(),
+          if (current != null) 'currentVersion': current,
+          if (floor != null) 'minSupportVersion': floor,
+        },
+      ).toString();
+      Future<bool> installedVersion(String version) async {
+        final deadline = DateTime.now().add(const Duration(seconds: 20));
+        do {
+          final inventory = await StminiFlutter.installedPackages();
+          if (inventory.any(
+            (item) => item.miniId == networkId && item.version == version,
+          )) {
+            return true;
+          }
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+        } while (DateTime.now().isBefore(deadline));
+        return false;
+      }
+
+      result['networkInitiallyAbsent'] =
+          !(await StminiFlutter.installedPackages()).any(
+            (item) => item.miniId == networkId,
+          );
+      expectedMiniId = networkId;
+      expectedVersion = '1.0';
+      waiting = Completer<Map<String, dynamic>>();
+      await StminiFlutter.openMini(link('v1.zip', current: '1.0'));
+      networkReports.add(
+        await waiting.future.timeout(const Duration(seconds: 25)),
+      );
+      result['networkFirstInstall'] = await installedVersion('1.0');
+      await StminiFlutter.closeMini();
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      // A compatible old root opens immediately while the new archive commits.
+      waiting = Completer<Map<String, dynamic>>();
+      await StminiFlutter.openMini(
+        link('v2.zip', current: '2.0', floor: '1.0'),
+      );
+      result['networkWeakUpdate'] = await installedVersion('2.0');
+      snapshotAfter = DateTime.now().millisecondsSinceEpoch;
+      waitingSnapshot = Completer<Map<String, dynamic>>();
+      final oldRuntime = await waitingSnapshot.future.timeout(
+        const Duration(seconds: 12),
+      );
+      result['networkWeakRuntimeKeepsOriginalFiles'] =
+          oldRuntime['passed'] == true;
+      await StminiFlutter.closeMini();
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      waiting = Completer<Map<String, dynamic>>();
+      expectedVersion = '2.0';
+      await StminiFlutter.openMini('mini://$networkId');
+      networkReports.add(
+        await waiting.future.timeout(const Duration(seconds: 25)),
+      );
+      result['networkUpdatedColdReopen'] =
+          networkReports.last['version'] == '2.0';
+      await StminiFlutter.closeMini();
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+      waitingPackageFailure = Completer<Map<String, dynamic>>();
+      await StminiFlutter.openMini(
+        link('v2.zip', current: '3.0', floor: '3.0'),
+      );
+      final failed = await waitingPackageFailure.future.timeout(
+        const Duration(seconds: 20),
+      );
+      result['networkMandatoryFloorRejected'] =
+          failed['code'] == 'open_failed' && await installedVersion('2.0');
+      await StminiFlutter.closeMini();
+      result['networkReports'] = networkReports;
+      result['networkPackageEventsObserved'] =
+          packageMutationEvents.contains('mini_download_started') &&
+          packageMutationEvents.contains('mini_package_installed');
     }
     if (Platform.isIOS) {
       const rawWebURL = String.fromEnvironment('STMINI_TEST_WEB_URL');
@@ -221,14 +338,23 @@ Future<void> _verify(FullRuntimeReportWriter writer) async {
     result['passed'] =
         result['fullState'] == true &&
         result['fixturePresent'] == true &&
-        result['localOnlyRejections'] == true &&
-        packageMutationEvents.isEmpty &&
+        result['insecurePackageRejections'] == true &&
+        result['localRegressionHasNoPackageMutation'] == true &&
         reports.length == 2 &&
         reports.every((item) => item['passed'] == true) &&
         reports[0]['miniId'] == 'runtime_fixture' &&
         reports[1]['miniId'] == 'runtime_fixture_b' &&
         (!Platform.isIOS ||
-            (result['standaloneWebSession'] == true &&
+            (result['networkInitiallyAbsent'] == true &&
+                result['networkFirstInstall'] == true &&
+                result['networkWeakUpdate'] == true &&
+                result['networkWeakRuntimeKeepsOriginalFiles'] == true &&
+                result['networkUpdatedColdReopen'] == true &&
+                result['networkMandatoryFloorRejected'] == true &&
+                result['networkPackageEventsObserved'] == true &&
+                networkReports.length == 2 &&
+                networkReports.every((item) => item['passed'] == true) &&
+                result['standaloneWebSession'] == true &&
                 result['standaloneWebClosedAndReopened'] == true &&
                 webReports.length == 2 &&
                 webReports.every((item) => item['passed'] == true)));

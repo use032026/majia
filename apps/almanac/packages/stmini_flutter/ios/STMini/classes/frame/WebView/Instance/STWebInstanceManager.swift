@@ -19,8 +19,12 @@ struct STWebMiniPackageIdentity: Equatable {
     private let digest: Data
 
     static func read(miniId: String, home: URL = URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true)) -> STWebMiniPackageIdentity? {
+        STWebResourceManager.withPackageTransaction(miniId) { readLocked(miniId: miniId, home: home) }
+    }
+
+    private static func readLocked(miniId: String, home: URL) -> STWebMiniPackageIdentity? {
         let inventory = LocalPackageInventory(home: home)
-        guard let item = try? inventory.read(check: {}).first(where: { $0["miniId"] == miniId }),
+        guard let item = try? inventory.package(miniId: miniId, check: {}),
               let version = item["version"], let entry = item["entry"] else { return nil }
         let root = home.standardizedFileURL.resolvingSymlinksInPath()
             .appendingPathComponent("Documents/STMini", isDirectory: true).appendingPathComponent(miniId, isDirectory: true)
@@ -79,8 +83,9 @@ struct STWebMiniPackageIdentity: Equatable {
                 }
                 guard size == file.size else { return nil }
             }
-            guard try files() == before,
-                  let final = try inventory.read(check: {}).first(where: { $0["miniId"] == miniId }), final == item else { return nil }
+            guard try files() == before else { return nil }
+            let final = try inventory.package(miniId: miniId, check: {})
+            guard final == item else { return nil }
             return STWebMiniPackageIdentity(miniId: miniId, version: version, entry: entry, digest: Data(hash.finalize()))
         } catch { return nil }
     }
@@ -516,12 +521,17 @@ final class STWebMiniProgramKeepAliveStore {
     }
 
     private func canReuse(miniId: String, config: STWebConfig) -> Bool {
-        STWebResourceManager.isInstalledMiniPackageRunnable(name: miniId,
+        guard config.params?["__st_force_self_update"]?.trimmingCharacters(in: .whitespacesAndNewlines) != "1",
+              [config.params?["currentVersion"], config.params?["minSupportVersion"]].compactMap({ $0?.trimmingCharacters(in: .whitespacesAndNewlines) }).filter({ !$0.isEmpty }).allSatisfy(STWebResourceManager.validMiniVersion) else { return false }
+        if let raw = config.params?["downloadUrl"], !raw.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+           URL(string: raw.trimmingCharacters(in: .whitespacesAndNewlines)).map(StminiFlutterPlugin.isMiniDownloadURLAllowed) != true { return false }
+        return STWebResourceManager.isInstalledMiniPackageRunnable(name: miniId,
             currentVersion: config.params?["currentVersion"], minSupportVersion: config.params?["minSupportVersion"])
     }
 
     func invalidateSession() {
         precondition(Thread.isMainThread)
+        MiniPackageOperation.cancelAll()
         sessionGeneration &+= 1
         removeAll()
     }

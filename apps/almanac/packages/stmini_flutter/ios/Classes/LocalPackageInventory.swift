@@ -35,7 +35,7 @@ public final class LocalPackageInventory {
     for directory in children {
       try check()
       do {
-        if let item = try readPackage(directory, check: check) { result.append(item) }
+        if let item = try STWebResourceManager.withPackageTransaction(directory.lastPathComponent, { try readPackage(directory, check: check) }) { result.append(item) }
       } catch let failure as Failure {
         if case .unavailable = failure { throw failure }
         // Malformed local candidates are absent from the validated inventory.
@@ -48,13 +48,30 @@ public final class LocalPackageInventory {
   /// Shared renderer boundary; a native factory supplies the trusted system home.
   public func verifiedPackage(miniId: String, version: String, entry: String? = nil,
                               check: () throws -> Void) throws -> [String: String] {
-    guard let item = try read(check: check).first(where: { $0["miniId"] == miniId && $0["version"] == version }),
+    let item = try package(miniId: miniId, check: check)
+    guard item["version"] == version,
           entry == nil || Self.exact(item["entry"] ?? "", entry!) else { throw Failure.unavailable }
     return item
   }
 
+  func package(miniId: String, check: () throws -> Void) throws -> [String: String] {
+    guard Self.matches(miniId, "[a-z0-9][a-z0-9_-]{0,63}") else { throw Failure.invalid }
+    return try STWebResourceManager.withPackageTransaction(miniId) {
+      var root = home.standardizedFileURL.resolvingSymlinksInPath()
+      for part in ["Documents", "STMini"] {
+        root.appendPathComponent(part, isDirectory: true)
+        try check()
+        guard try attributes(root)?[.type] as? FileAttributeType == .typeDirectory,
+              root.resolvingSymlinksInPath().path == root.path else { throw Failure.unavailable }
+      }
+      guard let item = try readPackage(root.appendingPathComponent(miniId), check: check) else { throw Failure.unavailable }
+      return item
+    }
+  }
+
   public func verifiedResource(miniId: String, version: String, entry: String,
                                path: String, check: () throws -> Void) throws -> URL {
+    return try STWebResourceManager.withPackageTransaction(miniId) {
     do { _ = try verifiedPackage(miniId: miniId, version: version, entry: entry, check: check) }
     catch {
       // A cancelled/expired request cannot invalidate a later view generation.
@@ -66,6 +83,7 @@ public final class LocalPackageInventory {
     guard try regularPath(directory, path, check: check) else { throw Failure.invalid }
     try check()
     return directory.appendingPathComponent(path)
+    }
   }
 
   private func readPackage(_ directory: URL, check: () throws -> Void) throws -> [String: String]? {

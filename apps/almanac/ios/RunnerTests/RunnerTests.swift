@@ -4,6 +4,7 @@ import UIKit
 import WebKit
 import Network
 import Photos
+import ZIPFoundation
 @testable import stmini_flutter
 
 final class RunnerTests: XCTestCase {
@@ -887,7 +888,7 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     plugin.handle(FlutterMethodCall(methodName: name, arguments: arguments)) { value = $0; called = true }
     XCTAssertTrue(called); return value
   }
-  func testLocalOnlyCapabilitiesAndRejectedRequestsNeverMutatePackages() throws {
+  func testPackageCapabilitiesAndRejectedInsecureRequestsNeverMutatePackages() throws {
     try prepare()
     let listener = try RendererLoopback()
     defer { listener.stop() }
@@ -900,7 +901,7 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     while listener.count < 1 && Date() < positiveDeadline { RunLoop.current.run(until: Date().addingTimeInterval(0.01)) }
     XCTAssertEqual(listener.count, 1, "The observer must see a real connection on the exact tested port")
     positive.cancel(); listener.reset()
-    let remote = "https://127.0.0.1:\(port)/forbidden.zip"
+    let remote = "http://127.0.0.1:\(port)/forbidden.zip"
     let recordURL = folder.appendingPathComponent(".st-mini-package.json")
     var oldRecord = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: recordURL)) as? [String: Any])
     oldRecord["launchLink"] = "mini://\(id)?downloadUrl=\(remote)"
@@ -923,11 +924,11 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     XCTAssertTrue(observedEvents.contains("runtime_initialized"), "The actual plugin event observer must receive its positive control")
     observedEvents.removeAll()
     let state = try XCTUnwrap(invoke(plugin, "foundationState") as? [String: Any])
-    XCTAssertEqual(state["miniPackageMode"] as? String, "local_only")
+    XCTAssertEqual(state["miniPackageMode"] as? String, "download_install_update")
     XCTAssertEqual(state["webLoadingAvailable"] as? Bool, true)
     XCTAssertEqual(state["miniChildWebAvailable"] as? Bool, true)
     XCTAssertEqual(state["closedMiniCacheAvailable"] as? Bool, true)
-    for flag in ["miniPackageDownloadAvailable", "miniPackageInstallAvailable", "miniPackageUpdateAvailable"] { XCTAssertEqual(state[flag] as? Bool, false) }
+    for flag in ["miniPackageDownloadAvailable", "miniPackageInstallAvailable", "miniPackageUpdateAvailable"] { XCTAssertEqual(state[flag] as? Bool, true) }
     func reject(_ link: String, code: String) throws {
       let error = invoke(plugin, "openMini", ["link": link]) as? FlutterError
       XCTAssertEqual(error?.code, code, link)
@@ -944,9 +945,9 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
       "__st_force_self_update=1", "isforce=1", "isForce=1", "forceUpdate=1",
       "forceUpdate=&forceUpdate=1", "forceUpdate=1&forceUpdate="
     ] {
-      try reject("mini://\(id)?\(query)", code: "unsupported")
+      try reject("mini://\(id)?\(query)", code: query.contains("download") ? "invalid_download_url" : "invalid_mini_link")
     }
-    try reject("mini://missing_fixture?download_url=\(remote)", code: "unsupported")
+    try reject("mini://missing_fixture?download_url=\(remote)", code: "invalid_download_url")
     try reject("mini://missing_fixture", code: "mini_package_unavailable")
     for query in [
       "minSupportVersion=2.0", "currentVersion=2.0", "min_support_version=2.0", "current_version=2.0",
@@ -991,7 +992,6 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     XCTAssertEqual(replies.count, 2)
     for reply in replies {
       XCTAssertEqual(reply["code"] as? String, "0")
-      XCTAssertEqual((reply["data"] as? [String: Any])?["supported"] as? Bool, false)
       XCTAssertFalse(((reply["data"] as? [String: Any])?["msg"] as? String)?.isEmpty ?? true)
     }
     XCTAssertEqual(Set(replies.compactMap { $0["methodId"] as? String }), Set(["mini_checkMiniProgramUpdate", "mini_downloadMiniProgramUpdate"]))
@@ -1056,7 +1056,7 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     second.close()
   }
 
-  func testExistingLocalMiniRendersAndOldWKRejectsChangedDiskIdentity() throws {
+  func testExistingLocalMiniKeepsImmutableBytesAndRejectsSnapshotTampering() throws {
     try prepare()
     let controller = STWebMiniprogramCrl(name: id, config: STWebConfig(webMode: .online), isChild: false)
     controller.loadViewIfNeeded(); controller.viewDidAppear(false)
@@ -1068,11 +1068,25 @@ final class FullRuntimeLocalOnlyPackageTests: XCTestCase {
     web.evaluateJavaScript("window.localOnlyProbe===true && document.body.innerText.includes('Local only full Mini')") { result, error in XCTAssertNil(error); XCTAssertEqual(result as? Bool, true); dom.fulfill() }
     wait(for: [dom], timeout: 5)
     let originalURL = try XCTUnwrap(web.url)
-    XCTAssertNotNil(web.verifiedBoundResource(originalURL))
+    let snapshotFile = try XCTUnwrap(web.verifiedBoundResource(originalURL))
+    let originalBytes = try Data(contentsOf: snapshotFile)
     try prepare("2.0") // out-of-band synthetic change, not product install
     XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: id), "2.0")
-    XCTAssertNil(web.verifiedBoundResource(originalURL))
+    XCTAssertEqual(try Data(contentsOf: XCTUnwrap(web.verifiedBoundResource(originalURL))), originalBytes)
+    XCTAssertTrue(web.allowsLocalMiniBridge)
+    let reply = expectation(description: "old document JavaScript remains live")
+    web.evaluateJavaScript("window.localOnlyProbe === true") { value, error in XCTAssertNil(error); XCTAssertEqual(value as? Bool, true); reply.fulfill() }
+    wait(for: [reply], timeout: 5)
+    try Data("tampered snapshot resource".utf8).write(to: snapshotFile)
+    XCTAssertNil(web.verifiedBoundResource(originalURL), "Tampering the actual immutable resource must fail closed")
     web.cleanup()
+    let replacement = STWebMiniprogramCrl(name: id, config: STWebConfig(webMode: .online), isChild: false)
+    replacement.loadViewIfNeeded(); replacement.viewDidAppear(false)
+    let nextDeadline = Date().addingTimeInterval(10)
+    while !replacement.isKeepAliveRuntimeUsable && Date() < nextDeadline { RunLoop.current.run(until: Date().addingTimeInterval(0.01)) }
+    XCTAssertTrue(replacement.isKeepAliveRuntimeUsable)
+    XCTAssertEqual(replacement.loadedMiniPackageVersion, "2.0")
+    replacement.webView.cleanup()
   }
 }
 
@@ -1085,6 +1099,7 @@ private final class EffectWebView: STMiniWebView {
   var holdJavaScriptCompletions = false
   var pendingJavaScriptCompletions: [() -> Void] = []
   override var url: URL? { XCTAssertTrue(Thread.isMainThread); return syntheticURL }
+  override var bridgeReplyDocumentToken: String? { "0123456789abcdef0123456789abcdef" }
   override var allowsHostSensitiveBridge: Bool { true }
   override var allowsLocalMiniBridge: Bool { true }
   override func evaluateJavaScript(_ javaScriptString: String, completionHandler: (@MainActor @Sendable (Any?, (any Error)?) -> Void)? = nil) {
@@ -1252,10 +1267,24 @@ final class FullRuntimeQueuedEffectTests: XCTestCase {
   }
   private func context(child: Bool = false) -> (EffectMiniRoot, EffectNavigation, EffectWebView, EffectWebView?) {
     let root = EffectMiniRoot(name: miniId, config: STWebConfig(webMode: .online), isChild: false)
-    let rootWeb = EffectWebView(frame: .zero, configuration: WKWebViewConfiguration())
+    root.loadViewIfNeeded(); root.viewDidAppear(false)
+    let qualifiedDeadline = Date().addingTimeInterval(10)
+    while !root.isKeepAliveRuntimeUsable && Date() < qualifiedDeadline { RunLoop.current.run(until: Date().addingTimeInterval(0.01)) }
+    XCTAssertTrue(root.isKeepAliveRuntimeUsable, "Route fixtures must first load the production verified identity")
+    let qualifiedRootView = root.webView
+    let configuration = (qualifiedRootView?.configuration.copy() as? WKWebViewConfiguration) ?? WKWebViewConfiguration()
+    // Retain the production scheme handler while giving this endpoint its
+    // own script-handler registration and document-start user scripts.
+    configuration.userContentController = WKUserContentController()
+    let rootWeb = EffectWebView(frame: .zero, configuration: configuration)
     rootWeb.bindCrl = root
     rootWeb.syntheticURL = URL(string: "stmini://\(miniId).stmini.local/index.html")!
+    rootWeb.load(URLRequest(url: rootWeb.syntheticURL))
+    let bindingDeadline = Date().addingTimeInterval(10)
+    while rootWeb.packageLocalPageURL(path: "index.html") == nil && Date() < bindingDeadline { RunLoop.current.run(until: Date().addingTimeInterval(0.01)) }
+    XCTAssertNotNil(rootWeb.packageLocalPageURL(path: "index.html"), "Production navigation must bind a real immutable snapshot")
     root.webView = rootWeb
+    qualifiedRootView?.cleanup(); qualifiedRootView?.removeFromSuperview()
     let navigation = EffectNavigation(rootViewController: root)
     navigation.setViewControllers([root], animated: false)
     var childWeb: EffectWebView?
@@ -2262,4 +2291,537 @@ final class FifthBatchTransitionTests: XCTestCase {
     animator.clearSnapshot()
     XCTAssertNil(animator.transitionBack); XCTAssertNil(animator.transitionShadow)
   }
+}
+
+/// Real ZIPFoundation extraction and production installer, with synthetic data
+/// only. The optional hooks inject cancellation/rename failure before commit;
+/// they never choose the trusted installation directory.
+final class SixthBatchPackageInstallTests: XCTestCase {
+  private let miniId = "batch6_install_fixture"
+  private var directory: URL { URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Documents/STMini/\(miniId)") }
+  private var scratch: URL!
+  override func setUpWithError() throws {
+    scratch = FileManager.default.temporaryDirectory.appendingPathComponent("batch6-\(UUID().uuidString)")
+    try FileManager.default.createDirectory(at: scratch, withIntermediateDirectories: true)
+  }
+  override func tearDownWithError() throws {
+    try? FileManager.default.removeItem(at: directory)
+    try? FileManager.default.removeItem(at: scratch)
+  }
+  private func archive(_ version: String, id: String? = nil, entry: String = "index.html") throws -> URL {
+    let source = scratch.appendingPathComponent(UUID().uuidString)
+    try FileManager.default.createDirectory(at: source, withIntermediateDirectories: true)
+    try JSONSerialization.data(withJSONObject: ["miniId": id ?? miniId, "version": version, "entry": entry, "icon": "pixel.png", "updateself": "1", "ishome": "0", "channel": "fixture"]).write(to: source.appendingPathComponent("mini-manifest.json"))
+    try Data("<html>batch6 version \(version)</html>".utf8).write(to: source.appendingPathComponent("index.html"))
+    try XCTUnwrap(RendererFixture.files["pixel.png"]).write(to: source.appendingPathComponent("pixel.png"))
+    let zip = scratch.appendingPathComponent("\(UUID().uuidString).zip")
+    try FileManager.default.zipItem(at: source, to: zip, shouldKeepParent: false)
+    return zip
+  }
+  @discardableResult private func install(_ zip: URL, floor: String? = nil, force: Bool = false,
+      operation: MiniPackageOperation = MiniPackageOperation(), before: (() -> Void)? = nil,
+      move: ((URL, URL) throws -> Void)? = nil) throws -> STDirectMiniPackageInstallOutcome {
+    let done = expectation(description: "production asynchronous ZIP install")
+    var result: Result<STDirectMiniPackageInstallOutcome, Error>?
+    STWebResourceManager.installDirectMiniPackage(archivePath: zip.path, name: miniId, minimumVersion: floor,
+        requiresNewerVersion: force, operation: operation, beforeCommit: before, moveItem: move) {
+      result = $0; done.fulfill()
+    }
+    wait(for: [done], timeout: 15)
+    XCTAssertFalse(FileManager.default.fileExists(atPath: zip.path), "All archive outcomes dispose the transient input")
+    return try XCTUnwrap(result).get()
+  }
+  func testFirstInstallUpgradeEqualAndOldArchivesNeverDowngrade() throws {
+    try install(archive("1.0"))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "1.0")
+    try install(archive("2.0"), floor: "2.0")
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "2.0")
+    let before = try Data(contentsOf: directory.appendingPathComponent(".st-mini-package.json"))
+    for version in ["2.0", "1.0"] { try install(archive(version)) }
+    XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent(".st-mini-package.json")), before)
+    XCTAssertThrowsError(try install(archive("1.0"), force: true))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "2.0")
+  }
+  func testInvalidManifestFloorAndZipKeepVerifiedPackage() throws {
+    try install(archive("1.0"))
+    let before = try Data(contentsOf: directory.appendingPathComponent("index.html"))
+    for zip in [try archive("2.0", id: "another_package"), try archive("NaN"), try archive("2.0", entry: "../outside.html")] {
+      XCTAssertThrowsError(try install(zip))
+    }
+    XCTAssertThrowsError(try install(archive("2.0"), floor: "3.0"))
+    let broken = scratch.appendingPathComponent("invalid.zip"); try Data("not a zip".utf8).write(to: broken)
+    XCTAssertThrowsError(try install(broken))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "1.0")
+    XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent("index.html")), before)
+  }
+  func testCancelledUnpackAndFailedSecondRenameCannotReplacePackage() throws {
+    try install(archive("1.0"))
+    let operation = MiniPackageOperation()
+    XCTAssertThrowsError(try install(archive("2.0"), operation: operation, before: { operation.cancel() }))
+    var count = 0
+    XCTAssertThrowsError(try install(archive("2.0"), move: { from, to in
+      count += 1
+      if count == 2 { throw URLError(.cannotWriteToFile) }
+      try FileManager.default.moveItem(at: from, to: to)
+    }))
+    XCTAssertEqual(count, 2)
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "1.0")
+    XCTAssertThrowsError(try MiniPackageOperationCancelledProbe())
+  }
+  private func MiniPackageOperationCancelledProbe() throws {
+    let operation = MiniPackageOperation(); operation.cancel()
+    try operation.commit { XCTFail("cancelled owner may never enter commit") }
+  }
+  func testConcurrentSamePackageCommitRechecksWinnerAndPreservesNewest() throws {
+    let first = try archive("1.0"), second = try archive("2.0")
+    let ready = DispatchSemaphore(value: 0), release = DispatchSemaphore(value: 0)
+    let done = expectation(description: "overlapping per-package commits"); done.expectedFulfillmentCount = 2
+    STWebResourceManager.installDirectMiniPackage(archivePath: first.path, name: miniId, beforeCommit: {
+      ready.signal(); _ = release.wait(timeout: .now() + 10)
+    }) { result in
+      if case .failure(let error) = result { XCTFail("older validated transfer should retain newer package: \(error)") }
+      done.fulfill()
+    }
+    XCTAssertEqual(ready.wait(timeout: .now() + 10), .success)
+    STWebResourceManager.installDirectMiniPackage(archivePath: second.path, name: miniId) { result in
+      if case .failure(let error) = result { XCTFail("newer install: \(error)") }
+      release.signal(); done.fulfill()
+    }
+    wait(for: [done], timeout: 15)
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "2.0")
+  }
+  private func archiveEntries(_ entries: [(String, Entry.EntryType)]) throws -> URL {
+    let zip = scratch.appendingPathComponent("\(UUID().uuidString).zip")
+    let archive = try XCTUnwrap(Archive(url: zip, accessMode: .create))
+    for (path, type) in entries {
+      let bytes = Data("synthetic".utf8)
+      try archive.addEntry(with: path, type: type, uncompressedSize: Int64(bytes.count)) { position, count in
+        Data(bytes.dropFirst(Int(position)).prefix(count))
+      }
+    }
+    return zip
+  }
+  func testArchivePathsSymlinksDuplicateNamesAndByteBoundsRejectBeforeExtraction() throws {
+    try install(archive("1.0"))
+    let before = try Data(contentsOf: directory.appendingPathComponent("index.html"))
+    let rejectedEntries: [[(String, Entry.EntryType)]] = [
+      [("../outside.html", .file)], [("/absolute.html", .file)], [("link", .symlink)],
+      [("same.html", .file), ("same.html", .file)], [("Case.html", .file), ("case.html", .file)]
+    ]
+    for entries in rejectedEntries {
+      XCTAssertThrowsError(try install(archiveEntries(entries))) { error in
+        XCTAssertEqual((error as NSError).code, 14)
+      }
+    }
+    let huge = scratch.appendingPathComponent("sparse.zip")
+    XCTAssertTrue(FileManager.default.createFile(atPath: huge.path, contents: nil))
+    let handle = try FileHandle(forWritingTo: huge)
+    try handle.truncate(atOffset: 80 * 1024 * 1024 + 1); try handle.close()
+    XCTAssertThrowsError(try install(huge)) { XCTAssertEqual(($0 as NSError).code, 12) }
+    let declared = try archiveEntries([("synthetic.bin", .file)])
+    var bytes = try Data(contentsOf: declared)
+    let header = try XCTUnwrap(bytes.range(of: Data([0x50, 0x4b, 0x01, 0x02])))
+    var oversize = UInt32(80 * 1024 * 1024 + 1).littleEndian
+    withUnsafeBytes(of: &oversize) { value in bytes.replaceSubrange((header.lowerBound + 24)..<(header.lowerBound + 28), with: value) }
+    try bytes.write(to: declared)
+    // Synthetic central-directory size declaration; no large decompression.
+    XCTAssertThrowsError(try install(declared)) { XCTAssertEqual(($0 as NSError).code, 15) }
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "1.0")
+    XCTAssertEqual(try Data(contentsOf: directory.appendingPathComponent("index.html")), before)
+  }
+  func testImmutableSnapshotRetainsOldBytesAcrossWeakInstallAndCleansLastConsumer() throws {
+    try install(archive("1.0"))
+    var root: MiniPackageSnapshot? = try MiniPackageSnapshot(miniId: miniId)
+    let snapshotHome = try XCTUnwrap(root).home
+    var child = root
+    let oldFile = try XCTUnwrap(root?.resource("index.html"))
+    let oldBytes = try Data(contentsOf: oldFile)
+    try install(archive("2.0"))
+    XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "2.0")
+    XCTAssertEqual(root?.version, "1.0")
+    XCTAssertEqual(try Data(contentsOf: XCTUnwrap(child?.resource("index.html"))), oldBytes)
+    var next: MiniPackageSnapshot? = try MiniPackageSnapshot(miniId: miniId)
+    XCTAssertEqual(next?.version, "2.0")
+    XCTAssertNotEqual(try Data(contentsOf: XCTUnwrap(next?.resource("index.html"))), oldBytes)
+    var resourceLease = root?.resourceLease("index.html")
+    XCTAssertNotNil(resourceLease)
+    root = nil
+    XCTAssertTrue(FileManager.default.fileExists(atPath: snapshotHome.path), "local child retains the original snapshot")
+    child = nil
+    XCTAssertTrue(FileManager.default.fileExists(atPath: snapshotHome.path), "an in-flight immutable resource lease retains its files")
+    XCTAssertTrue(resourceLease?.isCurrent() == true)
+    resourceLease = nil
+    XCTAssertFalse(FileManager.default.fileExists(atPath: snapshotHome.path), "last native consumer or resource lease removes snapshot")
+    let nextHome = try XCTUnwrap(next).home; next = nil
+    XCTAssertFalse(FileManager.default.fileExists(atPath: nextHome.path))
+    XCTAssertThrowsError(try MiniPackageSnapshot(miniId: "missing_snapshot_fixture"))
+    try FileManager.default.removeItem(at: directory.appendingPathComponent("mini-manifest.json"))
+    XCTAssertThrowsError(try MiniPackageSnapshot(miniId: miniId))
+  }
+  func testActualWKRetainsV1ResourceAndBridgeAfterWeakInstallThenColdLoadsV2() throws {
+    try install(archive("1.0"))
+    let prior = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
+    let window = UIWindow(frame: UIScreen.main.bounds), host = UIViewController()
+    window.rootViewController = host; window.makeKeyAndVisible()
+    defer { host.dismiss(animated: false); window.isHidden = true; prior?.makeKeyAndVisible() }
+    func opened() throws -> STWebMiniprogramCrl {
+      STWebOpenHandler.openMiniprogram(name: miniId, config: STWebConfig(webMode: .online), crl: host)
+      let deadline = Date().addingTimeInterval(10)
+      while Date() < deadline {
+        if let navigation = host.presentedViewController as? STWebNavigationController,
+           let root = navigation.viewControllers.first as? STWebMiniprogramCrl,
+           root.isKeepAliveRuntimeUsable, root.webView?.hasNativeEffectAuthority == true, !navigation.isBeingPresented { return root }
+        RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+      }
+      throw URLError(.timedOut)
+    }
+    func evaluate(_ view: WKWebView, _ script: String) -> Any? {
+      let done = expectation(description: "real WK snapshot bridge result"); var result: Any?
+      view.evaluateJavaScript(script) { value, error in XCTAssertNil(error); result = value; done.fulfill() }
+      wait(for: [done], timeout: 5); return result
+    }
+    let old = try opened(), oldView = try XCTUnwrap(old.webView)
+    let oldURL = try XCTUnwrap(oldView.url)
+    let oldResource = try XCTUnwrap(oldView.verifiedBoundResource(oldURL))
+    let before = try Data(contentsOf: oldResource)
+    try install(archive("2.0"))
+    XCTAssertEqual(old.loadedMiniPackageVersion, "1.0")
+    XCTAssertTrue(oldView.allowsLocalMiniBridge)
+    XCTAssertEqual(try Data(contentsOf: XCTUnwrap(oldView.verifiedBoundResource(oldURL))), before)
+    let fetched = expectation(description: "actual old WK reads immutable manifest after disk v2")
+    if #available(iOS 14.0, *) {
+      oldView.callAsyncJavaScript("return (await (await fetch('mini-manifest.json')).json()).version", arguments: [:], in: nil, in: .page) { result in
+        switch result { case .success(let version): XCTAssertEqual(version as? String, "1.0"); case .failure(let error): XCTFail("\(error)") }
+        fetched.fulfill()
+      }
+      wait(for: [fetched], timeout: 5)
+    }
+    _ = evaluate(oldView, "window.CMSJsCallBack=function(r){window.__snapshotReply=r};true")
+    STWebApiManager.dealWithApiMessage(["method": "mini_getMiniPackageInfo", "params": ["methodId": "snapshot-v1"]], webView: oldView)
+    let replyDeadline = Date().addingTimeInterval(5)
+    var reply: [String: Any]?
+    repeat { reply = evaluate(oldView, "window.__snapshotReply || null") as? [String: Any] } while reply == nil && Date() < replyDeadline
+    XCTAssertEqual((reply?["data"] as? [String: Any])?["version"] as? String, "1.0")
+    var route = STWebApiModel(dict: ["method": "mini_navigateTo", "params": ["path": "index.html", "methodId": "weak-child"]])
+    route.webview = oldView
+    XCTAssertEqual(STWebRouterApi().navigateTo(model: route)["code"] as? String, "1")
+    let childDeadline = Date().addingTimeInterval(10)
+    var localChild: STWebH5Crl?
+    while Date() < childDeadline {
+      if let child = old.navigationController?.topViewController as? STWebH5Crl,
+         child.webView?.allowsLocalMiniBridge == true, child.webView.bridgeReplyDocumentToken != nil { localChild = child; break }
+      RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+    }
+    let child = try XCTUnwrap(localChild)
+    XCTAssertEqual(child.webView.packageLocalPageURL(path: "index.html"), oldView.packageLocalPageURL(path: "index.html"))
+    let childFetch = expectation(description: "real local child shares old snapshot after weak disk update")
+    if #available(iOS 14.0, *) {
+      child.webView.callAsyncJavaScript("return (await (await fetch('mini-manifest.json')).json()).version", arguments: [:], in: nil, in: .page) { result in
+        switch result { case .success(let version): XCTAssertEqual(version as? String, "1.0"); case .failure(let error): XCTFail("\(error)") }
+        childFetch.fulfill()
+      }
+      wait(for: [childFetch], timeout: 5)
+    }
+    _ = old.navigationController?.popToRootViewController(animated: false)
+    let closed = expectation(description: "old root native close")
+    old.close { closed.fulfill() }; wait(for: [closed], timeout: 10)
+    let next = try opened()
+    XCTAssertFalse(next === old); XCTAssertEqual(next.loadedMiniPackageVersion, "2.0")
+  }
+  func testPushedForceUpdateRejectsBeforePopAndAcceptsValidCurrentChild() throws {
+    try install(archive("1.0"))
+    let prior = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
+    let window = UIWindow(frame: UIScreen.main.bounds), host = UIViewController()
+    window.rootViewController = host; window.makeKeyAndVisible()
+    defer { host.dismiss(animated: false); window.isHidden = true; prior?.makeKeyAndVisible() }
+    STWebOpenHandler.openMiniprogram(name: miniId, config: STWebConfig(webMode: .online), crl: host)
+    let rootDeadline = Date().addingTimeInterval(10)
+    var loaded: STWebMiniprogramCrl?
+    while Date() < rootDeadline {
+      if let navigation = host.presentedViewController as? STWebNavigationController,
+         let root = navigation.viewControllers.first as? STWebMiniprogramCrl,
+         root.isKeepAliveRuntimeUsable, root.webView?.allowsLocalMiniBridge == true,
+         root.webView.bridgeReplyDocumentToken != nil, !navigation.isBeingPresented { loaded = root; break }
+      RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+    }
+    let root = try XCTUnwrap(loaded), navigation = try XCTUnwrap(root.navigationController)
+    defer { root.prepareForNativeDismissal() }
+    var route = STWebApiModel(dict: ["method": "mini_navigateTo", "params": ["path": "index.html"]]); route.webview = root.webView
+    XCTAssertEqual(STWebRouterApi().navigateTo(model: route)["code"] as? String, "1")
+    let childDeadline = Date().addingTimeInterval(10)
+    var pushed: STWebH5Crl?
+    while Date() < childDeadline {
+      if let child = navigation.topViewController as? STWebH5Crl,
+         child.webView?.allowsLocalMiniBridge == true, child.webView.bridgeReplyDocumentToken != nil,
+         navigation.transitionCoordinator == nil { pushed = child; break }
+      RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+    }
+    let child = try XCTUnwrap(pushed), web = try XCTUnwrap(child.webView)
+    func evaluate(_ script: String) -> Any? {
+      let done = expectation(description: "pushed update result"); var answer: Any?
+      web.evaluateJavaScript(script) { value, error in XCTAssertNil(error); answer = value; done.fulfill() }
+      wait(for: [done], timeout: 5); return answer
+    }
+    _ = evaluate("window.CMSJsCallBack=r=>window.__forceUpdateReply=r;true")
+    let stack = navigation.viewControllers.map(ObjectIdentifier.init)
+    let parameters = (root.config.params ?? [:]) as NSDictionary
+    let source = try XCTUnwrap(web.url), resource = try XCTUnwrap(web.verifiedBoundResource(source))
+    let before = try Data(contentsOf: resource)
+    for (index, invalid) in ["not a URL", "http://127.0.0.1:1/update.zip", "https://user:synthetic@foreign.invalid/update.zip", "https://foreign.invalid/update.zip#fragment"].enumerated() {
+      _ = evaluate("window.__forceUpdateReply=null;true")
+      STWebApiManager.dealWithApiMessage(["method": "mini_downloadMiniProgramUpdate", "params": ["methodId": "invalid-\(index)", "downloadUrl": invalid, "isforce": true]], webView: web)
+      let deadline = Date().addingTimeInterval(5)
+      var reply: [String: Any]?
+      repeat { reply = evaluate("window.__forceUpdateReply || null") as? [String: Any] } while reply == nil && Date() < deadline
+      XCTAssertEqual(reply?["code"] as? String, "0", invalid)
+      XCTAssertEqual(navigation.viewControllers.map(ObjectIdentifier.init), stack, invalid)
+      XCTAssertEqual((root.config.params ?? [:]) as NSDictionary, parameters, invalid)
+      XCTAssertEqual(try Data(contentsOf: resource), before, invalid)
+      XCTAssertFalse(root.skipsKeepAliveOnNextDismiss, invalid)
+      XCTAssertTrue(web.allowsLocalMiniBridge, invalid)
+    }
+    let allowed = "https://127.0.0.1:1/update.zip"
+    STWebApiManager.dealWithApiMessage(["method": "mini_downloadMiniProgramUpdate", "params": ["methodId": "valid-current-child", "downloadUrl": allowed, "isforce": true]], webView: web)
+    XCTAssertTrue(navigation.topViewController === root, "Valid forced update may return to its own root")
+    XCTAssertEqual(root.config.params?["downloadUrl"], allowed)
+    XCTAssertTrue(root.skipsKeepAliveOnNextDismiss, "Valid original child must retain an actual acceptance positive")
+    root.prepareForNativeDismissal() // cancels the controlled loopback transport immediately
+  }
+  func testResourceCallbacksReleasePackageLockBeforeMainMarkerValidation() throws {
+    try install(archive("1.0"))
+    let snapshot = try MiniPackageSnapshot(miniId: miniId)
+    let lease = try XCTUnwrap(snapshot.resourceLease("index.html"))
+    let url = try XCTUnwrap(URL(string: "stmini://\(miniId).stmini.local/index.html"))
+    let view = BoundResourceLeaseWebView(lease: lease, url: url), task = ResourceCallbackProbeTask(url: url)
+    defer { view.cleanup() }
+    let handler = STWebSchemeHandler(), finished = expectation(description: "resource callback and main marker validation finish")
+    var callbackChecks = 0, markerChecks = 0
+    task.onCallback = {
+      callbackChecks += 1
+      XCTAssertTrue(Thread.isMainThread, "Delivery and WebKit stop must be serialized on main")
+      // Probe from another worker first, with a finite wait. A regression that
+      // holds the package lock across this callback fails here without ever
+      // blocking main on that lock and disabling XCTest's own timeout.
+      let available = DispatchSemaphore(value: 0)
+      DispatchQueue.global(qos: .userInitiated).async {
+        STWebResourceManager.withPackageTransaction(self.miniId) { () -> Void in
+          _ = available.signal()
+        }
+      }
+      let released = available.wait(timeout: .now() + 1) == .success
+      XCTAssertTrue(released, "No package lock may cross a task callback")
+      if released && Thread.isMainThread {
+        XCTAssertNotNil(snapshot.resource("index.html"), "Equivalent main-thread marker identity validation remains live")
+        markerChecks += 1
+      }
+    }
+    task.onTerminal = { finished.fulfill() }
+    handler.webView(view, start: task)
+    wait(for: [finished], timeout: 10)
+    XCTAssertEqual(task.responseCount, 1); XCTAssertEqual(task.dataCount, 1)
+    XCTAssertEqual(task.finishCount, 1); XCTAssertEqual(task.failureCount, 0)
+    XCTAssertEqual(callbackChecks, 3); XCTAssertEqual(markerChecks, 3)
+    let responsive = expectation(description: "host main runloop remains responsive after delivery")
+    DispatchQueue.main.async { responsive.fulfill() }; wait(for: [responsive], timeout: 2)
+  }
+
+  func testResourceStopDuringResponsePreventsLateDataAndTerminalWithoutAffectingNextTask() throws {
+    try install(archive("1.0"))
+    let snapshot = try MiniPackageSnapshot(miniId: miniId), handler = STWebSchemeHandler()
+    let lease = try XCTUnwrap(snapshot.resourceLease("index.html"))
+    let url = try XCTUnwrap(URL(string: "stmini://\(miniId).stmini.local/index.html"))
+    let view = BoundResourceLeaseWebView(lease: lease, url: url)
+    defer { view.cleanup() }
+    let stopped = ResourceCallbackProbeTask(url: url), current = ResourceCallbackProbeTask(url: url)
+    let stoppedAtBoundary = expectation(description: "original resource stopped at main response boundary")
+    let nextFinished = expectation(description: "new resource task completes independently")
+    stopped.onResponse = {
+      XCTAssertTrue(Thread.isMainThread)
+      handler.webView(view, stop: stopped)
+      stoppedAtBoundary.fulfill()
+      handler.webView(view, start: current)
+    }
+    stopped.onTerminal = { XCTFail("Stopped request must not receive any late terminal") }
+    current.onTerminal = { nextFinished.fulfill() }
+    handler.webView(view, start: stopped)
+    wait(for: [stoppedAtBoundary, nextFinished], timeout: 10)
+    XCTAssertEqual(stopped.responseCount, 1); XCTAssertEqual(stopped.dataCount, 0)
+    XCTAssertEqual(stopped.finishCount, 0); XCTAssertEqual(stopped.failureCount, 0)
+    XCTAssertEqual(current.responseCount, 1); XCTAssertEqual(current.dataCount, 1)
+    XCTAssertEqual(current.finishCount, 1); XCTAssertEqual(current.failureCount, 0)
+  }
+
+  func testWarmExplicitUpdateIntentsKeepSameWKAndConsumeOnlyCurrentVisibleOwner() throws {
+    try install(archive("1.0"))
+    guard let registry = UIApplication.shared.delegate as? FlutterPluginRegistry,
+          let plugin = registry.valuePublished(byPlugin: "StminiFlutterPlugin") as? StminiFlutterPlugin else { XCTFail("real registered plugin required"); return }
+    var starts = 0
+    XCTAssertNil(plugin.onListen(withArguments: nil) { value in
+      if let event = value as? [String: Any], event["name"] as? String == "mini_download_started",
+         (event["payload"] as? [String: Any])?["miniId"] as? String == self.miniId { starts += 1 }
+    })
+    defer { _ = plugin.onCancel(withArguments: nil) }
+    let prior = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
+    let window = UIWindow(frame: UIScreen.main.bounds), host = UIViewController()
+    window.rootViewController = host; window.makeKeyAndVisible()
+    defer { STWebMiniProgramKeepAliveStore.shared.removeAll(); host.dismiss(animated: false); window.isHidden = true; prior?.makeKeyAndVisible() }
+    func open(_ params: [String: String] = [:]) throws -> STWebMiniprogramCrl {
+      STWebOpenHandler.openMiniprogram(name: miniId, config: STWebConfig(webMode: .online, params: params), crl: host)
+      let deadline = Date().addingTimeInterval(10)
+      while Date() < deadline {
+        if let navigation = host.presentedViewController as? STWebNavigationController,
+           let root = navigation.viewControllers.first as? STWebMiniprogramCrl,
+           root.isKeepAliveRuntimeUsable, root.webView?.hasNativeEffectAuthority == true,
+           !navigation.isBeingPresented, !navigation.isBeingDismissed { return root }
+        RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+      }
+      throw URLError(.timedOut)
+    }
+    func close(_ root: STWebMiniprogramCrl) {
+      let done = expectation(description: "actual close before next warm intent")
+      root.close { done.fulfill() }; wait(for: [done], timeout: 10)
+      XCTAssertNil(host.presentedViewController)
+    }
+    func drain() {
+      for _ in 0..<4 { let done = expectation(description: "bounded warm ticket/event queue drain"); DispatchQueue.main.async { done.fulfill() }; wait(for: [done], timeout: 2) }
+    }
+    let original = try open(), originalWK = try XCTUnwrap(original.webView)
+    close(original)
+    let endpoint = "https://127.0.0.1:1/controlled-update.zip"
+    for (current, expectedDownload) in [("1.0", false), ("0.9", false), ("", true), ("2.0", true)] {
+      var params = ["downloadUrl": endpoint, "minSupportVersion": "1.0"]
+      if !current.isEmpty { params["currentVersion"] = current }
+      let before = starts, resumed = try open(params)
+      XCTAssertTrue(resumed === original); XCTAssertTrue(resumed.webView === originalWK)
+      drain()
+      XCTAssertEqual(starts - before, expectedDownload ? 1 : 0, "warm current=\(current)")
+      XCTAssertEqual(resumed.loadedMiniPackageVersion, "1.0")
+      XCTAssertTrue(resumed.webView.allowsLocalMiniBridge)
+      close(resumed) // immediately cancels this exact loopback request/commit permission
+      XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "1.0")
+    }
+    // Use the real visible root but deterministically invalidate its original
+    // queued activation before the main queue can consume the update intent.
+    let resumed = try open(); drain()
+    for boundary in ["close", "session"] {
+      let before = starts
+      resumed.prepareForKeepAliveReuse(config: STWebConfig(webMode: .online, params: ["downloadUrl": endpoint, "currentVersion": "2.0", "minSupportVersion": "1.0"]))
+      resumed.setKeepAliveRuntimeHidden(false)
+      if boundary == "close" { resumed.prepareForNativeDismissal() }
+      else { STWebMiniProgramKeepAliveStore.shared.invalidateSession() }
+      drain()
+      XCTAssertEqual(starts, before, "expired queued warm intent must not start: \(boundary)")
+      XCTAssertEqual(STWebResourceManager.installedMiniPackageVersion(name: miniId), "1.0")
+      if boundary == "close" { resumed.setKeepAliveRuntimeHidden(false); drain() }
+    }
+  }
+
+  func testSessionBoundaryCancelsEveryOriginalCommitPermission() throws {
+    let old = MiniPackageOperation()
+    STWebMiniProgramKeepAliveStore.shared.invalidateSession()
+    XCTAssertThrowsError(try old.check())
+    let fresh = MiniPackageOperation()
+    XCTAssertNoThrow(try fresh.commit {})
+  }
+}
+
+/// Holds a real native evaluator request at the final evaluator boundary. The
+/// exact production script is later executed by real WK in a replacement
+/// same-URL document. This is a controlled queue interleaving, not a claim that
+/// an uninstrumented WebKit scheduler leak has been reproduced.
+private final class HeldReplyDocumentWebView: STMiniWebView {
+  var holdReplies = false
+  var queuedReplies: [String] = []
+  override var allowsHostSensitiveBridge: Bool { true }
+  override func evaluateJavaScript(_ script: String, completionHandler: (@MainActor @Sendable (Any?, (any Error)?) -> Void)? = nil) {
+    if holdReplies && script.contains("document.__stminiReplyDocument") && script.contains("CMSJsCallBack") {
+      queuedReplies.append(script); completionHandler?(false, nil); return
+    }
+    super.evaluateJavaScript(script, completionHandler: completionHandler)
+  }
+  func executeQueuedReply(_ script: String, completion: @escaping @MainActor @Sendable (Any?, (any Error)?) -> Void) {
+    super.evaluateJavaScript(script, completionHandler: completion)
+  }
+}
+
+final class SixthBatchDocumentReplyTests: XCTestCase {
+  func testActualWKOriginalDocumentReceivesAndSameURLReplacementRejectsQueuedReply() throws {
+    let view = HeldReplyDocumentWebView(frame: CGRect(x: 0, y: 0, width: 320, height: 480), configuration: WKWebViewConfiguration())
+    // Only the test's inert HTML loading ignores navigation policy. Reply
+    // generation and the injected document marker are production code.
+    view.navigationDelegate = nil
+    defer { view.cleanup() }
+    func evaluate(_ script: String) throws -> Any? {
+      let done = expectation(description: "actual WK reply document observation"); var answer: Any?; var failure: Error?
+      view.evaluateJavaScript(script) { value, error in answer = value; failure = error; done.fulfill() }
+      wait(for: [done], timeout: 5)
+      if let failure { throw failure }; return answer
+    }
+    func load(_ name: String) throws -> String {
+      view.loadHTMLString("<html><body>\(name)<script>window.replyDocumentName='\(name)';window.receivedReplies=[];window.CMSJsCallBack=r=>window.receivedReplies.push(r);</script></body></html>", baseURL: URL(string: "https://fixture.invalid/same-document"))
+      let deadline = Date().addingTimeInterval(8)
+      while Date() < deadline {
+        if (try? evaluate("window.replyDocumentName")) as? String == name,
+           let token = try? evaluate("document.__stminiReplyDocument"), let token = token as? String { return token }
+        RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+      }
+      throw URLError(.timedOut)
+    }
+    func drain() { let done = expectation(description: "queued native callback reached evaluator"); DispatchQueue.main.async { done.fulfill() }; wait(for: [done], timeout: 2) }
+    let originalToken = try load("original")
+    STWebApiManager.callBack(["code": "1", "data": ["synthetic": "original"]], method: "fixture_reply", methodId: "positive", webView: view, documentToken: originalToken)
+    drain()
+    XCTAssertEqual(try evaluate("window.receivedReplies.length") as? Int, 1)
+    let originalURL = view.url
+    view.holdReplies = true
+    STWebApiManager.callBack(["code": "1", "data": ["synthetic": "old queued payload"]], method: "fixture_reply", methodId: "obsolete", webView: view, documentToken: originalToken)
+    drain()
+    let oldScript = try XCTUnwrap(view.queuedReplies.first)
+    XCTAssertEqual(view.queuedReplies.count, 1)
+    let replacementToken = try load("replacement")
+    XCTAssertEqual(view.url, originalURL)
+    XCTAssertNotEqual(replacementToken, originalToken, "Every real document must generate a fresh marker")
+    let consumed = expectation(description: "exact production old script executed in replacement WK global")
+    view.executeQueuedReply(oldScript) { value, error in XCTAssertNil(error); XCTAssertEqual(value as? Bool, false); consumed.fulfill() }
+    wait(for: [consumed], timeout: 5)
+    XCTAssertEqual(try evaluate("window.receivedReplies.length") as? Int, 0)
+    view.holdReplies = false
+    STWebApiManager.callBack(["code": "1", "data": ["synthetic": "fresh"]], method: "fixture_reply", methodId: "fresh-positive", webView: view, documentToken: replacementToken)
+    drain()
+    XCTAssertEqual(try evaluate("window.receivedReplies.length") as? Int, 1, "The new document must accept its own fresh response")
+  }
+}
+
+/// Supplies a real verified immutable lease to the production resource handler.
+/// Only the WebView binding is a controlled endpoint; reads, package locking,
+/// stop state and all WebKit-task delivery code remain production code.
+private final class BoundResourceLeaseWebView: STMiniWebView {
+  private let suppliedLease: MiniPackageSnapshot.ResourceLease
+  private let suppliedURL: URL
+  init(lease: MiniPackageSnapshot.ResourceLease, url: URL) {
+    suppliedLease = lease; suppliedURL = url
+    super.init(frame: .zero, configuration: WKWebViewConfiguration())
+  }
+  required init?(coder: NSCoder) { fatalError("test endpoint") }
+  override func boundResourceLease(_ target: URL) -> MiniPackageSnapshot.ResourceLease? {
+    target == suppliedURL && suppliedLease.isCurrent() ? suppliedLease : nil
+  }
+  override func isCurrentBoundResourceLease(_ lease: MiniPackageSnapshot.ResourceLease) -> Bool {
+    lease.fileURL == suppliedLease.fileURL && lease.isCurrent()
+  }
+}
+
+private final class ResourceCallbackProbeTask: NSObject, WKURLSchemeTask {
+  let request: URLRequest
+  var responseCount = 0, dataCount = 0, finishCount = 0, failureCount = 0
+  var onCallback: (() -> Void)?
+  var onResponse: (() -> Void)?
+  var onTerminal: (() -> Void)?
+  init(url: URL) { request = URLRequest(url: url) }
+  func didReceive(_ response: URLResponse) {
+    responseCount += 1; onCallback?(); onResponse?()
+  }
+  func didReceive(_ data: Data) { dataCount += 1; onCallback?() }
+  func didFinish() { finishCount += 1; onCallback?(); onTerminal?() }
+  func didFailWithError(_ error: Error) { failureCount += 1; onCallback?(); onTerminal?() }
 }

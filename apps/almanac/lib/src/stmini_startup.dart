@@ -119,7 +119,7 @@ class StminiStartup {
         event.name == 'runtime_initialized' &&
         state['stage'] == 'mini' &&
         state['runtimeMode'] == 'mini' &&
-        state['miniPackageMode'] == 'local_only' &&
+        state['miniPackageMode'] == 'download_install_update' &&
         state['miniLoadingAvailable'] == true &&
         state['miniChildWebAvailable'] == true;
     final foundation =
@@ -128,9 +128,9 @@ class StminiStartup {
         state['miniLoadingAvailable'] == false &&
         state['miniChildWebAvailable'] == false;
     if ((!mini && !foundation) ||
-        state['miniPackageDownloadAvailable'] != false ||
-        state['miniPackageInstallAvailable'] != false ||
-        state['miniPackageUpdateAvailable'] != false ||
+        state['miniPackageDownloadAvailable'] != mini ||
+        state['miniPackageInstallAvailable'] != mini ||
+        state['miniPackageUpdateAvailable'] != mini ||
         state['closedMiniCacheAvailable'] != mini ||
         state['localRendererAvailable'] != true ||
         state['initialized'] != true ||
@@ -144,10 +144,10 @@ class StminiStartup {
     _foundationState = Map<String, dynamic>.unmodifiable({
       'stage': mini ? 'mini' : 'foundation',
       if (mini) 'runtimeMode': 'mini',
-      if (mini) 'miniPackageMode': 'local_only',
-      'miniPackageDownloadAvailable': false,
-      'miniPackageInstallAvailable': false,
-      'miniPackageUpdateAvailable': false,
+      if (mini) 'miniPackageMode': 'download_install_update',
+      'miniPackageDownloadAvailable': mini,
+      'miniPackageInstallAvailable': mini,
+      'miniPackageUpdateAvailable': mini,
       'initialized': true,
       'packageName': 'com.almanac.lite',
       'miniLoadingAvailable': mini,

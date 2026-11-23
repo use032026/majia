@@ -215,30 +215,36 @@ void main() {
     },
   );
   test(
-    'local-only SDK advertises no package mutation and propagates rejection',
+    'platform capabilities preserve Android and explicit iOS package dispatch',
     () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
       expect(StminiFlutter.miniPackageMode, 'local_only');
       expect(StminiFlutter.miniPackageDownloadAvailable, isFalse);
       expect(StminiFlutter.miniPackageInstallAvailable, isFalse);
       expect(StminiFlutter.miniPackageUpdateAvailable, isFalse);
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      expect(StminiFlutter.miniPackageMode, 'download_install_update');
+      expect(StminiFlutter.miniPackageDownloadAvailable, isTrue);
+      expect(StminiFlutter.miniPackageInstallAvailable, isTrue);
+      expect(StminiFlutter.miniPackageUpdateAvailable, isTrue);
       messenger.setMockMethodCallHandler(channel, (call) async {
         if (call.method == 'openMini') {
           throw PlatformException(
-            code: 'unsupported',
-            message: 'Local packages only',
+            code: 'invalid_download_url',
+            message: 'HTTPS required',
           );
         }
         return null;
       });
       await expectLater(
         StminiFlutter.openMini(
-          'mini://fixture?downloadUrl=https://fixture.invalid/x.zip',
+          'mini://fixture?downloadUrl=http://fixture.invalid/x.zip',
         ),
         throwsA(
           isA<PlatformException>().having(
             (error) => error.code,
             'code',
-            'unsupported',
+            'invalid_download_url',
           ),
         ),
       );

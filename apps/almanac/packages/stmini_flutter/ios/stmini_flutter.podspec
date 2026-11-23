@@ -25,6 +25,7 @@ Reusable Flutter host for opening verified existing local STMini packages.
     'stmini_flutter_privacy' => ['Resources/PrivacyInfo.xcprivacy']
   }
   s.dependency 'Flutter'
+  s.dependency 'ZIPFoundation', '0.9.19'
   s.dependency 'Masonry'
   s.dependency 'SDWebImage'
   s.dependency 'HXWRefresh'

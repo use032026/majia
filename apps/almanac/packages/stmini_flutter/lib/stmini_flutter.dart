@@ -19,10 +19,16 @@ class StminiFlutter {
   static String get runtimeStage =>
       defaultTargetPlatform == TargetPlatform.iOS ? 'mini' : 'foundation';
   static const runtimeMode = configuredStminiRuntimeMode;
-  static const miniPackageMode = 'local_only';
-  static const miniPackageDownloadAvailable = false;
-  static const miniPackageInstallAvailable = false;
-  static const miniPackageUpdateAvailable = false;
+  static String get miniPackageMode =>
+      defaultTargetPlatform == TargetPlatform.iOS
+      ? 'download_install_update'
+      : 'local_only';
+  static bool get miniPackageDownloadAvailable =>
+      defaultTargetPlatform == TargetPlatform.iOS;
+  static bool get miniPackageInstallAvailable =>
+      defaultTargetPlatform == TargetPlatform.iOS;
+  static bool get miniPackageUpdateAvailable =>
+      defaultTargetPlatform == TargetPlatform.iOS;
   static WebBridgeHandler? _webBridgeHandler;
   static const _methods = MethodChannel('stmini_flutter/methods');
   static final Stream<StminiEvent> _events = SafeStminiEventStream();
@@ -50,9 +56,9 @@ class StminiFlutter {
     });
   }
 
-  /// Opens only an existing verified local Mini in the native container.
-  /// Package URLs/force updates, missing packages and unmet version floors fail;
-  /// this API never downloads, installs or repairs a package.
+  /// Opens a verified Mini on iOS. Explicit HTTPS package links may download,
+  /// validate and atomically install/update; mandatory floors never fall back
+  /// to an incompatible package. Android foundation remains unsupported.
   /// The application must explicitly supply a link; initialization never opens one.
   static Future<void> openMini(String link) =>
       _methods.invokeMethod<void>('openMini', {'link': link});

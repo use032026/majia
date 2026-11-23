@@ -412,13 +412,13 @@ import UIKit
         guard let miniCrl = miniRootController(for: model.webview),
               let miniId = STWebResourceManager.miniNameHandle(name: miniCrl.name).0,
               !miniId.isEmpty,
-              let version = STWebResourceManager.installedMiniPackageVersion(name: miniId) else {
+              let version = miniCrl.loadedMiniPackageVersion else {
             return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_package_verification_failed", "小程序包校验失败")]]
         }
         return ["code": "1", "data": [
             "miniId": miniId,
             "version": version,
-            "updateself": STWebResourceManager.installedMiniPackageUpdateSelf(name: miniId) ?? "",
+            "updateself": miniCrl.loadedMiniPackageUpdateSelf ?? "",
         ]]
     }
 
@@ -430,7 +430,42 @@ import UIKit
 
     /// Recognized legacy method; no package update implementation is compiled.
     private static func downloadMiniProgramUpdate<T>(model: T) -> [String: Any] where T: STWebApiForm {
-        ["code": "0", "data": ["msg": "Mini package downloads, installation and updates are unsupported in this local-only runtime", "supported": false]]
+        guard let miniCrl = onlineMiniRootController(for: model.webview),
+              let miniId = STWebResourceManager.miniNameHandle(name: miniCrl.name).0,
+              !miniId.isEmpty,
+              miniCrl.loadedMiniPackageUpdateSelf == "1" else {
+            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_update_unsupported", "当前小程序不支持自行更新")]]
+        }
+        guard let downloadURL = (model.params["downloadUrl"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !downloadURL.isEmpty else {
+            return ["code": "0", "data": ["msg": STMiniLocalized("mini.api_update_address_missing", "缺少更新地址")]]
+        }
+        let rawForce = model.params["isforce"] ?? model.params["isForce"]
+        let isForce: Bool
+        if let value = rawForce as? Bool {
+            isForce = value
+        } else if let value = rawForce as? NSNumber {
+            isForce = value.boolValue
+        } else if let value = rawForce as? String {
+            isForce = ["1", "true", "yes", "on"].contains(value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+        } else {
+            return ["code": "0", "data": ["msg": "缺少 isforce"]]
+        }
+        guard let updateURL = miniCrl.validatedSelfManagedPackageUpdateURL(downloadURL),
+              let requestLease = STWebBridgeEffectLease(webView: model.webview, generation: model.documentGeneration, requiresMiniRoot: true),
+              requestLease.isCurrent() else {
+            return ["code": "0", "data": ["msg": STMiniLocalized("mini.download_url_invalid", "小程序更新地址或页面授权无效")]]
+        }
+        // A forced package update replaces the whole Mini runtime.  When it
+        // originates from a pushed Mini page, return to the root first so the
+        // native loading layer is visible instead of remaining underneath the
+        // child H5 controller.
+        if isForce,
+           let navigationController = miniCrl.navigationController,
+           navigationController.topViewController !== miniCrl {
+            navigationController.popToViewController(miniCrl, animated: false)
+        }
+        return miniCrl.requestSelfManagedPackageUpdate(downloadURL: updateURL.absoluteString, isForce: isForce)
     }
     
     
@@ -512,9 +547,9 @@ import UIKit
     
     
     static func callBack<T>(_ params: [String: Any], model: T) where T: STWebApiForm {
-        guard let view = model.webview, let generation = model.documentGeneration,
+        guard let view = model.webview, let generation = model.documentGeneration, let token = model.documentReplyToken,
               view.bridgeDocumentGeneration == generation else { return }
-        callBack(params, method: model.method, methodId: model.methodId, webView: view, generation: generation)
+        callBack(params, method: model.method, methodId: model.methodId, webView: view, generation: generation, documentToken: token)
     }
 
     /// Web-only host forwarding completes asynchronously through Flutter, so
@@ -525,7 +560,9 @@ import UIKit
         method: String,
         methodId: String,
         webView: STMiniWebView?,
-        generation: UInt64? = nil
+        generation: UInt64? = nil,
+        validity: (() -> Bool)? = nil,
+        documentToken: String? = nil
     ) {
         // The online-Web core owns the public callback envelope.  Mini API
         // handlers still choose their result data, but ordinary H5 and a Mini
@@ -541,12 +578,13 @@ import UIKit
             return
         }
         STProjectHelper.Log(callbackLogSummary(resultDic, method: method, methodId: methodId))
-        guard let webView else { return }
+        guard let webView, let token = documentToken ?? webView.bridgeReplyDocumentToken,
+              let boundScript = STMiniWebView.documentBoundReplyJavaScript(payload: result, token: token) else { return }
         let capturedGeneration = generation ?? webView.bridgeDocumentGeneration
         DispatchQueue.main.async { [weak webView] in
-          guard let webView, webView.bridgeDocumentGeneration == capturedGeneration,
+          guard validity?() ?? true, let webView, webView.bridgeDocumentGeneration == capturedGeneration,
                 webView.allowsHostSensitiveBridge else { return }
-          webView.evaluateJavaScript(STOnlineWebCore.callbackJavaScript(jsonPayload: result)) { (info, error) in
+          webView.evaluateJavaScript(boundScript) { (info, error) in
             if error != nil {
                 STProjectHelper.Log("api<\(method)>回调失败 错误：\(String(describing: error?.localizedDescription))")
             } else if (info as? Bool) == false {

@@ -156,13 +156,24 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       }
       configureIfNeeded(loadingImage: nil, bridgeContext: nil)
       let operationId = UUID().uuidString
-      if STWebResourceManager.requestsPackageMutation(link: link) {
-        result(FlutterError(code: "unsupported", message: "Mini package downloads, installation and updates are unavailable.", details: nil))
-        return
+      let components = URLComponents(string: link)
+      var parameters: [String: String] = [:]
+      for item in components?.queryItems ?? [] { if let value = item.value, !value.isEmpty { parameters[item.name] = value } }
+      let download = ["downloadUrl", "downloadURL", "download_url"].compactMap { key -> String? in
+        guard let value = parameters[key]?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return nil }; return value
+      }.first
+      guard let miniId = components?.host, miniId.range(of: "^[a-z0-9][a-z0-9_-]{0,63}$", options: .regularExpression) != nil,
+            components?.user == nil, components?.password == nil, components?.port == nil, components?.path.isEmpty == true else {
+        result(FlutterError(code: "invalid_mini_link", message: "Invalid Mini identity.", details: nil)); return
       }
-      guard STWebResourceManager.isInstalledMiniPackageRunnable(link: link) else {
-        result(FlutterError(code: "mini_package_unavailable", message: "No verified local Mini package meets the required version.", details: nil))
-        return
+      if let download, URL(string: download).map(Self.isMiniDownloadURLAllowed) != true {
+        result(FlutterError(code: "invalid_download_url", message: "Mini package download requires HTTPS.", details: nil)); return
+      }
+      if download == nil && STWebResourceManager.requestsPackageMutation(link: link) {
+        result(FlutterError(code: "invalid_mini_link", message: "An update requires an explicit HTTPS package URL.", details: nil)); return
+      }
+      guard download != nil || STWebResourceManager.isInstalledMiniPackageRunnable(link: link) else {
+        result(FlutterError(code: "mini_package_unavailable", message: "No verified local Mini package meets the required version.", details: nil)); return
       }
       guard let controller = currentPresentingViewController() else {
         Self.emitMiniRuntimeEvent("mini_open_failed", payload: [
@@ -227,6 +238,22 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       }
     case "closeMini":
       guard !detached else { result(FlutterError(code: "cancelled", message: "Mini runtime detached.", details: nil)); return }
+      if let alert = currentPresentingViewController() as? UIAlertController,
+         let navigation = ownedMiniNavigations.allObjects.first(where: {
+           ($0.viewControllers.first as? STWebMiniprogramCrl)?.ownedPackageFailureAlert === alert
+         }), let root = navigation.viewControllers.first as? STWebMiniprogramCrl,
+         root.presentedViewController === alert, alert.presentedViewController == nil {
+        // Only this exact root-created failure dialog is owned by closeMini.
+        // An unrelated alert or a foreign presentation above it is preserved.
+        alert.dismiss(animated: false) { [weak self, weak root, weak navigation] in
+          guard let self, let root, let navigation, navigation.viewControllers.first === root,
+                self.ownedMiniNavigations.allObjects.contains(where: { $0 === navigation }) else {
+            result(FlutterError(code: "cancelled", message: "Mini failure dialog context expired.", details: nil)); return
+          }
+          self.handle(call, result: result)
+        }
+        return
+      }
       miniOperationGeneration &+= 1 // also cancels an open not yet dispatched
       let closingGeneration = miniOperationGeneration
       let closingSession = STWebMiniProgramKeepAliveStore.shared.sessionGeneration
@@ -284,8 +311,8 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
 
   private let standaloneWebViews = NSHashTable<STMiniWebView>.weakObjects()
   private func state() -> [String: Any] {
-    ["stage": "mini", "runtimeMode": "mini", "miniPackageMode": "local_only", "initialized": initialized,
-     "miniPackageDownloadAvailable": false, "miniPackageInstallAvailable": false, "miniPackageUpdateAvailable": false,
+    ["stage": "mini", "runtimeMode": "mini", "miniPackageMode": "download_install_update", "initialized": initialized,
+     "miniPackageDownloadAvailable": true, "miniPackageInstallAvailable": true, "miniPackageUpdateAvailable": true,
      "packageName": initialized ? ("com.almanac.lite" as Any) : NSNull(),
      "localizedClose": STMiniLocalized("mini.close", "Close"),
      "capabilities": ["host_configuration", "language_resolution", "runtime_events", "local_inventory", "local_renderer", "local_mini_runtime", "framework_bridge", "isolated_storage"],
@@ -557,6 +584,13 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       page.webView?.nativeEffectsSuspended = true
       page.webView?.invalidateBridgeDocumentSession()
     }
+  }
+
+  static func isMiniDownloadURLAllowed(_ url: URL) -> Bool {
+    guard let parts = URLComponents(url: url, resolvingAgainstBaseURL: false),
+          parts.scheme?.lowercased() == "https", parts.host?.isEmpty == false,
+          parts.user == nil, parts.password == nil, parts.fragment == nil else { return false }
+    return parts.port == nil || (1...65535).contains(parts.port!)
   }
 
   private static func validMiniSecurity(_ raw: Any?) -> Bool {
@@ -859,12 +893,17 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     }
     let params = message["params"] as? [String: Any] ?? [:]
     let documentGeneration = webView.bridgeDocumentGeneration
+    guard let replyDocumentToken = webView.bridgeReplyDocumentToken else { return }
+    let sessionGeneration = STWebMiniProgramKeepAliveStore.shared.sessionGeneration
+    guard let replyLease = STWebBridgeEffectLease(webView: webView, generation: documentGeneration) else { return }
     methodChannel.invokeMethod("webBridgeRequest", arguments: [
       "method": method,
       "params": params,
       "origin": origin,
-    ]) { [weak webView] response in
-      guard let webView, webView.bridgeDocumentGeneration == documentGeneration, webView.url == currentURL, webView.allowsOnlineWebHostForwarding else { return }
+    ]) { [weak self, weak webView] response in
+      guard let self, !self.detached, self.methodChannel === methodChannel,
+            sessionGeneration == STWebMiniProgramKeepAliveStore.shared.sessionGeneration, replyLease.isCurrent(),
+            let webView, webView.bridgeDocumentGeneration == documentGeneration, webView.url == currentURL, webView.allowsOnlineWebHostForwarding else { return }
       let result: [String: Any]
       if let flutterError = response as? FlutterError {
         result = ["code": "0", "data": ["msg": flutterError.message ?? "宿主网页 Bridge 调用失败"]]
@@ -875,7 +914,10 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       } else {
         result = ["code": "0", "data": ["msg": "宿主网页 Bridge 返回格式无效"]]
       }
-      STWebApiManager.callBack(result, method: method, methodId: methodId, webView: webView)
+      STWebApiManager.callBack(result, method: method, methodId: methodId, webView: webView, generation: documentGeneration, validity: { [weak self] in
+        guard let self, !self.detached, self.methodChannel === methodChannel else { return false }
+        return sessionGeneration == STWebMiniProgramKeepAliveStore.shared.sessionGeneration && replyLease.isCurrent()
+      }, documentToken: replyDocumentToken)
     }
   }
 

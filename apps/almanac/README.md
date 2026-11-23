@@ -55,44 +55,28 @@ iOS 已接入 `Deynu iOS Release` 签名构建/上传流程和 `ASC Existing Bui
 
 新版本按当前发布配置在审核通过后自动发布。修改源码配置不会公开发布仍待手动发布的历史版本；这类历史版本必须另行核实并取得发布授权。商店更新说明仅使用已存在的 App Store 语言，不因 App 支持中英文而自动新建商店语言，也不默认覆盖描述或截图。旧预检文档和运行截图保留为历史证据，不代表当前发布状态。
 
-## STMini 分批接入：第五批 iOS 缓存、转场与独立 Web
+## STMini 第六批：iOS 显式下载安装与更新
 
-固定来源为 `stmini_flutter/main` 的 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`，App 通过相对 path 使用专属 `packages/stmini_flutter`。第五批仅扩展 iOS：合格已有本地 Mini 的 FIFO2 缓存、显式空默认白名单 continuous 保活、当前 owner 快照/自定义转场，以及显式 SDK 普通 HTTPS Web。Android 保留原 foundation/严格库存/受限 renderer，没有新增完整 Mini/Web 接入。
+本批扩展 `packages/stmini_flutter` 的 iOS Mini 运行时；固定来源 `b4462f63a33acf6c3fff63f0e67b3713bc00dff8`，按行为适配最新上游 `46d1521db5ebebcabbee3304834a6739fc968afa` 的适用安全修复。Android 保留原 foundation、严格库存和受限 renderer。普通 `lib/main.dart` 仍为 Deynu 原首页，启动只初始化、订阅状态和读取库存；没有生产 Mini/Web URL、产品入口、隐藏开关、远程激活、相机扫码、账户或交易 provider。
 
-普通 `lib/main.dart` 仍为 Deynu 原首页，启动仅初始化、订阅状态并读取严格库存。没有生产 Mini/Web URL、页面入口、隐藏开关、自动打开、远程激活、账户或量化交易 provider。原生注册/编入、普通 Dart AOT 消费和专用测试 target 执行分别留证；未被普通首页调用的 Dart SDK 方法不据此声称保留于普通 AOT。
-
-### SDK 与平台能力
-
-| 合同 | iOS | Android |
+| 能力 | iOS | Android |
 | --- | --- | --- |
-| 初始化事件 / stage | `runtime_initialized` / `mini` | `foundation_initialized` / `foundation` |
-| `miniLoadingAvailable` | `true`，仅合格已有本地包 | `false` |
-| `webLoadingAvailable` | `true`，显式普通 HTTPS Web | `false` |
-| `miniChildWebAvailable` | `true`，活动 Mini 内 H5 | `false` |
-| `closedMiniCacheAvailable` | `true`，strict identity/session warm reuse | `false` |
-| `localRendererAvailable` | `true` | `true` |
-| 下载 / 安装 / 更新能力 | 均 `false`，`miniPackageMode=local_only` | 均 `false` |
+| stage / Mini 模式 | mini / mini | foundation |
+| Mini 包模式 | download_install_update | local_only |
+| 下载、安装、更新 | true，调用者显式 HTTPS 链接 | 均 false |
+| 普通 HTTPS Web、Mini 内 H5、严格保活缓存 | true | false |
+| 本地 renderer | true | true |
 
-- `openMini` 只读打开已有本地包。非空下载地址、强制更新、缺包、身份失效或低于版本 floor 均明确失败，不回退 HTTPS、不修复目录、不写包 metadata。旧更新方法返回字符串 `code=0`、明确 `data.msg` 和 `supported=false`。
-- 关闭 Mini 同步撤销根与全部 H5 的 native effect lease，再按 FIFO2 或显式白名单缓存。warm reuse 重查完整有界包 bytes、ID/version/entry 和 session 代次，实际可见后才授新 epoch，旧异步许可永久失效。内存警告、FIFO 淘汰、内容进程终止和 engine detach 释放对应 runtime；session 换代清除旧缓存并撤销旧许可。不能因透明保活 host 仍在 window 就认定可调用原生能力。
-- iOS `openWeb/closeWeb/notifyWebSessionChanged` 消费独立普通 HTTPS Web，不继承 Mini 权限。宿主标题/导航栏配置不改调用者 URL。host replacement 与 Mini 子页等 URL FIFO 分开；被替换/取消请求明确失败，覆盖期间 host open/close 返回 `web_covered`，session count 为0。当前 stable 可见文档才可 fresh grant；关闭/卸载只处理原 owner，不关闭 unrelated foreign UI。
-- iOS 初始化在 native invoke 前安装默认反向 receiver，不安装业务 provider。没有 handler 的 ordinary Web 请求标准失败 `code=0`，不会因没有 listener 悬空；显式 provider 跨重复初始化保留。Android 初始化不新增默认 receiver，完整 Mini/Web 方法继续 `unsupported_capability`。
-- 主 frame、当前文档/HTTPS origin、原始 generation 与 native owner lease 在接收和异步回包处均校验。存储按 Mini/origin 的 SHA256 独立域隔离，JS 不能选择宿主域或访问 `flutter.almanac_state_v1`；没有宿主 token/profile fallback 或标准 defaults 镜像。
+显式 `openMini` 支持首次网络安装、当前版本直接本地打开、兼容旧包先开并弱更新、不兼容旧包强制下载后打开。包内 `mini_downloadMiniProgramUpdate` 只更新当前已验证 root 的自身身份，保留现行 downloadUrl/isforce 信封；宿主更新检查服务未接入，`mini_checkMiniProgramUpdate` 明确返回 unsupported。没有后台自动轮询或生产源。
 
-### 包、权限与验证边界
+下载只接受无用户凭据和 fragment 的 HTTPS URL，重定向与最终响应再次校验；不降低 ATS/TLS，不加入 Debug HTTP 例外。真实 URLSession 进度、下载后处理和已验证本地根文档可见分别处理。ZIPFoundation 固定0.9.19。ZIP 输入最多80MiB，解包及最终包最多80MiB、最多4095个归档项；拒绝穿越、绝对路径、符号链接、重复及大小写冲突、非法类型、超限文件、错误ID/版本/entry/icon/manifest。版本最低线不得回退到不兼容旧包。安装在 staging 校验后按同包事务锁内重新读取已安装版本，原子替换失败回滚；旧/同版本保留已有较新包。
 
-本批不包含 Mini 下载、ZIP 安装或更新，也没有 ZIPFoundation/Tiercel 依赖。用户指定的真实 URLSession 下载、原子安装/更新属于第六批最终本地范围；安全 scoped 镜像仅在有实际 consumer 时接入，可为0。LBX/Camera/Scanner 和截图 fallback 持续排除；没有调用者的 Tiercel、旧非原子 helper 或卡片不会为来源行数恢复。
+每次下载持有原操作的取消许可。关闭、隐藏、session换代或 engine teardown 撤销旧许可，提交与取消共享锁；迟到下载/安装结果不得改写新owner或关闭其加载层。弱更新不替换活动或保活 WK 的资源：根与本地H5栈共享严格复验的不可变 `MiniPackageSnapshot`，新磁盘包只供新冷启动使用，最后native consumer释放后清理快照。强更新保留精确native owner、更换WK与快照，旧文档立即撤权；失败提供原有关闭/重试。仅本root创建的精确failure alert可由host closeMini收尾，其他foreign UI仍保留。
 
-iOS App 最低版本15.0、Pod13.0不变。原显式图片保存使用 iOS14+ add-only 与旧宿主 Photos fallback，真实 Read/Add 保存用途及英文/简体中文本地化保留；无 Camera/Microphone 用途，启动不请求权限。依赖仍为 HXWRefresh1.1.0、Masonry1.1.0、SDWebImage5.21.7、Toast-Swift5.1.1。
+普通Web转发的异步回包从原始请求捕获document/effect/session/channel绑定，到回包及最终JS投递再次校验。iOS默认反向receiver保留第五批处理，Android初始化不扩能力。
 
-当前 Dart 全量127项、analyze、format check通过。最新任务私有 iPhone16/iOS18.2 完整原生61项重新执行全部通过，包含正式关闭后同 instance warm reopen 的 visibility-before-appShow 顺序、后台时长一次消费、关闭/文档换代/session换代后旧排队 ticket 拒绝及 appHide 即时投递回归。此次纠正 WarmActivationTicket 使用通用 UINavigationController 导致外部覆盖保护无法编译的问题，在消费边界明确验证 STWebNavigationController 类型。真实两个已有 Mini 各18项页面/CMS检查、两个受控 HTTPS Web 文档各12项检查全部通过，包含 CSS/JS/pixel、iframe transport 正控与 native 拒绝、storage、缺 provider 标准失败、session与关闭重开不同文档；前后台 appHide/show 观测通过。执行记录为 takeover1120v2，普通 main 已恢复，私有模拟器、loopback TLS server 和临时合成 CA/keys 已清理。没有改 ATS 或生产信任策略。
+当前第六批已完成本机验证：Dart 格式与 analyze 通过，全量127项、隔离后67项回归通过；全新私有 iOS 模拟器原生74项零失败，真实HTTPS完成首装v1、保活同WK弱更落盘v2且运行仍用v1、关闭后冷开v2、最低版本3拒绝，以及普通Web两轮隔离。普通 `lib/main.dart` device Release构建通过，实际Mach-O保留下载/快照运行时并链接ZIPFoundation，未含Scanner/Tiercel/相机或测试fixture。普通Debug首启图为原引导，既有schema合成回访图为原日笺主页；不作真机或Release运行结论。
 
-普通 `lib/main.dart` 无签名 device Release 构建及实际逐 Mach-O 包扫描通过，缓存/runtime host/转场/Web 等核心类型实际链接；无 Camera/Scanner、ZIPFoundation/Tiercel 或测试 fixture 残留。Android host/插件34个 tracked 文件与本批基线逐字相同，未新增 Android 构建或设备验证。以上不证明物理设备交互手势、真实相册写入、分享发送、线上 Mini、签名 IPA 或商店结果；实际签名包与发行由独立门禁另核。
+`SOURCE_MAP.json` 已按当前native/SDK/普通unsigned Release的精确输入重新认定：固定iOS来源86文件/15,317物理行，当前保守合格来源7,690行，保留第五候选833行，第六下载候选759行；较第五新增合格来源位置764、原位置不再字节相等38。派生snapshot/取消与document guard、Dart、测试、ZIPFoundation及无consumer镜像均零来源信用。非字节相等不代表行为未实现，来源行数不是功能完成比例；第五和第四历史统计独立保留。独立最终Review/cross、签名IPA及商店结果分列确认，当前验证不代替发行门禁。
 
-### iOS 来源统计
-
-固定 native iOS 分母86文件/15,317物理行，Android、共享 Dart、测试、资源、local guard 改写、supporting UI 和无 consumer 代码不计来源信用。当前27核心路径与普通 Release 输入、实际链接及 native/SDK consumer 的精确 SHA 求交后，累计合格6,964行；第五批批准候选中的实际合格833行（Web158、cache457、transition218）。相对已知 C3 source 集合新留存841行、未再逐字留存59行；这不是功能损失、功能百分比或每行机器码/执行覆盖。
-
-第六批真实下载、解压安装和更新尚未实施/构建/consumer 合格；可选安全镜像仅有实际消费者时接入。逐字来源行数排除安全改写，因此不作为两批工作量或功能完成百分比；最终两批比例须第六完成后实测。详细 path+line/交并与限制见 `SOURCE_MAP.json`、`UPSTREAM.json`，历史 C3 统计独立保留。
-
-历史过程见 [STMini 接入记录](docs/development/stmini-integration-log.md)。第五批按当前授权在独立门禁通过后继续提交审核；第六先仅本地。上游 `LICENSE` TODO 原文保留；保护的完整接入 stash 未用于恢复。
+iOS最低15.0、Pod13.0及已有显式保存相册用途/本地化保留；无新增启动权限请求。历史实现和失败证据见 [接入记录](docs/development/stmini-integration-log.md)。第六批已获构建上传及送审授权，但实际新增能力须准确披露，商店文本不由实现子任务修改；实际送审状态独立回读。

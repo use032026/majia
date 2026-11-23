@@ -51,15 +51,26 @@ async function probe() {
     checks.unknownMethodRejected = (await call('fixture_business_provider_not_installed')).code === '0';
     checks.providerFailClosed = (await call('getQuantSession')).code === '0';
     const updateCheck = await call('mini_checkMiniProgramUpdate');
-    const updateInstall = await call('mini_downloadMiniProgramUpdate', {downloadUrl: 'https://fixture.invalid/rejected.zip', isforce: true});
+    const updateInstall = await call('mini_downloadMiniProgramUpdate', {downloadUrl: 'http://fixture.invalid/rejected.zip', isforce: true});
     checks.updateCheckUnsupported = updateCheck.code === '0' && updateCheck.data.supported === false;
-    checks.updateInstallUnsupported = updateInstall.code === '0' && updateInstall.data.supported === false;
+    checks.insecureUpdateInstallRejected = updateInstall.code === '0' && typeof updateInstall.data.msg === 'string' && updateInstall.data.msg.length > 0;
     document.getElementById('action').onclick = () => { document.getElementById('result').textContent = 'Synthetic interaction complete'; };
     document.getElementById('action').click();
     checks.interaction = document.getElementById('result').textContent === 'Synthetic interaction complete';
-    const result = {passed: Object.values(checks).every(Boolean), miniId: id, checks, iframeTransport, iframeDefense, providerSemantics: window.webkit ? 'recognized_iOS_quant_provider_missing' : 'Android_source_unsupported_provider'};
+    const result = {passed: Object.values(checks).every(Boolean), miniId: id, version: info.data.version, checks, iframeTransport, iframeDefense, providerSemantics: window.webkit ? 'recognized_iOS_quant_provider_missing' : 'Android_source_unsupported_provider'};
     document.getElementById('result').textContent = result.passed ? 'Complete native Bridge checks passed' : 'Bridge checks failed';
     await call('applog', {msg: 'FULL_RUNTIME_FIXTURE_RESULT ' + JSON.stringify(result)});
+    if (id === 'batch6_network_fixture' && !window.__snapshotInterval) {
+      const version = info.data.version;
+      window.__snapshotInterval = setInterval(async () => {
+        try {
+          const manifest = await (await fetch('mini-manifest.json?probe=' + Date.now())).json();
+          const running = await call('mini_getMiniPackageInfo');
+          await call('applog', {msg: 'FULL_RUNTIME_SNAPSHOT_RESULT ' + JSON.stringify({miniId: id, version, time: Date.now(), passed: manifest.version === version && running.code === '1' && running.data.version === version})});
+        } catch (_) {}
+      }, 1000);
+    }
+
   } catch (error) {
     const result = {passed: false, miniId: document.body.dataset.mini, checks, error: String(error)};
     document.getElementById('result').textContent = 'Controlled fixture failed';

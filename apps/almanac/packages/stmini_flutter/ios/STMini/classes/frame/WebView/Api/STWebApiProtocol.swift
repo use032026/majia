@@ -27,6 +27,7 @@ protocol STWebApiForm {
     
     var webview: STMiniWebView? { get }
     var documentGeneration: UInt64? { get }
+    var documentReplyToken: String? { get }
     
     var method: String { get }
 
@@ -97,7 +98,7 @@ struct STWebBridgeEffectLease {
             guard let miniRoot, webView.owningMiniRootController() === miniRoot,
                   !miniRoot.isBeingDismissed, !miniRoot.isMovingFromParent else { return false }
             if let rootVersion,
-               STWebResourceManager.installedMiniPackageVersion(name: miniRoot.name) != rootVersion { return false }
+               miniRoot.loadedMiniPackageVersion != rootVersion { return false }
         }
         return true
     }

@@ -1,37 +1,51 @@
 {
   "task_id": "20261116-1401-deynu-stmini-five-batches",
-  "batch": 5,
+  "batch": 6,
   "upstream_sha": "b4462f63a33acf6c3fff63f0e67b3713bc00dff8",
-  "baseline_before_fifth": "0af8928ec1c2a7c8a10e11a6e2a954c50e4c756c",
-  "baseline_source_map_sha256": "4786a91f2c30b7c22804a397e76d5380780903568e5e9b8a900de520555c5c6b",
+  "baseline_before_sixth": "314a51f8f54634a6dee4708b7b8682604aab99a3",
+  "baseline_source_map_sha256": "01d0ddf2ee1c0e3f93be43dd05d6cf57d03459c665b867db76a2cd39635efba1",
   "denominator_source_files": 86,
   "denominator_physical_lines": 15317,
-  "candidate_budget": {
-    "web": 214,
-    "cache": 588,
-    "transition": 312,
-    "fifth": 1114,
-    "sixth_download": 989,
-    "sixth_safe_mirror_max": 92
-  },
   "measurement": "Byte-equal substantive spans of at least three lines; eligibility unchanged from C3 native-only core. Fifth credit additionally intersects the PM-approved net candidate source ranges. Safe changed lines, tests, Dart, resources, helpers without consumers and supporting UI are not credited. Same-path byte-equal C3 provenance is known; equivalent/cross-path past provenance is unknown, so net new vs C3 is not an assertion that all such lines were absent semantically.",
   "static_only_no_current_compile_qualification": false,
   "totals": {
-    "mapped_cumulative": 6964,
-    "qualified_cumulative": 6964,
-    "new_qualified_vs_C3_known": 841,
-    "lost_vs_C3_known": 59,
-    "fifth_admitted_candidate": 833,
-    "fifth_mapped_candidate": 833
+    "mapped_cumulative": 7690,
+    "qualified_cumulative": 7690,
+    "current_retained_fifth_candidate": 833,
+    "mapped_retained_fifth_candidate": 833,
+    "mapped_sixth_download_candidate": 759,
+    "qualified_sixth_download_candidate": 759,
+    "new_qualified_source_positions_vs_fifth": 764,
+    "no_longer_byte_equal_source_positions_vs_fifth": 38
   },
-  "fifth_qualified_by_group": {
+  "historical_fifth_qualified_by_group": {
     "web": 158,
     "cache": 457,
     "transition": 218
   },
+  "historical_fifth_qualified_candidate": 833,
+  "historical_fourth_summary": {
+    "qualified_cumulative_conservative_lines": 6182,
+    "qualified_fourth_new_conservative_lower_bound": 5632,
+    "qualified_new_upper_relative_to_known_P": 6103,
+    "known_byte_equal_origin_sets": {
+      "totals": {
+        "P_known_same_path": 80,
+        "C_qualified_current": 6182,
+        "P_retained_in_C": 79,
+        "P_not_retained_in_C": 1,
+        "N_C_minus_known_P": 6103
+      },
+      "additive_checks": {
+        "retained_previous_plus_new_equals_current": true,
+        "previous_minus_removed_plus_new_equals_current": true
+      },
+      "boundary": "P is only verified byte-equal same-path baseline provenance under the same native source eligibility filter, not all previous batches or asserted old binary linkage. Cross-path/equivalent-derived baseline remains unknown. N is exact relative to known P only. References never form P; the extra reference-subtracted fourth-new lower bound is a separate non-additive quantity."
+    }
+  },
   "qualification_evidence": {
     "task_id": "20261116-1401-deynu-stmini-five-batches",
-    "time_utc": "2026-11-20T09:28:59.138881+00:00",
+    "time_utc": "2026-11-23T08:26:13.178429+00:00",
     "status": "Current iOS native/ordinary unsigned Release/exact real controlled HTTPS and Mini SDK consumer admission; independent final QA/cross conclusions are recorded separately.",
     "rule": "Only primary executable native runtime core paths with current target SHA exactly matching unchanged ordinary Release build inputs are admitted. Headers, declaration-only, known no-caller network helpers, local adapters, resources, tests, Dart and release-excluded source lines do not count. This is module/source provenance, not a claim that each source line has a separate retained machine-code instruction or was individually executed.",
     "qualified_paths": [
@@ -64,211 +78,183 @@
       "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift"
     ],
     "qualified_target_sha256": {
-      "ios/Classes/StminiFlutterPlugin.swift": "bd2c128582eb7d14808f01b789231306a8532a7e542b7e5f2d236d471885a42e",
+      "ios/Classes/StminiFlutterPlugin.swift": "b72bb3fdb0bc05f1182b015eeedb231a4d53e448604dc544527131688e36ffcc",
       "ios/Classes/Web/OnlineWebViewController.swift": "78822322f62a5ae83113612931186ce84b95dc04fbbfd9b95d2480e1c698dc52",
       "ios/Classes/Web/STOnlineWebCore.swift": "4e1b4d82fac3b75517bcccee42a22545dc4dbc63bc08f009edc1b0ac49906a81",
       "ios/STMini/classes/frame/STMiniLocalization.swift": "a64daac918a371ce618e44257c4900e9498554672b6c736141c51500b2c68756",
-      "ios/STMini/classes/frame/STWebResourceManager.swift": "ae337627977504dfe5774406f1d8ae51265a95885e020554996b6cb109e2c80e",
-      "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift": "9ac64a344b23435a779643bdba2554b1792b138f53273b7004f25bd9b28c71fe",
-      "ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift": "081caccb58962d8430bf44426ef266228c97ee70bc051d749bb00b7f461412bd",
-      "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift": "44bad6c661c0f7f2daa67b348f5f9eebf89133851e224901c32f37fa6b937828",
+      "ios/STMini/classes/frame/STWebResourceManager.swift": "568a2a9720224ca71a173ba402f443efb6a7b298ca882c690d0d3bf44e1532ce",
+      "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift": "5bf3f259cf76f3b4c0b37a233d023b977e82df1695fbe517542fb5c55ee5da61",
+      "ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift": "fedc0d9346e1229ed892281111f94f35a5bacd6c0a65f62863e60e1e775cbc15",
+      "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift": "25aea11de1a016c34cc69521c2f30cbf397ea93e2d5dafc16739c68e5774b00a",
       "ios/STMini/classes/frame/WebView/Api/STWebUIApi.swift": "cbfd74b8459bcc03919e643f0db82029abfa130fb430359c572166d7b85a880b",
-      "ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift": "4b1e65dfc52edd640568d525e7f02e1b09c730f9ad1f38ae4dd4a382187fe713",
+      "ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift": "74af5c79597920085f2bce89fdbe1df2fdf84f591e8d1f81089d069d745438df",
       "ios/STMini/classes/frame/WebView/Handler/STWebScriptHandler.swift": "69329d15703ea7890b3eaa76fa5d1a4245e307dc255fc480630792df4345b3e9",
-      "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift": "3b2b8497b6fccef9e3508fff7e0032c2de52632c6b7928aa4d4f1ffd76f5d8c2",
+      "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift": "f7d65dd8e4967f36a6db384320755573e478fca557b41008187b5e96229f72ee",
       "ios/STMini/classes/frame/WebView/LoadAnimation/STWebMiniLoadAnimationView.swift": "184df34785236066baa376415b7aad8aa8232ef7dca24d1afedae24d740c6592",
       "ios/STMini/classes/frame/WebView/Navi/STWebNavigationController.swift": "0b1486274d65a294f025239d591e7d123b5aa16666955946218bd6b90b32945d",
       "ios/STMini/classes/frame/WebView/Open/STWebInfoStorage.swift": "1f0b1d9a95cef9efb5483937b981224977022e77810da84e581401f7ce336372",
-      "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift": "07a2717b03eed1406e77a2f4f4731e1d87f4229d96406234e52a5d4fde8e5db5",
+      "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift": "5319b599ebb71561e3db69f177938efaf223f0d3a2b44513c2d9dfa1af745b0e",
       "ios/STMini/classes/frame/WebView/PersonalHandle/STWebPersonalHandle.swift": "626ff8d576688fa0c664a2a0992ab516854c65a6770019a001e10374672b6e2b",
       "ios/STMini/classes/frame/WebView/Setting/STWebCommonConfig.swift": "3274a3901a50520e28485a74cfcd15c392170e9fba86060f270163d99bf47131",
       "ios/STMini/classes/frame/WebView/Setting/STWebConfig.swift": "5ca5f0491bbb1b0b7ddd1b54c18db8931b7e1f7b724c63ed7dbc7154bca1a262",
-      "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift": "58b1c7cc1d6fa23882aa4336743d082c57948e0ac8dc51d2740d3d3b4acda7b0",
+      "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift": "d6e94fa33f4f65d97daf2b25cf6048c97d432759665b3e0c29e389e150ceec07",
       "ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift": "1e3372db7ff2da74845384f6abf66638a1a255839cec6d0324ac9eb2031f0b4d",
       "ios/STMini/classes/frame/WebView/Views/STWebPopView.swift": "0b5ddbb883b65d64a43fbbd37f8aaf21e55adf0d0adf5c39804e98b4380f3301",
       "ios/STMini/classes/frame/WebView/Views/STWebToolView.swift": "8bccf013767ffb71400a7664776f777e537a843297a0bc3d681a126b676be636",
       "ios/STMini/classes/frame/WebView/WebCrl/H5/STWebH5Crl.swift": "4cbe33e8f2e64c322634b30c9a96836b8e70b813bd40be2256d6dc7e3d8301d2",
-      "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift": "1a6c4668914a1283d13e98c74f35af7bd8cc0661552d17270d82482b9fcffc30",
+      "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift": "fe4d982117872c7ecf2c315c505ae0267974588bda11b4c9840364fa348f5b1d",
       "ios/STMini/classes/frame/WebView/Trans/STWebTransAnimation.swift": "697d058fbb99142d48cdc8fab212d731eb1c7e3e45ac2a7ba49c731adf01b598",
       "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift": "21b92c2a6d872c847745feceb6c21c3f526044019857a64feb296f24e6a46287"
     },
     "excluded": [],
     "runtime_freeze": {
-      "file": "batch5-runtime-validation-freeze-takeover1120v2.json",
-      "sha256": "bb53accaf96affdd91f9022947856429cf9505e982c3bf3a90dcd8716a12b4ac"
+      "file": "batch6-impl-handoff-v7.json",
+      "sha256": "1742ba5aed4af8f29963dce7e6863975fc8b071069dd5d624e7559ef0a650c75"
     },
     "build_evidence": [
-      "batch5-ios-release-takeover1120v2.json",
-      "batch5-ios-release-takeover1120v2-source-state.json"
+      "batch6-ios-release-final-v7.json",
+      "batch6-ios-release-final-v7-source-state.json"
     ],
     "link_evidence": {
-      "file": "batch5-release-artifact-check-takeover1120v2.json",
-      "sha256": "4517cfe31f7ac168fb4eecf1cc1f7e1a52711ce62c842b849e26149428e97b0f"
+      "file": "batch6-release-artifact-check-final-v7.json",
+      "sha256": "361de17fe682a11c88f4239ef172badaea9dabad4db15bfe272aacb529845d94"
     },
     "actual_consumers": {
       "ios": {
-        "result": "batch5-ios-full-result-takeover1120v2.json",
-        "result_sha256": "4dd9ee635c1c38127023608e96d1760e0e019a550b4dc451dc697d49b3c2fba2",
+        "result": "batch6-ios-full-result-freeze-v7.json",
+        "result_sha256": "c78b709d39f3dceb54df22ee174f76c8b7cadcd0740d4607cbcf6eae02b7a29a",
         "complete_report": {
-          "file": "batch5-ios-full-sdk-report-takeover1120v2.json",
-          "sha256": "e6ef083fbbdeab24a61138ce04a97d16f8dae8ecd2d414c1465613f8e0fb7762",
-          "bytes": 2382
+          "file": "batch6-ios-full-sdk-report-freeze-v7.json",
+          "sha256": "40687c31eb4f0d637f31ff117c55eaf320102496093cfec1cab4a86f1b11da3f",
+          "bytes": 4302
         },
-        "source_state": "batch5-ios-full-source-state-takeover1120v2.json",
-        "native_tests": "batch5-ios-native-tests-takeover1120v2.json",
-        "native_state": "batch5-ios-native-tests-takeover1120v2-source-state.json",
+        "source_state": "batch6-ios-full-source-state-freeze-v7.json",
+        "native_tests": "batch6-ios-native-tests-freeze-v7.json",
+        "native_state": "batch6-ios-native-tests-freeze-v7-source-state.json",
         "native_reuse_boundary": null,
         "recipe_sha256": {
-          "batch5-run-ios-full.py": "3878be89ab26451cd033d764064bf4fb7c2f345bfc5d29ac0de0a4fd1c6bdee0",
-          "batch5-verify.py": "c042ccf9503120fbbfc455c132418a62879a131654b1949bb6e3608e564f7a54"
+          "batch6-run-ios-full.py": "d9f7ca66ceeb830cad28e9c5f42fd41f532875352d31c04638966ff13277937e",
+          "batch6-verify.py": "0b08b9d4d8a236c903b242a4272a77adc0304b9d0afaed07c46fbc299d6afb91"
         },
         "boundary": "Real task-private simulator UIKit/WK/HTTPS/Dart SDK consumers, not individual method/line execution or physical-device evidence."
       }
     },
     "native_entry_chains": {
-      "ios": "GeneratedPluginRegistrant -> StminiFlutterPlugin.register/handle -> explicit verified local Mini and native cache/transition; explicit HTTPS standalone Web with replacement/cancel lifecycle; real document/origin/session/native-effect leases and scoped storage."
+      "ios": "GeneratedPluginRegistrant -> StminiFlutterPlugin.register/handle -> explicit HTTPS Mini download/install/warm background update and immutable runtime snapshot; local Mini/cache/transition; standalone HTTPS Web; original document/session/channel/JS marker boundary."
     },
     "artifacts": {
       "ios": {
         "path": "/Users/hxw/Desktop/ST/majia/apps/almanac/build/ios/iphoneos/Runner.app/Frameworks/stmini_flutter.framework/stmini_flutter",
-        "bytes": 1938088,
-        "sha256": "cdd7e1dd125d377f89a0f114d3a8206c668f694d7b6c8bc417985148a49894e6"
+        "sha256": "77ad23000be7a73e1419dc8dc9875c28515c657f3dc75c13d77d4f93f0444428",
+        "bytes": 2161008
       }
     },
     "host_purpose_declarations": {
-      "values": {
-        "NSPhotoLibraryUsageDescription": "Photo library access is used to save an image when you choose to save it.",
-        "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
+      "en": {
+        "equal": true,
+        "source_sha256": "9aa4eb2f9855ce200c064a4bd3bf7d8e68ad3f00039436d1e689f6d995b9fbe8",
+        "packaged_sha256": "d72f5c76dca3774dbbc7c6b52c888d67f38375a7ccdcae96c3f6f05cc80d4244"
       },
-      "source_info_sha256": "923e4232d48fa50087af341e571345a10a6a05a7396e024ef8665048ba41321d",
-      "packaged_info_sha256": "0200e8d2fd8f2e33c83d4af786ab3c9a3f1ad007f3f25a44ae2ba32367a0f990",
-      "localizations": {
-        "en": {
-          "values": {
-            "NSPhotoLibraryUsageDescription": "Photo library access is used to save an image when you choose to save it.",
-            "NSPhotoLibraryAddUsageDescription": "Save an image to your photo library when you choose to save it."
-          },
-          "source_sha256": "9aa4eb2f9855ce200c064a4bd3bf7d8e68ad3f00039436d1e689f6d995b9fbe8",
-          "packaged_sha256": "d72f5c76dca3774dbbc7c6b52c888d67f38375a7ccdcae96c3f6f05cc80d4244"
-        },
-        "zh-Hans": {
-          "values": {
-            "NSPhotoLibraryUsageDescription": "仅在你选择保存图片时请求相册授权，以将图片存入相册。",
-            "NSPhotoLibraryAddUsageDescription": "仅在你选择保存图片时将图片存入相册。"
-          },
-          "source_sha256": "db0addcdd60badd027908ddd9e8ed18f40aa38e4849ffda776d08800782158f9",
-          "packaged_sha256": "6040894283b27bbac10845db81c48f9cc8e10a785ef9dd5f9ba26791ab9bd7d8"
-        }
-      },
-      "boundary": "Scanner implementation and Camera purpose are removed. Explicit save uses add-only on iOS14+; the Pod13 legacy Photos authorization selector remains for older hosts, so accurate save-related Photo Library and Add purposes remain. No microphone purpose is introduced."
+      "zh-Hans": {
+        "equal": true,
+        "source_sha256": "db0addcdd60badd027908ddd9e8ed18f40aa38e4849ffda776d08800782158f9",
+        "packaged_sha256": "6040894283b27bbac10845db81c48f9cc8e10a785ef9dd5f9ba26791ab9bd7d8"
+      }
     },
     "platform_scope": {
-      "ios": "Fifth cache/continuous/transition/standalone HTTPS Web, local-only Mini package mode; no download/ZIP install/update or Camera.",
+      "ios": "Sixth explicit HTTPS Mini download/ZIP installation/weak and mandatory updates with immutable snapshot; preserves fifth lifecycle/Web/transition. No Camera/scanner/production URL/product Mini entry.",
       "android": "Unchanged foundation baseline; no new native validation or iOS source credit."
     },
     "artifact_boundary": "Current local unsigned ordinary main iOS App/framework only. No signed IPA, upload/store approval, production Mini, physical device or actual Photos/share side-effect qualification.",
-    "local_only_removal_verification": {
-      "verified": true,
-      "actual_macho_api_scan": [
+    "removed_apis_and_test_fixtures": {
+      "macho_scan": [
         {
           "path": "Frameworks/App.framework/App",
-          "sha256": "33105aba99dc637ec5aacbdefea3d9596e340ada73ecbaf5ad69dde5229dd7cd",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "sha256": "5526dcc81a34f89c245edce7160285e82f5c13a2a6e29a890a25bce4cb75acda",
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/Flutter.framework/Flutter",
           "sha256": "5f739a29048cd272b577a16fd40e91be4ab118c5d5f137ca7172f8d1909dd200",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/HXWRefresh.framework/HXWRefresh",
           "sha256": "5f655d2e69131ca515b2dcb8e0d7e74be9374db14de8171555540547fbb0ef79",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/Masonry.framework/Masonry",
           "sha256": "567817039c7be9555261f3225554513a3aaea8c59fb0571dcce44ba94c411fc9",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/SDWebImage.framework/SDWebImage",
           "sha256": "c23684014b25de4a7dc0292dab90bbb1a7f038c294fd9e867a21952ef6b38c14",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/Toast_Swift.framework/Toast_Swift",
           "sha256": "683198e888dcabb86653f9f7d2442ef0c3f8a387da74b3502f540ef768976b2b",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
+        },
+        {
+          "path": "Frameworks/ZIPFoundation.framework/ZIPFoundation",
+          "sha256": "62fbd1c201d7c8af4c1b61c9de0b96771214a882de07985e93aa4671f57ba5a4",
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation",
           "sha256": "97f22d7e5a324321392416d197b46f6daac4baa933c587d933628871312f2dcc",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/stmini_flutter.framework/stmini_flutter",
-          "sha256": "cdd7e1dd125d377f89a0f114d3a8206c668f694d7b6c8bc417985148a49894e6",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": [
-            "authorizationStatus",
-            "requestAuthorization",
-            "PHPhotoLibrary"
-          ]
+          "sha256": "77ad23000be7a73e1419dc8dc9875c28515c657f3dc75c13d77d4f93f0444428",
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Frameworks/url_launcher_ios.framework/url_launcher_ios",
           "sha256": "d01342d92f37702cab33a3ee16d8f1e427d5bcd9511ba41e6d500ac00b403142",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         },
         {
           "path": "Runner",
-          "sha256": "45d61fc894f57ea0f40626eaac042638c3266897ccbbc9113bfcb8b18c94c136",
-          "removed_component_markers": [],
-          "camera_api_markers": [],
-          "photos_api_markers": []
+          "sha256": "43e2501a3fd4ca4e7437d9e8246c1ee9ec6c461f9ab84a9a0873e8da856f3e75",
+          "removed_markers": [],
+          "camera_markers": [],
+          "test_markers": []
         }
       ],
-      "removed_scanner_assets": []
+      "fixtures": [],
+      "scanner_assets": []
     },
-    "historical_eof_reuse_applied_to_fifth": false
-  },
-  "signed_ipa_qualification": null,
-  "signed_ipa_boundary": "Only current local unsigned ordinary main Release and controlled consumers can qualify; signed IPA is a separate PM gate. Android foundation does not contribute iOS source.",
-  "historical_fourth_summary": {
-    "qualified_cumulative_conservative_lines": 6182,
-    "qualified_fourth_new_conservative_lower_bound": 5632,
-    "qualified_new_upper_relative_to_known_P": 6103,
-    "known_byte_equal_origin_sets": {
-      "totals": {
-        "P_known_same_path": 80,
-        "C_qualified_current": 6182,
-        "P_retained_in_C": 79,
-        "P_not_retained_in_C": 1,
-        "N_C_minus_known_P": 6103
-      },
-      "additive_checks": {
-        "retained_previous_plus_new_equals_current": true,
-        "previous_minus_removed_plus_new_equals_current": true
-      },
-      "boundary": "P is only verified byte-equal same-path baseline provenance under the same native source eligibility filter, not all previous batches or asserted old binary linkage. Cross-path/equivalent-derived baseline remains unknown. N is exact relative to known P only. References never form P; the extra reference-subtracted fourth-new lower bound is a separate non-additive quantity."
-    }
+    "zip_dependency": {
+      "present": true,
+      "linked": true,
+      "sha256": "62fbd1c201d7c8af4c1b61c9de0b96771214a882de07985e93aa4671f57ba5a4"
+    },
+    "historical_eof_reuse_applied_to_sixth": false
   },
   "files": [
     {
@@ -292,12 +278,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiFlutterPlugin.kt",
@@ -346,12 +330,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/StminiRuntimeEvents.kt",
@@ -376,12 +358,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt",
@@ -399,12 +379,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniLink.kt",
@@ -434,12 +412,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/MiniPackageStore.kt",
@@ -457,12 +433,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiHostConfiguration.kt",
@@ -487,12 +461,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/StminiRuntimePool.kt",
@@ -510,12 +482,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/runtime/WebOrigin.kt",
@@ -540,12 +510,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniBridgeOriginPolicy.kt",
@@ -563,12 +531,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchIdentity.kt",
@@ -586,12 +552,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchOverlay.kt",
@@ -609,12 +573,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniLaunchSnapshotStore.kt",
@@ -632,12 +594,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/MiniPopupBridgePolicy.kt",
@@ -655,12 +615,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiContainerActivity.kt",
@@ -678,12 +636,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiHomeActivity.kt",
@@ -701,12 +657,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiMediaStoreWrite.kt",
@@ -724,12 +678,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/ui/StminiWebPageActivity.kt",
@@ -747,12 +699,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebActivity.kt",
@@ -770,12 +720,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebConfiguration.kt",
@@ -793,12 +741,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebCore.kt",
@@ -816,12 +762,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebHostBridge.kt",
@@ -839,12 +783,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebOrigin.kt",
@@ -862,12 +804,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionBridge.kt",
@@ -885,12 +825,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "android/src/main/kotlin/com/fsst/stmini_flutter/web/OnlineWebSessionRegistry.kt",
@@ -908,12 +846,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/Classes/StminiFlutterPlugin.swift",
@@ -937,7 +873,7 @@
         ]
       ],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/Classes/StminiFlutterPlugin.swift",
-      "target_sha256": "bd2c128582eb7d14808f01b789231306a8532a7e542b7e5f2d236d471885a42e",
+      "target_sha256": "b72bb3fdb0bc05f1182b015eeedb231a4d53e448604dc544527131688e36ffcc",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -983,327 +919,544 @@
           158
         ],
         [
-          95,
+          96,
           106,
-          165,
-          176
+          177,
+          187
         ],
         [
           107,
           112,
-          179,
-          184
+          190,
+          195
         ],
         [
           115,
           117,
-          198,
-          200
+          209,
+          211
         ],
         [
           118,
           122,
-          202,
-          206
+          213,
+          217
         ],
         [
           124,
           134,
-          208,
-          218
+          219,
+          229
         ],
         [
           137,
           142,
-          223,
-          228
+          234,
+          239
         ],
         [
           153,
           157,
-          261,
-          265
+          288,
+          292
         ],
         [
           159,
           164,
-          267,
-          272
+          294,
+          299
         ],
         [
           166,
           169,
-          276,
-          279
+          303,
+          306
         ],
         [
           172,
           187,
-          367,
-          382
+          394,
+          409
         ],
         [
           191,
           197,
-          395,
-          401
+          422,
+          428
         ],
         [
           199,
           209,
-          403,
-          413
+          430,
+          440
         ],
         [
           211,
           216,
-          416,
-          421
+          443,
+          448
         ],
         [
           220,
           226,
-          431,
-          437
+          458,
+          464
         ],
         [
           229,
           233,
-          443,
-          447
+          470,
+          474
         ],
         [
           236,
           239,
-          452,
-          455
+          479,
+          482
         ],
         [
           246,
           252,
-          482,
-          488
+          509,
+          515
         ],
         [
           269,
           272,
-          578,
-          581
+          612,
+          615
         ],
         [
           273,
           298,
-          583,
-          608
+          617,
+          642
         ],
         [
           321,
           332,
-          612,
-          623
+          646,
+          657
         ],
         [
           343,
           347,
-          625,
-          629
+          659,
+          663
         ],
         [
           373,
           405,
-          635,
-          667
+          669,
+          701
         ],
         [
           409,
           417,
-          674,
-          682
+          708,
+          716
         ],
         [
           419,
           424,
-          685,
-          690
+          719,
+          724
         ],
         [
           426,
           430,
-          692,
-          696
+          726,
+          730
         ],
         [
           432,
           436,
-          698,
-          702
+          732,
+          736
         ],
         [
           438,
           442,
-          704,
-          708
+          738,
+          742
         ],
         [
           444,
           447,
-          710,
-          713
+          744,
+          747
         ],
         [
           449,
           453,
-          715,
-          719
+          749,
+          753
         ],
         [
           455,
           463,
-          721,
-          729
+          755,
+          763
         ],
         [
           465,
           469,
-          731,
-          735
+          765,
+          769
         ],
         [
           471,
           501,
-          737,
-          767
+          771,
+          801
         ],
         [
           506,
           512,
-          772,
-          778
+          806,
+          812
         ],
         [
           514,
           525,
-          780,
-          791
+          814,
+          825
         ],
         [
           531,
           539,
-          797,
-          805
+          831,
+          839
         ],
         [
           544,
           561,
-          810,
-          827
+          844,
+          861
         ],
         [
           562,
           584,
-          838,
-          860
+          872,
+          894
         ],
         [
           585,
-          589,
-          862,
-          866
+          588,
+          899,
+          902
         ],
         [
           591,
+          600,
+          907,
+          916
+        ],
+        [
+          602,
           678,
-          868,
-          955
+          921,
+          997
         ],
         [
           680,
           691,
-          958,
-          969
+          1000,
+          1011
         ],
         [
           693,
           695,
-          971,
-          973
+          1013,
+          1015
         ],
         [
           697,
           699,
-          976,
-          978
+          1018,
+          1020
         ],
         [
           701,
           713,
-          980,
-          992
+          1022,
+          1034
         ],
         [
           715,
           717,
-          995,
-          997
+          1037,
+          1039
         ],
         [
           720,
           847,
-          1004,
-          1131
+          1046,
+          1173
         ],
         [
           849,
           858,
-          1135,
-          1144
+          1177,
+          1186
         ],
         [
           908,
           916,
-          1188,
-          1196
+          1230,
+          1238
         ],
         [
           923,
           928,
-          1197,
-          1202
+          1239,
+          1244
         ],
         [
           972,
           985,
-          1203,
-          1216
+          1245,
+          1258
         ],
         [
           989,
           1073,
-          1218,
-          1302
+          1260,
+          1344
         ],
         [
           1084,
           1108,
-          1309,
-          1333
+          1351,
+          1375
         ],
         [
           1109,
           1115,
-          1340,
-          1346
+          1382,
+          1388
         ],
         [
           1125,
           1183,
-          1357,
-          1415
+          1399,
+          1457
         ]
       ],
-      "mapped_conservative_source_lines": 890,
+      "mapped_conservative_source_lines": 887,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
+        [
+          1,
+          15
+        ],
+        [
+          23,
+          28
+        ],
+        [
+          33,
+          69
+        ],
+        [
+          76,
+          83
+        ],
+        [
+          96,
+          112
+        ],
+        [
+          115,
+          122
+        ],
+        [
+          124,
+          134
+        ],
+        [
+          137,
+          142
+        ],
+        [
+          153,
+          157
+        ],
+        [
+          159,
+          164
+        ],
+        [
+          166,
+          169
+        ],
+        [
+          172,
+          187
+        ],
+        [
+          191,
+          197
+        ],
+        [
+          199,
+          209
+        ],
+        [
+          211,
+          216
+        ],
+        [
+          220,
+          226
+        ],
+        [
+          229,
+          233
+        ],
+        [
+          236,
+          239
+        ],
+        [
+          246,
+          252
+        ],
+        [
+          269,
+          298
+        ],
+        [
+          321,
+          332
+        ],
+        [
+          343,
+          347
+        ],
+        [
+          373,
+          405
+        ],
+        [
+          409,
+          417
+        ],
+        [
+          419,
+          424
+        ],
+        [
+          426,
+          430
+        ],
+        [
+          432,
+          436
+        ],
+        [
+          438,
+          442
+        ],
+        [
+          444,
+          447
+        ],
+        [
+          449,
+          453
+        ],
+        [
+          455,
+          463
+        ],
+        [
+          465,
+          469
+        ],
+        [
+          471,
+          501
+        ],
+        [
+          506,
+          512
+        ],
+        [
+          514,
+          525
+        ],
+        [
+          531,
+          539
+        ],
+        [
+          544,
+          588
+        ],
+        [
+          591,
+          600
+        ],
+        [
+          602,
+          678
+        ],
+        [
+          680,
+          691
+        ],
+        [
+          693,
+          695
+        ],
+        [
+          697,
+          699
+        ],
+        [
+          701,
+          713
+        ],
+        [
+          715,
+          717
+        ],
+        [
+          720,
+          847
+        ],
+        [
+          849,
+          858
+        ],
+        [
+          908,
+          916
+        ],
+        [
+          923,
+          928
+        ],
+        [
+          972,
+          985
+        ],
+        [
+          989,
+          1073
+        ],
+        [
+          1084,
+          1115
+        ],
+        [
+          1125,
+          1183
+        ]
+      ],
+      "qualified_conservative_source_lines": 887,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           15
@@ -1509,245 +1662,6 @@
           1183
         ]
       ],
-      "qualified_conservative_source_lines": 890,
-      "previous_C3_qualified_source_ranges": [
-        [
-          1,
-          15
-        ],
-        [
-          23,
-          28
-        ],
-        [
-          41,
-          69
-        ],
-        [
-          76,
-          83
-        ],
-        [
-          95,
-          117
-        ],
-        [
-          142,
-          148
-        ],
-        [
-          151,
-          157
-        ],
-        [
-          159,
-          164
-        ],
-        [
-          166,
-          173
-        ],
-        [
-          269,
-          298
-        ],
-        [
-          321,
-          332
-        ],
-        [
-          343,
-          347
-        ],
-        [
-          373,
-          405
-        ],
-        [
-          409,
-          417
-        ],
-        [
-          419,
-          424
-        ],
-        [
-          426,
-          430
-        ],
-        [
-          432,
-          436
-        ],
-        [
-          438,
-          442
-        ],
-        [
-          444,
-          447
-        ],
-        [
-          449,
-          453
-        ],
-        [
-          455,
-          463
-        ],
-        [
-          465,
-          469
-        ],
-        [
-          471,
-          501
-        ],
-        [
-          506,
-          512
-        ],
-        [
-          514,
-          525
-        ],
-        [
-          531,
-          539
-        ],
-        [
-          544,
-          589
-        ],
-        [
-          591,
-          678
-        ],
-        [
-          680,
-          691
-        ],
-        [
-          693,
-          695
-        ],
-        [
-          697,
-          699
-        ],
-        [
-          701,
-          713
-        ],
-        [
-          715,
-          717
-        ],
-        [
-          720,
-          847
-        ],
-        [
-          849,
-          858
-        ],
-        [
-          908,
-          916
-        ],
-        [
-          923,
-          928
-        ],
-        [
-          972,
-          985
-        ],
-        [
-          989,
-          1073
-        ],
-        [
-          1082,
-          1115
-        ],
-        [
-          1125,
-          1183
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [
-        [
-          33,
-          40
-        ],
-        [
-          118,
-          122
-        ],
-        [
-          124,
-          134
-        ],
-        [
-          137,
-          141
-        ],
-        [
-          174,
-          187
-        ],
-        [
-          191,
-          197
-        ],
-        [
-          199,
-          209
-        ],
-        [
-          211,
-          216
-        ],
-        [
-          220,
-          226
-        ],
-        [
-          229,
-          233
-        ],
-        [
-          236,
-          239
-        ],
-        [
-          246,
-          252
-        ]
-      ],
-      "lost_vs_C3_known_ranges": [
-        [
-          113,
-          114
-        ],
-        [
-          143,
-          148
-        ],
-        [
-          151,
-          152
-        ],
-        [
-          170,
-          171
-        ],
-        [
-          1082,
-          1083
-        ]
-      ],
       "fifth_candidate_qualified_ranges": [
         [
           33,
@@ -1798,11 +1712,21 @@
           252
         ]
       ],
-      "fifth_candidate_qualified_lines": 90,
-      "fifth_group_qualified_lines": {
-        "web": 90,
-        "cache": 0
-      }
+      "sixth_download_candidate_ranges": [
+        [
+          84,
+          94
+        ],
+        [
+          299,
+          320
+        ],
+        [
+          348,
+          372
+        ]
+      ],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/Classes/Web/OnlineWebViewController.swift",
@@ -1832,17 +1756,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 65,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           65
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/Classes/Web/STOnlineWebCore.swift",
@@ -1968,7 +1890,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 337,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           168
@@ -2007,26 +1929,17 @@
         ],
         [
           251,
-          296
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [
-        [
-          297,
           364
         ]
       ],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [
         [
           297,
           364
         ]
       ],
-      "fifth_candidate_qualified_lines": 68,
-      "fifth_group_qualified_lines": {
-        "web": 68
-      }
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/STFrameKit.h",
@@ -2051,12 +1964,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/STMiniLocalization.swift",
@@ -2096,7 +2007,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 63,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           29
@@ -2106,11 +2017,9 @@
           71
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/STWebResourceManager.swift",
@@ -2121,102 +2030,194 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/STWebResourceManager.swift",
-      "target_sha256": "ae337627977504dfe5774406f1d8ae51265a95885e020554996b6cb109e2c80e",
+      "target_sha256": "568a2a9720224ca71a173ba402f443efb6a7b298ca882c690d0d3bf44e1532ce",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          9,
+          19,
           1,
-          9
+          19
         ],
         [
           20,
           42,
-          12,
-          34
+          24,
+          46
         ],
         [
           45,
-          58,
-          36,
-          49
+          62,
+          48,
+          65
         ],
         [
           69,
+          75,
+          80,
+          86
+        ],
+        [
+          76,
           180,
-          50,
-          161
+          92,
+          196
         ],
         [
           202,
           253,
-          167,
-          218
+          200,
+          251
         ],
         [
           261,
           315,
-          226,
-          280
+          259,
+          313
         ],
         [
           333,
           368,
-          327,
-          362
+          360,
+          395
         ],
         [
-          488,
+          370,
+          382,
+          399,
+          411
+        ],
+        [
+          385,
+          390,
+          416,
+          421
+        ],
+        [
+          391,
+          394,
+          423,
+          426
+        ],
+        [
+          403,
+          409,
+          441,
+          447
+        ],
+        [
+          410,
+          430,
+          458,
+          478
+        ],
+        [
+          436,
+          451,
+          479,
+          494
+        ],
+        [
+          452,
+          455,
           496,
-          364,
-          372
+          499
+        ],
+        [
+          466,
+          468,
+          508,
+          510
+        ],
+        [
+          471,
+          481,
+          512,
+          522
+        ],
+        [
+          482,
+          496,
+          524,
+          538
         ],
         [
           514,
           535,
-          378,
-          399
+          544,
+          565
         ],
         [
           550,
           563,
-          404,
-          417
+          570,
+          583
         ],
         [
+          569,
+          571,
+          595,
+          597
+        ],
+        [
+          573,
+          581,
+          599,
+          607
+        ],
+        [
+          583,
+          588,
+          609,
+          614
+        ],
+        [
+          596,
+          617,
+          625,
+          646
+        ],
+        [
+          619,
           629,
+          648,
+          658
+        ],
+        [
+          632,
+          641,
+          679,
+          688
+        ],
+        [
+          644,
           664,
-          423,
-          458
+          690,
+          710
         ],
         [
           705,
           817,
-          460,
-          572
+          712,
+          824
         ],
         [
           819,
           823,
-          575,
-          579
+          827,
+          831
         ]
       ],
-      "mapped_conservative_source_lines": 500,
+      "mapped_conservative_source_lines": 651,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
         [
           1,
-          9
-        ],
-        [
-          20,
           42
         ],
         [
           45,
-          58
+          62
         ],
         [
           69,
@@ -2235,7 +2236,27 @@
           368
         ],
         [
-          488,
+          370,
+          382
+        ],
+        [
+          385,
+          394
+        ],
+        [
+          403,
+          430
+        ],
+        [
+          436,
+          455
+        ],
+        [
+          466,
+          468
+        ],
+        [
+          471,
           496
         ],
         [
@@ -2247,7 +2268,31 @@
           563
         ],
         [
-          629,
+          569,
+          571
+        ],
+        [
+          573,
+          581
+        ],
+        [
+          583,
+          588
+        ],
+        [
+          596,
+          617
+        ],
+        [
+          619,
+          629
+        ],
+        [
+          632,
+          641
+        ],
+        [
+          644,
           664
         ],
         [
@@ -2259,8 +2304,8 @@
           823
         ]
       ],
-      "qualified_conservative_source_lines": 500,
-      "previous_C3_qualified_source_ranges": [
+      "qualified_conservative_source_lines": 651,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           9
@@ -2314,11 +2359,83 @@
           823
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [
+        [
+          10,
+          19
+        ],
+        [
+          59,
+          68
+        ],
+        [
+          316,
+          331
+        ],
+        [
+          369,
+          487
+        ],
+        [
+          564,
+          628
+        ]
+      ],
+      "sixth_download_candidate_qualified_ranges": [
+        [
+          10,
+          19
+        ],
+        [
+          59,
+          62
+        ],
+        [
+          370,
+          382
+        ],
+        [
+          385,
+          394
+        ],
+        [
+          403,
+          430
+        ],
+        [
+          436,
+          455
+        ],
+        [
+          466,
+          468
+        ],
+        [
+          471,
+          487
+        ],
+        [
+          569,
+          571
+        ],
+        [
+          573,
+          581
+        ],
+        [
+          583,
+          588
+        ],
+        [
+          596,
+          617
+        ],
+        [
+          619,
+          628
+        ]
+      ]
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift",
@@ -2334,7 +2451,7 @@
         ]
       ],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift",
-      "target_sha256": "9ac64a344b23435a779643bdba2554b1792b138f53273b7004f25bd9b28c71fe",
+      "target_sha256": "5bf3f259cf76f3b4c0b37a233d023b977e82df1695fbe517542fb5c55ee5da61",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -2375,50 +2492,147 @@
         ],
         [
           383,
-          417,
+          406,
           391,
+          414
+        ],
+        [
+          408,
+          412,
+          416,
+          420
+        ],
+        [
+          414,
+          417,
+          422,
           425
+        ],
+        [
+          447,
+          450,
+          432,
+          435
+        ],
+        [
+          452,
+          468,
+          437,
+          453
+        ],
+        [
+          469,
+          477,
+          459,
+          467
         ],
         [
           479,
           528,
-          434,
-          483
+          469,
+          518
         ],
         [
           536,
           545,
-          501,
-          510
+          536,
+          545
         ],
         [
           632,
           634,
-          512,
-          514
+          547,
+          549
         ],
         [
           636,
           644,
-          518,
-          526
+          553,
+          561
         ],
         [
           646,
           660,
-          529,
-          543
+          566,
+          580
         ],
         [
           662,
           668,
-          550,
-          556
+          588,
+          594
         ]
       ],
-      "mapped_conservative_source_lines": 500,
+      "mapped_conservative_source_lines": 528,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
+        [
+          1,
+          122
+        ],
+        [
+          126,
+          128
+        ],
+        [
+          130,
+          132
+        ],
+        [
+          134,
+          143
+        ],
+        [
+          147,
+          306
+        ],
+        [
+          310,
+          406
+        ],
+        [
+          408,
+          412
+        ],
+        [
+          414,
+          417
+        ],
+        [
+          447,
+          450
+        ],
+        [
+          452,
+          477
+        ],
+        [
+          479,
+          528
+        ],
+        [
+          536,
+          545
+        ],
+        [
+          632,
+          634
+        ],
+        [
+          636,
+          644
+        ],
+        [
+          646,
+          660
+        ],
+        [
+          662,
+          668
+        ]
+      ],
+      "qualified_conservative_source_lines": 528,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           122
@@ -2468,81 +2682,6 @@
           668
         ]
       ],
-      "qualified_conservative_source_lines": 500,
-      "previous_C3_qualified_source_ranges": [
-        [
-          1,
-          124
-        ],
-        [
-          126,
-          128
-        ],
-        [
-          130,
-          132
-        ],
-        [
-          134,
-          143
-        ],
-        [
-          147,
-          256
-        ],
-        [
-          275,
-          306
-        ],
-        [
-          310,
-          382
-        ],
-        [
-          398,
-          417
-        ],
-        [
-          479,
-          528
-        ],
-        [
-          536,
-          545
-        ],
-        [
-          632,
-          634
-        ],
-        [
-          636,
-          644
-        ],
-        [
-          646,
-          660
-        ],
-        [
-          662,
-          668
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [
-        [
-          257,
-          274
-        ],
-        [
-          383,
-          397
-        ]
-      ],
-      "lost_vs_C3_known_ranges": [
-        [
-          123,
-          124
-        ]
-      ],
       "fifth_candidate_qualified_ranges": [
         [
           257,
@@ -2553,10 +2692,26 @@
           397
         ]
       ],
-      "fifth_candidate_qualified_lines": 33,
-      "fifth_group_qualified_lines": {
-        "cache": 33
-      }
+      "sixth_download_candidate_ranges": [
+        [
+          418,
+          439
+        ],
+        [
+          442,
+          478
+        ]
+      ],
+      "sixth_download_candidate_qualified_ranges": [
+        [
+          447,
+          450
+        ],
+        [
+          452,
+          477
+        ]
+      ]
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift",
@@ -2567,7 +2722,7 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift",
-      "target_sha256": "081caccb58962d8430bf44426ef266228c97ee70bc051d749bb00b7f461412bd",
+      "target_sha256": "fedc0d9346e1229ed892281111f94f35a5bacd6c0a65f62863e60e1e775cbc15",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -2579,8 +2734,8 @@
         [
           15,
           25,
-          16,
-          26
+          17,
+          27
         ]
       ],
       "mapped_conservative_source_lines": 24,
@@ -2596,7 +2751,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 24,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           13
@@ -2606,11 +2761,9 @@
           25
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Api/STWebApiProtocol.swift",
@@ -2621,7 +2774,7 @@
       "candidate_native_core": false,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebApiProtocol.swift",
-      "target_sha256": "124fb15ee0ca111cd1ba34eecb5cf38b089245691c5a2e6aa3b681bfef82480c",
+      "target_sha256": "cec56a74b7d8e3ea5f18b8b1cd306b7007096498421f07ef34f52d7523580b9c",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -2639,20 +2792,18 @@
         [
           28,
           46,
-          30,
-          48
+          31,
+          49
         ]
       ],
       "mapped_conservative_source_lines": 0,
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Api/STWebNetApi.swift",
@@ -2677,12 +2828,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift",
@@ -2693,13 +2842,19 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift",
-      "target_sha256": "44bad6c661c0f7f2daa67b348f5f9eebf89133851e224901c32f37fa6b937828",
+      "target_sha256": "25aea11de1a016c34cc69521c2f30cbf397ea93e2d5dafc16739c68e5774b00a",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          35,
+          28,
           1,
+          28
+        ],
+        [
+          30,
+          35,
+          30,
           35
         ],
         [
@@ -2716,22 +2871,32 @@
         ],
         [
           144,
-          189,
+          178,
           162,
-          207
+          196
+        ],
+        [
+          181,
+          189,
+          198,
+          206
         ],
         [
           191,
           303,
-          213,
-          325
+          212,
+          324
         ]
       ],
-      "mapped_conservative_source_lines": 299,
+      "mapped_conservative_source_lines": 296,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
         [
           1,
+          28
+        ],
+        [
+          30,
           35
         ],
         [
@@ -2744,6 +2909,10 @@
         ],
         [
           144,
+          178
+        ],
+        [
+          181,
           189
         ],
         [
@@ -2751,8 +2920,8 @@
           303
         ]
       ],
-      "qualified_conservative_source_lines": 299,
-      "previous_C3_qualified_source_ranges": [
+      "qualified_conservative_source_lines": 296,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           35
@@ -2774,11 +2943,9 @@
           303
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Api/STWebUIApi.swift",
@@ -2808,17 +2975,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 53,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           53
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Define/STMacro.swift",
@@ -2843,12 +3008,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift",
@@ -2859,7 +3022,7 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift",
-      "target_sha256": "4b1e65dfc52edd640568d525e7f02e1b09c730f9ad1f38ae4dd4a382187fe713",
+      "target_sha256": "74af5c79597920085f2bce89fdbe1df2fdf84f591e8d1f81089d069d745438df",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -2876,24 +3039,42 @@
         ],
         [
           44,
-          56,
-          47,
+          53,
+          50,
           59
         ],
         [
-          59,
-          75,
           62,
-          78
+          69,
+          70,
+          77
         ],
         [
-          78,
+          71,
+          75,
+          79,
+          83
+        ],
+        [
+          82,
+          88,
+          95,
+          101
+        ],
+        [
+          92,
+          94,
+          118,
+          120
+        ],
+        [
+          103,
           155,
-          83,
-          160
+          136,
+          188
         ]
       ],
-      "mapped_conservative_source_lines": 147,
+      "mapped_conservative_source_lines": 125,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
         [
@@ -2906,19 +3087,31 @@
         ],
         [
           44,
-          56
+          53
         ],
         [
-          59,
+          62,
+          69
+        ],
+        [
+          71,
           75
         ],
         [
-          78,
+          82,
+          88
+        ],
+        [
+          92,
+          94
+        ],
+        [
+          103,
           155
         ]
       ],
-      "qualified_conservative_source_lines": 147,
-      "previous_C3_qualified_source_ranges": [
+      "qualified_conservative_source_lines": 125,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           35
@@ -2940,11 +3133,9 @@
           155
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Handler/STWebScriptHandler.swift",
@@ -2974,17 +3165,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 12,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           12
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
@@ -2995,7 +3184,7 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
-      "target_sha256": "3b2b8497b6fccef9e3508fff7e0032c2de52632c6b7928aa4d4f1ffd76f5d8c2",
+      "target_sha256": "f7d65dd8e4967f36a6db384320755573e478fca557b41008187b5e96229f72ee",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -3007,104 +3196,104 @@
         [
           10,
           25,
-          88,
-          103
+          93,
+          108
         ],
         [
           29,
           131,
-          107,
-          209
+          112,
+          214
         ],
         [
           132,
           143,
-          212,
-          223
+          217,
+          228
         ],
         [
           144,
           147,
-          226,
-          229
+          231,
+          234
         ],
         [
           148,
           172,
-          233,
-          257
+          238,
+          262
         ],
         [
           173,
           206,
-          259,
-          292
+          264,
+          297
         ],
         [
           209,
           216,
-          297,
-          304
+          302,
+          309
         ],
         [
           217,
           220,
-          306,
-          309
+          311,
+          314
         ],
         [
           224,
           232,
-          318,
-          326
+          323,
+          331
         ],
         [
           237,
           266,
-          333,
-          362
+          338,
+          367
         ],
         [
           267,
           290,
-          364,
-          387
+          369,
+          392
         ],
         [
           291,
           296,
-          390,
-          395
+          395,
+          400
         ],
         [
           298,
           375,
-          396,
-          473
+          401,
+          478
         ],
         [
           377,
           395,
-          476,
-          494
+          481,
+          499
         ],
         [
           397,
           419,
-          496,
-          518
+          501,
+          523
         ],
         [
           450,
           456,
-          534,
-          540
+          544,
+          550
         ],
         [
           459,
           461,
-          542,
-          544
+          552,
+          554
         ]
       ],
       "mapped_conservative_source_lines": 413,
@@ -3156,15 +3345,13 @@
         ]
       ],
       "qualified_conservative_source_lines": 413,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
-          23
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [
+          8
+        ],
         [
-          24,
+          10,
           25
         ],
         [
@@ -3202,12 +3389,6 @@
         [
           459,
           461
-        ]
-      ],
-      "lost_vs_C3_known_ranges": [
-        [
-          9,
-          9
         ]
       ],
       "fifth_candidate_qualified_ranges": [
@@ -3252,10 +3433,8 @@
           461
         ]
       ],
-      "fifth_candidate_qualified_lines": 387,
-      "fifth_group_qualified_lines": {
-        "cache": 387
-      }
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/LoadAnimation/STWebLoadProtocol.swift",
@@ -3280,12 +3459,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/LoadAnimation/STWebMiniLoadAnimationView.swift",
@@ -3315,17 +3492,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 158,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           158
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Navi/STWebNavigationController.swift",
@@ -3381,7 +3556,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 34,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           19
@@ -3391,20 +3566,13 @@
           23
         ],
         [
-          35,
+          38,
           49
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [
-        [
-          35,
-          37
-        ]
-      ],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Network/STWebApiRequest.swift",
@@ -3429,12 +3597,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Network/STWebServer.swift",
@@ -3459,12 +3625,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Open/STWebInfoStorage.swift",
@@ -3494,17 +3658,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 26,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           26
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift",
@@ -3515,32 +3677,38 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift",
-      "target_sha256": "07a2717b03eed1406e77a2f4f4731e1d87f4229d96406234e52a5d4fde8e5db5",
+      "target_sha256": "5319b599ebb71561e3db69f177938efaf223f0d3a2b44513c2d9dfa1af745b0e",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
           1,
-          259,
+          192,
           1,
-          259
+          192
+        ],
+        [
+          193,
+          259,
+          194,
+          260
         ],
         [
           261,
           266,
-          261,
-          266
+          262,
+          267
         ],
         [
           268,
           297,
-          268,
-          297
+          269,
+          298
         ],
         [
           298,
           451,
-          299,
-          452
+          300,
+          453
         ]
       ],
       "mapped_conservative_source_lines": 449,
@@ -3560,54 +3728,18 @@
         ]
       ],
       "qualified_conservative_source_lines": 449,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
-          297
+          259
         ],
         [
-          322,
-          326
+          261,
+          266
         ],
         [
-          329,
-          352
-        ],
-        [
-          355,
-          383
-        ],
-        [
-          386,
+          268,
           451
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [
-        [
-          298,
-          321
-        ],
-        [
-          327,
-          328
-        ],
-        [
-          353,
-          354
-        ],
-        [
-          384,
-          385
-        ]
-      ],
-      "lost_vs_C3_known_ranges": [
-        [
-          260,
-          260
-        ],
-        [
-          267,
-          267
         ]
       ],
       "fifth_candidate_qualified_ranges": [
@@ -3628,11 +3760,8 @@
           385
         ]
       ],
-      "fifth_candidate_qualified_lines": 30,
-      "fifth_group_qualified_lines": {
-        "cache": 21,
-        "transition": 9
-      }
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/PersonalHandle/STWebPersonalHandle.swift",
@@ -3672,7 +3801,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 43,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           25
@@ -3682,11 +3811,9 @@
           44
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Setting/STWebCommonConfig.swift",
@@ -3716,17 +3843,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 27,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           27
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Setting/STWebConfig.swift",
@@ -3756,17 +3881,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 76,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           76
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Trans/STWebTransAnimation.swift",
@@ -3816,8 +3939,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 58,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           8,
           56
@@ -3831,7 +3953,6 @@
           84
         ]
       ],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [
         [
           8,
@@ -3846,10 +3967,8 @@
           84
         ]
       ],
-      "fifth_candidate_qualified_lines": 58,
-      "fifth_group_qualified_lines": {
-        "transition": 58
-      }
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Trans/STWebTransInteractive.swift",
@@ -3905,8 +4024,7 @@
         ]
       ],
       "qualified_conservative_source_lines": 84,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           8,
           57
@@ -3920,7 +4038,6 @@
           93
         ]
       ],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [
         [
           8,
@@ -3935,10 +4052,8 @@
           93
         ]
       ],
-      "fifth_candidate_qualified_lines": 84,
-      "fifth_group_qualified_lines": {
-        "transition": 84
-      }
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
@@ -3949,7 +4064,7 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
-      "target_sha256": "58b1c7cc1d6fa23882aa4336743d082c57948e0ac8dc51d2740d3d3b4acda7b0",
+      "target_sha256": "d6e94fa33f4f65d97daf2b25cf6048c97d432759665b3e0c29e389e150ceec07",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -3960,74 +4075,109 @@
         ],
         [
           23,
+          97,
+          165,
+          239
+        ],
+        [
+          98,
           199,
-          82,
-          258
+          241,
+          342
         ],
         [
           201,
           227,
-          260,
-          286
+          344,
+          370
         ],
         [
           229,
           259,
-          288,
-          318
+          372,
+          402
         ],
         [
           260,
-          311,
-          320,
-          371
+          263,
+          404,
+          407
+        ],
+        [
+          264,
+          312,
+          411,
+          459
         ],
         [
           313,
           337,
-          373,
-          397
+          471,
+          495
         ],
         [
           339,
           377,
-          405,
-          443
+          503,
+          541
         ],
         [
           378,
           405,
-          450,
-          477
+          548,
+          575
         ],
         [
           406,
           458,
-          482,
-          534
+          584,
+          636
         ],
         [
           459,
           494,
-          537,
-          572
+          639,
+          674
         ],
         [
           508,
           543,
-          576,
-          611
+          678,
+          713
         ],
         [
           544,
           567,
-          622,
-          645
+          724,
+          747
         ]
       ],
-      "mapped_conservative_source_lines": 550,
+      "mapped_conservative_source_lines": 551,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
+        [
+          1,
+          199
+        ],
+        [
+          201,
+          227
+        ],
+        [
+          229,
+          337
+        ],
+        [
+          339,
+          494
+        ],
+        [
+          508,
+          567
+        ]
+      ],
+      "qualified_conservative_source_lines": 551,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           199
@@ -4053,39 +4203,9 @@
           567
         ]
       ],
-      "qualified_conservative_source_lines": 550,
-      "previous_C3_qualified_source_ranges": [
-        [
-          1,
-          337
-        ],
-        [
-          339,
-          494
-        ],
-        [
-          508,
-          567
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [
-        [
-          200,
-          200
-        ],
-        [
-          228,
-          228
-        ],
-        [
-          312,
-          312
-        ]
-      ],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STWebCardView.swift",
@@ -4103,12 +4223,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift",
@@ -4138,17 +4256,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 92,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           92
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STWebPopView.swift",
@@ -4178,17 +4294,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 107,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           107
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/Views/STWebToolView.swift",
@@ -4218,17 +4332,15 @@
         ]
       ],
       "qualified_conservative_source_lines": 121,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           121
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/WebCrl/H5/STWebH5Crl.swift",
@@ -4362,26 +4474,23 @@
         ]
       ],
       "qualified_conservative_source_lines": 611,
-      "previous_C3_qualified_source_ranges": [
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
+          243
+        ],
+        [
+          245,
+          593
+        ],
+        [
+          595,
           613
         ]
       ],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [
-        [
-          244,
-          244
-        ],
-        [
-          594,
-          594
-        ]
-      ],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift",
@@ -4392,7 +4501,7 @@
       "candidate_native_core": true,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift",
-      "target_sha256": "1a6c4668914a1283d13e98c74f35af7bd8cc0661552d17270d82482b9fcffc30",
+      "target_sha256": "fe4d982117872c7ecf2c315c505ae0267974588bda11b4c9840364fa348f5b1d",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -4403,272 +4512,563 @@
         ],
         [
           34,
-          72,
+          75,
           35,
-          73
+          76
+        ],
+        [
+          76,
+          81,
+          78,
+          83
         ],
         [
           83,
-          87,
-          74,
-          78
+          85,
+          84,
+          86
         ],
         [
           89,
-          92,
-          79,
-          82
+          91,
+          90,
+          92
         ],
         [
           94,
           110,
-          89,
-          105
+          101,
+          117
         ],
         [
           111,
-          115,
-          118,
-          122
-        ],
-        [
-          235,
           492,
-          123,
-          380
+          136,
+          517
         ],
         [
           497,
           503,
-          384,
-          390
+          521,
+          527
         ],
         [
           508,
           534,
-          397,
-          423
+          534,
+          560
         ],
         [
           536,
           541,
-          426,
-          431
+          563,
+          568
         ],
         [
           547,
           551,
-          433,
-          437
+          570,
+          574
         ],
         [
           570,
-          572,
-          444,
-          446
+          573,
+          581,
+          584
         ],
         [
           574,
           579,
-          448,
-          453
+          586,
+          591
         ],
         [
           586,
           670,
-          461,
-          545
+          599,
+          683
         ],
         [
           671,
-          682,
-          548,
-          559
+          687,
+          686,
+          702
+        ],
+        [
+          688,
+          692,
+          704,
+          708
+        ],
+        [
+          693,
+          709,
+          712,
+          728
+        ],
+        [
+          711,
+          723,
+          729,
+          741
+        ],
+        [
+          725,
+          731,
+          743,
+          749
+        ],
+        [
+          741,
+          745,
+          750,
+          754
+        ],
+        [
+          746,
+          780,
+          756,
+          790
+        ],
+        [
+          784,
+          790,
+          794,
+          800
+        ],
+        [
+          792,
+          798,
+          802,
+          808
         ],
         [
           799,
           822,
-          579,
-          602
+          815,
+          838
         ],
         [
-          832,
+          823,
           838,
-          606,
-          612
+          843,
+          858
+        ],
+        [
+          839,
+          845,
+          871,
+          877
+        ],
+        [
+          847,
+          856,
+          879,
+          888
+        ],
+        [
+          874,
+          886,
+          900,
+          912
         ],
         [
           887,
           929,
-          614,
-          656
+          921,
+          963
         ],
         [
-          1056,
+          930,
+          959,
+          994,
+          1023
+        ],
+        [
+          966,
+          988,
+          1034,
+          1056
+        ],
+        [
+          990,
+          992,
           1059,
-          660,
-          663
+          1061
         ],
         [
-          1194,
-          1198,
-          669,
-          673
+          994,
+          1036,
+          1063,
+          1105
         ],
         [
-          1250,
-          1255,
-          679,
-          684
+          1037,
+          1078,
+          1109,
+          1150
         ],
         [
-          1265,
-          1432,
-          686,
-          853
+          1081,
+          1130,
+          1156,
+          1205
+        ],
+        [
+          1131,
+          1139,
+          1207,
+          1215
+        ],
+        [
+          1140,
+          1154,
+          1217,
+          1231
+        ],
+        [
+          1156,
+          1171,
+          1234,
+          1249
+        ],
+        [
+          1172,
+          1243,
+          1251,
+          1322
+        ],
+        [
+          1244,
+          1431,
+          1325,
+          1512
         ],
         [
           1433,
           1440,
-          860,
-          867
+          1539,
+          1546
         ],
         [
           1445,
+          1474,
+          1558,
+          1587
+        ],
+        [
+          1475,
           1494,
-          877,
-          926
+          1589,
+          1608
         ],
         [
           1524,
           1529,
-          1026,
-          1031
+          1720,
+          1725
         ],
         [
           1570,
           1580,
-          1049,
-          1059
+          1757,
+          1767
         ],
         [
           1581,
           1590,
-          1061,
-          1070
+          1770,
+          1779
         ],
         [
           1593,
           1601,
-          1072,
-          1080
+          1781,
+          1789
         ],
         [
           1602,
           1610,
-          1085,
-          1093
+          1794,
+          1802
         ],
         [
           1615,
           1617,
-          1104,
-          1106
+          1813,
+          1815
         ],
         [
           1621,
           1727,
-          1109,
-          1215
+          1818,
+          1924
         ],
         [
           1733,
           1767,
-          1217,
-          1251
+          1926,
+          1960
         ],
         [
           1770,
           1774,
-          1254,
-          1258
+          1963,
+          1967
         ],
         [
           1776,
+          1782,
+          1969,
+          1975
+        ],
+        [
+          1783,
           1862,
-          1260,
-          1346
+          1977,
+          2056
         ],
         [
           1863,
           1872,
-          1350,
-          1359
+          2060,
+          2069
         ],
         [
           1897,
           1914,
-          1375,
-          1392
+          2085,
+          2102
         ],
         [
           1915,
           1927,
-          1396,
-          1408
+          2106,
+          2118
         ],
         [
           1933,
           1948,
-          1413,
-          1428
+          2123,
+          2138
         ],
         [
           1954,
           1980,
-          1431,
-          1457
+          2141,
+          2167
         ],
         [
           1985,
           1989,
-          1461,
-          1465
+          2171,
+          2175
         ],
         [
           1991,
           1997,
-          1467,
-          1473
+          2177,
+          2183
         ],
         [
           1999,
           2002,
-          1475,
-          1478
+          2185,
+          2188
         ],
         [
           2004,
           2006,
-          1480,
-          1482
+          2190,
+          2192
         ],
         [
           2008,
           2018,
-          1484,
-          1494
+          2194,
+          2204
         ],
         [
           2020,
           2024,
-          1497,
-          1501
+          2207,
+          2211
         ]
       ],
-      "mapped_conservative_source_lines": 1225,
+      "mapped_conservative_source_lines": 1799,
       "compile_link_consumer_qualified": true,
       "qualified_source_ranges": [
+        [
+          1,
+          30
+        ],
+        [
+          34,
+          81
+        ],
+        [
+          83,
+          85
+        ],
+        [
+          89,
+          91
+        ],
+        [
+          94,
+          492
+        ],
+        [
+          497,
+          503
+        ],
+        [
+          508,
+          534
+        ],
+        [
+          536,
+          541
+        ],
+        [
+          547,
+          551
+        ],
+        [
+          570,
+          579
+        ],
+        [
+          586,
+          709
+        ],
+        [
+          711,
+          723
+        ],
+        [
+          725,
+          731
+        ],
+        [
+          741,
+          780
+        ],
+        [
+          784,
+          790
+        ],
+        [
+          792,
+          845
+        ],
+        [
+          847,
+          856
+        ],
+        [
+          874,
+          959
+        ],
+        [
+          966,
+          988
+        ],
+        [
+          990,
+          992
+        ],
+        [
+          994,
+          1078
+        ],
+        [
+          1081,
+          1154
+        ],
+        [
+          1156,
+          1431
+        ],
+        [
+          1433,
+          1440
+        ],
+        [
+          1445,
+          1494
+        ],
+        [
+          1524,
+          1529
+        ],
+        [
+          1570,
+          1590
+        ],
+        [
+          1593,
+          1610
+        ],
+        [
+          1615,
+          1617
+        ],
+        [
+          1621,
+          1727
+        ],
+        [
+          1733,
+          1767
+        ],
+        [
+          1770,
+          1774
+        ],
+        [
+          1776,
+          1872
+        ],
+        [
+          1897,
+          1927
+        ],
+        [
+          1933,
+          1948
+        ],
+        [
+          1954,
+          1980
+        ],
+        [
+          1985,
+          1989
+        ],
+        [
+          1991,
+          1997
+        ],
+        [
+          1999,
+          2002
+        ],
+        [
+          2004,
+          2006
+        ],
+        [
+          2008,
+          2018
+        ],
+        [
+          2020,
+          2024
+        ]
+      ],
+      "qualified_conservative_source_lines": 1799,
+      "fifth_baseline_qualified_source_ranges": [
         [
           1,
           30
@@ -4822,261 +5222,6 @@
           2024
         ]
       ],
-      "qualified_conservative_source_lines": 1225,
-      "previous_C3_qualified_source_ranges": [
-        [
-          1,
-          30
-        ],
-        [
-          41,
-          72
-        ],
-        [
-          83,
-          87
-        ],
-        [
-          89,
-          92
-        ],
-        [
-          94,
-          115
-        ],
-        [
-          235,
-          492
-        ],
-        [
-          494,
-          506
-        ],
-        [
-          508,
-          534
-        ],
-        [
-          536,
-          541
-        ],
-        [
-          547,
-          551
-        ],
-        [
-          570,
-          572
-        ],
-        [
-          574,
-          579
-        ],
-        [
-          586,
-          661
-        ],
-        [
-          664,
-          670
-        ],
-        [
-          799,
-          822
-        ],
-        [
-          832,
-          838
-        ],
-        [
-          887,
-          929
-        ],
-        [
-          1056,
-          1059
-        ],
-        [
-          1194,
-          1198
-        ],
-        [
-          1250,
-          1255
-        ],
-        [
-          1265,
-          1441
-        ],
-        [
-          1445,
-          1497
-        ],
-        [
-          1520,
-          1523
-        ],
-        [
-          1529,
-          1533
-        ],
-        [
-          1538,
-          1541
-        ],
-        [
-          1571,
-          1590
-        ],
-        [
-          1593,
-          1617
-        ],
-        [
-          1621,
-          1727
-        ],
-        [
-          1733,
-          1735
-        ],
-        [
-          1737,
-          1768
-        ],
-        [
-          1770,
-          1774
-        ],
-        [
-          1776,
-          1862
-        ],
-        [
-          1873,
-          1875
-        ],
-        [
-          1897,
-          1914
-        ],
-        [
-          1931,
-          1948
-        ],
-        [
-          1954,
-          1979
-        ]
-      ],
-      "new_qualified_vs_C3_known_ranges": [
-        [
-          34,
-          40
-        ],
-        [
-          662,
-          663
-        ],
-        [
-          671,
-          682
-        ],
-        [
-          1524,
-          1528
-        ],
-        [
-          1570,
-          1570
-        ],
-        [
-          1736,
-          1736
-        ],
-        [
-          1863,
-          1872
-        ],
-        [
-          1915,
-          1927
-        ],
-        [
-          1980,
-          1980
-        ],
-        [
-          1985,
-          1989
-        ],
-        [
-          1991,
-          1997
-        ],
-        [
-          1999,
-          2002
-        ],
-        [
-          2004,
-          2006
-        ],
-        [
-          2008,
-          2018
-        ],
-        [
-          2020,
-          2024
-        ]
-      ],
-      "lost_vs_C3_known_ranges": [
-        [
-          494,
-          496
-        ],
-        [
-          504,
-          506
-        ],
-        [
-          1441,
-          1441
-        ],
-        [
-          1495,
-          1497
-        ],
-        [
-          1520,
-          1523
-        ],
-        [
-          1530,
-          1533
-        ],
-        [
-          1538,
-          1541
-        ],
-        [
-          1611,
-          1614
-        ],
-        [
-          1768,
-          1768
-        ],
-        [
-          1873,
-          1875
-        ],
-        [
-          1931,
-          1932
-        ]
-      ],
       "fifth_candidate_qualified_ranges": [
         [
           34,
@@ -5131,11 +5276,166 @@
           2024
         ]
       ],
-      "fifth_candidate_qualified_lines": 83,
-      "fifth_group_qualified_lines": {
-        "cache": 16,
-        "transition": 67
-      }
+      "sixth_download_candidate_ranges": [
+        [
+          73,
+          82
+        ],
+        [
+          116,
+          234
+        ],
+        [
+          535,
+          535
+        ],
+        [
+          573,
+          573
+        ],
+        [
+          687,
+          798
+        ],
+        [
+          823,
+          831
+        ],
+        [
+          839,
+          886
+        ],
+        [
+          930,
+          1055
+        ],
+        [
+          1060,
+          1193
+        ],
+        [
+          1199,
+          1249
+        ],
+        [
+          1256,
+          1264
+        ],
+        [
+          1442,
+          1442
+        ],
+        [
+          1536,
+          1536
+        ],
+        [
+          1551,
+          1569
+        ],
+        [
+          1728,
+          1732
+        ],
+        [
+          1876,
+          1879
+        ],
+        [
+          1951,
+          1951
+        ]
+      ],
+      "sixth_download_candidate_qualified_ranges": [
+        [
+          73,
+          81
+        ],
+        [
+          116,
+          234
+        ],
+        [
+          573,
+          573
+        ],
+        [
+          687,
+          709
+        ],
+        [
+          711,
+          723
+        ],
+        [
+          725,
+          731
+        ],
+        [
+          741,
+          780
+        ],
+        [
+          784,
+          790
+        ],
+        [
+          792,
+          798
+        ],
+        [
+          823,
+          831
+        ],
+        [
+          839,
+          845
+        ],
+        [
+          847,
+          856
+        ],
+        [
+          874,
+          886
+        ],
+        [
+          930,
+          959
+        ],
+        [
+          966,
+          988
+        ],
+        [
+          990,
+          992
+        ],
+        [
+          994,
+          1055
+        ],
+        [
+          1060,
+          1078
+        ],
+        [
+          1081,
+          1154
+        ],
+        [
+          1156,
+          1193
+        ],
+        [
+          1199,
+          1249
+        ],
+        [
+          1256,
+          1264
+        ]
+      ]
     },
     {
       "source_path": "ios/STMini/classes/frame/WebView/WebCrl/STWebCrlProtocol.swift",
@@ -5160,12 +5460,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Extension/DispatchQueue+HLOnce.swift",
@@ -5190,12 +5488,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Extension/STBundleExtension.swift",
@@ -5220,12 +5516,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Common/Decode/STDecode.swift",
@@ -5250,12 +5544,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Common/Request/STRequest.swift",
@@ -5280,12 +5572,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Common/Server/HLServer.swift",
@@ -5310,12 +5600,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Array+Safe.swift",
@@ -5333,12 +5621,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Data+Hash.swift",
@@ -5356,12 +5642,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/DispatchQueue+Safe.swift",
@@ -5379,12 +5663,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Double+TaskInfo.swift",
@@ -5402,12 +5684,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/Int64+TaskInfo.swift",
@@ -5425,12 +5705,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/String+Hash.swift",
@@ -5448,12 +5726,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/UIDevice+Free.swift",
@@ -5471,12 +5747,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Extensions/URLSession+ResumeData.swift",
@@ -5494,12 +5768,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCache.swift",
@@ -5517,12 +5789,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRCommon.swift",
@@ -5545,12 +5815,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRConfiguration.swift",
@@ -5568,12 +5836,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRDownloadTask.swift",
@@ -5591,12 +5857,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRManager.swift",
@@ -5614,12 +5878,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRSessionDelegate.swift",
@@ -5637,12 +5899,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/General/TRTask.swift",
@@ -5660,12 +5920,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Tiercel.h",
@@ -5683,12 +5941,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRChecksumHelper.swift",
@@ -5706,12 +5962,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/Network/Download/Tiercel/Utility/TRResumeDataHelper.swift",
@@ -5729,12 +5983,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/STFlieManager.swift",
@@ -5759,12 +6011,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/STLibKit.h",
@@ -5789,12 +6039,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/STProjectHelper.swift",
@@ -5824,12 +6072,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/STScreenHelper.swift",
@@ -5854,12 +6100,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/lib/STTool.swift",
@@ -5884,12 +6128,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Extension/UIButton+STCorner.swift",
@@ -5914,12 +6156,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Extension/UIColor+STHex.swift",
@@ -5944,12 +6184,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Extension/UIView+STLayout.swift",
@@ -5974,12 +6212,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopCommen.h",
@@ -6004,12 +6240,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopConfig.h",
@@ -6034,12 +6268,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopConfig.m",
@@ -6064,12 +6296,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopHeader.h",
@@ -6099,12 +6329,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopView.h",
@@ -6129,12 +6357,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopView.m",
@@ -6159,12 +6385,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopViewController.h",
@@ -6189,12 +6413,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HLPopViewController.m",
@@ -6219,12 +6441,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/PopView/HlPopCommen.m",
@@ -6249,12 +6469,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/STNavigationController.swift",
@@ -6279,12 +6497,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/STUIKit.h",
@@ -6309,12 +6525,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/STViewController.swift",
@@ -6339,12 +6553,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXPermissions.swift",
@@ -6362,12 +6574,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXScanLineAnimation.swift",
@@ -6385,12 +6595,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXScanNetAnimation.swift",
@@ -6408,12 +6616,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXScanView.swift",
@@ -6431,12 +6637,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXScanViewController.swift",
@@ -6454,12 +6658,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXScanViewStyle.swift",
@@ -6477,12 +6679,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "ios/STMini/classes/ui/Third/Scan/LBXScanWrapper.swift",
@@ -6517,12 +6717,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "lib/src/runtime_mode.dart",
@@ -6547,12 +6745,10 @@
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     },
     {
       "source_path": "lib/stmini_flutter.dart",
@@ -6563,7 +6759,7 @@
       "candidate_native_core": false,
       "release_excluded_source_ranges": [],
       "target_path": "apps/almanac/packages/stmini_flutter/lib/stmini_flutter.dart",
-      "target_sha256": "995ccce4271477717b051e9ec407271c640d511b34f64c6b50e9f8abd3bcf387",
+      "target_sha256": "47be5c2ae7a60f8ad9e616c63bece99189e8b85d17e3e445c46eb6bcf963ff82",
       "byte_identical_complete_file": false,
       "byte_equal_span_map_source_start_end_target_start_end": [
         [
@@ -6575,44 +6771,45 @@
         [
           49,
           52,
-          37,
-          40
+          43,
+          46
         ],
         [
           56,
           59,
-          49,
-          52
+          55,
+          58
         ],
         [
           118,
           121,
-          65,
-          68
+          71,
+          74
         ],
         [
           127,
           129,
-          123,
-          125
+          129,
+          131
         ],
         [
           181,
           187,
-          190,
-          196
+          196,
+          202
         ]
       ],
       "mapped_conservative_source_lines": 0,
       "compile_link_consumer_qualified": false,
       "qualified_source_ranges": [],
       "qualified_conservative_source_lines": 0,
-      "previous_C3_qualified_source_ranges": [],
-      "new_qualified_vs_C3_known_ranges": [],
-      "lost_vs_C3_known_ranges": [],
+      "fifth_baseline_qualified_source_ranges": [],
       "fifth_candidate_qualified_ranges": [],
-      "fifth_candidate_qualified_lines": 0,
-      "fifth_group_qualified_lines": {}
+      "sixth_download_candidate_ranges": [],
+      "sixth_download_candidate_qualified_ranges": []
     }
-  ]
+  ],
+  "signed_ipa_qualification": null,
+  "safe_derived_boundary": "Operation cancellation, immutable runtime snapshots, lifecycle/owner/session guards, tests, Dart, ZIPFoundation and no-consumer mirror receive zero fixed-source credit. Non-equal source positions do not mean unimplemented behavior or semantic loss. This is not a work-completion or functionality percentage.",
+  "signed_ipa_boundary": "Only current local ordinary unsigned Release plus controlled consumers can qualify. Signed IPA, physical-device and store evidence remain separate."
 }

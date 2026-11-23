@@ -77,6 +77,7 @@ public final class LocalMiniResource: NSObject, WKURLSchemeHandler {
     queue.addOperation { [weak self, request] in
       guard let self else { return }
       let outcome = Result { () throws -> Data in
+        return try STWebResourceManager.withPackageTransaction(self.miniId) {
         let deadline = ProcessInfo.processInfo.systemUptime + 4
         let check = {
           try request.check()
@@ -107,12 +108,16 @@ public final class LocalMiniResource: NSObject, WKURLSchemeHandler {
         guard after == file,
               (try FileManager.default.attributesOfItem(atPath: file.path)[.size] as? NSNumber)?.intValue == count else { throw Self.failure() }
         try check(); return bytes
+        }
       }
       DispatchQueue.main.async { [self, request] in
         // Delivery, stop and terminal are serialized here. A cancelled task
         // retains its slot until its worker and immutable bytes are released.
         defer { self.active.removeValue(forKey: key) }
         guard self.active[key] === request, !self.closed, (try? request.check()) != nil else { return }
+        guard (try? self.inventory.verifiedPackage(miniId: self.miniId, version: self.version, entry: self.entry, check: { try request.check() })) != nil else {
+          request.task.didFailWithError(Self.failure()); self.identityInvalid?(); return
+        }
         switch outcome {
         case .success(let bytes):
           let mime = Self.mime(path)

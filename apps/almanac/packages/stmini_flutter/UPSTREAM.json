@@ -1,20 +1,20 @@
 {
   "schema_version": 2,
   "source_sha": "b4462f63a33acf6c3fff63f0e67b3713bc00dff8",
-  "stage": "ios_mini_cache_transition_standalone_https_web_android_foundation",
+  "stage": "ios_explicit_package_download_install_update_android_foundation",
   "not_full_main_runtime": true,
   "runtime_capabilities": {
     "ios": {
       "stage": "mini",
       "miniLoadingAvailable": true,
-      "miniLoadingScope": "qualified already-existing local packages only; never auto-opened",
+      "miniLoadingScope": "Explicit local or HTTPS package link only; no product entry or automatic activation",
       "webLoadingAvailable": true,
       "miniChildWebAvailable": true,
       "closedMiniCacheAvailable": true,
-      "miniPackageDownloadAvailable": false,
-      "miniPackageInstallAvailable": false,
-      "miniPackageUpdateAvailable": false,
-      "miniPackageMode": "local_only",
+      "miniPackageDownloadAvailable": true,
+      "miniPackageInstallAvailable": true,
+      "miniPackageUpdateAvailable": true,
+      "miniPackageMode": "download_install_update",
       "capabilities": [
         "host_configuration",
         "language_resolution",
@@ -51,8 +51,8 @@
     "ios_photos": "Explicit save uses add-only authorization on iOS14+; unchanged Pod13 legacy fallback retains ordinary Photos selectors, with accurate save-related Read/Add purposes in en and zh-Hans. No automatic permission request or actual protected-data access claim.",
     "ios_camera": "LBX scanner implementation and its exclusive images are removed; current unsigned plugin/App-bundle scan and Camera-purpose absence are verified separately. No microphone purpose or audio recording added",
     "fifth_batch": "Only iOS cache/continuous/native transition/standalone HTTPS Web. Local technical evidence and independent gates precede the authorized fifth submission pipeline; actual signed IPA, store materials and ASC results are separate evidence, not claimed here.",
-    "package_mutation": "Unavailable in fifth: nonempty downloadURL and force-update reject; missing/invalid/below-floor local Mini fails without package metadata writes or ordinary Web fallback; legacy update methods return code string0, data.msg unsupported and supported=false. Download/install/update belongs to sixth, not a permanent capability exclusion.",
-    "sixth_batch": "Real URLSession download/ZIP atomic install/update and optional safe actually consumed scoped mirror are deferred to the sixth final local batch; only Camera is excluded by product scope. Dormant Tiercel/dead helpers do not receive source credit.",
+    "package_mutation": "Sixth implementation candidate: explicit HTTPS URLSession download, bounded validated ZIPFoundation install/update under per-package transaction and original cancellable commit ownership. Mandatory floors fail closed; immutable per-runtime snapshots keep active/retained WK resource bytes unchanged by weak disk update.",
+    "sixth_batch": "Implemented candidate; native/SDK/ordinary Release and independent verification pending. No Camera or dormant Tiercel. Signed IPA/store disclosure/submission remain separate gates; latest user authorized submission overrides historical local-only instruction.",
     "standalone_web": "External-untrusted policy; actual main-frame/current document/HTTPS origin and native owner epoch required. Covered/hidden/closing/detached owners cannot regain native authority through session notification; no Mini bridge identity, account/trading provider or host-storage fallback."
   },
   "source_denominator": {
@@ -96,30 +96,29 @@
     "boundary": "Scanner implementation and Camera purpose are removed. Explicit save uses add-only on iOS14+; the Pod13 legacy Photos authorization selector remains for older hosts, so accurate save-related Photo Library and Add purposes remain. No microphone purpose is introduced."
   },
   "platform_scope": {
-    "ios": "Qualified existing local Mini plus fifth cache/continuous/native transition and explicit standalone HTTPS Web; no package mutation or Camera. Ordinary product home remains initialize/state/inventory only.",
+    "ios": "Current sixth explicit HTTPS download/strict atomic ZIP install/weak and mandatory update, immutable running root/child resources; current native74/SDK/ordinary unsigned Release verified. Original Deynu home/no Mini product entry preserved. Independent final review and signed IPA/store gates separate.",
     "android": "Unchanged third-batch inventory/local-renderer foundation with explicit unsupported full Mini/Web; no new Android integration or validation and no iOS source credit."
   },
   "source_map": {
     "path": "SOURCE_MAP.json",
-    "sha256": "01d0ddf2ee1c0e3f93be43dd05d6cf57d03459c665b867db76a2cd39635efba1",
-    "batch": 5,
-    "baseline_before_fifth": "0af8928ec1c2a7c8a10e11a6e2a954c50e4c756c",
-    "qualified_cumulative_source_lines": 6964,
-    "fifth_qualified_approved_candidate_lines": 833,
-    "fifth_qualified_by_group": {
-      "web": 158,
-      "cache": 457,
-      "transition": 218
+    "sha256": "23eb10539a0a31a707b7970f19f97da2fa0e1c7716e12eabf0562dcb47d3dc30",
+    "batch": 6,
+    "baseline_before_sixth": "314a51f8f54634a6dee4708b7b8682604aab99a3",
+    "denominator_source_files": 86,
+    "denominator_physical_lines": 15317,
+    "totals": {
+      "mapped_cumulative": 7690,
+      "qualified_cumulative": 7690,
+      "current_retained_fifth_candidate": 833,
+      "mapped_retained_fifth_candidate": 833,
+      "mapped_sixth_download_candidate": 759,
+      "qualified_sixth_download_candidate": 759,
+      "new_qualified_source_positions_vs_fifth": 764,
+      "no_longer_byte_equal_source_positions_vs_fifth": 38
     },
-    "new_qualified_vs_C3_known": 841,
-    "lost_vs_C3_known": 59,
-    "sixth_static_candidate_not_qualified": {
-      "download": 989,
-      "safe_mirror_upper": 92
-    },
-    "boundary": "Exact fixed-source spans intersect current native inputs, ordinary unsigned Release and actual controlled consumers. Sixth is not implemented/qualified yet; static candidate split is not a final 50/50 qualification claim. Historical C3 statistics remain separately traceable."
+    "boundary": "Operation cancellation, immutable runtime snapshots, lifecycle/owner/session guards, tests, Dart, ZIPFoundation and no-consumer mirror receive zero fixed-source credit. Non-equal source positions do not mean unimplemented behavior or semantic loss. This is not a work-completion or functionality percentage."
   },
-  "source_metric_boundary": "Byte-equal substantive spans of at least three lines; eligibility unchanged from C3 native-only core. Fifth credit additionally intersects the PM-approved net candidate source ranges. Safe changed lines, tests, Dart, resources, helpers without consumers and supporting UI are not credited. Same-path byte-equal C3 provenance is known; equivalent/cross-path past provenance is unknown, so net new vs C3 is not an assertion that all such lines were absent semantically. Current source qualification is for local unsigned ordinary main iOS App/framework only; actual signed IPA remains separately gated.",
+  "source_metric_boundary": "Operation cancellation, immutable runtime snapshots, lifecycle/owner/session guards, tests, Dart, ZIPFoundation and no-consumer mirror receive zero fixed-source credit. Non-equal source positions do not mean unimplemented behavior or semantic loss. This is not a work-completion or functionality percentage. Only current local ordinary unsigned Release plus controlled consumers can qualify. Signed IPA, physical-device and store evidence remain separate.",
   "removed_fixed_source_paths": [
     "android/src/main/kotlin/com/fsst/stmini_flutter/StminiDebugLog.kt",
     "android/src/main/kotlin/com/fsst/stmini_flutter/bridge/StminiWebBridge.kt",
@@ -213,9 +212,9 @@
       "path": "ios/Classes/StminiFlutterPlugin.swift",
       "source_git_blob": "77e2607a941d5010fe5b4f69f618a9beb2e5df0e",
       "source_sha256": "0768d6903abb6ab8f693b86864b691e617ca5434362d218a6dba98687ab9ee72",
-      "integrated_sha256": "bd2c128582eb7d14808f01b789231306a8532a7e542b7e5f2d236d471885a42e",
+      "integrated_sha256": "b72bb3fdb0bc05f1182b015eeedb231a4d53e448604dc544527131688e36ffcc",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 890
+      "qualified_source_lines": 887
     },
     {
       "path": "ios/Classes/Web/OnlineWebViewController.swift",
@@ -253,23 +252,23 @@
       "path": "ios/STMini/classes/frame/STWebResourceManager.swift",
       "source_git_blob": "d3f979a442a4c1956d1b57f85a8a65720d9ae84f",
       "source_sha256": "feba3613986a042ec6254741998728e9eb67bc6bd111185ad6e7cc6c5f50567e",
-      "integrated_sha256": "ae337627977504dfe5774406f1d8ae51265a95885e020554996b6cb109e2c80e",
+      "integrated_sha256": "568a2a9720224ca71a173ba402f443efb6a7b298ca882c690d0d3bf44e1532ce",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 500
+      "qualified_source_lines": 651
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Api/STWebApiManager.swift",
       "source_git_blob": "ce3bb8c2ed7dc6b43332841fd93e7acd01ca2352",
       "source_sha256": "8ff448a4c792807953eade49cd1fdc8c58fa0d1ed5408499e2ae84e17809f04e",
-      "integrated_sha256": "9ac64a344b23435a779643bdba2554b1792b138f53273b7004f25bd9b28c71fe",
+      "integrated_sha256": "5bf3f259cf76f3b4c0b37a233d023b977e82df1695fbe517542fb5c55ee5da61",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 500
+      "qualified_source_lines": 528
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Api/STWebApiModel.swift",
       "source_git_blob": "da35383e16c88118c236090c00b7cdb9257a016b",
       "source_sha256": "84ccc7c56337743a8dd2c1761e384e8f0b4af9ab883ebb59961ce622716985fd",
-      "integrated_sha256": "081caccb58962d8430bf44426ef266228c97ee70bc051d749bb00b7f461412bd",
+      "integrated_sha256": "fedc0d9346e1229ed892281111f94f35a5bacd6c0a65f62863e60e1e775cbc15",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 24
     },
@@ -277,7 +276,7 @@
       "path": "ios/STMini/classes/frame/WebView/Api/STWebApiProtocol.swift",
       "source_git_blob": "2f9b9b0aabebe44ac04ad4a27151fb3edf181878",
       "source_sha256": "af91746848f2929698efae7146239a8ac980375241fc8286450ad6f3e61b3100",
-      "integrated_sha256": "124fb15ee0ca111cd1ba34eecb5cf38b089245691c5a2e6aa3b681bfef82480c",
+      "integrated_sha256": "cec56a74b7d8e3ea5f18b8b1cd306b7007096498421f07ef34f52d7523580b9c",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 0
     },
@@ -293,9 +292,9 @@
       "path": "ios/STMini/classes/frame/WebView/Api/STWebRouterApi.swift",
       "source_git_blob": "9b3f6e8c6174b26d714299ac513ebe38cc00b9e5",
       "source_sha256": "02ddc600e59874b66dbecec7237084270afbaf540877fa0b34733d883a71e963",
-      "integrated_sha256": "44bad6c661c0f7f2daa67b348f5f9eebf89133851e224901c32f37fa6b937828",
+      "integrated_sha256": "25aea11de1a016c34cc69521c2f30cbf397ea93e2d5dafc16739c68e5774b00a",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 299
+      "qualified_source_lines": 296
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Api/STWebUIApi.swift",
@@ -317,9 +316,9 @@
       "path": "ios/STMini/classes/frame/WebView/Handler/STWebSchemeHandler.swift",
       "source_git_blob": "638185f22c682dc0d17bd2f8b17c9f9bc9de1939",
       "source_sha256": "5c6f222b39d43ea944f4d645b5dc0c23befda4e694d06104a51e8f429d5a2639",
-      "integrated_sha256": "4b1e65dfc52edd640568d525e7f02e1b09c730f9ad1f38ae4dd4a382187fe713",
+      "integrated_sha256": "74af5c79597920085f2bce89fdbe1df2fdf84f591e8d1f81089d069d745438df",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 147
+      "qualified_source_lines": 125
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Handler/STWebScriptHandler.swift",
@@ -333,7 +332,7 @@
       "path": "ios/STMini/classes/frame/WebView/Instance/STWebInstanceManager.swift",
       "source_git_blob": "28fdc72793689a171b7fb20ee83fd5c3889a2a93",
       "source_sha256": "c4e6223a5f885660461d363bb557d129854bde93bb05a57422c60444fd3cf0fb",
-      "integrated_sha256": "3b2b8497b6fccef9e3508fff7e0032c2de52632c6b7928aa4d4f1ffd76f5d8c2",
+      "integrated_sha256": "f7d65dd8e4967f36a6db384320755573e478fca557b41008187b5e96229f72ee",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 413
     },
@@ -389,7 +388,7 @@
       "path": "ios/STMini/classes/frame/WebView/Open/STWebOpenHandler.swift",
       "source_git_blob": "a6e836988a0df0e4b70d4343ad6c81a7e236039a",
       "source_sha256": "38aa709be9849a8889775d80cb20f67c20bc3c06b95dab9ecd7201b9cd3d5521",
-      "integrated_sha256": "07a2717b03eed1406e77a2f4f4731e1d87f4229d96406234e52a5d4fde8e5db5",
+      "integrated_sha256": "5319b599ebb71561e3db69f177938efaf223f0d3a2b44513c2d9dfa1af745b0e",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 449
     },
@@ -421,9 +420,9 @@
       "path": "ios/STMini/classes/frame/WebView/Views/STMiniWebView.swift",
       "source_git_blob": "2c8ffddf08fd27a9bf4f815f4acead17097ab92c",
       "source_sha256": "937e59755d8a2fbb31f9efa32f06ca3e3b684ff8bdf986d56eba72b52a346507",
-      "integrated_sha256": "58b1c7cc1d6fa23882aa4336743d082c57948e0ac8dc51d2740d3d3b4acda7b0",
+      "integrated_sha256": "d6e94fa33f4f65d97daf2b25cf6048c97d432759665b3e0c29e389e150ceec07",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 550
+      "qualified_source_lines": 551
     },
     {
       "path": "ios/STMini/classes/frame/WebView/Views/STWebMiniprogramCapsuleBar.swift",
@@ -461,9 +460,9 @@
       "path": "ios/STMini/classes/frame/WebView/WebCrl/Miniprogram/STWebMiniprogramCrl.swift",
       "source_git_blob": "72dbc451f72e8105b8a3475bc017d803866397bc",
       "source_sha256": "d3cb9d1b91ab538009eeef18b3763221fdd02e7743ea046a78931335d695d613",
-      "integrated_sha256": "1a6c4668914a1283d13e98c74f35af7bd8cc0661552d17270d82482b9fcffc30",
+      "integrated_sha256": "fe4d982117872c7ecf2c315c505ae0267974588bda11b4c9840364fa348f5b1d",
       "byte_identical_complete_file": false,
-      "qualified_source_lines": 1225
+      "qualified_source_lines": 1799
     },
     {
       "path": "ios/STMini/classes/frame/WebView/WebCrl/STWebCrlProtocol.swift",
@@ -685,7 +684,7 @@
       "path": "lib/stmini_flutter.dart",
       "source_git_blob": "e2fde4dfb1f279d475d3614a8dab8aa0148b5f28",
       "source_sha256": "25f08c607373f0368bf16dd90c49920af97bdf09db1b81348229e2a67cc5cfdc",
-      "integrated_sha256": "995ccce4271477717b051e9ec407271c640d511b34f64c6b50e9f8abd3bcf387",
+      "integrated_sha256": "47be5c2ae7a60f8ad9e616c63bece99189e8b85d17e3e445c46eb6bcf963ff82",
       "byte_identical_complete_file": false,
       "qualified_source_lines": 0
     },
@@ -758,9 +757,9 @@
     },
     {
       "path": "ios/Classes/LocalMiniResource.swift",
-      "sha256": "3371391f1293712430f2cf011438ce690c75cb67dc6db9bd97b24d4d71c3a9ad",
-      "bytes": 8573,
-      "physical_lines": 166,
+      "sha256": "345102d7372ee9b93dd8cad4dbc7fa56c36f5e0e2425232ab8c4025a98420d5a",
+      "bytes": 8921,
+      "physical_lines": 171,
       "source_credit": 0
     },
     {
@@ -772,9 +771,9 @@
     },
     {
       "path": "ios/Classes/LocalPackageInventory.swift",
-      "sha256": "4a4e96c651039cbec3d32d2da4741608f8f8c91935eb8af7d6a8ec26ee66e6c1",
-      "bytes": 9188,
-      "physical_lines": 172,
+      "sha256": "07efd26be3de510b5bf445555bafe90ede36328b34db4283b60f85ff405acfc3",
+      "bytes": 10105,
+      "physical_lines": 190,
       "source_credit": 0
     },
     {
@@ -783,13 +782,28 @@
       "bytes": 576,
       "physical_lines": 12,
       "source_credit": 0
+    },
+    {
+      "path": "ios/Classes/MiniPackageOperation.swift",
+      "source_credit": 0,
+      "sha256": "02a1638bd6f583b1fe40c16cfb508a347b381719076253106bb8726a4e0875ac",
+      "bytes": 1125,
+      "physical_lines": 37
+    },
+    {
+      "path": "ios/Classes/MiniPackageSnapshot.swift",
+      "source_credit": 0,
+      "sha256": "0f7aff73d8b63ee772eb85af1cebb5af7ece0bb87ecec39dfd3b61a78259dc85",
+      "bytes": 4069,
+      "physical_lines": 85
     }
   ],
   "native_dependencies": {
     "HXWRefresh": "1.1.0",
     "Masonry": "1.1.0",
     "SDWebImage": "5.21.7",
-    "Toast-Swift": "5.1.1"
+    "Toast-Swift": "5.1.1",
+    "ZIPFoundation": "0.9.19"
   },
   "license_status": "Upstream LICENSE is TODO placeholder; original preserved; no external distribution license authorization asserted.",
   "historical_through_batch3": {
@@ -1663,5 +1677,57 @@
         "boundary": "P is only verified byte-equal same-path baseline provenance under the same native source eligibility filter, not all previous batches or asserted old binary linkage. Cross-path/equivalent-derived baseline remains unknown. N is exact relative to known P only. References never form P; the extra reference-subtracted fourth-new lower bound is a separate non-additive quantity."
       }
     }
+  },
+  "batch6_validation": {
+    "status": "current_native_sdk_ordinary_unsigned_release_verified_pending_independent_final_review",
+    "qualification_sha256": "502597143d0e929196cd755b42f869ae7ee4364373e71a15d7f1160eca217dcc",
+    "native_tests": {
+      "tests": 74,
+      "failures": 0,
+      "report_sha256": "87a7fb655f1b556f7c39821c23c0100978f4817717452ff63f73bc7c051b08a1"
+    },
+    "actual_sdk": {
+      "passed": true,
+      "report_sha256": "40687c31eb4f0d637f31ff117c55eaf320102496093cfec1cab4a86f1b11da3f",
+      "network": "v1 install -> warm v2 background install with active v1 bytes -> cold v2 -> floor3 rejection"
+    },
+    "ordinary_release": {
+      "source_state_sha256": "d370c0c5772c803c553becbd6d63f60ffafa1a4c0cac53b5f64021d2915ed4e5",
+      "artifact_check_sha256": "361de17fe682a11c88f4239ef172badaea9dabad4db15bfe272aacb529845d94",
+      "framework_sha256": "77ad23000be7a73e1419dc8dc9875c28515c657f3dc75c13d77d4f93f0444428",
+      "signed": false
+    },
+    "upstream_safety_reference": "46d1521db5ebebcabbee3304834a6739fc968afa",
+    "derived_without_fixed_source_credit": [
+      "MiniPackageOperation",
+      "MiniPackageSnapshot",
+      "original document/session/channel/JS marker reply guards",
+      "stricter ZIP and inventory boundaries",
+      "Dart/tests/ZIPFoundation/no-consumer mirror"
+    ],
+    "boundary": "Only current local unsigned ordinary Release and private simulator controlled consumers; no physical device/signed IPA/store claim. Android unchanged, no new Android runtime qualification."
+  },
+  "historical_fifth": {
+    "source_map": {
+      "path": "SOURCE_MAP.json",
+      "sha256": "01d0ddf2ee1c0e3f93be43dd05d6cf57d03459c665b867db76a2cd39635efba1",
+      "batch": 5,
+      "baseline_before_fifth": "0af8928ec1c2a7c8a10e11a6e2a954c50e4c756c",
+      "qualified_cumulative_source_lines": 6964,
+      "fifth_qualified_approved_candidate_lines": 833,
+      "fifth_qualified_by_group": {
+        "web": 158,
+        "cache": 457,
+        "transition": 218
+      },
+      "new_qualified_vs_C3_known": 841,
+      "lost_vs_C3_known": 59,
+      "sixth_static_candidate_not_qualified": {
+        "download": 989,
+        "safe_mirror_upper": 92
+      },
+      "boundary": "Exact fixed-source spans intersect current native inputs, ordinary unsigned Release and actual controlled consumers. Sixth is not implemented/qualified yet; static candidate split is not a final 50/50 qualification claim. Historical C3 statistics remain separately traceable."
+    },
+    "boundary": "Historical fifth qualification, preserved separately from current sixth inputs."
   }
 }

@@ -190,6 +190,7 @@ import UIKit
     private class func normalizeOnlineMiniParameters(_ params: inout [String: String]) {
         let aliases = [
             "download_url": "downloadUrl",
+            "downloadURL": "downloadUrl",
             "icon_url": "iconUrl",
             "mini_name": "miniName",
             "mini_name_en": "miniNameEn",

@@ -293,3 +293,25 @@ iOS initialize先安装默认反向receiver但不装业务provider，未设置ha
 接续已保存的 P205 修复，发现 WarmActivationTicket 的通用 UINavigationController 类型无法访问 Mini navigation 的 foreign-owner 保护；已在 ticket 消费边界明确验证 STWebNavigationController，保留全部 owner/document/session/stack/window 检查。完整原生61项重新运行零失败（含真实WK warm事件顺序、duration一次消费与close/document/session失效负控），真实两个Mini各18项、两个受控HTTPS文档各12项检查全部通过，普通入口恢复、私有sim/TLS清理通过。当前执行身份 takeover1120v2；首轮编译失败保留，未复用旧59项冒新执行。
 
 普通 device Release 重建通过，逐包扫描通过；插件1,938,088字节，SHA256 cdd7e1dd125d377f89a0f114d3a8206c668f694d7b6c8bc417985148a49894e6。当前27核心path来源资格重新绑定本次native/SDK/Release输入；累计6964、第五逐字候选833（Web158/cache457/transition218）、相对C3已知新增841/不再逐字保留59。上述是严格来源量，不代表功能比例；旧上段数字为修复前历史。Android与相机/下载安装边界不变，第六未实施。本轮尚未签名IPA或送审，后续发行更新记录按用户指定精确 fix bug，不新增审核备注。
+
+
+## 2026-11-23｜第六批实现候选（待原生/SDK/Release与独立审核）
+
+本批将原第五的local-only iOS包能力扩为显式HTTPS下载、ZIP验证、同包原子安装/更新及弱/强更新；Android与普通首页、相机排除、无生产入口/URL/远程激活不变。保留固定b4462f6来源，最新46d1521同包锁/未load释放与Shared迟到reply分别核：默认iOS反向receiver、nil-safe teardown已有第五等价；新增同包锁内重读与原始reply effect/session/channel最终投递检查。
+
+安全派生MiniPackageOperation将取消与commit同锁；MiniPackageSnapshot在有界完整身份复验下复制不可变runtime资源，根与本地H5共享，弱更磁盘交换不改变旧WK字节，强更同owner换WK，最后consumer清理。已补真实ZIP/回滚/取消/并发/恶意路径/字节上限/快照原生场景与受控HTTPS SDK首装→弱更→新版本冷重开→强制floor拒绝用例。已执行Dart127项、analyze及format通过；后续SDK target扩展后analyze需按最新证据，所有新原生/SDK/Release结果尚待负责人实际执行，不冒PASS。来源map资格由该执行后绑定；snapshot/guard不计固定source信用。
+
+ZIPFoundation固定0.9.19，现有Ruby3.3/CocoaPods1.16.2生成最小lock；普通本机cache写受限后，使用任务private CP_CACHE_DIR的既有缓存完成pod install，没有下载安装新工具。部署安装及新增源码glob仍须最终核。用户已授权第六送审覆盖旧“第六仅本地”安排；实现不修改商店备注/更新说明，新增能力准确披露门禁由PM维护。
+
+
+## 第六批当前本机验证收口（2026-11-23）
+
+本批仅iOS显式SDK下载安装更新，普通Deynu入口/首页/流程保持，无生产URL、自动或隐藏Mini入口、相机扫码。合法warm复用在原visible-owner的visibility→appShow后一次消费显式更新意图；真实后台安装供下次cold，活动root/local-child共享旧包不可变快照。关闭/session变更撤销原操作；同包提交锁内重读磁盘版本，旧/同版不回退。
+
+当前v7全新专用模拟器：原生74/0，suite105.101s；受控HTTPS实际请求v1 ZIP、v2 ZIP、v2 ZIP，首装1→warm更新磁盘2且旧WK资源仍1→下次cold2→floor3拒绝全部通过。两本地Mini及网络1/2各18项Bridge/资源/存储/拒控全过，独立Web两轮通过。普通Debug首启/合成既有schema回访实际图分别原引导/日笺主页；专用设备删除、TLS停止及临时合成凭据清除，源码/配方/三锁前后不变。旧v1-v6编译/死锁/SDK失败保持历史，不以本次结果覆盖原失败。
+
+格式检查、analyze、Dart全量127项及post-fake67项通过；普通lib/main.dart device Release构建exit0/50.22s，最低iOS15。本地元数据1.0.5+1仅工程构建值，非新发行tuple。实际框架SHA256 `77ad23000be7a73e1419dc8dc9875c28515c657f3dc75c13d77d4f93f0444428`，核心13类型保留并实际链接ZIPFoundation0.9.19；制品未含Scanner/Tiercel/测试fixture/xctest，未新增相机/麦克风用途，Photos用途及中英文保留。非物理设备或签名IPA结果。
+
+固定来源b4462f63a33acf6c3fff63f0e67b3713bc00dff8，安全派生参考46d1521db5ebebcabbee3304834a6739fc968afa/Shared2b68ee2462e49e3810942eb845f47315342e0108。当前来源资格27条native core精确SHA同时匹配native、SDK、普通Release输入。86文件/15317行分母不变；累计保守合格7690、第五候选保留833、第六下载候选759，较第五新增合格位置764、旧位置不再字节等38。snapshot/operation/guards/Dart/tests/ZIP/mirror0信用，非字节相等不代表未实现。详细当前资格与历史分栏在SOURCE_MAP/UPSTREAM；不把行数转成能力百分比或签名资格。
+
+独立源码/native/SDK阶段有条件通过，四finding在该范围闭合；最终Release/来源docs/cross/QA/PM验收与中文提交普通push仍须各自证据。实际签名IPA、版本库存/ASC、准确更新说明及审核可发现性门禁由发行流程另确认，不以fix bug-only掩盖新增能力，不在本批工具中修改商店备注。

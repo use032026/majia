@@ -262,10 +262,10 @@ void main() {
       final nativeState = <String, dynamic>{
         'stage': 'mini',
         'runtimeMode': 'mini',
-        'miniPackageMode': 'local_only',
-        'miniPackageDownloadAvailable': false,
-        'miniPackageInstallAvailable': false,
-        'miniPackageUpdateAvailable': false,
+        'miniPackageMode': 'download_install_update',
+        'miniPackageDownloadAvailable': true,
+        'miniPackageInstallAvailable': true,
+        'miniPackageUpdateAvailable': true,
         'initialized': true,
         'packageName': 'com.almanac.lite',
       };

@@ -11,7 +11,8 @@ import Foundation
 struct STWebApiModel: STWebApiForm {
     
     
-    weak var webview: STMiniWebView? { didSet { documentGeneration = webview?.bridgeDocumentGeneration } }
+    weak var webview: STMiniWebView? { didSet { documentGeneration = webview?.bridgeDocumentGeneration; documentReplyToken = webview?.bridgeReplyDocumentToken } }
+    var documentReplyToken: String?
     var documentGeneration: UInt64?
     
     var method: String = ""
