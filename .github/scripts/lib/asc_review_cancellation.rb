@@ -23,8 +23,8 @@ module MajiaCI
     TRIPDELTA_108 = { version: MARKETING_VERSION, version_id: VERSION_ID, submission_id: SUBMISSION_ID }.freeze
     TRIPDELTA_111 = {
       version: "1.0.11", version_id: "aa007b7c-9070-4ab0-8ff9-d4e009e2fffe",
-      submission_id: "24d9a069-4db7-4b28-93ba-373ecf84f405",
-      build_id: "ab84d318-05a1-4e30-9653-00c257e08d5f", build_number: "1"
+      submission_id: "102ab665-d7ba-4e88-b9fe-4335d10d4edb",
+      build_id: "ee3d1478-e00d-43a4-9495-8a280c5851ed", build_number: "2"
     }.freeze
     ITEM_RELATIONSHIPS = %w[
       appStoreVersion appAssetLibraryImage appAssetLibraryVideo appCustomProductPageVersion
