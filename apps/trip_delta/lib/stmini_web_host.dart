@@ -100,10 +100,19 @@ class TripDeltaWebHost {
   Future<void> _initialize() async {
     try {
       _runtime.setBridgeHandler(handleBridge);
-      await _runtime.initialize(const {
+      await _runtime.initialize({
         'packageName': 'com.tripdelta.lite.app',
-        'webSecurity': {'allowInsecureHTTP': false},
-        'webLoading': {
+        'authStorageKey': 'futrenapp:auth-storage:v1',
+        'bridgeUserInfoStorage': const {
+          'storageKey': 'futrenapp:cache-storage:v1',
+          'valueKey': 'user',
+          'nestedKey': 'userInfo',
+        },
+        'webSecurity': {
+          'allowInsecureHTTP': false,
+          'bridgeOrigins': [homeUri.origin],
+        },
+        'webLoading': const {
           'readyEvent': 'futrenapp:startup-complete',
           'failureEvent': 'futrenapp:startup-failed',
           'launchImages': webLaunchImages,

@@ -63,13 +63,15 @@ Android 原有旅程业务和工程配置保持原样。
 内部路由仍仅允许同首页 origin 请求，每次显式 H5 导航独立，不按 URL 去重。
 仅接受 HTTPS，不放开 ATS/Android cleartext，不复制参考工程的包名、账号或认证快照。
 普通 Bridge 支持打开、关闭、无凭据会话变化通知及诊断应答，未知方法返回失败。
+H5 登录会话与用户资料通过原生存储供同源 `/web` 子页读取。
+只有与当前配置的 Web 首页完全同源的 HTTPS 主文档可调用会话读取及原生存储接口。
 主 frame、当前页面来源及生命周期由原生 Web Core 处理；未接入 Mini 下载、离线包或 `openMini`。
 
 为使干净 checkout 与 CI 可复现，依赖使用应用内 `packages/stmini_flutter` 的发行源码快照，
 不依赖本机相邻目录。来源固定为 `mini_web` 的
 `6bba89324196fcb2b138e0115c8fd22ee4e7ff69`，逐文件 SHA-256 和升级步骤见
 [`UPSTREAM.json`](packages/stmini_flutter/UPSTREAM.json)。快照仅保留 Dart/iOS 所需文件，
-插件 pubspec 裁掉 Android 注册，其余上游文件原样保留；来源及适配差异在清单中明确。
+插件 pubspec 裁掉 Android 注册，iOS 增加会话读取及原生存储的来源限制；来源及适配差异在清单中明确。
 LICENSE 当前未声明开源许可，
 不将其描述为某种开源许可证。后续升级需更新来源清单并重新核对 Dart、iOS 及 Android 未接入边界。
 

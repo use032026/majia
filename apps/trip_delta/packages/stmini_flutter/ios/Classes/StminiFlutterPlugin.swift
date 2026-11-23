@@ -333,6 +333,7 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     if let response = STOnlineWebSessionBridge.handle(
       method: method,
       params: params,
+      origin: origin,
       bridgeContext: bridgeContext,
       deviceType: "ios",
       darkMode: currentPresenter()?.traitCollection.userInterfaceStyle == .dark,

@@ -141,11 +141,21 @@ public enum STOnlineWebSessionBridge {
   public static func handle(
     method: String,
     params: [String: Any],
+    origin: String,
     bridgeContext: [String: Any],
     deviceType: String,
     darkMode: Bool,
     languageCode: String
   ) -> [String: Any]? {
+    // Storage is shared across WebViews. Its session snapshots must be
+    // protected both through getUserInfo and through direct storage calls.
+    if ["getUserInfo", "getToken", "setStorage", "getStorage", "removeStorage"].contains(method) {
+      let security = bridgeContext["webSecurity"] as? [String: Any]
+      let trustedOrigins = security?["bridgeOrigins"] as? [String] ?? []
+      guard origin.hasPrefix("https://"), trustedOrigins.contains(origin) else {
+        return failure("当前网页无权访问登录会话或宿主存储")
+      }
+    }
     switch method {
     case "getPackageName":
       return success(["packageName": bridgeContext["packageName"] as? String ?? ""])

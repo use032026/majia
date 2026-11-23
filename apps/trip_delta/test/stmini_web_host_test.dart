@@ -38,18 +38,9 @@ void main() {
     final second = host.initialize();
     expect(identical(first, second), isTrue);
     expect(runtime.initializeCount, 1);
-    expect(runtime.context, {
-      'packageName': 'com.tripdelta.lite.app',
-      'webSecurity': {'allowInsecureHTTP': false},
-      'webLoading': {
-        'readyEvent': 'futrenapp:startup-complete',
-        'failureEvent': 'futrenapp:startup-failed',
-        'launchImages': webLaunchImages,
-        'languageStorage': {
-          'valueKey': 'language',
-          'manualKey': 'language_user_set',
-        },
-      },
+    expect(runtime.context?['webSecurity'], {
+      'allowInsecureHTTP': false,
+      'bridgeOrigins': ['https://first.example'],
     });
     runtime.initialization!.complete();
     await first;
@@ -239,7 +230,16 @@ void main() {
       expect(calls.single.arguments, {
         'bridgeContext': {
           'packageName': 'com.tripdelta.lite.app',
-          'webSecurity': {'allowInsecureHTTP': false},
+          'authStorageKey': 'futrenapp:auth-storage:v1',
+          'bridgeUserInfoStorage': {
+            'storageKey': 'futrenapp:cache-storage:v1',
+            'valueKey': 'user',
+            'nestedKey': 'userInfo',
+          },
+          'webSecurity': {
+            'allowInsecureHTTP': false,
+            'bridgeOrigins': [Uri.parse(TripDeltaWebHost.defaultHomeUrl).origin],
+          },
           'webLoading': {
             'readyEvent': 'futrenapp:startup-complete',
             'failureEvent': 'futrenapp:startup-failed',
