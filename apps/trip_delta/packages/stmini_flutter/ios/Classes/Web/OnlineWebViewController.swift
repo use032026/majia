@@ -128,7 +128,7 @@ public final class OnlineWebViewController {
 /// ordinary `WKWebView` view hierarchy; origin gating and callback formatting
 /// remain in the shared Web owner/Core above.
 final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate, WKScriptMessageHandler {
-  typealias BridgeRequest = (_ method: String, _ params: [String: Any], _ origin: String, _ reply: @escaping ([String: Any]) -> Void) -> Void
+  typealias BridgeRequest = (_ method: String, _ params: [String: Any], _ origin: String, _ documentURL: URL, _ reply: @escaping ([String: Any]) -> Void) -> Void
 
   private static let bridgeHandlerName = "CMSScriptMessageChannel"
   private static let debugLogHandlerName = "STMiniDebugLog"
@@ -457,7 +457,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private func receivedBridgeMessage(_ body: Any) {
     guard let request = body as? [String: Any],
           let method = request["method"] as? String,
-          !method.isEmpty, let origin = currentBridgeOrigin() else { return }
+          !method.isEmpty, let origin = currentBridgeOrigin(),
+          let documentURL = webView.url else { return }
     let params = request["params"] as? [String: Any] ?? [:]
     let isBridgeOwnerCurrent = captureBridgeOwnership()
     let requestNavigation = navigationController
@@ -485,7 +486,7 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
         self.navigationItem.title = params["title"] as? String
         respond(["code": "1", "data": [:]])
       } else {
-        self.bridgeRequest(method, params, origin, respond)
+        self.bridgeRequest(method, params, origin, documentURL, respond)
       }
     }
   }

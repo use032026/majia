@@ -219,8 +219,8 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
       showsLaunchScreen: isRoot,
       loadingConfiguration: isRoot || !rootOnly ? configuration : nil,
       captureBridgeOwnership: { [weak self] in self?.captureOnlineWebBridgeOwnership() ?? { false } },
-      bridgeRequest: { [weak self] method, params, origin, reply in
-        self?.forwardBridgeRequest(method: method, params: params, origin: origin, reply: reply)
+      bridgeRequest: { [weak self] method, params, origin, documentURL, reply in
+        self?.forwardBridgeRequest(method: method, params: params, origin: origin, documentURL: documentURL, reply: reply)
       },
       didClose: { [weak self] in self?.webDidClose() })
   }
@@ -328,12 +328,14 @@ public final class StminiFlutterPlugin: NSObject, FlutterPlugin, FlutterStreamHa
     method: String,
     params: [String: Any],
     origin: String,
+    documentURL: URL,
     reply: @escaping ([String: Any]) -> Void
   ) {
     if let response = STOnlineWebSessionBridge.handle(
       method: method,
       params: params,
       origin: origin,
+      documentURL: documentURL,
       bridgeContext: bridgeContext,
       deviceType: "ios",
       darkMode: currentPresenter()?.traitCollection.userInterfaceStyle == .dark,

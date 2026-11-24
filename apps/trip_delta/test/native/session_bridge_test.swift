@@ -30,16 +30,20 @@ import Foundation
       "bridgeUserInfoStorage": ["storageKey": profileKey, "valueKey": "user", "nestedKey": "userInfo"],
       "webSecurity": ["bridgeOrigins": [home], "sessionDomainSubstring": "fixture-domain"],
     ]
-    func call(_ method: String, origin: String, params: [String: Any] = [:]) -> [String: Any] {
-      STOnlineWebSessionBridge.handle(
-        method: method, params: params, origin: origin, bridgeContext: context,
+    func call(_ method: String, origin: String, params: [String: Any] = [:], documentURL: String? = nil) -> [String: Any] {
+      let nativeOrigin = URL(string: origin).flatMap { STOnlineWebCore.normalizedBridgeOrigin($0, allowInsecureHTTP: true) } ?? origin
+      return STOnlineWebSessionBridge.handle(
+        method: method, params: params, origin: nativeOrigin,
+        documentURL: URL(string: documentURL ?? origin), bridgeContext: context,
         deviceType: "ios", darkMode: false, languageCode: "en") ?? [:]
     }
 
     for origin in [home, other, "https://child.fixture-domain.org", "\(home):8443",
-                   "https://prefix-fixture-domain-suffix.example"] {
+                   "https://prefix-fixture-domain-suffix.example",
+                   "https://192.0.2.1/h5.fixture-domain/polymer/common/#/alipay",
+                   "https://192.0.2.1/h5.%66ixture-domain/polymer/common/"] {
       let token = call("getToken", origin: origin)
-      require(token["code"] as? String == "1", "Configured hostname substring must allow HTTPS session reads")
+      require(token["code"] as? String == "1", "Configured host/path substring must allow HTTPS session reads")
       require(token["data"] as? String == "synthetic-session", "Token must come from the stored session")
       let user = call("getUserInfo", origin: origin)["data"] as? [String: Any]
       require(user?["token"] as? String == "synthetic-session", "User response must retain the session")
@@ -47,7 +51,8 @@ import Foundation
     }
 
     for origin in ["http://activity.fixture-domain.net", "", "javascript:alert(1)",
-                   "https://unrelated.example", "https://unrelated.example/fixture-domain",
+                   "https://unrelated.example", "https://unrelated.example/other-path",
+                   "https://unrelated.example/#/fixture-domain",
                    "https://unrelated.example/?redirect=https://h5.fixture-domain.com"] {
       for method in ["getToken", "getUserInfo"] {
         let denied = call(method, origin: origin)
@@ -56,6 +61,8 @@ import Foundation
       }
     }
 
+    require(call("getToken", origin: home, documentURL: "https://192.0.2.1/h5.fixture-domain/")["code"] as? String == "0",
+            "Current document must match the WebKit-verified message origin")
     require(call("getStorage", origin: home, params: ["key": authKey])["code"] as? String == "1",
             "Home storage must remain readable")
     for method in ["getStorage", "setStorage", "removeStorage"] {
@@ -96,6 +103,6 @@ import Foundation
             "Messages from a previous document must remain rejected")
     require(STOnlineWebCore.matchesCurrentDocumentOrigin(messageDocumentURL: otherURL, currentDocumentURL: otherURL),
             "The current cross-origin page must pass document validation")
-    print("Trip Delta 原生会话域名字符串匹配及来源边界测试通过")
+    print("Trip Delta 原生会话页面主机名及路径字符串匹配及来源边界测试通过")
   }
 }

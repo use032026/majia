@@ -66,8 +66,10 @@ Android 原有旅程业务和工程配置保持原样。
 普通 Bridge 支持打开、关闭、无凭据会话变化通知及诊断应答，未知方法返回失败。
 H5 登录会话与用户资料通过原生存储供 App 内的 HTTPS `/web` 子页读取。
 Trip Delta 在 `webSecurity.sessionDomainSubstring` 配置 `globalsmartchoose`；
-`getToken`、`getUserInfo` 要求当前页面的主机名包含这段字符串，不再要求与首页完全同域。
-这是主机名子串匹配，不是 URL 全文或域名后缀匹配；不限制域名以 `.com` 结尾。
+`getToken`、`getUserInfo` 要求当前页面的主机名或路径包含这段字符串，不再要求与首页完全同域。
+匹配使用原生确认的当前页面主机名与解码后的路径，不检查查询参数或 fragment；不限制域名以 `.com` 结尾。
+IP 主机加包含该字符串的路径同样支持，例如 `https://192.0.2.1/h5.globalsmartchoose/polymer/common/#/alipay`。
+当前文档来源必须与原生验证的消息来源一致，不采用 H5 参数中提供的页面地址。
 STMini 不内置业务域名；其他宿主未配置该字段时，保留 `bridgeOrigins` 的精确来源匹配。
 存储映射由 STMini 初始化入口统一提供默认值：认证使用 `futrenapp:auth-storage:v1`，
 用户资料使用 `futrenapp:cache-storage:v1` 下的 `user.userInfo`，App 无需重复指定。
@@ -77,9 +79,9 @@ STMini 不内置业务域名；其他宿主未配置该字段时，保留 `bridg
 
 为使干净 checkout 与 CI 可复现，依赖使用应用内 `packages/stmini_flutter` 的发行源码快照，
 不依赖本机相邻目录。来源固定为 `mini_web` 的
-`78956b6b57048b486d99e8ae92ea866ebcac7242`，逐文件 SHA-256 和升级步骤见
+`b598753a881717f698ce97902fd477186368fa8a`，逐文件 SHA-256 和升级步骤见
 [`UPSTREAM.json`](packages/stmini_flutter/UPSTREAM.json)。快照仅保留 Dart/iOS 所需文件，
-插件 pubspec 裁掉 Android 注册，iOS 会话读取校验 HTTPS 及宿主配置的主机名子串，
+插件 pubspec 裁掉 Android 注册，iOS 会话读取校验 HTTPS 及宿主配置的主机名与路径子串，
 原生存储仍校验配置的精确来源；来源及适配差异在清单中明确。
 LICENSE 当前未声明开源许可，
 不将其描述为某种开源许可证。后续升级需更新来源清单并重新核对 Dart、iOS 及 Android 未接入边界。

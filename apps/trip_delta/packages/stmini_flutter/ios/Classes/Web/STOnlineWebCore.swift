@@ -142,6 +142,7 @@ public enum STOnlineWebSessionBridge {
     method: String,
     params: [String: Any],
     origin: String,
+    documentURL: URL?,
     bridgeContext: [String: Any],
     deviceType: String,
     darkMode: Bool,
@@ -149,17 +150,17 @@ public enum STOnlineWebSessionBridge {
   ) -> [String: Any]? {
     let security = bridgeContext["webSecurity"] as? [String: Any]
     let trustedOrigins = security?["bridgeOrigins"] as? [String] ?? []
-    // Hosts may opt into a hostname substring rule for session reads.
+    // Hosts may opt into a host/path substring rule for session reads.
     // Without it, preserve the original exact-origin policy. The WebView
     // owner still rejects iframe and stale-document messages.
     if ["getUserInfo", "getToken"].contains(method) {
-      guard let url = URL(string: origin), STOnlineWebCore.normalizedHTTPSOrigin(url) != nil,
-            let host = url.host?.lowercased() else {
+      guard let documentURL, STOnlineWebCore.normalizedHTTPSOrigin(documentURL) == origin,
+            let host = documentURL.host?.lowercased() else {
         return failure("当前网页无权访问登录会话")
       }
       if let rawDomain = security?["sessionDomainSubstring"] {
         guard let domain = (rawDomain as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
-              !domain.isEmpty, host.contains(domain) else {
+              !domain.isEmpty, (host + documentURL.path.lowercased()).contains(domain) else {
           return failure("当前网页无权访问登录会话")
         }
       } else if !trustedOrigins.contains(origin) {
