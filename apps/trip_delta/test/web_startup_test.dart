@@ -107,7 +107,9 @@ void main() {
     updateCheck.gate = Completer<SiteUpdate>();
     await tester.pumpWidget(app());
     expect(find.byType(HomeScreen), findsNothing);
-    await tester.pump(const Duration(seconds: 3));
+    await tester.pump(const Duration(milliseconds: 7999));
+    expect(find.byType(HomeScreen), findsNothing);
+    await tester.pump(const Duration(milliseconds: 1));
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
     updateCheck.gate!.complete(FakeUpdateCheck.result('A'));

@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:package_info_plus/package_info_plus.dart';
 
+const siteUpdateTimeout = Duration(seconds: 8);
+
 class SiteUpdate {
   const SiteUpdate({
     required this.side,
@@ -84,14 +86,13 @@ Future<SiteUpdate> checkSiteUpdate(
     throw const FormatException('Invalid installed app version');
   }
 
-  const timeout = Duration(seconds: 6);
-  final client = HttpClient()..connectionTimeout = timeout;
+  final client = HttpClient()..connectionTimeout = siteUpdateTimeout;
   try {
     return await _requestUpdate(
       client,
       endpoint ?? Uri.https('gotripdelta.com', '/_zt/check-update'),
       version,
-    ).timeout(timeout);
+    ).timeout(siteUpdateTimeout);
   } finally {
     client.close(force: true);
   }

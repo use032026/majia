@@ -75,9 +75,7 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
   Future<void> _chooseStartupHome() async {
     var enabled = false;
     try {
-      final update = await widget.checkUpdate().timeout(
-        const Duration(seconds: 3),
-      );
+      final update = await widget.checkUpdate().timeout(siteUpdateTimeout);
       enabled = update.side == 'A';
     } catch (_) {
       // Keep the trip home available when the site cannot be reached.
