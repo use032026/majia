@@ -205,6 +205,129 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'search matches each field and preserves Unicode, trimming and clearing',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(402, 1400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final project = _project();
+      final controller = _DetailController([
+        _issue(
+          project.id,
+          room: 'HallΩ',
+          location: 'Étage😀',
+          category: '漏水检查',
+          description: '面板Δ说明',
+          assignee: 'Agentß',
+        ),
+        _issue(project.id, sequence: 2, category: '其他记录'),
+      ]);
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(app(controller: controller, project: project));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('detail-filter-toggle')));
+      await tester.pumpAndSettle();
+      for (final query in [
+        'a-001',
+        'hallω',
+        '  éTAGE😀  ',
+        '漏水',
+        '面板δ',
+        'aGENTß',
+      ]) {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pumpAndSettle();
+        expect(find.text('A-001'), findsOneWidget, reason: query);
+        expect(find.text('A-002'), findsNothing, reason: query);
+      }
+      await tester.enterText(find.byType(TextField), '完全不匹配');
+      await tester.pumpAndSettle();
+      expect(find.text('当前筛选下没有记录'), findsOneWidget);
+      for (final query in ['   ', '']) {
+        await tester.enterText(find.byType(TextField), query);
+        await tester.pumpAndSettle();
+        expect(find.text('A-001'), findsOneWidget);
+        expect(find.text('A-002'), findsOneWidget);
+      }
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'search intersects status and room filters without resetting them',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(402, 1400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final project = _project();
+      final controller = _DetailController([
+        _issue(
+          project.id,
+          room: 'North',
+          status: IssueStatus.pending,
+          assignee: 'Alex',
+        ),
+        _issue(
+          project.id,
+          sequence: 2,
+          room: 'North',
+          status: IssueStatus.completed,
+          assignee: 'Alex',
+        ),
+        _issue(
+          project.id,
+          sequence: 3,
+          room: 'South',
+          status: IssueStatus.pending,
+          assignee: 'Alex',
+        ),
+      ]);
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(app(controller: controller, project: project));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('detail-filter-toggle')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), ' ALEX ');
+      await tester.pumpAndSettle();
+      final pending = find.widgetWithText(ChoiceChip, '待处理');
+      await tester.ensureVisible(pending);
+      await tester.tap(pending);
+      await tester.pumpAndSettle();
+      final north = find.widgetWithText(FilterChip, 'North');
+      await tester.ensureVisible(north);
+      await tester.tap(north);
+      await tester.pumpAndSettle();
+      expect(find.text('A-001'), findsOneWidget);
+      expect(find.text('A-002'), findsNothing);
+      expect(find.text('A-003'), findsNothing);
+      await tester.enterText(find.byType(TextField), 'missing');
+      await tester.pumpAndSettle();
+      expect(find.text('当前筛选下没有记录'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), '');
+      await tester.pumpAndSettle();
+      expect(find.text('A-001'), findsOneWidget);
+      expect(find.text('A-002'), findsNothing);
+      expect(find.text('A-003'), findsNothing);
+      expect(tester.widget<ChoiceChip>(pending).selected, isTrue);
+      expect(tester.widget<FilterChip>(north).selected, isTrue);
+      final allStates = find.widgetWithText(ChoiceChip, '全部状态');
+      await tester.ensureVisible(allStates);
+      await tester.tap(allStates);
+      await tester.pumpAndSettle();
+      final allRooms = find.widgetWithText(FilterChip, '全部区域');
+      await tester.ensureVisible(allRooms);
+      await tester.tap(allRooms);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<SliverList>(find.byType(SliverList))
+            .delegate
+            .estimatedChildCount,
+        5,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('multiple records expose filters only after explicit request', (
     tester,
   ) async {
@@ -266,6 +389,11 @@ IssueRecord _issue(
   int sequence = 1,
   IssueSeverity severity = IssueSeverity.unspecified,
   String category = '需要处理这个位置',
+  String room = '未分类',
+  String location = '',
+  String description = '现场情况说明',
+  String assignee = '',
+  IssueStatus status = IssueStatus.unspecified,
 }) {
   final now = DateTime(2026, 8, 28, 10, 31);
   return IssueRecord(
@@ -273,13 +401,13 @@ IssueRecord _issue(
     projectId: projectId,
     sequence: sequence,
     code: 'A-${sequence.toString().padLeft(3, '0')}',
-    room: '未分类',
-    location: '',
+    room: room,
+    location: location,
     category: category,
     severity: severity,
-    description: '现场情况说明',
-    status: IssueStatus.unspecified,
-    assignee: '',
+    description: description,
+    status: status,
+    assignee: assignee,
     createdAt: now,
     updatedAt: now,
   );

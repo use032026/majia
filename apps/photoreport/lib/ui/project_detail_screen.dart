@@ -86,14 +86,12 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
       if (statusFilter != null && issue.status != statusFilter) return false;
       if (roomFilter != '全部区域' && issue.room != roomFilter) return false;
       if (query.isEmpty) return true;
-      return [
-        issue.code,
-        issue.room,
-        issue.location,
-        issue.category,
-        issue.description,
-        issue.assignee,
-      ].any((value) => value.toLowerCase().contains(query));
+      return issue.code.toLowerCase().contains(query) ||
+          issue.room.toLowerCase().contains(query) ||
+          issue.location.toLowerCase().contains(query) ||
+          issue.category.toLowerCase().contains(query) ||
+          issue.description.toLowerCase().contains(query) ||
+          issue.assignee.toLowerCase().contains(query);
     }).toList();
   }
 
