@@ -95,6 +95,61 @@ class ASCJufuIsolatedSubmissionTest < Minitest::Test
     end
   end
 
+  def test_safe_request_diagnostics_locate_batch_list_failure_without_remote_body
+    client = fixture
+    client.on_inventory = lambda do |_c|
+      raise MajiaCI::ASCStatusError.new("PRIVATE_CANARY HTTP 999", http_status: 400,
+        api_error_codes: ["PARAMETER_ERROR.INVALID", "PRIVATE_CANARY"])
+    end
+    error = assert_raises(MajiaCI::ASCJufuIsolatedSubmissionError) { S.run(client: client) }
+    assert_equal({ "method" => "GET", "path_template" => "/v1/apps/{fixed_app}/reviewSubmissions",
+                   "operation" => "review_batch_list", "http_status" => 400,
+                   "apple_error_codes" => ["PARAMETER_ERROR.INVALID"] }, error.evidence["failed_request"])
+    assert_equal S::VERSION_ID, error.evidence.dig("before", "version_id")
+    assert_empty mutations(client)
+    refute_includes JSON.generate(error.evidence), "PRIVATE_CANARY"
+  end
+
+  def test_safe_request_diagnostics_distinguish_item_failure_without_leaking_ids_or_query
+    client = fixture
+    endpoint = "/v1/reviewSubmissions/#{S::EXCLUDED_SUBMISSION_ID}/items"
+    original = client.method(:paginate)
+    client.define_singleton_method(:paginate) do |path, query = nil|
+      if path == endpoint
+        raise MajiaCI::ASCPermissionError.new("private token", http_status: 403, api_error_codes: ["FORBIDDEN_ERROR"])
+      end
+      original.call(path, query)
+    end
+    error = assert_raises(MajiaCI::ASCJufuIsolatedSubmissionError) { S.run(client: client) }
+    diagnostic = error.evidence.fetch("failed_request")
+    assert_equal "/v1/reviewSubmissions/{submission}/items", diagnostic["path_template"]
+    assert_equal "review_item_list", diagnostic["operation"]
+    assert_equal 403, diagnostic["http_status"]
+    assert_equal ["FORBIDDEN_ERROR"], diagnostic["apple_error_codes"]
+    refute_includes JSON.generate(diagnostic), S::EXCLUDED_SUBMISSION_ID
+    refute_includes JSON.generate(error.evidence), "private token"
+    assert_empty mutations(client)
+  end
+
+  def test_unknown_path_never_reaches_client_and_unknown_status_is_not_guessed
+    seen = []
+    client = Object.new
+    client.define_singleton_method(:get) do |path, _query|
+      seen << path
+      raise MajiaCI::ASCStatusError, "PRIVATE_CANARY HTTP 403 FORBIDDEN_ERROR"
+    end
+    summary = {}
+    observed = S::DiagnosticClient.new(client, summary)
+    assert_raises(MajiaCI::ASCStatusError) { observed.get("/v1/apps", { "private" => "PRIVATE_CANARY" }) }
+    assert_nil summary.dig("failed_request", "http_status")
+    assert_empty summary.dig("failed_request", "apple_error_codes")
+    refute_includes JSON.generate(summary), "PRIVATE_CANARY"
+    assert_raises(MajiaCI::ASCSubmissionError) { observed.get("https://evil.example/PRIVATE_CANARY") }
+    assert_equal ["/v1/apps"], seen
+    assert_equal "UNRECOGNIZED", summary.dig("failed_request", "path_template")
+    refute_includes JSON.generate(summary), "PRIVATE_CANARY"
+  end
+
   def test_default_dry_run_reads_all_batches_and_never_mutates_unrelated_nonempty_draft
     client = fixture
     before = JSON.generate(client.batches.fetch(S::EXCLUDED_SUBMISSION_ID)) + JSON.generate(client.items.fetch(S::EXCLUDED_SUBMISSION_ID))

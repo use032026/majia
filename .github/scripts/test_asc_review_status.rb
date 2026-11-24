@@ -118,6 +118,54 @@ class ASCReviewStatusTest < Minitest::Test
     end
   end
 
+  def test_get_failure_preserves_safe_structured_http_and_known_apple_codes
+    response = Net::HTTPBadRequest.new("1.1", "400", "Bad Request")
+    response.body = JSON.generate("errors" => [
+      { "code" => "PARAMETER_ERROR.INVALID", "title" => "PRIVATE_CANARY", "detail" => "Bearer PRIVATE_CANARY" },
+      { "code" => "PRIVATE_CANARY" }, { "code" => "PARAMETER_ERROR.PRIVATE_CANARY" }
+    ])
+    response.instance_variable_set(:@read, true)
+    with_fake_http(response) do |client, http|
+      error = assert_raises(MajiaCI::ASCStatusError) { client.get("/v1/apps") }
+      assert_equal 400, error.http_status
+      assert_equal ["PARAMETER_ERROR.INVALID"], error.api_error_codes
+      refute_includes JSON.generate([error.http_status, error.api_error_codes]), "PRIVATE_CANARY"
+      assert_equal 1, http.requests.length
+    end
+  end
+
+  def test_permission_failure_keeps_legacy_class_and_safe_metadata
+    response = Net::HTTPForbidden.new("1.1", "403", "Forbidden")
+    response.body = JSON.generate("errors" => [{ "code" => "FORBIDDEN_ERROR", "detail" => "PRIVATE_CANARY" }])
+    response.instance_variable_set(:@read, true)
+    with_fake_http(response) do |client, _http|
+      error = assert_raises(MajiaCI::ASCPermissionError) { client.get("/v1/apps") }
+      assert_equal 403, error.http_status
+      assert_equal ["FORBIDDEN_ERROR"], error.api_error_codes
+      assert_kind_of MajiaCI::ASCStatusError, error
+    end
+    legacy = MajiaCI::ASCPermissionError.new("legacy")
+    assert_equal "legacy", legacy.message
+    assert_nil legacy.http_status
+    assert_empty legacy.api_error_codes
+  end
+
+  def test_invalid_json_and_transport_keep_unknown_codes_without_parsing_private_message
+    response = Net::HTTPBadRequest.new("1.1", "400", "Bad Request")
+    response.body = "PRIVATE_CANARY not JSON"
+    response.instance_variable_set(:@read, true)
+    with_fake_http(response) do |client, _http|
+      error = assert_raises(MajiaCI::ASCStatusError) { client.get("/v1/apps") }
+      assert_equal 400, error.http_status
+      assert_empty error.api_error_codes
+    end
+    with_fake_http(Timeout::Error.new("PRIVATE_CANARY HTTP 403: FORBIDDEN_ERROR")) do |client, _http|
+      error = assert_raises(MajiaCI::ASCStatusError) { client.get("/v1/apps") }
+      assert_nil error.http_status
+      assert_empty error.api_error_codes
+    end
+  end
+
   def test_jwt_is_es256_signed_and_uses_the_asc_audience
     key = OpenSSL::PKey::EC.generate("prime256v1")
     now = Time.utc(2026, 9, 24, 1, 2, 3)

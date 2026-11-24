@@ -8,7 +8,26 @@ require "uri"
 require_relative "asc_private_key"
 
 module MajiaCI
-  class ASCStatusError < StandardError; end
+  class ASCStatusError < StandardError
+    # Diagnostic metadata is deliberately separate from legacy messages, which can
+    # contain private Apple response text. Unknown codes remain redacted.
+    SAFE_API_ERROR_CODES = %w[
+      PARAMETER_ERROR.INVALID PARAMETER_ERROR.INVALID_COMBINATION PARAMETER_ERROR.MISSING
+      PARAMETER_ERROR.UNEXPECTED PARAMETER_ERROR.UNKNOWN STATE_ERROR.ENTITY_STATE_INVALID
+      STATE_ERROR.ENTITY_NOT_FOUND ENTITY_ERROR.ATTRIBUTE.INVALID ENTITY_ERROR.ATTRIBUTE.REQUIRED
+      ENTITY_ERROR.RELATIONSHIP.INVALID ENTITY_ERROR.RELATIONSHIP.REQUIRED ENTITY_ERROR.RELATIONSHIP.NOT_FOUND
+      FORBIDDEN FORBIDDEN_ERROR FORBIDDEN.REQUIRED_AGREEMENTS_MISSING_OR_EXPIRED
+      UNAUTHORIZED NOT_FOUND NOT_FOUND_ERROR CONFLICT INTERNAL_ERROR SERVICE_UNAVAILABLE
+      RATE_LIMIT_EXCEEDED UNEXPECTED_ERROR REQUEST_ENTITY_TOO_LARGE
+    ].freeze
+    attr_reader :http_status, :api_error_codes
+
+    def initialize(message = nil, http_status: nil, api_error_codes: [])
+      super(message)
+      @http_status = http_status if http_status.is_a?(Integer) && (100..599).cover?(http_status)
+      @api_error_codes = Array(api_error_codes).select { |code| SAFE_API_ERROR_CODES.include?(code) }.uniq.first(8).freeze
+    end
+  end
   class ASCPermissionError < ASCStatusError; end
 
   module ASCReviewStatus
@@ -438,7 +457,7 @@ module MajiaCI
       document = response.body.to_s.empty? ? {} : JSON.parse(response.body)
       if response.is_a?(Net::HTTPSuccess)
         if expected_status && response.code.to_i != expected_status
-          raise ASCStatusError, "ASC expected HTTP #{expected_status}; observed #{response.code}"
+          raise ASCStatusError.new("ASC expected HTTP #{expected_status}; observed #{response.code}", http_status: response.code.to_i)
         end
         return document
       end
@@ -451,12 +470,10 @@ module MajiaCI
       associated = associated_error_details(errors)
       details += " [associated errors: #{associated.join(', ')}]" unless associated.empty?
       error_class = %w[401 403].include?(response.code) ? ASCPermissionError : ASCStatusError
-      if expected_status
-        raise error_class, "ASC request failed: HTTP #{response.code}: #{details}"
-      end
-      raise error_class, "ASC request failed: #{details}"
+      message = expected_status ? "ASC request failed: HTTP #{response.code}: #{details}" : "ASC request failed: #{details}"
+      raise error_class.new(message, http_status: response.code.to_i, api_error_codes: errors.map { |error| error["code"] })
     rescue JSON::ParserError => e
-      raise ASCStatusError, "ASC returned invalid JSON: #{e.message}"
+      raise ASCStatusError.new("ASC returned invalid JSON: #{e.message}", http_status: response&.code&.to_i)
     rescue SocketError, SystemCallError, Timeout::Error => e
       raise ASCStatusError, "ASC request failed: #{e.class}: #{e.message}"
     end

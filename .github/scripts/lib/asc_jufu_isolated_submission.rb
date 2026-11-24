@@ -33,6 +33,64 @@ module MajiaCI
     SUBMITTED_VERSION_STATES = (ASCReviewSubmission::SUBMITTED_VERSION_STATES + ASCReviewSubmission::RELEASED_VERSION_STATES).freeze
     RELATIONS = ASCReviewCancellation::ITEM_RELATIONSHIPS
 
+    # Keep only fixed templates: no IDs, pagination URLs, query values or remote
+    # messages are copied into the diagnostic fields.
+    class DiagnosticClient
+      def initialize(client, summary)
+        @client = client
+        @summary = summary
+      end
+
+      def get(path, query = nil)
+        observe(:get, path) { @client.get(path, query) }
+      end
+
+      def paginate(path, query = nil, **options)
+        observe(:get, path) { @client.paginate(path, query, **options) }
+      end
+
+      def post_created(path, payload)
+        observe(:post, path) { @client.post_created(path, payload) }
+      end
+
+      def patch(path, payload)
+        observe(:patch, path) { @client.patch(path, payload) }
+      end
+
+      private
+
+      def observe(method, path)
+        template = case path
+                   when "/v1/apps" then "/v1/apps"
+                   when "/v1/apps/#{APP_ID}/appStoreVersions" then "/v1/apps/{fixed_app}/appStoreVersions"
+                   when "/v1/appStoreVersions/#{VERSION_ID}/relationships/build" then "/v1/appStoreVersions/{fixed_version}/relationships/build"
+                   when "/v1/builds/#{BUILD_ID}" then "/v1/builds/{fixed_build}"
+                   when "/v1/apps/#{APP_ID}/reviewSubmissions" then "/v1/apps/{fixed_app}/reviewSubmissions"
+                   when %r{\A/v1/reviewSubmissions/[A-Za-z0-9_-]{1,128}/items\z} then "/v1/reviewSubmissions/{submission}/items"
+                   when "/v1/reviewSubmissions" then "/v1/reviewSubmissions"
+                   when "/v1/reviewSubmissionItems" then "/v1/reviewSubmissionItems"
+                   when %r{\A/v1/reviewSubmissions/[A-Za-z0-9_-]{1,128}\z} then "/v1/reviewSubmissions/{submission}"
+                   end
+        raise ASCSubmissionError, "unrecognized_diagnostic_request_path" unless template
+
+        operation = case template
+                    when "/v1/apps/{fixed_app}/reviewSubmissions" then "review_batch_list"
+                    when "/v1/reviewSubmissions/{submission}/items" then "review_item_list"
+                    else "fixed_scope_request"
+                    end
+        descriptor = { "method" => method.to_s.upcase, "path_template" => template, "operation" => operation }
+        @summary["last_request"] = descriptor
+        yield
+      rescue StandardError => error
+        diagnostic = descriptor || { "method" => method.to_s.upcase, "path_template" => "UNRECOGNIZED" }
+        if error.is_a?(ASCStatusError)
+          diagnostic = diagnostic.merge("http_status" => error.http_status, "apple_error_codes" => error.api_error_codes)
+        end
+        @summary["failed_request"] = diagnostic
+        raise
+      end
+    end
+
     def run(client:, execute: false, checked_at: Time.now.utc, clock: -> { Time.now.utc })
       summary = {
         "schema_version" => 1, "checked_at" => checked_at.utc.iso8601, "execute" => execute == true,
@@ -45,6 +103,7 @@ module MajiaCI
         "evidence_boundary" => "One fixed Jufu version only. Existing empty or unrelated review batches are never modified. Does not build, upload, change metadata, release or prove approval."
       }
       check!([true, false].include?(execute), "invalid_execute")
+      client = DiagnosticClient.new(client, summary)
       target = read_target!(client)
       summary["before"] = target
       inventory = read_inventory!(client)
