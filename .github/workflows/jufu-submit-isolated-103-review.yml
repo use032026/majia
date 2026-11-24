@@ -1,0 +1,53 @@
+name: Jufu Submit Isolated 1.0.3 Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      execute_submit:
+        description: Submit only the fixed Jufu 1.0.3 build after isolated-batch checks; false is read-only
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: majia-asc-photo-production-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  isolated_review:
+    if: ${{ github.repository == 'use032026/majia' && github.ref == 'refs/heads/main' }}
+    environment: photo-production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check fixed Jufu version and use only an isolated target review batch
+        shell: bash
+        env:
+          IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
+          EXECUTE_SUBMIT: ${{ inputs.execute_submit }}
+        run: |
+          ruby .github/scripts/submit-jufu-103-isolated-review.rb \
+            --execute-submit "$EXECUTE_SUBMIT" \
+            --output asc-jufu-isolated-submission.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Retain isolated submission receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: asc-jufu-isolated-submission-${{ github.run_id }}-${{ github.run_attempt }}
+          path: asc-jufu-isolated-submission.json
+          if-no-files-found: warn
+          retention-days: 30
