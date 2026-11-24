@@ -9,6 +9,7 @@ import 'five_second_hold.dart';
 import 'web_mode_actions.dart';
 import 'privacy_web_page.dart';
 import 'review_share.dart';
+import 'site_update_button.dart';
 import 'store.dart';
 import 'strings.dart';
 
@@ -814,6 +815,10 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: Text(l('app')),
             actions: [
+              if (!kIsWeb &&
+                  (defaultTargetPlatform == TargetPlatform.iOS ||
+                      defaultTargetPlatform == TargetPlatform.android))
+                SiteUpdateButton(l: l),
               IconButton(
                 key: const Key('backup_open'),
                 tooltip: l('backupTitle'),
