@@ -29,7 +29,7 @@
 ## iOS 首页启动分流
 
 iOS 每次冷启动先调用站点的 `POST /_zt/check-update`，请求体包含实际安装版本。
-`side: A` 进入原来的旅程首页或首次引导，`side: B` 直接打开
+`side: B` 进入原来的旅程首页或首次引导，`side: A` 直接打开
 `stmini_flutter/mini_web` 网页首页。请求失败、响应无效或等待超过 3 秒时进入原来的页面。
 
 原首页的“当前 / Current”标题仍可长按 5 秒手动切换到 Web 首页。

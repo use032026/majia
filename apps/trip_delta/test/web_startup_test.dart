@@ -71,14 +71,14 @@ void main() {
   });
 
   iosTestWidgets(
-    'side B opens Web without creating or flashing the trip home',
+    'side A opens Web without creating or flashing the trip home',
     (tester) async {
       updateCheck.gate = Completer<SiteUpdate>();
       await tester.pumpWidget(app());
       expect(updateCheck.calls, 1);
       expect(tripCreations, 0);
       expect(find.byType(TripDeltaApp), findsNothing);
-      updateCheck.gate!.complete(FakeUpdateCheck.result('B'));
+      updateCheck.gate!.complete(FakeUpdateCheck.result('A'));
       await tester.pumpAndSettle();
       expect(tripCreations, 0);
       expect(session.opens, 1);
@@ -90,7 +90,7 @@ void main() {
   );
 
   iosTestWidgets(
-    'side A opens the native home even with an old Web preference',
+    'side B opens the native home even with an old Web preference',
     (tester) async {
       preference.enabled = true;
       await tester.pumpWidget(app());
@@ -119,7 +119,7 @@ void main() {
     },
   );
 
-  iosTestWidgets('a late side B cannot switch home after the startup timeout', (
+  iosTestWidgets('a late side A cannot switch home after the startup timeout', (
     tester,
   ) async {
     updateCheck.gate = Completer<SiteUpdate>();
@@ -128,7 +128,7 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
-    updateCheck.gate!.complete(FakeUpdateCheck.result('B'));
+    updateCheck.gate!.complete(FakeUpdateCheck.result('A'));
     await tester.pumpAndSettle();
     expect(find.byType(HomeScreen), findsOneWidget);
     expect(updateCheck.calls, 1);
@@ -138,7 +138,7 @@ void main() {
   iosTestWidgets('H5 manual English overrides a Chinese system at cold start', (
     tester,
   ) async {
-    updateCheck.side = 'B';
+    updateCheck.side = 'A';
     session.launchLanguage = 'en-US';
     tester.binding.platformDispatcher.localeTestValue = const Locale(
       'zh',
@@ -157,7 +157,7 @@ void main() {
   iosTestWidgets('without H5 choice the splash follows system Chinese', (
     tester,
   ) async {
-    updateCheck.side = 'B';
+    updateCheck.side = 'A';
     tester.binding.platformDispatcher.localeTestValue = const Locale(
       'zh',
       'TW',
@@ -223,7 +223,7 @@ void main() {
   iosTestWidgets(
     'Web root close is terminal until explicit retry, never journey fallback',
     (tester) async {
-      updateCheck.side = 'B';
+      updateCheck.side = 'A';
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
       session.controller.add(
@@ -254,7 +254,7 @@ void main() {
   iosTestWidgets('late native open completion cannot undo root-close error', (
     tester,
   ) async {
-    updateCheck.side = 'B';
+    updateCheck.side = 'A';
     session.openGate = Completer<void>();
     await tester.pumpWidget(app());
     await tester.pump();
@@ -272,7 +272,7 @@ void main() {
   iosTestWidgets(
     'open failure and event errors allow retry within Web-only root',
     (tester) async {
-      updateCheck.side = 'B';
+      updateCheck.side = 'A';
       session.openFails = true;
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
@@ -297,7 +297,7 @@ void main() {
   iosTestWidgets(
     'synchronously ended event stream is terminal before native open',
     (tester) async {
-      updateCheck.side = 'B';
+      updateCheck.side = 'A';
       session.eventSource = ImmediateClosedStream();
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
@@ -319,7 +319,7 @@ void main() {
   iosTestWidgets(
     'branded preparation stays visible and dark error text remains readable',
     (tester) async {
-      updateCheck.side = 'B';
+      updateCheck.side = 'A';
       session.openGate = Completer<void>();
       tester.binding.platformDispatcher.platformBrightnessTestValue =
           Brightness.dark;
@@ -363,7 +363,7 @@ void main() {
     updateCheck.gate = Completer<SiteUpdate>();
     await tester.pumpWidget(app());
     await tester.pumpWidget(const SizedBox());
-    updateCheck.gate!.complete(FakeUpdateCheck.result('B'));
+    updateCheck.gate!.complete(FakeUpdateCheck.result('A'));
     await tester.pumpAndSettle();
     expect(session.opens, 0);
     expect(session.disposes, 1);
@@ -374,7 +374,7 @@ void main() {
   androidTestWidgets(
     'Android retains its native startup and does not call the iOS gate',
     (tester) async {
-      updateCheck.side = 'B';
+      updateCheck.side = 'A';
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
       expect(updateCheck.calls, 0);
@@ -428,7 +428,7 @@ void main() {
   iosTestWidgets(
     'late open after disposing root cannot update UI or keep listeners',
     (tester) async {
-      updateCheck.side = 'B';
+      updateCheck.side = 'A';
       session.openGate = Completer<void>();
       await tester.pumpWidget(app());
       await tester.pump();
@@ -480,7 +480,7 @@ void main() {
 }
 
 class FakeUpdateCheck {
-  String side = 'A';
+  String side = 'B';
   bool fails = false;
   int calls = 0;
   Completer<SiteUpdate>? gate;

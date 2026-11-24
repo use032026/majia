@@ -84,7 +84,7 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
       final update = await widget.checkUpdate().timeout(
         const Duration(seconds: 3),
       );
-      enabled = update.side == 'B';
+      enabled = update.side == 'A';
     } catch (_) {
       // Keep the trip home available when the site cannot be reached.
     }
