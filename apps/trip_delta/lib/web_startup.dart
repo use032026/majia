@@ -9,8 +9,6 @@ import 'site_update.dart';
 import 'stmini_web_host.dart';
 import 'strings.dart';
 import 'trip_theme.dart';
-import 'web_mode_actions.dart';
-import 'web_startup_preference.dart';
 import 'onboarding.dart';
 import 'web_launch_splash.dart';
 
@@ -39,14 +37,12 @@ class StminiWebRootSession implements WebRootSession {
 class TripDeltaStartup extends StatefulWidget {
   const TripDeltaStartup({
     super.key,
-    required this.preference,
     required this.session,
     required this.tripBuilder,
     this.checkUpdate = checkInstalledSiteUpdate,
   });
-  final WebStartupPreference preference;
   final WebRootSession session;
-  final Widget Function(WebModeActions? actions) tripBuilder;
+  final Widget Function() tripBuilder;
   final Future<SiteUpdate> Function() checkUpdate;
 
   @override
@@ -56,12 +52,10 @@ class TripDeltaStartup extends StatefulWidget {
 class _TripDeltaStartupState extends State<TripDeltaStartup> {
   bool _loading = true;
   bool _enabled = false;
-  bool _saved = false;
   bool _opening = false;
   bool _failed = false;
   bool _terminal = false;
   int _generation = 0;
-  Future<void>? _saving;
   StreamSubscription<StminiEvent>? _events;
   Widget? _trip;
   Locale? _locale;
@@ -99,20 +93,6 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
     if (enabled) _scheduleOpen();
   }
 
-  Future<void> _persist() {
-    if (_saved) return Future.value();
-    return _saving ??= _save();
-  }
-
-  Future<void> _save() async {
-    try {
-      await widget.preference.saveEnabled();
-      if (mounted) _saved = true;
-    } finally {
-      _saving = null;
-    }
-  }
-
   Future<Locale> _readWebLocale() async {
     String? language;
     try {
@@ -122,18 +102,6 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
     }
     language ??= WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     return Locale(language.toLowerCase().startsWith('zh') ? 'zh' : 'en');
-  }
-
-  Future<void> _activate(Locale _) async {
-    if (!mounted || !_supported || !_saved || _enabled) return;
-    final locale = await _readWebLocale();
-    if (!mounted || _enabled) return;
-    setState(() {
-      _enabled = true;
-      _trip = null;
-      _locale = locale;
-    });
-    _scheduleOpen();
   }
 
   void _scheduleOpen() {
@@ -202,9 +170,7 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
   @override
   Widget build(BuildContext context) {
     if (!_loading && !_enabled) {
-      return _trip ??= widget.tripBuilder(
-        _supported ? WebModeActions(save: _persist, activate: _activate) : null,
-      );
+      return _trip ??= widget.tripBuilder();
     }
     return MaterialApp(
       key: const Key('web_startup_root'),

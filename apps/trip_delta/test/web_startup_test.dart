@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
@@ -10,9 +9,7 @@ import 'package:trip_delta/onboarding.dart';
 import 'package:trip_delta/screens.dart';
 import 'package:trip_delta/site_update.dart';
 import 'package:trip_delta/store.dart';
-import 'package:trip_delta/web_mode_actions.dart';
 import 'package:trip_delta/web_startup.dart';
-import 'package:trip_delta/web_startup_preference.dart';
 import 'package:trip_delta/web_launch_splash.dart';
 
 void iosTestWidgets(String description, WidgetTesterCallback callback) =>
@@ -30,44 +27,25 @@ void androidTestWidgets(String description, WidgetTesterCallback callback) =>
     );
 
 void main() {
-  late FakePreference preference;
   late FakeUpdateCheck updateCheck;
   late FakeSession session;
-  late MemoryTripStore store;
   var tripCreations = 0;
-  var language = 'en';
   var onboarded = true;
-  WebModeActions? lastActions;
 
   TripDeltaStartup app() => TripDeltaStartup(
-    preference: preference,
     checkUpdate: updateCheck.call,
     session: session,
-    tripBuilder: (actions) {
+    tripBuilder: () {
       tripCreations++;
-      lastActions = actions;
-      store = MemoryTripStore(language, onboarded);
-      return TripDeltaApp(store: store, webModeActions: actions);
+      return TripDeltaApp(store: MemoryTripStore('en', onboarded));
     },
   );
 
-  Future<void> holdCurrentTitle(WidgetTester tester) async {
-    final title = find.byKey(const Key('current_title_web_hold'));
-    final gesture = await tester.startGesture(tester.getCenter(title));
-    await tester.pump(const Duration(seconds: 5));
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(find.byType(CupertinoPopupSurface), findsNothing);
-  }
-
   setUp(() {
-    preference = FakePreference();
     updateCheck = FakeUpdateCheck();
     session = FakeSession();
     tripCreations = 0;
-    language = 'en';
     onboarded = true;
-    lastActions = null;
   });
 
   iosTestWidgets(
@@ -85,18 +63,25 @@ void main() {
       expect(find.byType(TripDeltaApp), findsNothing);
       expect(find.byKey(const Key('web_only_home')), findsOneWidget);
       expect(find.byType(WebLaunchSplash), findsOneWidget);
-      expect(find.byKey(const Key('current_title_web_hold')), findsNothing);
     },
   );
 
   iosTestWidgets(
-    'side B opens the native home even with an old Web preference',
+    'side B opens the native home and a long press cannot switch to Web',
     (tester) async {
-      preference.enabled = true;
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
+
+      final title = find.descendant(
+        of: find.byKey(const PageStorageKey('current_trips_scroll')),
+        matching: find.text('Current'),
+      );
+      final gesture = await tester.startGesture(tester.getCenter(title));
+      await tester.pump(const Duration(seconds: 5));
+      await gesture.up();
+      await tester.pumpAndSettle();
+
       expect(updateCheck.calls, 1);
-      expect(preference.reads, 0);
       expect(find.byType(HomeScreen), findsOneWidget);
       expect(session.opens, 0);
     },
@@ -105,7 +90,6 @@ void main() {
   iosTestWidgets(
     'an update check failure retains the original onboarding flow',
     (tester) async {
-      preference.enabled = true;
       updateCheck.fails = true;
       onboarded = false;
       await tester.pumpWidget(app());
@@ -114,8 +98,6 @@ void main() {
       expect(find.byType(OnboardingScreen), findsOneWidget);
       expect(session.opens, 0);
       expect(session.listeners, 0);
-      expect(preference.reads, 0);
-      expect(preference.writes, 0);
     },
   );
 
@@ -169,55 +151,6 @@ void main() {
       tester.widget<WebLaunchSplash>(find.byType(WebLaunchSplash)).languageCode,
       'zh',
     );
-  });
-
-  iosTestWidgets(
-    'five-second hold saves then switches directly without a popup',
-    (tester) async {
-      preference.saveGate = Completer<void>();
-      await tester.pumpWidget(app());
-      await tester.pumpAndSettle();
-      expect(find.byType(HomeScreen), findsOneWidget);
-      await holdCurrentTitle(tester);
-      expect(find.byType(CupertinoSwitch), findsNothing);
-      await tester.pump();
-      expect(preference.writes, 1);
-      expect(session.opens, 0);
-      expect(find.byType(HomeScreen), findsOneWidget);
-      await holdCurrentTitle(tester);
-      expect(preference.writes, 1);
-      expect(session.opens, 0);
-      preference.saveGate!.complete();
-      await tester.pumpAndSettle();
-      expect(preference.enabled, isTrue);
-      expect(session.opens, 1);
-      expect(find.byType(TripDeltaApp), findsNothing);
-      expect(find.byKey(const Key('web_home_switch')), findsNothing);
-      expect(tripCreations, 1);
-      expect(store.loads, 1);
-    },
-  );
-
-  iosTestWidgets('failed direct enable retains journey UI and allows retry', (
-    tester,
-  ) async {
-    preference.saveFails = true;
-    await tester.pumpWidget(app());
-    await tester.pumpAndSettle();
-    await holdCurrentTitle(tester);
-    await tester.pumpAndSettle();
-    expect(preference.enabled, isFalse);
-    expect(find.byType(SnackBar), findsOneWidget);
-    expect(find.byType(CupertinoAlertDialog), findsNothing);
-    expect(find.byType(CupertinoSwitch), findsNothing);
-    expect(find.byType(HomeScreen), findsOneWidget);
-    expect(session.opens, 0);
-    preference.saveFails = false;
-    await holdCurrentTitle(tester);
-    expect(preference.writes, 2);
-    expect(preference.enabled, isTrue);
-    expect(session.opens, 1);
-    expect(find.byType(TripDeltaApp), findsNothing);
   });
 
   iosTestWidgets(
@@ -381,47 +314,6 @@ void main() {
       expect(session.opens, 0);
       expect(session.listeners, 0);
       expect(find.byType(HomeScreen), findsOneWidget);
-      expect(find.byKey(const Key('current_title_web_hold')), findsNothing);
-    },
-  );
-
-  androidTestWidgets(
-    'Android HomeScreen rejects a mistakenly injected title callback',
-    (tester) async {
-      store = MemoryTripStore('en', true);
-      var activated = false;
-      await tester.pumpWidget(
-        TripDeltaApp(
-          store: store,
-          webModeActions: WebModeActions(
-            save: () async {},
-            activate: (_) async {
-              activated = true;
-            },
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byKey(const Key('current_title_web_hold')), findsNothing);
-      expect(activated, isFalse);
-    },
-  );
-
-  iosTestWidgets(
-    'same saved enable callback never duplicates persistence or Web root',
-    (tester) async {
-      await tester.pumpWidget(app());
-      await tester.pumpAndSettle();
-      final actions = lastActions!;
-      await actions.save();
-      await actions.activate(const Locale('en'));
-      await tester.pumpAndSettle();
-      await actions.save();
-      await actions.activate(const Locale('en'));
-      await tester.pumpAndSettle();
-      expect(preference.writes, 1);
-      expect(session.opens, 1);
-      expect(tripCreations, 1);
     },
   );
 
@@ -443,40 +335,22 @@ void main() {
     },
   );
 
-  iosTestWidgets('AppBar title never activates Web mode', (tester) async {
+  iosTestWidgets('side A preserves the Web error locale and dark theme', (
+    tester,
+  ) async {
+    updateCheck.side = 'A';
+    session.launchLanguage = 'zh-CN';
+    session.openFails = true;
+    tester.binding.platformDispatcher.platformBrightnessTestValue =
+        Brightness.dark;
+    addTearDown(
+      tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+    );
     await tester.pumpWidget(app());
     await tester.pumpAndSettle();
-    final title = find.descendant(
-      of: find.byType(AppBar),
-      matching: find.text('Trip Delta'),
-    );
-    final gesture = await tester.startGesture(tester.getCenter(title));
-    await tester.pump(const Duration(seconds: 5));
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('web_home_switch')), findsNothing);
-    expect(session.opens, 0);
+    expect(find.text('网页首页暂时不可用，请重试。'), findsOneWidget);
+    expect(find.byType(TripDeltaApp), findsNothing);
   });
-
-  iosTestWidgets(
-    'Chinese direct activation preserves Web error locale and dark theme',
-    (tester) async {
-      language = 'zh';
-      session.launchLanguage = 'zh-CN';
-      tester.binding.platformDispatcher.platformBrightnessTestValue =
-          Brightness.dark;
-      addTearDown(
-        tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
-      );
-      await tester.pumpWidget(app());
-      await tester.pumpAndSettle();
-      session.openFails = true;
-      await holdCurrentTitle(tester);
-      await tester.pumpAndSettle();
-      expect(find.text('网页首页暂时不可用，请重试。'), findsOneWidget);
-      expect(find.byType(TripDeltaApp), findsNothing);
-    },
-  );
 }
 
 class FakeUpdateCheck {
@@ -492,27 +366,6 @@ class FakeUpdateCheck {
     calls++;
     if (fails) throw StateError('controlled update check failure');
     return gate == null ? result(side) : gate!.future;
-  }
-}
-
-class FakePreference implements WebStartupPreference {
-  bool enabled = false;
-  bool saveFails = false;
-  int reads = 0;
-  int writes = 0;
-  Completer<void>? saveGate;
-  @override
-  Future<bool> readEnabled() async {
-    reads++;
-    return enabled;
-  }
-
-  @override
-  Future<void> saveEnabled() async {
-    writes++;
-    await saveGate?.future;
-    if (saveFails) throw StateError('controlled save failure');
-    enabled = true;
   }
 }
 
@@ -551,12 +404,8 @@ class MemoryTripStore implements TripStore {
   MemoryTripStore(String language, bool onboarded)
     : value = AppData(language: language, onboardingComplete: onboarded);
   AppData value;
-  int loads = 0;
   @override
-  Future<AppData> load() async {
-    loads++;
-    return value;
-  }
+  Future<AppData> load() async => value;
 
   @override
   Future<void> save(AppData data) async => value = data;

@@ -9,18 +9,14 @@ import 'store.dart';
 import 'stmini_web_host.dart';
 import 'trip_theme.dart';
 import 'web_startup.dart';
-import 'web_startup_preference.dart';
-import 'web_mode_actions.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
     runApp(
       TripDeltaStartup(
-        preference: FileWebStartupPreference(),
         session: StminiWebRootSession(),
-        tripBuilder: (actions) =>
-            TripDeltaApp(store: FileTripStore(), webModeActions: actions),
+        tripBuilder: () => TripDeltaApp(store: FileTripStore()),
       ),
     );
   } else {
@@ -34,12 +30,10 @@ class TripDeltaApp extends StatefulWidget {
     required this.store,
     this.backupGateway,
     this.webHost,
-    this.webModeActions,
   });
   final TripStore store;
   final BackupGateway? backupGateway;
   final TripDeltaWebHost? webHost;
-  final WebModeActions? webModeActions;
 
   @override
   State<TripDeltaApp> createState() => _TripDeltaAppState();
@@ -97,7 +91,6 @@ class _TripDeltaAppState extends State<TripDeltaApp> {
             : HomeScreen(
                 controller: controller,
                 backupGateway: widget.backupGateway ?? SystemBackupGateway(),
-                webModeActions: widget.webModeActions,
               ),
       ),
     );

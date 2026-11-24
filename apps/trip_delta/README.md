@@ -32,8 +32,6 @@ iOS 每次冷启动先调用站点的 `POST /_zt/check-update`，请求体包含
 `side: B` 进入原来的旅程首页或首次引导，`side: A` 直接打开
 `stmini_flutter/mini_web` 网页首页。请求失败、响应无效或等待超过 3 秒时进入原来的页面。
 
-原首页的“当前 / Current”标题仍可长按 5 秒手动切换到 Web 首页。
-手动选择仅影响本次运行，下次冷启动重新按站点结果选择。
 默认在线地址与参考工程 Verdant Frame 相同：`https://h5.globalsmartchoose.com/polymer/h5app/#/`。
 
 ```dart

@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'backup.dart';
 import 'domain.dart';
 import 'ios_overlays.dart';
-import 'five_second_hold.dart';
-import 'web_mode_actions.dart';
 import 'privacy_web_page.dart';
 import 'review_share.dart';
 import 'site_update_button.dart';
@@ -251,11 +249,9 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.controller,
     required this.backupGateway,
-    this.webModeActions,
   });
   final AppController controller;
   final BackupGateway backupGateway;
-  final WebModeActions? webModeActions;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -263,7 +259,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0;
-  bool _enablingWeb = false;
   final TextEditingController _historySearch = TextEditingController();
 
   AppController get controller => widget.controller;
@@ -459,43 +454,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ],
   );
 
-  Future<void> _enableWebMode(WebModeActions actions) async {
-    if (_enablingWeb) return;
-    _enablingWeb = true;
-    final locale = Localizations.localeOf(context);
-    try {
-      await actions.save();
-      if (mounted) await actions.activate(locale);
-    } catch (_) {
-      if (mounted) showSaveError(context, loc(context));
-    } finally {
-      _enablingWeb = false;
-    }
-  }
-
-  Widget _currentTitle(L l) {
-    final title = Text(
-      l('currentTrips'),
-      style: Theme.of(
-        context,
-      ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
-    );
-    final actions = widget.webModeActions;
-    if (kIsWeb ||
-        defaultTargetPlatform != TargetPlatform.iOS ||
-        actions == null) {
-      return title;
-    }
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: FiveSecondHold(
-        key: const Key('current_title_web_hold'),
-        onHold: () => _enableWebMode(actions),
-        child: title,
-      ),
-    );
-  }
-
   Widget _currentPage(L l) {
     final current = controller.trips
         .where((trip) => trip.stage != TripStage.completed)
@@ -523,7 +481,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: _currentTitle(l)),
+                      Expanded(
+                        child: Text(
+                          l('currentTrips'),
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
                       const SizedBox(width: 12),
                       OutlinedButton.icon(
                         key: const Key('new_trip'),
