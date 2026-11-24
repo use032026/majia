@@ -9,7 +9,7 @@
     "LICENSE": "422e0de8e3275febf5c41a5ccf891f68f16bc40e1b5dca26e50913b307ef794e",
     "ios/Classes/StminiFlutterPlugin.swift": "a270a8fe1c04f432006bc49da299d0f1ac1063d59afa49216697c0d5d5e26fb9",
     "ios/Classes/Web/OnlineWebViewController.swift": "f9bd4f49a035e5244b221d4d4ccb6421efdda40f14c2596d10c1f1032f34f123",
-    "ios/Classes/Web/STOnlineWebCore.swift": "ff48d5855e945c01efb27a0f1e5f34c43ff3b8115d9ff80afeb61e4847abc5f9",
+    "ios/Classes/Web/STOnlineWebCore.swift": "123524348cc921f1454d870d476d89d95b598e7955d017c9d11b418cec8de1ca",
     "ios/stmini_flutter.podspec": "739f18d5bcf3628f39064208b098e50fa159e41d875c2ded9292bdfe65a802dc",
     "lib/src/runtime_mode.dart": "5f6ad4576503f02b1bd3f4769ac2e6a93e066a27aeacaa094c1b41154e85be23",
     "lib/stmini_flutter.dart": "1781db14506d49e86d7ca2dcabebd3d851a6b518a87a337fefb9da5c9defe4a5",
@@ -28,9 +28,9 @@
       "actualSha256": "a270a8fe1c04f432006bc49da299d0f1ac1063d59afa49216697c0d5d5e26fb9"
     },
     "ios/Classes/Web/STOnlineWebCore.swift": {
-      "reason": "Require an explicitly configured HTTPS origin for session reads and native storage access.",
+      "reason": "Allow HTTPS session reads using a host-configured hostname substring, with exact-origin fallback when absent; retain exact configured HTTPS origins for raw native storage access.",
       "sourceSha256": "0a9b47da58dcf2fbf1cbb6918c37d00e642750762ca66cc89ab3cfde9fdf147a",
-      "actualSha256": "ff48d5855e945c01efb27a0f1e5f34c43ff3b8115d9ff80afeb61e4847abc5f9"
+      "actualSha256": "123524348cc921f1454d870d476d89d95b598e7955d017c9d11b418cec8de1ca"
     }
   }
 }

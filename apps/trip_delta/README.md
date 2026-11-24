@@ -64,18 +64,23 @@ Android 原有旅程业务和工程配置保持原样。
 内部路由仍仅允许同首页 origin 请求，每次显式 H5 导航独立，不按 URL 去重。
 仅接受 HTTPS，不放开 ATS/Android cleartext，不复制参考工程的包名、账号或认证快照。
 普通 Bridge 支持打开、关闭、无凭据会话变化通知及诊断应答，未知方法返回失败。
-H5 登录会话与用户资料通过原生存储供同源 `/web` 子页读取。
+H5 登录会话与用户资料通过原生存储供 App 内的 HTTPS `/web` 子页读取。
+Trip Delta 在 `webSecurity.sessionDomainSubstring` 配置 `globalsmartchoose`；
+`getToken`、`getUserInfo` 要求当前页面的主机名包含这段字符串，不再要求与首页完全同域。
+这是主机名子串匹配，不是 URL 全文或域名后缀匹配；不限制域名以 `.com` 结尾。
+STMini 不内置业务域名；其他宿主未配置该字段时，保留 `bridgeOrigins` 的精确来源匹配。
 存储映射由 STMini 初始化入口统一提供默认值：认证使用 `futrenapp:auth-storage:v1`，
 用户资料使用 `futrenapp:cache-storage:v1` 下的 `user.userInfo`，App 无需重复指定。
-宿主仍可通过同名 `bridgeContext` 字段覆盖，显式传 `null` 可停用对应映射；网页来源白名单仍由 App 配置。
-只有与当前配置的 Web 首页完全同源的 HTTPS 主文档可调用会话读取及原生存储接口。
+宿主仍可通过同名 `bridgeContext` 字段覆盖，显式传 `null` 可停用对应映射；原生存储接口的网页来源白名单仍由 App 配置。
+`setStorage`、`getStorage`、`removeStorage` 仍仅允许与当前配置的 Web 首页完全同源的 HTTPS 主文档调用。
 主 frame、当前页面来源及生命周期由原生 Web Core 处理；未接入 Mini 下载、离线包或 `openMini`。
 
 为使干净 checkout 与 CI 可复现，依赖使用应用内 `packages/stmini_flutter` 的发行源码快照，
 不依赖本机相邻目录。来源固定为 `mini_web` 的
 `78956b6b57048b486d99e8ae92ea866ebcac7242`，逐文件 SHA-256 和升级步骤见
 [`UPSTREAM.json`](packages/stmini_flutter/UPSTREAM.json)。快照仅保留 Dart/iOS 所需文件，
-插件 pubspec 裁掉 Android 注册，iOS 增加会话读取及原生存储的来源限制；来源及适配差异在清单中明确。
+插件 pubspec 裁掉 Android 注册，iOS 会话读取校验 HTTPS 及宿主配置的主机名子串，
+原生存储仍校验配置的精确来源；来源及适配差异在清单中明确。
 LICENSE 当前未声明开源许可，
 不将其描述为某种开源许可证。后续升级需更新来源清单并重新核对 Dart、iOS 及 Android 未接入边界。
 
@@ -107,6 +112,7 @@ App 配置只提供 Flutter asset 路径；STMini 不包含 s86 图片或业务�
 flutter pub get
 flutter analyze
 flutter test
+bash tool/test_native_session_bridge.sh
 flutter build ios --release --no-codesign
 # Android 本批不接入 STMini，不以 Android 构建作为本批 Web 验收项。
 ```

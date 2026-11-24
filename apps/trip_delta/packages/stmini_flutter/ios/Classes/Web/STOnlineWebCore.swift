@@ -147,11 +147,27 @@ public enum STOnlineWebSessionBridge {
     darkMode: Bool,
     languageCode: String
   ) -> [String: Any]? {
-    // Storage is shared across WebViews. Its session snapshots must be
-    // protected both through getUserInfo and through direct storage calls.
-    if ["getUserInfo", "getToken", "setStorage", "getStorage", "removeStorage"].contains(method) {
-      let security = bridgeContext["webSecurity"] as? [String: Any]
-      let trustedOrigins = security?["bridgeOrigins"] as? [String] ?? []
+    let security = bridgeContext["webSecurity"] as? [String: Any]
+    let trustedOrigins = security?["bridgeOrigins"] as? [String] ?? []
+    // Hosts may opt into a hostname substring rule for session reads.
+    // Without it, preserve the original exact-origin policy. The WebView
+    // owner still rejects iframe and stale-document messages.
+    if ["getUserInfo", "getToken"].contains(method) {
+      guard let url = URL(string: origin), STOnlineWebCore.normalizedHTTPSOrigin(url) != nil,
+            let host = url.host?.lowercased() else {
+        return failure("当前网页无权访问登录会话")
+      }
+      if let rawDomain = security?["sessionDomainSubstring"] {
+        guard let domain = (rawDomain as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
+              !domain.isEmpty, host.contains(domain) else {
+          return failure("当前网页无权访问登录会话")
+        }
+      } else if !trustedOrigins.contains(origin) {
+        return failure("当前网页无权访问登录会话")
+      }
+    }
+    // Arbitrary storage reads/writes remain limited to configured origins.
+    if ["setStorage", "getStorage", "removeStorage"].contains(method) {
       guard origin.hasPrefix("https://"), trustedOrigins.contains(origin) else {
         return failure("当前网页无权访问登录会话或宿主存储")
       }

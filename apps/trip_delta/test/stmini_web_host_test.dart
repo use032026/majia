@@ -27,6 +27,7 @@ void main() {
     runtime = FakeRuntime();
     host = TripDeltaWebHost(
       homeUrl: 'https://first.example/app/#/',
+      sessionDomainSubstring: 'first',
       runtime: runtime,
     );
   });
@@ -41,6 +42,7 @@ void main() {
     expect(runtime.context?['webSecurity'], {
       'allowInsecureHTTP': false,
       'bridgeOrigins': ['https://first.example'],
+      'sessionDomainSubstring': 'first',
     });
     expect(runtime.context!.containsKey('authStorageKey'), isFalse);
     expect(runtime.context!.containsKey('bridgeUserInfoStorage'), isFalse);
@@ -241,6 +243,7 @@ void main() {
           'webSecurity': {
             'allowInsecureHTTP': false,
             'bridgeOrigins': [Uri.parse(TripDeltaWebHost.defaultHomeUrl).origin],
+            'sessionDomainSubstring': 'globalsmartchoose',
           },
           'webLoading': {
             'readyEvent': 'futrenapp:startup-complete',

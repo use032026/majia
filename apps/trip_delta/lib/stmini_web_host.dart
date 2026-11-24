@@ -75,6 +75,7 @@ class StminiTripWebRuntime implements TripWebRuntime {
 class TripDeltaWebHost {
   TripDeltaWebHost({
     String homeUrl = defaultHomeUrl,
+    this.sessionDomainSubstring = defaultSessionDomainSubstring,
     TripWebRuntime runtime = const StminiTripWebRuntime(),
   }) : homeUri =
            _httpsUri(homeUrl) ??
@@ -83,8 +84,10 @@ class TripDeltaWebHost {
 
   static const defaultHomeUrl =
       'https://h5.globalsmartchoose.com/polymer/h5app/#/';
+  static const defaultSessionDomainSubstring = 'globalsmartchoose';
 
   final Uri homeUri;
+  final String sessionDomainSubstring;
   final TripWebRuntime _runtime;
   Future<void>? _initializing;
   bool _ready = false;
@@ -105,6 +108,7 @@ class TripDeltaWebHost {
         'webSecurity': {
           'allowInsecureHTTP': false,
           'bridgeOrigins': [homeUri.origin],
+          'sessionDomainSubstring': sessionDomainSubstring,
         },
         'webLoading': const {
           'readyEvent': 'futrenapp:startup-complete',
