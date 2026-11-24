@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:stmini_flutter/stmini_flutter.dart';
 
+import 'site_update.dart';
 import 'stmini_web_host.dart';
 import 'strings.dart';
 import 'trip_theme.dart';
@@ -20,7 +21,7 @@ abstract interface class WebRootSession {
   void dispose();
 }
 
-/// Sole owner of the Web host. No native work occurs while the opt-in is off.
+/// Sole owner of the Web host. It initializes the runtime on first open.
 class StminiWebRootSession implements WebRootSession {
   TripDeltaWebHost? _host;
   @override
@@ -41,10 +42,12 @@ class TripDeltaStartup extends StatefulWidget {
     required this.preference,
     required this.session,
     required this.tripBuilder,
+    this.checkUpdate = checkInstalledSiteUpdate,
   });
   final WebStartupPreference preference;
   final WebRootSession session;
   final Widget Function(WebModeActions? actions) tripBuilder;
+  final Future<SiteUpdate> Function() checkUpdate;
 
   @override
   State<TripDeltaStartup> createState() => _TripDeltaStartupState();
@@ -69,18 +72,21 @@ class _TripDeltaStartupState extends State<TripDeltaStartup> {
     super.initState();
     _supported = !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
     if (_supported) {
-      unawaited(_readPreference());
+      unawaited(_chooseStartupHome());
     } else {
       _loading = false;
     }
   }
 
-  Future<void> _readPreference() async {
+  Future<void> _chooseStartupHome() async {
     var enabled = false;
     try {
-      enabled = await widget.preference.readEnabled();
+      final update = await widget.checkUpdate().timeout(
+        const Duration(seconds: 3),
+      );
+      enabled = update.side == 'B';
     } catch (_) {
-      // Read failures cannot opt a device into online startup.
+      // Keep the trip home available when the site cannot be reached.
     }
     if (!mounted) return;
     final locale = enabled ? await _readWebLocale() : null;

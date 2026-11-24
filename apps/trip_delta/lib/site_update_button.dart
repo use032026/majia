@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'ios_overlays.dart';
@@ -22,8 +21,7 @@ class _SiteUpdateButtonState extends State<SiteUpdateButton> {
     final l = widget.l;
     setState(() => _checking = true);
     try {
-      final package = await PackageInfo.fromPlatform();
-      final update = await checkSiteUpdate(package.version);
+      final update = await checkInstalledSiteUpdate();
       if (!mounted) return;
       if (!update.hasUpdate) {
         showIosNotice(context, l('noSiteUpdate'));

@@ -26,17 +26,14 @@
 
 应用默认按当前语言加载已发布的[中文隐私政策](https://gotripdelta.com/privacy.html?lang=zh)或[英文隐私政策](https://gotripdelta.com/privacy.html?lang=en)。构建时仍可用 `--dart-define=TRIP_DELTA_PRIVACY_URL=<HTTPS 地址>` 覆盖共同网址，或用 `TRIP_DELTA_PRIVACY_URL_ZH`、`TRIP_DELTA_PRIVACY_URL_EN` 分别覆盖；只接受 HTTPS。在线加载失败会显示本地数据摘要，并提供重试；回到应用时也会再试一次。
 
-## iOS 在线 Web 首页开关
+## iOS 首页启动分流
 
-iOS 使用 `stmini_flutter/mini_web` 的 Web-only 容器。本机独立偏好默认关闭，
-旧安装无偏好、文件损坏或读取失败时均按关闭处理，保留原有旅程、引导和数据恢复流程。
-在当前页“当前 / Current”标题连续按住满 **5 秒**，保存本机偏好后直接切换网页首页，
-不显示设置弹窗或确认开关。未满时间松开、移出或取消不会切换。没有新增普通首页按钮。
+iOS 每次冷启动先调用站点的 `POST /_zt/check-update`，请求体包含实际安装版本。
+`side: A` 进入原来的旅程首页或首次引导，`side: B` 直接打开
+`stmini_flutter/mini_web` 网页首页。请求失败、响应无效或等待超过 3 秒时进入原来的页面。
 
-开启时先保存本机偏好，成功后移除旅程根界面，切换到 Web 准备页并打开网页。
-后续冷启动先读取该偏好，开启时直接进入 Web 根，不创建或闪现旅程界面。
-偏好独立于旅程数据和 JSON 备份，不改变旅程、语言或引导数据。
-Web 模式没有关闭开关入口，也不提供返回旅程的原生按钮或其他恢复手势。
+原首页的“当前 / Current”标题仍可长按 5 秒手动切换到 Web 首页。
+手动选择仅影响本次运行，下次冷启动重新按站点结果选择。
 默认在线地址与参考工程 Verdant Frame 相同：`https://h5.globalsmartchoose.com/polymer/h5app/#/`。
 
 ```dart

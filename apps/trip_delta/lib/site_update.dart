@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
 class SiteUpdate {
   const SiteUpdate({
     required this.side,
@@ -65,6 +67,11 @@ bool _isNumericVersion(String version) =>
     version
         .split('.')
         .every((part) => (int.tryParse(part) ?? 2147483648) <= 2147483647);
+
+Future<SiteUpdate> checkInstalledSiteUpdate() async {
+  final package = await PackageInfo.fromPlatform();
+  return checkSiteUpdate(package.version);
+}
 
 Future<SiteUpdate> checkSiteUpdate(
   String installedVersion, {

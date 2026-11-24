@@ -8,6 +8,7 @@ import 'package:trip_delta/domain.dart';
 import 'package:trip_delta/main.dart';
 import 'package:trip_delta/onboarding.dart';
 import 'package:trip_delta/screens.dart';
+import 'package:trip_delta/site_update.dart';
 import 'package:trip_delta/store.dart';
 import 'package:trip_delta/web_mode_actions.dart';
 import 'package:trip_delta/web_startup.dart';
@@ -30,6 +31,7 @@ void androidTestWidgets(String description, WidgetTesterCallback callback) =>
 
 void main() {
   late FakePreference preference;
+  late FakeUpdateCheck updateCheck;
   late FakeSession session;
   late MemoryTripStore store;
   var tripCreations = 0;
@@ -39,6 +41,7 @@ void main() {
 
   TripDeltaStartup app() => TripDeltaStartup(
     preference: preference,
+    checkUpdate: updateCheck.call,
     session: session,
     tripBuilder: (actions) {
       tripCreations++;
@@ -59,6 +62,7 @@ void main() {
 
   setUp(() {
     preference = FakePreference();
+    updateCheck = FakeUpdateCheck();
     session = FakeSession();
     tripCreations = 0;
     language = 'en';
@@ -67,13 +71,14 @@ void main() {
   });
 
   iosTestWidgets(
-    'preference gate creates no trip store/UI before true cold startup',
+    'side B opens Web without creating or flashing the trip home',
     (tester) async {
-      preference.readGate = Completer<bool>();
+      updateCheck.gate = Completer<SiteUpdate>();
       await tester.pumpWidget(app());
+      expect(updateCheck.calls, 1);
       expect(tripCreations, 0);
       expect(find.byType(TripDeltaApp), findsNothing);
-      preference.readGate!.complete(true);
+      updateCheck.gate!.complete(FakeUpdateCheck.result('B'));
       await tester.pumpAndSettle();
       expect(tripCreations, 0);
       expect(session.opens, 1);
@@ -85,9 +90,23 @@ void main() {
   );
 
   iosTestWidgets(
-    'off/read failure retains original onboarding flow without native Web',
+    'side A opens the native home even with an old Web preference',
     (tester) async {
-      preference.readFails = true;
+      preference.enabled = true;
+      await tester.pumpWidget(app());
+      await tester.pumpAndSettle();
+      expect(updateCheck.calls, 1);
+      expect(preference.reads, 0);
+      expect(find.byType(HomeScreen), findsOneWidget);
+      expect(session.opens, 0);
+    },
+  );
+
+  iosTestWidgets(
+    'an update check failure retains the original onboarding flow',
+    (tester) async {
+      preference.enabled = true;
+      updateCheck.fails = true;
       onboarded = false;
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
@@ -95,14 +114,31 @@ void main() {
       expect(find.byType(OnboardingScreen), findsOneWidget);
       expect(session.opens, 0);
       expect(session.listeners, 0);
+      expect(preference.reads, 0);
       expect(preference.writes, 0);
     },
   );
 
+  iosTestWidgets('a late side B cannot switch home after the startup timeout', (
+    tester,
+  ) async {
+    updateCheck.gate = Completer<SiteUpdate>();
+    await tester.pumpWidget(app());
+    expect(find.byType(HomeScreen), findsNothing);
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+    expect(find.byType(HomeScreen), findsOneWidget);
+    updateCheck.gate!.complete(FakeUpdateCheck.result('B'));
+    await tester.pumpAndSettle();
+    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(updateCheck.calls, 1);
+    expect(session.opens, 0);
+  });
+
   iosTestWidgets('H5 manual English overrides a Chinese system at cold start', (
     tester,
   ) async {
-    preference.enabled = true;
+    updateCheck.side = 'B';
     session.launchLanguage = 'en-US';
     tester.binding.platformDispatcher.localeTestValue = const Locale(
       'zh',
@@ -121,7 +157,7 @@ void main() {
   iosTestWidgets('without H5 choice the splash follows system Chinese', (
     tester,
   ) async {
-    preference.enabled = true;
+    updateCheck.side = 'B';
     tester.binding.platformDispatcher.localeTestValue = const Locale(
       'zh',
       'TW',
@@ -187,7 +223,7 @@ void main() {
   iosTestWidgets(
     'Web root close is terminal until explicit retry, never journey fallback',
     (tester) async {
-      preference.enabled = true;
+      updateCheck.side = 'B';
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
       session.controller.add(
@@ -201,6 +237,7 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
+      expect(updateCheck.calls, 1);
       expect(session.opens, 1);
       await tester.tap(find.byKey(const Key('web_home_retry')));
       // StreamSubscription.cancel may return Dart's root-zone shared future.
@@ -217,7 +254,7 @@ void main() {
   iosTestWidgets('late native open completion cannot undo root-close error', (
     tester,
   ) async {
-    preference.enabled = true;
+    updateCheck.side = 'B';
     session.openGate = Completer<void>();
     await tester.pumpWidget(app());
     await tester.pump();
@@ -235,7 +272,7 @@ void main() {
   iosTestWidgets(
     'open failure and event errors allow retry within Web-only root',
     (tester) async {
-      preference.enabled = true;
+      updateCheck.side = 'B';
       session.openFails = true;
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
@@ -260,7 +297,7 @@ void main() {
   iosTestWidgets(
     'synchronously ended event stream is terminal before native open',
     (tester) async {
-      preference.enabled = true;
+      updateCheck.side = 'B';
       session.eventSource = ImmediateClosedStream();
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
@@ -282,7 +319,7 @@ void main() {
   iosTestWidgets(
     'branded preparation stays visible and dark error text remains readable',
     (tester) async {
-      preference.enabled = true;
+      updateCheck.side = 'B';
       session.openGate = Completer<void>();
       tester.binding.platformDispatcher.platformBrightnessTestValue =
           Brightness.dark;
@@ -320,28 +357,27 @@ void main() {
     },
   );
 
-  iosTestWidgets(
-    'disposal cancels subscription and ignores pending preference/open',
-    (tester) async {
-      preference.readGate = Completer<bool>();
-      await tester.pumpWidget(app());
-      await tester.pumpWidget(const SizedBox());
-      preference.readGate!.complete(true);
-      await tester.pumpAndSettle();
-      expect(session.opens, 0);
-      expect(session.disposes, 1);
-      expect(tripCreations, 0);
-      expect(tester.takeException(), isNull);
-    },
-  );
+  iosTestWidgets('disposal ignores the pending startup decision', (
+    tester,
+  ) async {
+    updateCheck.gate = Completer<SiteUpdate>();
+    await tester.pumpWidget(app());
+    await tester.pumpWidget(const SizedBox());
+    updateCheck.gate!.complete(FakeUpdateCheck.result('B'));
+    await tester.pumpAndSettle();
+    expect(session.opens, 0);
+    expect(session.disposes, 1);
+    expect(tripCreations, 0);
+    expect(tester.takeException(), isNull);
+  });
 
   androidTestWidgets(
-    'Android never reads preference, calls Web or exposes title gesture',
+    'Android retains its native startup and does not call the iOS gate',
     (tester) async {
-      preference.enabled = true;
+      updateCheck.side = 'B';
       await tester.pumpWidget(app());
       await tester.pumpAndSettle();
-      expect(preference.reads, 0);
+      expect(updateCheck.calls, 0);
       expect(session.opens, 0);
       expect(session.listeners, 0);
       expect(find.byType(HomeScreen), findsOneWidget);
@@ -392,7 +428,7 @@ void main() {
   iosTestWidgets(
     'late open after disposing root cannot update UI or keep listeners',
     (tester) async {
-      preference.enabled = true;
+      updateCheck.side = 'B';
       session.openGate = Completer<void>();
       await tester.pumpWidget(app());
       await tester.pump();
@@ -443,19 +479,32 @@ void main() {
   );
 }
 
+class FakeUpdateCheck {
+  String side = 'A';
+  bool fails = false;
+  int calls = 0;
+  Completer<SiteUpdate>? gate;
+
+  static SiteUpdate result(String side) =>
+      SiteUpdate(side: side, hasUpdate: false, forceUpdate: false);
+
+  Future<SiteUpdate> call() async {
+    calls++;
+    if (fails) throw StateError('controlled update check failure');
+    return gate == null ? result(side) : gate!.future;
+  }
+}
+
 class FakePreference implements WebStartupPreference {
   bool enabled = false;
-  bool readFails = false;
   bool saveFails = false;
   int reads = 0;
   int writes = 0;
-  Completer<bool>? readGate;
   Completer<void>? saveGate;
   @override
   Future<bool> readEnabled() async {
     reads++;
-    if (readFails) throw StateError('controlled read failure');
-    return readGate == null ? enabled : readGate!.future;
+    return enabled;
   }
 
   @override
