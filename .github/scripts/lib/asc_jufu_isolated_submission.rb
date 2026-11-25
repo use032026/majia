@@ -346,8 +346,10 @@ module MajiaCI
     private_class_method :verify_target_item!
 
     def read_items!(client, submission_id)
-      query = { "fields[reviewSubmissionItems]" => (["state"] + RELATIONS).join(","),
-                "include" => RELATIONS.join(","), "limit" => "200" }
+      # Omit sparse fields so Apple's default complete relationship resource is
+      # checked. Only include the version association already supported in the
+      # production diagnostic query; unresolved material still fails closed.
+      query = { "include" => "appStoreVersion", "limit" => "200" }
       endpoint = "/v1/reviewSubmissions/#{submission_id}/items"
       items = client.paginate(endpoint, query)
       check!(items.is_a?(Array), "review_items_not_a_list")

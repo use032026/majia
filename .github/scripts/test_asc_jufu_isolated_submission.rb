@@ -150,6 +150,56 @@ class ASCJufuIsolatedSubmissionTest < Minitest::Test
     refute_includes JSON.generate(summary), "PRIVATE_CANARY"
   end
 
+  def test_default_complete_query_works_when_multi_include_and_sparse_fields_are_rejected
+    client = fixture
+    original = client.method(:paginate)
+    client.define_singleton_method(:paginate) do |path, query = nil|
+      if path.end_with?("/items") && (query.key?("fields[reviewSubmissionItems]") || query["include"] != "appStoreVersion")
+        raise MajiaCI::ASCStatusError.new("PRIVATE_CANARY", http_status: 400, api_error_codes: ["PARAMETER_ERROR.INVALID"])
+      end
+      original.call(path, query)
+    end
+    before = Marshal.dump([client.batches, client.items])
+    result = S.run(client: client)
+    assert result.fetch("ready_to_submit")
+    assert_equal before, Marshal.dump([client.batches, client.items])
+    assert_empty mutations(client)
+    reads = client.calls.select { |method, path, _| method == :paginate && path.end_with?("/items") }
+    refute_empty reads
+    reads.each { |_method, _path, query| assert_equal({ "include" => "appStoreVersion", "limit" => "200" }, query) }
+  end
+
+  def test_default_complete_query_still_rejects_non_version_material_and_unknown_linkage
+    [{ "data" => { "type" => "appEvents", "id" => "event-1" } }, { "links" => {} }].each do |event|
+      client = fixture
+      add_target(client, "unsafe", "READY_FOR_REVIEW")
+      client.items["unsafe"].first["relationships"]["appEvent"] = event
+      rejected(client)
+      reads = client.calls.select { |method, path, _| method == :paginate && path.end_with?("/items") }
+      reads.each { |_method, _path, query| refute query.key?("fields[reviewSubmissionItems]") }
+    end
+  end
+
+  def test_default_query_http_failure_does_not_fall_back_to_sparse_or_allow_submission
+    client = fixture
+    original = client.method(:paginate)
+    reads = []
+    client.define_singleton_method(:paginate) do |path, query = nil|
+      if path.end_with?("/items")
+        reads << query
+        raise MajiaCI::ASCStatusError.new("PRIVATE_CANARY", http_status: 400, api_error_codes: ["PARAMETER_ERROR.INVALID"])
+      end
+      original.call(path, query)
+    end
+    error = assert_raises(MajiaCI::ASCJufuIsolatedSubmissionError) { S.run(client: client, execute: true) }
+    refute error.evidence.fetch("ready_to_submit")
+    assert_equal [{ "include" => "appStoreVersion", "limit" => "200" }], reads
+    assert_equal 400, error.evidence.dig("failed_request", "http_status")
+    assert_equal ["PARAMETER_ERROR.INVALID"], error.evidence.dig("failed_request", "apple_error_codes")
+    assert_empty mutations(client)
+    refute_includes JSON.generate(error.evidence), "PRIVATE_CANARY"
+  end
+
   def test_default_dry_run_reads_all_batches_and_never_mutates_unrelated_nonempty_draft
     client = fixture
     before = JSON.generate(client.batches.fetch(S::EXCLUDED_SUBMISSION_ID)) + JSON.generate(client.items.fetch(S::EXCLUDED_SUBMISSION_ID))
@@ -265,8 +315,8 @@ class ASCJufuIsolatedSubmissionTest < Minitest::Test
     reads = client.calls.select { |method, endpoint, _| method == :paginate && endpoint == "/v1/reviewSubmissions/safe-existing/items" }
     assert_equal 2, reads.length
     reads.each do |_method, _endpoint, query|
-      assert_equal S::RELATIONS, query.fetch("include").split(",")
-      assert_equal ["state"] + S::RELATIONS, query.fetch("fields[reviewSubmissionItems]").split(",")
+      assert_equal "appStoreVersion", query.fetch("include")
+      refute query.key?("fields[reviewSubmissionItems]")
     end
     refute client.calls.any? { |method, endpoint, _| method == :get && endpoint.include?("reviewSubmissionItems") }
   end
