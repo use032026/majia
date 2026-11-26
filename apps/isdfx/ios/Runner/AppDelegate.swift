@@ -2,19 +2,16 @@ import Flutter
 import UIKit
 
 @main
-@objc class AppDelegate: FlutterAppDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterPluginRegistrant {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
-    let launched = super.application(application, didFinishLaunchingWithOptions: launchOptions)
-    // Keep native window/view backgrounds continuous with the launch asset.
-    // This does not add a delay or replace Flutter's first-frame handoff.
-    if let background = UIColor(named: "LaunchBackground") {
-      window?.backgroundColor = background
-      window?.rootViewController?.view.backgroundColor = background
-    }
-    return launched
+    pluginRegistrant = self
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  func register(with registry: FlutterPluginRegistry) {
+    GeneratedPluginRegistrant.register(with: registry)
   }
 }

@@ -17,7 +17,7 @@ ISDFX 由 `CherryIce/ID-Fixture` 的 iOS / Android 版本迁移而来。品牌�
 
 ## 本地开发
 
-在 `apps/isdfx/` 执行以下命令。Flutter 版本为 3.35.7，Dart 版本为 3.9.2。目标平台为 iOS 13+ 和 Android API 24+。
+在 `apps/isdfx/` 执行以下命令。Flutter 版本为 3.35.7，Dart 版本为 3.9.2。目标平台为 iOS 15+ 和 Android API 24+。
 
 ```sh
 flutter pub get
