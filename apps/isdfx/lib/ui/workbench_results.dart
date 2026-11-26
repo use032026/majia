@@ -206,6 +206,7 @@ class _GeneratedCase extends StatelessWidget {
               collapsedShape: const Border(),
               tilePadding: EdgeInsets.zero,
               childrenPadding: const EdgeInsets.only(bottom: 8),
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
               title: Text(
                 _text(context, '查看逐项检查', 'Inspect rule checks'),
                 style: theme.textTheme.labelLarge?.copyWith(

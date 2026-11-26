@@ -373,7 +373,7 @@ void main() {
   });
 
   testWidgets(
-    '320 width and 200 percent text keep the final controls reachable',
+    '320 width and 200 percent text keep controls reachable and checks aligned',
     (tester) async {
       await launch(
         tester,
@@ -389,6 +389,17 @@ void main() {
       final rect = tester.getRect(find.byKey(const ValueKey('export.package')));
       expect(rect.bottom <= 740, isTrue);
       expect(rect.top >= 0, isTrue);
+      await tapKey(tester, 'case.expand.0');
+      final tile = find.byKey(const ValueKey('case.expand.0'));
+      final left = tester.getTopLeft(tile).dx;
+      for (final check in [
+        find.text('长度符合规则'),
+        find.text('字符组成符合规则'),
+        find.byIcon(CupertinoIcons.checkmark_circle).first,
+      ]) {
+        final item = find.descendant(of: tile, matching: check);
+        expect(tester.getTopLeft(item).dx, closeTo(left, 0.01));
+      }
       expect(tester.takeException(), isNull);
     },
   );
