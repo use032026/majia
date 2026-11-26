@@ -562,9 +562,24 @@ class _RuleDetail extends StatelessWidget {
 }
 
 class _SettingsPage extends StatelessWidget {
-  const _SettingsPage({required this.settings});
+  const _SettingsPage({required this.settings, required this.services});
 
   final AppSettings settings;
+  final PlatformServices services;
+
+  Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final url = Uri.https('isdfx1.com', '/privacy.html', {
+      'lang': _chinese(context) ? 'zh' : 'en',
+    });
+    try {
+      await services.openSource(url.toString());
+    } catch (_) {
+      if (!context.mounted || ModalRoute.of(context)?.isCurrent != true) return;
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(builder: (_) => const _PrivacyPolicyPage()),
+      );
+    }
+  }
 
   Future<void> _save(
     BuildContext context,
@@ -696,6 +711,23 @@ class _SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 22),
             _SupportingHeading(_text(context, '数据与隐私', 'Data and privacy')),
+            const SizedBox(height: 8),
+            Card(
+              child: ListTile(
+                key: const ValueKey('settings.privacy'),
+                leading: const _SupportingIcon(CupertinoIcons.lock_shield),
+                title: Text(_text(context, '隐私政策', 'Privacy Policy')),
+                subtitle: Text(
+                  _text(
+                    context,
+                    '在浏览器中查看官方隐私政策',
+                    'View the official policy in your browser',
+                  ),
+                ),
+                trailing: const Icon(CupertinoIcons.chevron_right, size: 15),
+                onTap: () => _openPrivacyPolicy(context),
+              ),
+            ),
             const SizedBox(height: 8),
             Card(
               child: Padding(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,8 @@ class FakeServices implements PlatformServices {
   String? shared;
   Rect? origin;
   int opens = 0;
+  String? openedSource;
+  Future<void>? sourceResult;
 
   @override
   Future<void> copyText(String text) async => copied = text;
@@ -25,7 +28,10 @@ class FakeServices implements PlatformServices {
   }
 
   @override
-  Future<void> openSource(String url) async {}
+  Future<void> openSource(String url) async {
+    openedSource = url;
+    await sourceResult;
+  }
 
   @override
   Future<ShareOutcome> sharePackage(
@@ -369,6 +375,59 @@ void main() {
     await tester.tap(find.text('Follow system').last);
     await tester.pumpAndSettle();
     expect(settings.themeMode, ThemeMode.system);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('privacy policy opens the HTTPS page in the current language', (
+    tester,
+  ) async {
+    final settings = await settingsForTest();
+    final services = FakeServices();
+    await launch(tester, settings: settings, services: services);
+    await tapKey(tester, 'settings.open');
+    await tapKey(tester, 'settings.privacy');
+    expect(services.openedSource, 'https://isdfx1.com/privacy.html?lang=zh');
+    expect(find.byKey(const ValueKey('privacy.policy')), findsNothing);
+
+    await settings.setLanguage('en');
+    await tester.pumpAndSettle();
+    await tapKey(tester, 'settings.privacy');
+    expect(services.openedSource, 'https://isdfx1.com/privacy.html?lang=en');
+    expect(find.byKey(const ValueKey('privacy.policy')), findsNothing);
+  });
+
+  testWidgets('repeated browser failures show one readable privacy policy', (
+    tester,
+  ) async {
+    final browserResult = Completer<void>();
+    final services = FakeServices()..sourceResult = browserResult.future;
+    await launch(
+      tester,
+      settings: await settingsForTest(),
+      services: services,
+      size: const Size(320, 740),
+      textScale: 2,
+    );
+    await tapKey(tester, 'settings.open');
+    await tapKey(tester, 'settings.privacy');
+    await tapKey(tester, 'settings.privacy');
+    browserResult.completeError(StateError('Browser unavailable'));
+    await tester.pumpAndSettle();
+    final policy = find.byKey(const ValueKey('privacy.policy'));
+    expect(policy, findsOneWidget);
+    expect(find.text('隐私概览'), findsOneWidget);
+
+    final policyScroll = find.descendant(
+      of: policy,
+      matching: find.byType(Scrollable),
+    );
+    final contact = find.textContaining('GerardBooher3020@outlook.com');
+    await tester.scrollUntilVisible(contact, 300, scrollable: policyScroll);
+    expect(contact.hitTestable(), findsOneWidget);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(policy, findsNothing);
+    expect(find.text('偏好设置'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

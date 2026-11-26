@@ -11,6 +11,7 @@ import '../services/platform_services.dart';
 import 'widgets/address_picker.dart';
 import 'widgets/brand_mark.g.dart';
 
+part 'privacy_policy_page.dart';
 part 'supporting_pages.dart';
 part 'workbench_results.dart';
 
@@ -1277,7 +1278,10 @@ class _WorkbenchState extends State<_Workbench> {
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (_) => _SettingsPage(settings: widget.settings),
+                builder: (_) => _SettingsPage(
+                  settings: widget.settings,
+                  services: widget.services,
+                ),
               ),
             ),
             tooltip: _text(context, '偏好设置', 'Preferences'),
