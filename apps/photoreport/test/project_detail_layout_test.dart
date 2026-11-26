@@ -6,6 +6,7 @@ import 'package:photo_report/models.dart';
 import 'package:photo_report/ui/app_theme.dart';
 import 'package:photo_report/ui/project_detail_screen.dart';
 import 'package:photo_report/ui/issue_form_screen.dart';
+import 'package:photo_report/ui/widgets/common.dart';
 
 void main() {
   Widget app({
@@ -327,6 +328,129 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('global summary and sorted areas stay complete while searching', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(402, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = _project();
+    final controller = _DetailController([
+      _issue(project.id, room: ' Z ', status: IssueStatus.pending),
+      _issue(
+        project.id,
+        sequence: 2,
+        room: 'Beta',
+        status: IssueStatus.pending,
+      ),
+      _issue(
+        project.id,
+        sequence: 3,
+        room: ' Beta ',
+        status: IssueStatus.inProgress,
+      ),
+      _issue(
+        project.id,
+        sequence: 4,
+        room: '\u2003Alpha\u00a0',
+        status: IssueStatus.completed,
+      ),
+      _issue(
+        project.id,
+        sequence: 5,
+        room: '   ',
+        status: IssueStatus.completed,
+      ),
+      _issue(project.id, sequence: 6, room: 'Étage'),
+    ]);
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(app(controller: controller, project: project));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('detail-filter-toggle')));
+    await tester.pumpAndSettle();
+    for (final query in ['A-001', 'nothing-matches', '']) {
+      await tester.enterText(find.byType(TextField), query);
+      await tester.pumpAndSettle();
+      final summary = tester.widget<CompactStatusSummary>(
+        find.byType(CompactStatusSummary),
+      );
+      expect(summary.total, 6);
+      expect(summary.pending, 2);
+      expect(summary.inProgress, 1);
+      expect(summary.completed, 2);
+      expect(
+        tester
+            .widgetList<FilterChip>(find.byType(FilterChip))
+            .map((chip) => (chip.label as LText).data),
+        ['全部区域', 'Alpha', 'Beta', 'Z', 'Étage'],
+      );
+    }
+    await tester.tap(find.widgetWithText(ChoiceChip, '待处理'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilterChip, 'Beta'));
+    await tester.pumpAndSettle();
+    final filteredSummary = tester.widget<CompactStatusSummary>(
+      find.byType(CompactStatusSummary),
+    );
+    expect(filteredSummary.total, 6);
+    expect(filteredSummary.pending, 2);
+    expect(filteredSummary.inProgress, 1);
+    expect(filteredSummary.completed, 2);
+    expect(find.text('A-002'), findsOneWidget);
+    expect(find.text('A-001'), findsNothing);
+    expect(find.text('A-003'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('global summary and areas refresh after edited records return', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(402, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = _project();
+    final first = _issue(
+      project.id,
+      room: 'Old A',
+      status: IssueStatus.pending,
+    );
+    final second = _issue(
+      project.id,
+      sequence: 2,
+      room: 'Old B',
+      status: IssueStatus.inProgress,
+    );
+    final controller = _DetailController([first, second]);
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(app(controller: controller, project: project));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('A-001'));
+    await tester.pumpAndSettle();
+    controller.issueRecords = [
+      first.copyWith(room: ' New ', status: IssueStatus.completed),
+      second.copyWith(room: ' ', status: IssueStatus.unspecified),
+    ];
+    Navigator.of(
+      tester.element(find.byType(IssueFormScreen)),
+    ).pop(IssueFormResult.saved);
+    await tester.pumpAndSettle();
+    expect(controller.loadCount, 2);
+    final summary = tester.widget<CompactStatusSummary>(
+      find.byType(CompactStatusSummary),
+    );
+    expect(summary.total, 2);
+    expect(summary.pending, 0);
+    expect(summary.inProgress, 0);
+    expect(summary.completed, 1);
+    await tester.tap(find.byKey(const Key('detail-filter-toggle')));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widgetList<FilterChip>(find.byType(FilterChip))
+          .map((chip) => (chip.label as LText).data),
+      ['全部区域', 'New'],
+    );
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('multiple records expose filters only after explicit request', (
     tester,

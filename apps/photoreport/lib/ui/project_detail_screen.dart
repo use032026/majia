@@ -277,22 +277,28 @@ class _ProjectDetailScreenState extends State<ProjectDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pending = issues
-        .where((issue) => issue.status == IssueStatus.pending)
-        .length;
-    final inProgress = issues
-        .where((issue) => issue.status == IssueStatus.inProgress)
-        .length;
-    final completed = issues
-        .where((issue) => issue.status == IssueStatus.completed)
-        .length;
-    final rooms =
-        issues
-            .map((issue) => issue.room.trim())
-            .where((room) => room.isNotEmpty)
-            .toSet()
-            .toList()
-          ..sort();
+    var pending = 0;
+    var inProgress = 0;
+    var completed = 0;
+    final uniqueRooms = <String>{};
+    for (final issue in issues) {
+      switch (issue.status) {
+        case IssueStatus.pending:
+          pending++;
+          break;
+        case IssueStatus.inProgress:
+          inProgress++;
+          break;
+        case IssueStatus.completed:
+          completed++;
+          break;
+        case IssueStatus.unspecified:
+          break;
+      }
+      final room = issue.room.trim();
+      if (room.isNotEmpty) uniqueRooms.add(room);
+    }
+    final rooms = uniqueRooms.toList()..sort();
     final hasIssues = issues.isNotEmpty;
     final visibleIssues = filteredIssues;
     final entryMode = formalFlowActive
