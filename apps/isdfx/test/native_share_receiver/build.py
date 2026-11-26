@@ -88,7 +88,7 @@ def main() -> None:
     report = {
         "package": "dev.idfixture.qa.share_receiver", "min_sdk": 29, "target_sdk": 35,
         "test_only": True, "debuggable": False, "requested_permissions": [],
-        "expected_source_authority": "dev.idfixture.id_fixture.flutter.share_provider",
+        "expected_source_authority": "com.isdfx.lite.flutter.share_provider",
         "artifact": str(output), "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
         "bytes": output.stat().st_size, "build_directory": str(build),
         "offline_build": True, "device_installed_or_operated": False,

@@ -24,7 +24,7 @@ adb -s "$ID_FIXTURE_TEST_DEVICE" install -t -r artifacts/native-share-receiver/Q
 
 ## 授权及原始字节路径
 
-接收器只接受精确authority `dev.idfixture.id_fixture.flutter.share_provider`的`content://`URI。必须同时含临时`FLAG_GRANT_READ_URI_PERMISSION`、且Android `checkUriPermission`对本接收器UID返回GRANTED，再通过`ContentResolver.openInputStream`读取；不申请持久URI权限，不使用root，不读取产品私有文件系统路径，也不修改产品debuggable属性。
+接收器只接受精确authority `com.isdfx.lite.flutter.share_provider`的`content://`URI。必须同时含临时`FLAG_GRANT_READ_URI_PERMISSION`、且Android `checkUriPermission`对本接收器UID返回GRANTED，再通过`ContentResolver.openInputStream`读取；不申请持久URI权限，不使用root，不读取产品私有文件系统路径，也不修改产品debuggable属性。
 
 原始输入限1MiB；不解析、重排或重新序列化JSON。文件名取FileProvider的DISPLAY_NAME，仅接受本产品安全ASCII JSON名称。为避免同名碰撞，写入`Download/IDFixture-QA/receive-<唯一标识>/<原JSON名>`，每次独立子目录，保留原basename，不覆盖已有捕获。
 

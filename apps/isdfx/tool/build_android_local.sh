@@ -15,7 +15,8 @@ if [[ -z "${JAVA_HOME:-}" && -d "/Applications/Android Studio.app/Contents/jbr/C
 fi
 
 cd "$APP_ROOT"
-flutter build apk --release --target-platform android-arm64
+ORG_GRADLE_PROJECT_isdfxLocalAcceptance=true \
+  flutter build apk --release --target-platform android-arm64
 BUILD_TOOLS="$(python3 - <<'PY'
 import os
 from pathlib import Path

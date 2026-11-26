@@ -1,4 +1,4 @@
-package dev.idfixture.id_fixture
+package com.isdfx.lite
 
 import io.flutter.embedding.android.FlutterActivity
 

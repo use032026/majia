@@ -43,6 +43,12 @@
       "secret_prefix": "HEARTHIO",
       "application_id": "com.example.hearthio"
     },
+    "isdfx": {
+      "display_name": "ISDFX",
+      "path": "apps/isdfx",
+      "secret_prefix": "ISDFX",
+      "application_id": "com.isdfx.lite"
+    },
     "langpack": {
       "display_name": "LangPack",
       "path": "apps/langpack",

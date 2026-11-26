@@ -33,7 +33,7 @@ import java.util.Locale;
  */
 public final class ShareReceiverActivity extends Activity {
     private static final String EXPECTED_AUTHORITY =
-        "dev.idfixture.id_fixture.flutter.share_provider";
+        "com.isdfx.lite.flutter.share_provider";
     private static final int MAX_BYTES = 1024 * 1024;
     private TextView status;
     private Button done;
