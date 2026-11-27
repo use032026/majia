@@ -95,6 +95,7 @@ iOS 最初的系统 LaunchScreen 仍为原生旅程品牌；读取到网页偏�
 在事件后的两次动画帧回调后移除原生遮罩；不以原生呈现完成或 `didFinish` 替代 H5 就绪。
 H5 的 `futrenapp:startup-failed`、主文档网络失败或 25 秒超时会显示原生重试入口。
 首页重试重新加载首页并显示启动图，保持网页模式与原旅程数据。普通网页失败后重试原网页，加载时显示系统背景色。
+WebKit 内容进程退出后，页面回到前台并可见时自动以 GET 重载当前地址一次，保留 SPA 路由。恢复失败时显示「页面暂时无法打开，请重试。」并保留手动重试入口。
 本次没有调整活动 iframe 的 Bridge 调用方式。
 
 图片来源固定为 `newsclient/dev/dev_s86@77aec95ba8471293688ed4d54f77a6343220e3ad`：
@@ -110,6 +111,14 @@ flutter pub get
 flutter analyze
 flutter test
 bash tool/test_native_session_bridge.sh
+(
+  recovery_test_dir="$(mktemp -d "${TMPDIR:-/tmp}/tripdelta-web-recovery.XXXXXX")"
+  trap 'rm -rf "$recovery_test_dir"' EXIT
+  xcrun swiftc -module-cache-path "$recovery_test_dir/modules" \
+    packages/stmini_flutter/ios/Classes/Web/STOnlineWebLoading.swift \
+    test/native/web_process_recovery_test.swift -o "$recovery_test_dir/check" &&
+    "$recovery_test_dir/check"
+)
 flutter build ios --release --no-codesign
 # Android 本批不接入 STMini，不以 Android 构建作为本批 Web 验收项。
 ```
