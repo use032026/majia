@@ -17,6 +17,28 @@ struct WebProcessRecoveryTest {
     precondition(recovery.takeReloadURL(isActivePage: true) == nil, "Further foregrounding cannot loop")
     precondition(recovery.recordTermination(at: later, documentWasReady: true), "A ready document gets a fresh attempt")
     precondition(recovery.takeReloadURL(isActivePage: true) == later)
+    var request = URLRequest(url: current)
+    precondition(STOnlineWebProcessRecovery.isBodyFreeGET(request))
+    request.httpMethod = "POST"
+    precondition(!STOnlineWebProcessRecovery.isBodyFreeGET(request))
+    request.httpMethod = "GET"
+    request.httpBody = Data([1])
+    precondition(!STOnlineWebProcessRecovery.isBodyFreeGET(request))
+    request.httpBodyStream = InputStream(data: Data([1]))
+    precondition(!STOnlineWebProcessRecovery.isBodyFreeGET(request))
+    let previousFragment = URL(string: current.absoluteString.components(separatedBy: "#")[0] + "#start")!
+    precondition(STOnlineWebProcessRecovery.isSameDocumentFragmentLink(current, currentURL: previousFragment))
+    precondition(!STOnlineWebProcessRecovery.isSameDocumentFragmentLink(current, currentURL: current))
+    let anotherDocument = URL(string: "https://example.test/other#/same")!
+    precondition(!STOnlineWebProcessRecovery.isSameDocumentFragmentLink(current, currentURL: anotherDocument))
+    precondition(STOnlineWebProcessRecovery.canReloadHistory(
+      url: current, currentItemURL: current, didCommitKnownGET: true, isNavigating: false))
+    precondition(!STOnlineWebProcessRecovery.canReloadHistory(
+      url: current, currentItemURL: current, didCommitKnownGET: false, isNavigating: false), "POST or unknown method uses a fresh GET")
+    precondition(!STOnlineWebProcessRecovery.canReloadHistory(
+      url: current, currentItemURL: current, didCommitKnownGET: true, isNavigating: true), "A pending navigation cannot reuse the history item")
+    precondition(!STOnlineWebProcessRecovery.canReloadHistory(
+      url: current, currentItemURL: later, didCommitKnownGET: true, isNavigating: false), "A different history entry uses GET fallback")
 
     var loading = STOnlineWebLoadingState()
     let original = loading.begin()
