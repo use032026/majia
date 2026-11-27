@@ -77,6 +77,23 @@ enum STOnlineWebProcessRecovery: Equatable {
   case pending(URL)
   case attempted
 
+  static func isBodyFreeGET(_ request: URLRequest) -> Bool {
+    request.httpMethod?.uppercased() == "GET" && request.httpBody == nil && request.httpBodyStream == nil
+  }
+
+  static func isSameDocumentFragmentLink(_ url: URL, currentURL: URL?) -> Bool {
+    guard let currentURL, url.fragment != nil, url.fragment != currentURL.fragment,
+          var target = URLComponents(url: url, resolvingAgainstBaseURL: false),
+          var current = URLComponents(url: currentURL, resolvingAgainstBaseURL: false) else { return false }
+    target.fragment = nil
+    current.fragment = nil
+    return target == current
+  }
+
+  static func canReloadHistory(url: URL, currentItemURL: URL?, didCommitKnownGET: Bool, isNavigating: Bool) -> Bool {
+    didCommitKnownGET && !isNavigating && currentItemURL == url
+  }
+
   mutating func recordTermination(at url: URL, documentWasReady: Bool) -> Bool {
     if documentWasReady { self = .idle }
     switch self {
@@ -201,16 +218,28 @@ final class STOnlineWebLoadingController {
       (() => {
         const options = \(json);
         const token = String(Date.now()) + '-' + Math.random().toString(36);
-        let sent = false;
-        function send(kind) {
-          if (sent) return;
-          sent = true;
+        let outcome;
+        function post(kind) {
           window.webkit.messageHandlers[options.handler].postMessage({kind, token});
         }
-        function ready() {
-          requestAnimationFrame(() => requestAnimationFrame(() => send('ready')));
+        function send(kind) {
+          if (outcome) return;
+          outcome = kind;
+          post(kind);
         }
-        window.__stminiFirstContent = {token, ready};
+        function afterPaint(callback) {
+          requestAnimationFrame(() => requestAnimationFrame(callback));
+        }
+        function ready() {
+          afterPaint(() => send('ready'));
+        }
+        function restoreReady() {
+          if (outcome === 'ready') afterPaint(() => post('ready'));
+        }
+        window.__stminiFirstContent = {token, ready, restoreReady};
+        window.addEventListener('pageshow', event => {
+          if (event.persisted) restoreReady();
+        });
         if (location.origin === options.readyOrigin) {
           if (options.readyEvent) window.addEventListener(options.readyEvent, ready, {once:true});
           if (options.failureEvent) window.addEventListener(options.failureEvent, () => send('failed'), {once:true});
@@ -325,9 +354,11 @@ final class STOnlineWebLoadingController {
 
   func documentFinished() {
     let currentOrigin = webView?.url.flatMap { STOnlineWebCore.normalizedBridgeOrigin($0, allowInsecureHTTP: true) }
-    guard readyEvent == nil || currentOrigin != readyOrigin else { return }
     guard !released, state.phase == .loading else { return }
-    webView?.evaluateJavaScript("window.__stminiFirstContent?.ready()", completionHandler: nil)
+    // Explicit readiness still gates a new business document. A cached document
+    // can reaffirm its existing readiness if pageshow arrived before didCommit.
+    let action = readyEvent != nil && currentOrigin == readyOrigin ? "restoreReady" : "ready"
+    webView?.evaluateJavaScript("window.__stminiFirstContent?.\(action)()", completionHandler: nil)
   }
 
   /// 调用方必须先执行标准的主 frame 和当前文档来源校验。

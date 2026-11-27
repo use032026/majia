@@ -148,9 +148,15 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private var initialPageNavigation: WKNavigation?
   private var loadingNavigation: WKNavigation?
   private var pendingTopLevelRequest: URLRequest?
+  private var pendingLinkGETURL: URL?
+  private var provisionalLinkGETURL: URL?
   private var lastTopLevelRequest: URLRequest?
   private var lastDocumentURL: URL?
   private var processRecovery: STOnlineWebProcessRecovery = .idle
+  private weak var knownGETNavigation: WKNavigation?
+  private var didCommitKnownGET = false
+  private var hasUncommittedNavigation = false
+  private var canRecoverInHistory = false
   private var releasedWebResources = false
   private var didNotifyClose = false
   private let createdAt = ProcessInfo.processInfo.systemUptime
@@ -251,11 +257,14 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     loadingNavigation != nil && loadingNavigation === initialPageNavigation
   }
 
-  private func loadPage(_ request: URLRequest, isInitialPage: Bool) {
+  private func loadPage(_ request: URLRequest, isInitialPage: Bool, preservesHistory: Bool = false) {
     lastTopLevelRequest = request
     loading.begin(showsLaunchScreen: isInitialPage)
     reportTiming("navigation.load_requested", url: request.url)
-    let navigation = webView.load(request)
+    let navigation = (preservesHistory ? webView.reload() : nil) ?? webView.load(request)
+    // Only a host-initiated, body-free GET can vouch for a committed history item.
+    knownGETNavigation = STOnlineWebProcessRecovery.isBodyFreeGET(request) ? navigation : nil
+    hasUncommittedNavigation = navigation != nil
     initialPageNavigation = isInitialPage ? navigation : nil
     loadingNavigation = navigation
     if navigation == nil { loading.navigationFailed() }
@@ -283,7 +292,9 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
           let url = processRecovery.takeReloadURL(isActivePage: isActivePage) else { return false }
     reportTiming("navigation.content_process_reloading", url: url)
     // Reload the current document with a fresh GET, never replay a form POST.
-    loadPage(URLRequest(url: url), isInitialPage: false)
+    let preservesHistory = canRecoverInHistory && webView.backForwardList.currentItem?.url == url
+    reportTiming(preservesHistory ? "navigation.recovery_history_reload" : "navigation.recovery_get_fallback", url: url)
+    loadPage(URLRequest(url: url), isInitialPage: false, preservesHistory: preservesHistory)
     return true
   }
 
@@ -404,9 +415,29 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       return
     }
     if navigationAction.targetFrame?.isMainFrame == true {
+      if navigationAction.navigationType == .backForward { didCommitKnownGET = false }
+      if hasUncommittedNavigation { provisionalLinkGETURL = nil }
+      // Only a single, unambiguous main-frame hyperlink can be paired with
+      // the next provisional navigation. History and form actions may replay POST.
+      let isNewLinkGET = pendingTopLevelRequest == nil && !hasUncommittedNavigation &&
+        navigationAction.sourceFrame.isMainFrame && navigationAction.navigationType == .linkActivated &&
+        STOnlineWebProcessRecovery.isBodyFreeGET(navigationAction.request)
+      if isNewLinkGET && STOnlineWebProcessRecovery.isSameDocumentFragmentLink(url, currentURL: webView.url) {
+        decisionHandler(.allow)
+        return
+      }
+      pendingLinkGETURL = isNewLinkGET ? url : nil
       pendingTopLevelRequest = navigationAction.request
     }
     decisionHandler(.allow)
+  }
+
+  @available(iOS 26.0, *)
+  func webView(_ webView: WKWebView, shouldGoTo backForwardListItem: WKBackForwardListItem,
+               willUseInstantBack: Bool, completionHandler: @escaping (Bool) -> Void) {
+    // Instant Back can change documents without running the usual policy and commit callbacks.
+    didCommitKnownGET = false
+    completionHandler(true)
   }
 
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -419,21 +450,33 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
     owner.invalidateReplies()
     if let request = pendingTopLevelRequest { lastTopLevelRequest = request }
+    provisionalLinkGETURL = pendingLinkGETURL == webView.url ? pendingLinkGETURL : nil
+    pendingLinkGETURL = nil
     pendingTopLevelRequest = nil
     loadingNavigation = navigation
+    hasUncommittedNavigation = true
     loading.begin(showsLaunchScreen: isLoadingInitialPage)
     navigationStartedAt = ProcessInfo.processInfo.systemUptime
     reportTiming("navigation.started", url: webView.url)
   }
 
   func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-    if navigation === loadingNavigation { pendingTopLevelRequest = nil }
+    if navigation === loadingNavigation {
+      pendingLinkGETURL = nil
+      provisionalLinkGETURL = nil
+      pendingTopLevelRequest = nil
+    }
   }
 
   func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
     owner.invalidateReplies()
     reportTiming("navigation.committed", url: webView.url)
     if let navigation, navigation === loadingNavigation {
+      didCommitKnownGET = navigation === knownGETNavigation ||
+        (provisionalLinkGETURL != nil && provisionalLinkGETURL == webView.url)
+      knownGETNavigation = nil
+      provisionalLinkGETURL = nil
+      hasUncommittedNavigation = false
       lastDocumentURL = webView.url
       loading.documentCommitted()
     }
@@ -441,7 +484,11 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
     reportTiming("navigation.provisional_failed", url: webView.url, error: error)
-    if let navigation, navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
+    if let navigation, navigation === loadingNavigation {
+      provisionalLinkGETURL = nil
+      hasUncommittedNavigation = false
+      if (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
+    }
   }
 
   func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -451,12 +498,22 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
 
   func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
     guard !releasedWebResources else { return }
-    let url = [webView.url, lastDocumentURL, lastTopLevelRequest?.url].compactMap { $0 }.first {
-      STOnlineWebCore.normalizedBridgeOrigin($0, allowInsecureHTTP: allowInsecureHttpNavigation) != nil
-    } ?? initialURL
+    let currentItemURL = webView.backForwardList.currentItem?.url
+    let url = [webView.url, currentItemURL, lastDocumentURL, lastTopLevelRequest?.url].compactMap { $0 }
+      .first { STOnlineWebCore.normalizedBridgeOrigin($0, allowInsecureHTTP: allowInsecureHttpNavigation) != nil }
+      ?? initialURL
     reportTiming("navigation.content_process_terminated", url: url)
+    if processRecovery == .idle || loading.isReady {
+      canRecoverInHistory = STOnlineWebProcessRecovery.canReloadHistory(
+        url: url, currentItemURL: currentItemURL,
+        didCommitKnownGET: didCommitKnownGET,
+        isNavigating: hasUncommittedNavigation || pendingTopLevelRequest != nil)
+    }
     let canRecover = processRecovery.recordTermination(at: url, documentWasReady: loading.isReady)
     owner.willLoadReplacementDocument()
+    knownGETNavigation = nil
+    pendingLinkGETURL = nil
+    provisionalLinkGETURL = nil
     pendingTopLevelRequest = nil
     initialPageNavigation = nil
     loadingNavigation = nil
