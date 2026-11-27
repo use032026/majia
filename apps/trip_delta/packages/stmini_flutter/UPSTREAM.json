@@ -1,20 +1,20 @@
 {
   "repository": "https://github.com/fsst-ios/stmini_flutter",
   "branch": "mini_web",
-  "commit": "b598753a881717f698ce97902fd477186368fa8a",
+  "commit": "6be4f3a50bfcada509f72f6b6d94391303d4bcfb",
   "purpose": "iOS-only distribution subset of the Web-only runtime for Trip Delta; Android is intentionally not integrated.",
   "licenseNote": "Upstream LICENSE is retained verbatim; it currently contains a TODO and does not declare an open-source license.",
   "update": "Select a reviewed exact mini_web commit; copy only the listed iOS/Dart/LICENSE distribution files; reapply the listed adaptations, regenerate SHA-256 values and validate the iOS host. Android/Mini runtime and local artifacts remain excluded.",
   "files": {
     "LICENSE": "422e0de8e3275febf5c41a5ccf891f68f16bc40e1b5dca26e50913b307ef794e",
     "ios/Classes/StminiFlutterPlugin.swift": "1e525169413dd7052dbda9ff0a6901eea7229a00738f3f51a6a78ca161b1bf22",
-    "ios/Classes/Web/OnlineWebViewController.swift": "86971701c67399dddd71cf8a5fd159e0af8e084af2e175a008b800149781c06f",
+    "ios/Classes/Web/OnlineWebViewController.swift": "941dbc04147e56c6b775a04aac6cb6466c244c50c861e3a3db9a74fec8668b2d",
     "ios/Classes/Web/STOnlineWebCore.swift": "0ea6f8d0146a597d656ae7fd1a12faa67d8f84da7326f55aef738fc5a1f35c10",
     "ios/stmini_flutter.podspec": "739f18d5bcf3628f39064208b098e50fa159e41d875c2ded9292bdfe65a802dc",
     "lib/src/runtime_mode.dart": "5f6ad4576503f02b1bd3f4769ac2e6a93e066a27aeacaa094c1b41154e85be23",
     "lib/stmini_flutter.dart": "1781db14506d49e86d7ca2dcabebd3d851a6b518a87a337fefb9da5c9defe4a5",
     "pubspec.yaml": "f22bd54298e3b2c5c73312c59d029bccdfe751e192c7bd25c33b858c398e71fd",
-    "ios/Classes/Web/STOnlineWebLoading.swift": "5def2ae74c474c875111eb783c7f8547879d89f6c1b37892e923674f4a12d5b1"
+    "ios/Classes/Web/STOnlineWebLoading.swift": "464bd630ed43089b1ad0eee152cb1e4001368cfd25413fca9d25ab8c4b9f76f7"
   },
   "adaptations": {
     "pubspec.yaml": {
@@ -22,20 +22,10 @@
       "sourceSha256": "ededc1ac78652d0762fa3abb7a63dbd2eb7d15998fb9fbf276660f0fa056b45d",
       "actualSha256": "f22bd54298e3b2c5c73312c59d029bccdfe751e192c7bd25c33b858c398e71fd"
     },
-    "ios/Classes/Web/OnlineWebViewController.swift": {
-      "reason": "Reload a lost WebKit document once when the page is visible in the active app.",
-      "sourceSha256": "0af1fbf229f1141ec08308dd9675e4d69fca194774745897f4db59dda809b35a",
-      "actualSha256": "86971701c67399dddd71cf8a5fd159e0af8e084af2e175a008b800149781c06f"
-    },
     "ios/Classes/Web/STOnlineWebCore.swift": {
       "reason": "Require an explicit origin policy in Trip Delta; match the host-configured substring against the current HTTPS document host/path for session reads, retaining exact origins for raw storage.",
       "sourceSha256": "3d66f880dfc77b6c04041c6b89c4a73cb05fdf2f00f81d0bb3848658540c8c32",
       "actualSha256": "0ea6f8d0146a597d656ae7fd1a12faa67d8f84da7326f55aef738fc5a1f35c10"
-    },
-    "ios/Classes/Web/STOnlineWebLoading.swift": {
-      "reason": "Track the single recovery attempt, defer the load deadline until reload, and use page wording in the Chinese error message.",
-      "sourceSha256": "ae44e8f7e233a2f746ea97cafa8ffa84b096609ec59c943eb988cc7ff1a5e4d7",
-      "actualSha256": "5def2ae74c474c875111eb783c7f8547879d89f6c1b37892e923674f4a12d5b1"
     }
   }
 }
