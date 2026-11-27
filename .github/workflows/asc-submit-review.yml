@@ -1,24 +1,15 @@
 name: ASC Submit Review
+run-name: Trip Delta 1.0.13 manual-release review
 
 on:
   workflow_dispatch:
     inputs:
       app_environment:
-        description: App whose existing App Store version should be submitted
         required: true
         type: choice
         options:
-          - filepeek-production
-          - tripcost-production
           - tripdelta-production
-          - hearthio-production
-          - sdpacket-production
-          - steady-production
-          - photo-production
-          - photoreport-production
-          - plotproof_lab-production
       marketing_version:
-        description: Existing App Store version to submit, for example 1.0.0
         required: true
         type: string
 
@@ -26,43 +17,86 @@ permissions:
   contents: read
 
 concurrency:
-  group: majia-asc-${{ inputs.app_environment }}-${{ github.repository }}
+  group: majia-asc-tripdelta-production-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
   submit:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    environment: ${{ inputs.app_environment }}
+    if: github.ref == 'refs/heads/release/tripdelta-1013-manual-review' && inputs.app_environment == 'tripdelta-production' && inputs.marketing_version == '1.0.13'
+    environment: tripdelta-production
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Checkout exact source
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Checkout release tooling at the build commit
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
+          ref: 20175bbecaeba162d96ef0ffa186d88bc96e243c
           persist-credentials: false
 
-      - name: Submit existing App Store version for review
-        id: submit_review
-        shell: bash
+      - name: Set manual release, submit the exact build and verify
         env:
           IOS_BUNDLE_ID: ${{ vars.IOS_BUNDLE_ID }}
           ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
           ASC_API_KEY_P8: ${{ secrets.ASC_API_KEY_P8 }}
-          MARKETING_VERSION: ${{ inputs.marketing_version }}
         run: |
-          ruby .github/scripts/submit-asc-review.rb \
-            --bundle-id "$IOS_BUNDLE_ID" \
-            --marketing-version "$MARKETING_VERSION" \
-            --output asc-review-submission.json \
-            --github-output "$GITHUB_OUTPUT" \
-            --github-summary "$GITHUB_STEP_SUMMARY"
+          ruby -I .github/scripts/lib -r asc_review_submission <<'RUBY'
+          status = MajiaCI::ASCReviewStatus
+          review = MajiaCI::ASCReviewSubmission
+          bundle_id = "com.tripdelta.lite.app"
+          app_id = "6822704143"
+          version_number = "1.0.13"
+          version_id = "03d7e4d5-cac3-4ee6-9850-5d9babfe3bf3"
+          build_id = "c15109a4-e527-4b31-8c03-696633feecc7"
+          abort "Unexpected environment bundle ID" unless ENV.fetch("IOS_BUNDLE_ID") == bundle_id
 
-      - name: Retain review submission evidence
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: asc-review-submission-${{ inputs.app_environment }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: asc-review-submission.json
-          if-no-files-found: warn
-          retention-days: 30
+          key_id = ENV.fetch("ASC_KEY_ID")
+          issuer_id = ENV.fetch("ASC_ISSUER_ID")
+          status.validate_inputs!(bundle_id: bundle_id, marketing_version: version_number, key_id: key_id, issuer_id: issuer_id)
+          key = status.normalize_private_key(ENV.fetch("ASC_API_KEY_P8"))
+          client = MajiaCI::ASCClient.new(key: key, key_id: key_id, issuer_id: issuer_id)
+          abort "Unexpected App Store Connect app" unless status.resolve_app(client, bundle_id).fetch("id") == app_id
+          version = status.resolve_version(client, app_id, version_number)
+          abort "Unexpected version" unless version.fetch("id") == version_id && version.dig("attributes", "versionString") == version_number
+          build = status.resolve_build(client, version_id)
+          unless build && build["id"] == build_id && build.dig("attributes", "version") == "1" &&
+                 build.dig("attributes", "processingState") == "VALID" && build.dig("attributes", "expired") == false
+            abort "Unexpected or unprocessed attached build"
+          end
+
+          attributes = version.fetch("attributes")
+          unless review::SUBMITTED_VERSION_STATES.include?(attributes["appVersionState"])
+            unless %w[PREPARE_FOR_SUBMISSION READY_FOR_REVIEW].include?(attributes["appVersionState"])
+              abort "Version is not in an editable draft state"
+            end
+            drafts = client.paginate("/v1/apps/#{app_id}/reviewSubmissions", {"filter[platform]" => "IOS", "fields[reviewSubmissions]" => "state"})
+            drafts.select { |draft| draft.dig("attributes", "state") == "READY_FOR_REVIEW" }.each do |draft|
+              items = client.paginate("/v1/reviewSubmissions/#{draft.fetch('id')}/items", {"fields[reviewSubmissionItems]" => "appStoreVersion"})
+              abort "An existing review draft has other items" if items.any? { |item| item.dig("relationships", "appStoreVersion", "data", "id") != version_id }
+            end
+            if attributes["releaseType"] != "MANUAL"
+              client.patch("/v1/appStoreVersions/#{version_id}", {"data" => {
+                "type" => "appStoreVersions", "id" => version_id, "attributes" => {"releaseType" => "MANUAL"}
+              }})
+            end
+          end
+
+          before = status.resolve_version(client, app_id, version_number)
+          abort "Manual release was not verified; submission skipped" unless before["id"] == version_id && before.dig("attributes", "releaseType") == "MANUAL"
+
+          result = review.submit(client: client, bundle_id: bundle_id, marketing_version: version_number)
+          submission = result["review_submission"]
+          abort "Submission was not confirmed" unless result["review_submitted"] && submission && submission["id"]
+          after = status.resolve_version(client, app_id, version_number)
+          abort "Manual release verification failed after submission" unless after["id"] == version_id && after.dig("attributes", "releaseType") == "MANUAL"
+          receipt = [
+            "App Store Connect app: #{app_id}",
+            "Version: #{version_number} (1)",
+            "Release type: MANUAL",
+            "App Store version state: #{after.dig('attributes', 'appVersionState')}",
+            "Review submission ID: #{submission.fetch('id')}",
+            "Review submission state: #{submission.fetch('state')}"
+          ]
+          File.open(ENV.fetch("GITHUB_STEP_SUMMARY"), "a") { |file| receipt.each { |line| file.puts("- #{line}") } }
+          puts receipt
+          RUBY
