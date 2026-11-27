@@ -70,6 +70,30 @@ public struct STOnlineWebLoadingState {
   }
 }
 
+/// Keep one automatic attempt per lost document, even if WebKit terminates
+/// the replacement process before the recovered page becomes ready.
+enum STOnlineWebProcessRecovery: Equatable {
+  case idle
+  case pending(URL)
+  case attempted
+
+  mutating func recordTermination(at url: URL, documentWasReady: Bool) -> Bool {
+    if documentWasReady { self = .idle }
+    switch self {
+    case .idle: self = .pending(url)
+    case .pending: break
+    case .attempted: return false
+    }
+    return true
+  }
+
+  mutating func takeReloadURL(isActivePage: Bool) -> URL? {
+    guard isActivePage, case let .pending(url) = self else { return nil }
+    self = .attempted
+    return url
+  }
+}
+
 #if canImport(UIKit) && canImport(WebKit)
 import UIKit
 import Flutter
@@ -281,12 +305,16 @@ final class STOnlineWebLoadingController {
     showLoading()
   }
 
-  func begin(showsLaunchScreen: Bool = true) {
+  var isReady: Bool { state.phase == .ready }
+
+  func begin(showsLaunchScreen: Bool = true, startsDeadline: Bool = true) {
     guard !released else { return }
     deadline?.cancel()
+    deadline = nil
     let generation = state.begin()
     hasCommittedDocument = false
     showLoading(showsLaunchScreen: showsLaunchScreen)
+    guard startsDeadline else { return }
     let timeout = min(120, max(5, (configuration["timeoutSeconds"] as? NSNumber)?.doubleValue ?? 25))
     let task = DispatchWorkItem { [weak self] in self?.fail(generation) }
     deadline = task
@@ -362,7 +390,7 @@ final class STOnlineWebLoadingController {
     deadline?.cancel()
     deadline = nil
     errorView.isHidden = false
-    message.text = isChinese ? "网页暂时无法打开，请重试。" : "Unable to load this page. Please retry."
+    message.text = isChinese ? "页面暂时无法打开，请重试。" : "Unable to load this page. Please retry."
     message.isHidden = false
     retryButton.isHidden = false
     #if DEBUG

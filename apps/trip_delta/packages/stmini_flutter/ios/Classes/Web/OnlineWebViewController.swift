@@ -149,6 +149,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   private var loadingNavigation: WKNavigation?
   private var pendingTopLevelRequest: URLRequest?
   private var lastTopLevelRequest: URLRequest?
+  private var lastDocumentURL: URL?
+  private var processRecovery: STOnlineWebProcessRecovery = .idle
   private var releasedWebResources = false
   private var didNotifyClose = false
   private let createdAt = ProcessInfo.processInfo.systemUptime
@@ -256,9 +258,11 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
     let navigation = webView.load(request)
     initialPageNavigation = isInitialPage ? navigation : nil
     loadingNavigation = navigation
+    if navigation == nil { loading.navigationFailed() }
   }
 
   private func retryPage() {
+    processRecovery = .idle
     if isLoadingInitialPage {
       loadInitialPage()
     } else if let request = lastTopLevelRequest, request.httpMethod?.uppercased() == "GET" {
@@ -267,6 +271,20 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
       // 表单失败后重新打开页面，让用户确认是否再次提交。
       loadPage(URLRequest(url: currentDocument), isInitialPage: false)
     }
+  }
+
+  @discardableResult
+  private func recoverTerminatedProcessIfNeeded() -> Bool {
+    // Covered pages recover only when they become the visible page again.
+    let isActivePage = UIApplication.shared.applicationState == .active &&
+      viewIfLoaded?.window != nil && navigationController?.visibleViewController === self &&
+      !isBeingDismissed && navigationController?.isBeingDismissed != true
+    guard !releasedWebResources,
+          let url = processRecovery.takeReloadURL(isActivePage: isActivePage) else { return false }
+    reportTiming("navigation.content_process_reloading", url: url)
+    // Reload the current document with a fresh GET, never replay a form POST.
+    loadPage(URLRequest(url: url), isInitialPage: false)
+    return true
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -313,7 +331,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    if owner.didAppear() { sendPageWillAppear() }
+    let shouldNotify = owner.didAppear()
+    if !recoverTerminatedProcessIfNeeded(), shouldNotify { sendPageWillAppear() }
   }
 
   override func viewDidDisappear(_ animated: Bool) {
@@ -392,7 +411,8 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
 
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     reportTiming("navigation.finished", url: webView.url)
-    if navigation === loadingNavigation { loading.documentFinished() }
+    guard let navigation, navigation === loadingNavigation else { return }
+    loading.documentFinished()
     if owner.didCommitPage() { sendPageWillAppear() }
   }
 
@@ -413,22 +433,40 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
     owner.invalidateReplies()
     reportTiming("navigation.committed", url: webView.url)
-    if navigation === loadingNavigation { loading.documentCommitted() }
+    if let navigation, navigation === loadingNavigation {
+      lastDocumentURL = webView.url
+      loading.documentCommitted()
+    }
   }
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
     reportTiming("navigation.provisional_failed", url: webView.url, error: error)
-    if navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
+    if let navigation, navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
   }
 
   func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
     reportTiming("navigation.failed", url: webView.url, error: error)
-    if navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
+    if let navigation, navigation === loadingNavigation, (error as NSError).code != NSURLErrorCancelled { loading.navigationFailed() }
   }
 
   func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-    loading.begin(showsLaunchScreen: isLoadingInitialPage)
-    loading.navigationFailed()
+    guard !releasedWebResources else { return }
+    let url = [webView.url, lastDocumentURL, lastTopLevelRequest?.url].compactMap { $0 }.first {
+      STOnlineWebCore.normalizedBridgeOrigin($0, allowInsecureHTTP: allowInsecureHttpNavigation) != nil
+    } ?? initialURL
+    reportTiming("navigation.content_process_terminated", url: url)
+    let canRecover = processRecovery.recordTermination(at: url, documentWasReady: loading.isReady)
+    owner.willLoadReplacementDocument()
+    pendingTopLevelRequest = nil
+    initialPageNavigation = nil
+    loadingNavigation = nil
+    // Do not spend the navigation timeout while still waiting to be visible.
+    loading.begin(showsLaunchScreen: false, startsDeadline: false)
+    if canRecover {
+      recoverTerminatedProcessIfNeeded()
+    } else {
+      loading.navigationFailed()
+    }
   }
 
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -554,6 +592,13 @@ final class OnlineWebPageViewController: UIViewController, WKNavigationDelegate,
   /// is registered and also has an initial activation fallback.
   func deliverHostLifecycle(method: String, params: [String: Any] = [:]) {
     guard !releasedWebResources else { return }
+    if method == "appHide", let url = webView.url {
+      // Include SPA route changes that did not trigger a navigation delegate.
+      lastDocumentURL = url
+    }
+    if method == "appShow" {
+      if recoverTerminatedProcessIfNeeded() || (processRecovery != .idle && !loading.isReady) { return }
+    }
     var payload: [String: Any] = ["method": method]
     if !params.isEmpty { payload["params"] = params }
     guard JSONSerialization.isValidJSONObject(payload),
